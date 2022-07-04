@@ -97,18 +97,18 @@ public record PaperRenderer(
     }
 
     @Override
-    public void render(PaperBlockEntity te, float partialTick, PoseStack pose, @NotNull MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+    public void render(PaperBlockEntity blockEntity, float partialTick, PoseStack pose, @NotNull MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         pose.pushPose();
         {
-            pose.translate(te.getBlockPos().getX(), te.getBlockPos().getY(), te.getBlockPos().getZ());
+            pose.translate(blockEntity.getBlockPos().getX(), blockEntity.getBlockPos().getY(), blockEntity.getBlockPos().getZ());
             pose.translate(0.5, 0.5, 0.5);
-            BlockState state = Objects.requireNonNull(te.getLevel()).getBlockState(te.getBlockPos());
-            if (state.getBlock() != state.getBlock()) return;
+            BlockState state = Objects.requireNonNull(blockEntity.getLevel()).getBlockState(blockEntity.getBlockPos());
+            if (blockEntity.getBlockState().getBlock() != state.getBlock()) return;
             pose.mulPose(state.getValue(PaperBlock.FACING).getRotation());
-            pose.mulPose(new Quaternion(0, 0, 1, -te.getRotation()));
+            pose.mulPose(new Quaternion(0, 0, 1, -blockEntity.getRotation()));
             pose.translate(-0.5, -0.5, -0.5);
 
-            IPrint print = te.getPrint();
+            IPrint print = blockEntity.getPrint();
             if (print != null) {
                 CompoundTag data = print.toTag();
                 if (data.contains("pixels", Tag.TAG_INT_ARRAY) && data.contains("resolution", Tag.TAG_INT)) {

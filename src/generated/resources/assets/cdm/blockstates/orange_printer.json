@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "cdm:block/orange_printer",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "cdm:block/orange_printer"
+    },
+    "facing=west": {
+      "model": "cdm:block/orange_printer",
+      "y": 90
+    },
+    "facing=east": {
+      "model": "cdm:block/orange_printer",
+      "y": 270
+    }
+  }
+}

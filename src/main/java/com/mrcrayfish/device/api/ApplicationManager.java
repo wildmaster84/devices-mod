@@ -31,7 +31,7 @@ public final class ApplicationManager {
      */
     @Nullable
     public static Application registerApplication(ResourceLocation identifier, Class<? extends Application> clazz) {
-        Application application = MrCrayfishDeviceMod.proxy.registerApplication(identifier, clazz);
+        Application application = MrCrayfishDeviceMod.getInstance().registerApplication(identifier, clazz);
         if (application != null) {
             APP_INFO.put(identifier, application.getInfo());
             return application;
@@ -47,7 +47,7 @@ public final class ApplicationManager {
      * @return the application list
      */
     public static List<AppInfo> getAvailableApplications() {
-        final Predicate<AppInfo> FILTER = info -> !info.isSystemApp() && (!MrCrayfishDeviceMod.proxy.hasAllowedApplications() || MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(info));
+        final Predicate<AppInfo> FILTER = info -> !info.isSystemApp() && (!MrCrayfishDeviceMod.getInstance().hasAllowedApplications() || MrCrayfishDeviceMod.getInstance().getAllowedApplications().contains(info));
         return APP_INFO.values().stream().filter(FILTER).collect(Collectors.toList());
     }
 

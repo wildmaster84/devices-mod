@@ -22,7 +22,7 @@ public class PrintingManager {
     public static void registerPrint(ResourceLocation identifier, Class<? extends IPrint> classPrint) {
         try {
             classPrint.getConstructor().newInstance();
-            if (MrCrayfishDeviceMod.proxy.registerPrint(identifier, classPrint)) {
+            if (MrCrayfishDeviceMod.getInstance().registerPrint(identifier, classPrint)) {
                 MrCrayfishDeviceMod.LOGGER.info("Registering print '" + classPrint.getName() + "'");
                 registeredPrints.put(identifier.toString(), classPrint);
             } else {

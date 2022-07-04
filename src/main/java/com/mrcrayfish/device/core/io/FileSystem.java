@@ -72,8 +72,8 @@ public class FileSystem {
     }
 
     public static void getApplicationFolder(Application app, Callback<Folder> callback) {
-        if (MrCrayfishDeviceMod.proxy.hasAllowedApplications()) {
-            if (!MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(app.getInfo())) {
+        if (MrCrayfishDeviceMod.getInstance().hasAllowedApplications()) {
+            if (!MrCrayfishDeviceMod.getInstance().getAllowedApplications().contains(app.getInfo())) {
                 callback.execute(null, false);
                 return;
             }

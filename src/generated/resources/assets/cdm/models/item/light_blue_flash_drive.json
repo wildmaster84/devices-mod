@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:item/generated",
+  "parent": "cdm:item/flash_drive",
   "textures": {
-    "layer0": "cdm:wip"
+    "1": "minecraft:block/light_blue_wool"
   }
 }

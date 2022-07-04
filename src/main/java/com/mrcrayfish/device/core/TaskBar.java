@@ -51,8 +51,8 @@ public class TaskBar {
             if (app instanceof SystemApplication) {
                 return true;
             }
-            if (MrCrayfishDeviceMod.proxy.hasAllowedApplications()) {
-                if (MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(app.getInfo())) {
+            if (MrCrayfishDeviceMod.getInstance().hasAllowedApplications()) {
+                if (MrCrayfishDeviceMod.getInstance().getAllowedApplications().contains(app.getInfo())) {
                     return !MrCrayfishDeviceMod.DEVELOPER_MODE || Settings.isShowAllApps();
                 }
                 return false;

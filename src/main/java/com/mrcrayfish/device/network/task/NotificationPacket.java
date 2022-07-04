@@ -30,7 +30,7 @@ public class NotificationPacket extends Packet<NotificationPacket> {
 
     @Override
     public boolean onMessage(Supplier<NetworkEvent.Context> ctx) {
-        MrCrayfishDeviceMod.proxy.showNotification(notificationTag);
+        MrCrayfishDeviceMod.getInstance().showNotification(notificationTag);
         return true;
     }
 }

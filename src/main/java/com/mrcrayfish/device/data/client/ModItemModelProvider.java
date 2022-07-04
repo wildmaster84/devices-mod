@@ -7,7 +7,6 @@ import com.mrcrayfish.device.item.FlashDriveItem;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -28,7 +27,7 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        DeviceBlocks.getAllBlocks().filter((block) -> block.getClass().getPackage().getName().startsWith("com.mrcrayfish.device")).forEach(this::blockBuilder);
+        DeviceBlocks.getAllBlocks().filter((block) -> block != DeviceBlocks.PAPER.get() && block.getClass().getPackage().getName().startsWith("com.mrcrayfish.device")).forEach(this::blockBuilder);
 
         ModelFile itemGenerated = getExistingFile(mcLoc("item/generated"));
         ModelFile itemHandheld = getExistingFile(mcLoc("item/handheld"));
@@ -36,8 +35,12 @@ public class ModItemModelProvider extends ItemModelProvider {
 //        getBuilder(DeviceItems.PAPER.get(), itemGenerated, "model/paper").transforms().transform(ItemTransforms.TransformType.FIXED).rotation(0, 0, 0).translation(0, 0, 0).scale(0.5f, 0.5f, 0.5f).end().end();
 
         for (FlashDriveItem flashDrive : DeviceItems.getAllFlashDrives()) {
-            builder(flashDrive, itemGenerated);
+            flashDrive(flashDrive);
         }
+    }
+
+    private void flashDrive(FlashDriveItem flashDrive) {
+        getBuilder(Objects.requireNonNull(flashDrive.getRegistryName()).getPath()).parent(getExistingFile(modLoc("item/flash_drive"))).texture("1", mcLoc("block/" + flashDrive.getColor().getSerializedName() + "_wool"));
     }
 
     private void blockBuilder(Block block) {
@@ -54,10 +57,10 @@ public class ModItemModelProvider extends ItemModelProvider {
         builder(item, parent, "item/" + name);
     }
 
-    private ItemModelBuilder getBuilder(ItemLike item, ModelFile parent) {
-        String name = Objects.requireNonNull(item.asItem().getRegistryName()).getPath();
-        return getBuilder(item, parent, "item/" + name);
-    }
+//    private ItemModelBuilder getBuilder(ItemLike item, ModelFile parent) {
+//        String name = Objects.requireNonNull(item.asItem().getRegistryName()).getPath();
+//        return getBuilder(item, parent, "item/" + name);
+//    }
 
     private void builder(ItemLike item, ModelFile parent, String texture) {
         try {
@@ -71,15 +74,15 @@ public class ModItemModelProvider extends ItemModelProvider {
         }
     }
 
-    private ItemModelBuilder getBuilder(ItemLike item, ModelFile parent, String texture) {
-        return getBuilder(Objects.requireNonNull(item.asItem().getRegistryName()).getPath())
-                .parent(parent)
-                .texture("layer0", modLoc(texture));
-    }
-
-    private ItemModelBuilder getBuilder(ItemLike item, ModelFile parent, String modelPath, String texture) {
-        return getBuilder(modelPath)
-                .parent(parent)
-                .texture("layer0", modLoc(texture));
-    }
+//    private ItemModelBuilder getBuilder(ItemLike item, ModelFile parent, String texture) {
+//        return getBuilder(Objects.requireNonNull(item.asItem().getRegistryName()).getPath())
+//                .parent(parent)
+//                .texture("layer0", modLoc(texture));
+//    }
+//
+//    private ItemModelBuilder getBuilder(ItemLike item, ModelFile parent, String modelPath, String texture) {
+//        return getBuilder(modelPath)
+//                .parent(parent)
+//                .texture("layer0", modLoc(texture));
+//    }
 }

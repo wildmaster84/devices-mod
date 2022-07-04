@@ -13,7 +13,7 @@ import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public class PacketHandler {
-    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(MrCrayfishDeviceMod.res("main_channel"), () -> Reference.VERSION, it -> it.equals(Reference.MOD_ID), it -> it.equals(Reference.MOD_ID));
+    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(MrCrayfishDeviceMod.res("main_channel"), () -> Reference.VERSION, it -> it.equals(Reference.VERSION), it -> it.equals(Reference.VERSION));
     private static int id = 0;
 
     public static void init() {

@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.block.entity.renderer;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -14,7 +15,6 @@ import com.mrcrayfish.device.block.entity.PrinterBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
@@ -30,9 +30,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
 import java.util.Objects;
 
 /**
@@ -40,10 +38,11 @@ import java.util.Objects;
  */
 public record PrinterRenderer(
         BlockEntityRendererProvider.Context context) implements BlockEntityRenderer<PrinterBlockEntity> {
-    private static final PaperModel MODEL_PAPER = new PaperModel(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.BOOK));
-
     @Override
     public void render(PrinterBlockEntity blockEntity, float partialTick, @NotNull PoseStack pose, @NotNull MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+        PaperModel paperModel = new PaperModel(Minecraft.getInstance().getEntityModels().bakeLayer(PaperModel.LAYER_LOCATION));
+
+        Tesselator tesselator = Tesselator.getInstance();
         BlockState state = Objects.requireNonNull(blockEntity.getLevel()).getBlockState(blockEntity.getBlockPos());
         if (state.getBlock() != blockEntity.getBlock()) return;
 
@@ -61,9 +60,15 @@ public record PrinterRenderer(
                     pose.translate(0, 0, 0.4);
                     pose.translate(-11 * 0.015625, -13 * 0.015625, -0.5 * 0.015625);
 
-                    MultiBufferSource.BufferSource modelBufferSource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-                    VertexConsumer vertexconsumer = modelBufferSource.getBuffer(MODEL_PAPER.renderType(PaperModel.TEXTURE));
-                    MODEL_PAPER.renderToBuffer(pose, vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+                    // BUFFER START
+                    BufferBuilder builder = tesselator.getBuilder();
+
+                    MultiBufferSource.BufferSource modelBufferSource = MultiBufferSource.immediate(builder);
+                    VertexConsumer vertexconsumer = modelBufferSource.getBuffer(paperModel.renderType(PaperModel.TEXTURE));
+                    paperModel.renderToBuffer(pose, vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+
+                    tesselator.end();
+                    // BUFFER END
                 }
                 pose.popPose();
             }
@@ -77,9 +82,16 @@ public record PrinterRenderer(
                     double progress = Math.max(-0.4, -0.4 + (0.4 * ((double) (blockEntity.getRemainingPrintTime() - 10) / 20)));
                     pose.translate(0, progress, 0.36875);
                     pose.translate(-11 * 0.015625, -13 * 0.015625, -0.5 * 0.015625);
-                    MultiBufferSource.BufferSource modelBufferSource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-                    VertexConsumer vertexconsumer = modelBufferSource.getBuffer(MODEL_PAPER.renderType(PaperModel.TEXTURE));
-                    MODEL_PAPER.renderToBuffer(pose, vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+
+                    // BUFFER START
+                    BufferBuilder builder = tesselator.getBuilder();
+
+                    MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(builder);
+                    VertexConsumer vertexconsumer = buffer.getBuffer(paperModel.renderType(PaperModel.TEXTURE));
+                    paperModel.renderToBuffer(pose, vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+
+                    tesselator.end();
+                    // BUFFER END
                 } else if (blockEntity.isPrinting()) {
                     pose.translate(0.5, 0.078125, 0.5);
                     pose.mulPose(state.getValue(PrinterBlock.FACING).getRotation());
@@ -87,9 +99,16 @@ public record PrinterRenderer(
                     double progress = -0.35 + (0.50 * ((double) (blockEntity.getRemainingPrintTime() - 20) / blockEntity.getTotalPrintTime()));
                     pose.translate(0, progress, 0);
                     pose.translate(-11 * 0.015625, -13 * 0.015625, -0.5 * 0.015625);
-                    MultiBufferSource.BufferSource modelBufferSource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-                    VertexConsumer vertexconsumer = modelBufferSource.getBuffer(MODEL_PAPER.renderType(PaperModel.TEXTURE));
-                    MODEL_PAPER.renderToBuffer(pose, vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+
+                    // BUFFER START
+                    BufferBuilder builder = tesselator.getBuilder();
+
+                    MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(builder);
+                    VertexConsumer vertexconsumer = buffer.getBuffer(paperModel.renderType(PaperModel.TEXTURE));
+                    paperModel.renderToBuffer(pose, vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+
+                    tesselator.end();
+                    // BUFFER END
 
                     pose.translate(0.3225, 0.085, -0.001);
                     pose.mulPose(new Quaternion(0, 1, 0, 180f));
@@ -113,9 +132,9 @@ public record PrinterRenderer(
                 pose.translate(0.0675, 0.005, -0.032);
                 pose.translate(-6.5 * 0.0625, -3.5 * 0.0625, 3.01 * 0.0625);
                 pose.scale(0.010416667f, -0.010416667f, 0.010416667f);
-                GL11.glNormal3f(0f, 0f, -0.010416667f);
+//                GL11.glNormal3f(0f, 0f, -0.010416667f);
                 pose.mulPose(new Quaternion(1, 0, 0, 22.5f));
-                Minecraft.getInstance().font.draw(pose, Integer.toString(blockEntity.getPaperCount()), 0, 0, Color.WHITE.getRGB());
+//                Minecraft.getInstance().font.drawInBatch(Integer.toString(blockEntity.getPaperCount()), 0, 0, Color.WHITE.getRGB(), false, pose.last().pose(), bufferSource, true, 0x00000000, packedLight);
                 RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
                 RenderSystem.depthMask(true);
             }
@@ -126,7 +145,6 @@ public record PrinterRenderer(
         pose.pushPose();
         {
             pose.translate(0, -0.5, 0);
-
             Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, pose, bufferSource, packedLight, packedOverlay, EmptyModelData.INSTANCE);
 //                super.render(blockEntity, x, y, z, partialTicks, destroyStage, alpha);
         }
@@ -137,14 +155,14 @@ public record PrinterRenderer(
         public static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/model/paper.png");
         public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MrCrayfishDeviceMod.res("paper_model"), "main");
         private final ModelPart root;
-        private final ModelPart main;
+//        private final ModelPart main;
 
 //            private final ModelRenderer box = new ModelRenderer(this, 0, 0).addBox(0, 0, 0, 22, 30, 1);
 
         public PaperModel(ModelPart pRoot) {
             super(RenderType::entitySolid);
             this.root = pRoot;
-            this.main = pRoot.getChild("main");
+//            this.main = pRoot.getChild("main");
         }
 
         public static LayerDefinition createBodyLayer() {
@@ -164,8 +182,8 @@ public record PrinterRenderer(
             this.root.render(pPoseStack, pBuffer, pPackedLight, pPackedOverlay, pRed, pGreen, pBlue, pAlpha);
         }
 
-        public ModelPart getMain() {
-            return main;
-        }
+//        public ModelPart getMain() {
+//            return main;
+//        }
     }
 }

@@ -1,7 +1,7 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-      "particle": "block/anvil_base",
+      "particle": "block/anvil",
       "0": "block/cauldron_side",
       "1": "block/cauldron_inner",
       "2": "block/wool_colored_red",

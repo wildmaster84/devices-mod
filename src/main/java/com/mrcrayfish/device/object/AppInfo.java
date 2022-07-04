@@ -2,7 +2,6 @@ package com.mrcrayfish.device.object;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import com.mrcrayfish.device.CommonProxy;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
@@ -109,7 +108,7 @@ public class AppInfo {
 
     public void reload() {
         resetInfo();
-        InputStream stream = CommonProxy.Client.class.getResourceAsStream("/assets/" + APP_ID.getNamespace() + "/apps/" + APP_ID.getPath() + ".json");
+        InputStream stream = MrCrayfishDeviceMod.class.getResourceAsStream("/assets/" + APP_ID.getNamespace() + "/apps/" + APP_ID.getPath() + ".json");
 
         if (stream == null)
             throw new RuntimeException("Missing app info json for '" + APP_ID + "'");

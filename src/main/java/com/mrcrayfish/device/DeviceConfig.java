@@ -4,7 +4,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
@@ -71,6 +73,10 @@ public class DeviceConfig {
 
     public static void init() {
         // NO-OP
+    }
+
+    public static void register(ModLoadingContext context) {
+        context.registerConfig(ModConfig.Type.CLIENT, CONFIG);
     }
 
     public static void restore() {

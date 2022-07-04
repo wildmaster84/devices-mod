@@ -1,32 +1,30 @@
 package com.mrcrayfish.device.block.entity.renderer;
 
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.math.Quaternion;
 import com.mrcrayfish.device.block.LaptopBlock;
 import com.mrcrayfish.device.block.entity.LaptopBlockEntity;
 import com.mrcrayfish.device.init.DeviceItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.EmptyModelData;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class LaptopRenderer implements BlockEntityRenderer<LaptopBlockEntity> {
     private final Minecraft mc = Minecraft.getInstance();
 
-    private final ItemEntity itemEntity;
     private final BlockEntityRendererProvider.Context context;
 
     {
         assert Minecraft.getInstance().level != null;
-        itemEntity = new ItemEntity(Minecraft.getInstance().level, 0D, 0D, 0D, ItemStack.EMPTY);
     }
 
     public LaptopRenderer(BlockEntityRendererProvider.Context context) {
@@ -37,7 +35,9 @@ public class LaptopRenderer implements BlockEntityRenderer<LaptopBlockEntity> {
     public void render(LaptopBlockEntity blockEntity, float partialTick, PoseStack pose, @NotNull MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         BlockState state = blockEntity.getBlock().defaultBlockState().setValue(LaptopBlock.TYPE, LaptopBlock.Type.SCREEN);
         BlockPos pos = blockEntity.getBlockPos();
+        ItemEntity itemEntity = new ItemEntity(Objects.requireNonNull(blockEntity.getLevel()), 0D, 0D, 0D, ItemStack.EMPTY);
 
+        Tesselator tesselator = Tesselator.getInstance();
 //		RenderSystem.setShaderTexture(0, TextureMapping.LOCATION_BLOCKS_TEXTURE);
         pose.pushPose();
         {
@@ -67,17 +67,19 @@ public class LaptopRenderer implements BlockEntityRenderer<LaptopBlockEntity> {
                 pose.mulPose(new Quaternion(1, 0, 0, blockEntity.getScreenAngle(partialTick)));
 
 //				GlStateManager.disableLighting();
-                Tesselator tessellator = Tesselator.getInstance();
-                BufferBuilder buffer = tessellator.getBuilder();
-                buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
-                buffer.setQuadSortOrigin(-pos.getX(), -pos.getY(), -pos.getZ());
+//                BufferBuilder buffer = tesselator.getBuilder();
+//                buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
+//                buffer.setQuadSortOrigin(-pos.getX(), -pos.getY(), -pos.getZ());
+////                BakedModel blockModel = mc.getBlockRenderer().getBlockModel(state);
+//                buffer.setQuadSortOrigin(0f, 0f, 0f);
+//                buffer.end();
 
-                BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
-                BakedModel blockModel = mc.getBlockRenderer().getBlockModel(state);
-                blockRenderer.renderSingleBlock(state, pose, MultiBufferSource.immediate(buffer), packedLight, packedOverlay, EmptyModelData.INSTANCE);
+                // Render the block itself
+//                BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
+//                BufferBuilder builder = tesselator.getBuilder();
+//                blockRenderer.renderSingleBlock(state, pose, MultiBufferSource.immediate(builder), packedLight, packedOverlay, EmptyModelData.INSTANCE);
+//                tesselator.end();
 
-                buffer.setQuadSortOrigin(0f, 0f, 0f);
-                tessellator.end();
 //				GlStateManager.enableLighting();
             }
             pose.popPose();

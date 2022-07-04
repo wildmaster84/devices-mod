@@ -1,7 +1,6 @@
 package com.mrcrayfish.device.network.task;
 
 import com.google.common.collect.ImmutableList;
-import com.mrcrayfish.device.CommonProxy;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.network.Packet;
@@ -49,7 +48,7 @@ public class SyncApplicationPacket extends Packet<SyncApplicationPacket> {
 
     @Override
     public boolean onMessage(Supplier<NetworkEvent.Context> ctx) {
-        ObfuscationReflectionHelper.setPrivateValue(CommonProxy.class, MrCrayfishDeviceMod.proxy, allowedApps, "allowedApps");
+        ObfuscationReflectionHelper.setPrivateValue(MrCrayfishDeviceMod.class, MrCrayfishDeviceMod.getInstance(), allowedApps, "allowedApps");
         return true;
     }
 }

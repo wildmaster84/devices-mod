@@ -11,6 +11,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -54,10 +55,54 @@ public class PrinterBlock extends DeviceBlock.Colored implements IHasColor {
 //
 //    private static final AxisAlignedBB SELECTION_BOUNDING_BOX = new AxisAlignedBB(0, 0, 0, 16, 8, 16);
 
-    private static final VoxelShape SHAPE_NORTH = Shapes.or(BODY_BOUNDING_BOX[0], TRAY_BOUNDING_BOX[0], PAPER_BOUNDING_BOX[0]);
-    private static final VoxelShape SHAPE_EAST = Shapes.or(BODY_BOUNDING_BOX[1], TRAY_BOUNDING_BOX[1], PAPER_BOUNDING_BOX[1]);
-    private static final VoxelShape SHAPE_SOUTH = Shapes.or(BODY_BOUNDING_BOX[2], TRAY_BOUNDING_BOX[2], PAPER_BOUNDING_BOX[2]);
-    private static final VoxelShape SHAPE_WEST = Shapes.or(BODY_BOUNDING_BOX[3], TRAY_BOUNDING_BOX[3], PAPER_BOUNDING_BOX[3]);
+    private static final VoxelShape SHAPE_NORTH = Shapes.or(
+            Block.box(2, 0, 7, 14, 5, 12),
+            Block.box(3.5, 0.1, 1, 12.5, 1.1, 7),
+            Block.box(12, 0, 12, 15, 5, 14),
+            Block.box(12, 0, 5, 15, 3, 7),
+            Block.box(1, 0, 5, 4, 3, 7),
+            Block.box(1, 0, 12, 4, 5, 14),
+            Block.box(1.1, 0, 7, 14.9, 5, 12),
+            Block.box(4, 0, 12, 12, 3, 14),
+            Block.box(3.5, 0.1, 1, 12.5, 1.1, 7.5),
+            Block.box(1, 3, 5, 15, 5, 7),
+            Block.box(4, 3, 12, 12, 9.3, 16));
+    private static final VoxelShape SHAPE_EAST = Shapes.or(
+            Block.box(4, 0, 2, 9, 5, 14),
+            Block.box(9, 0.1, 3.5, 15, 1.1, 12.5),
+            Block.box(2, 0, 12, 4, 5, 15),
+            Block.box(9, 0, 12, 11, 3, 15),
+            Block.box(9, 0, 1, 11, 3, 4),
+            Block.box(2, 0, 1, 4, 5, 4),
+            Block.box(4, 0, 1.1, 9, 5, 14.9),
+            Block.box(2, 0, 4, 4, 3, 12),
+            Block.box(8.5, 0.1, 3.5, 15, 1.1, 12.5),
+            Block.box(9, 3, 1, 11, 5, 15),
+            Block.box(0, 3, 4, 4, 9.3, 12));
+    private static final VoxelShape SHAPE_SOUTH = Shapes.or(
+            Block.box(2, 0, 4, 14, 5, 9),
+            Block.box(3.5, 0.1, 9, 12.5, 1.1, 15),
+            Block.box(1, 0, 2, 4, 5, 4),
+            Block.box(1, 0, 9, 4, 3, 11),
+            Block.box(12, 0, 9, 15, 3, 11),
+            Block.box(12, 0, 2, 15, 5, 4),
+            Block.box(1.1, 0, 4, 14.9, 5, 9),
+            Block.box(4, 0, 2, 12, 3, 4),
+            Block.box(3.5, 0.1, 8.5, 12.5, 1.1, 15),
+            Block.box(1, 3, 9, 15, 5, 11),
+            Block.box(4, 3, 0, 12, 9.3, 3.4));
+    private static final VoxelShape SHAPE_WEST = Shapes.or(
+            Block.box(7, 0, 2, 12, 5, 14),
+            Block.box(1, 0.1, 3.5, 7, 1.1, 12.5),
+            Block.box(12, 0, 1, 14, 5, 4),
+            Block.box(5, 0, 1, 7, 3, 4),
+            Block.box(5, 0, 12, 7, 3, 15),
+            Block.box(12, 0, 12, 14, 5, 15),
+            Block.box(7, 0, 1.1, 12, 5, 14.9),
+            Block.box(12, 0, 4, 14, 3, 12),
+            Block.box(1, 0.1, 3.5, 7.5, 1.1, 12.5),
+            Block.box(5, 3, 1, 7, 5, 15),
+            Block.box(12, 3, 4, 16, 9.3, 12));
 
     public PrinterBlock(DyeColor color) {
         super(Properties.of(Material.HEAVY_METAL, color).strength(6f).sound(SoundType.METAL), color);

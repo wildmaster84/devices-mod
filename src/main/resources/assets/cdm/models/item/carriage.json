@@ -4,7 +4,7 @@
       "0": "block/concrete_gray",
       "1": "block/concrete_silver",
       "2": "block/wool_colored_black",
-      "3": "block/anvil_base",
+      "3": "block/anvil",
       "4": "block/hardened_clay_stained_cyan"
     },
     "display": {

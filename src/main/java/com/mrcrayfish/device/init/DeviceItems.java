@@ -37,6 +37,24 @@ public class DeviceItems {
     public static final RegistryObject<BlockItem> RED_LAPTOP = REGISTER.register("red_laptop", () -> new ColoredBlockItem(DeviceBlocks.RED_LAPTOP.get(), new Item.Properties().tab(MrCrayfishDeviceMod.TAB_DEVICE), DyeColor.RED));
     public static final RegistryObject<BlockItem> BLACK_LAPTOP = REGISTER.register("black_laptop", () -> new ColoredBlockItem(DeviceBlocks.BLACK_LAPTOP.get(), new Item.Properties().tab(MrCrayfishDeviceMod.TAB_DEVICE), DyeColor.BLACK));
 
+    // Printers
+    public static final RegistryObject<BlockItem> WHITE_PRINTER = REGISTER.register("white_printer", () -> new ColoredBlockItem(DeviceBlocks.WHITE_PRINTER.get(), new Item.Properties().tab(MrCrayfishDeviceMod.TAB_DEVICE), DyeColor.WHITE));
+    public static final RegistryObject<BlockItem> ORANGE_PRINTER = REGISTER.register("orange_printer", () -> new ColoredBlockItem(DeviceBlocks.ORANGE_PRINTER.get(), new Item.Properties().tab(MrCrayfishDeviceMod.TAB_DEVICE), DyeColor.ORANGE));
+    public static final RegistryObject<BlockItem> MAGENTA_PRINTER = REGISTER.register("magenta_printer", () -> new ColoredBlockItem(DeviceBlocks.MAGENTA_PRINTER.get(), new Item.Properties().tab(MrCrayfishDeviceMod.TAB_DEVICE), DyeColor.MAGENTA));
+    public static final RegistryObject<BlockItem> LIGHT_BLUE_PRINTER = REGISTER.register("light_blue_printer", () -> new ColoredBlockItem(DeviceBlocks.LIGHT_BLUE_PRINTER.get(), new Item.Properties().tab(MrCrayfishDeviceMod.TAB_DEVICE), DyeColor.LIGHT_BLUE));
+    public static final RegistryObject<BlockItem> YELLOW_PRINTER = REGISTER.register("yellow_printer", () -> new ColoredBlockItem(DeviceBlocks.YELLOW_PRINTER.get(), new Item.Properties().tab(MrCrayfishDeviceMod.TAB_DEVICE), DyeColor.YELLOW));
+    public static final RegistryObject<BlockItem> LIME_PRINTER = REGISTER.register("lime_printer", () -> new ColoredBlockItem(DeviceBlocks.LIME_PRINTER.get(), new Item.Properties().tab(MrCrayfishDeviceMod.TAB_DEVICE), DyeColor.LIME));
+    public static final RegistryObject<BlockItem> PINK_PRINTER = REGISTER.register("pink_printer", () -> new ColoredBlockItem(DeviceBlocks.PINK_PRINTER.get(), new Item.Properties().tab(MrCrayfishDeviceMod.TAB_DEVICE), DyeColor.PINK));
+    public static final RegistryObject<BlockItem> GRAY_PRINTER = REGISTER.register("gray_printer", () -> new ColoredBlockItem(DeviceBlocks.GRAY_PRINTER.get(), new Item.Properties().tab(MrCrayfishDeviceMod.TAB_DEVICE), DyeColor.GRAY));
+    public static final RegistryObject<BlockItem> LIGHT_GRAY_PRINTER = REGISTER.register("light_gray_printer", () -> new ColoredBlockItem(DeviceBlocks.LIGHT_GRAY_PRINTER.get(), new Item.Properties().tab(MrCrayfishDeviceMod.TAB_DEVICE), DyeColor.LIGHT_GRAY));
+    public static final RegistryObject<BlockItem> CYAN_PRINTER = REGISTER.register("cyan_printer", () -> new ColoredBlockItem(DeviceBlocks.CYAN_PRINTER.get(), new Item.Properties().tab(MrCrayfishDeviceMod.TAB_DEVICE), DyeColor.CYAN));
+    public static final RegistryObject<BlockItem> PURPLE_PRINTER = REGISTER.register("purple_printer", () -> new ColoredBlockItem(DeviceBlocks.PURPLE_PRINTER.get(), new Item.Properties().tab(MrCrayfishDeviceMod.TAB_DEVICE), DyeColor.PURPLE));
+    public static final RegistryObject<BlockItem> BLUE_PRINTER = REGISTER.register("blue_printer", () -> new ColoredBlockItem(DeviceBlocks.BLUE_PRINTER.get(), new Item.Properties().tab(MrCrayfishDeviceMod.TAB_DEVICE), DyeColor.BLUE));
+    public static final RegistryObject<BlockItem> BROWN_PRINTER = REGISTER.register("brown_printer", () -> new ColoredBlockItem(DeviceBlocks.BROWN_PRINTER.get(), new Item.Properties().tab(MrCrayfishDeviceMod.TAB_DEVICE), DyeColor.BROWN));
+    public static final RegistryObject<BlockItem> GREEN_PRINTER = REGISTER.register("green_printer", () -> new ColoredBlockItem(DeviceBlocks.GREEN_PRINTER.get(), new Item.Properties().tab(MrCrayfishDeviceMod.TAB_DEVICE), DyeColor.GREEN));
+    public static final RegistryObject<BlockItem> RED_PRINTER = REGISTER.register("red_printer", () -> new ColoredBlockItem(DeviceBlocks.RED_PRINTER.get(), new Item.Properties().tab(MrCrayfishDeviceMod.TAB_DEVICE), DyeColor.RED));
+    public static final RegistryObject<BlockItem> BLACK_PRINTER = REGISTER.register("black_printer", () -> new ColoredBlockItem(DeviceBlocks.BLACK_PRINTER.get(), new Item.Properties().tab(MrCrayfishDeviceMod.TAB_DEVICE), DyeColor.BLACK));
+
     // Flash drives
     public static final RegistryObject<FlashDriveItem> WHITE_FLASH_DRIVE = REGISTER.register("white_flash_drive", () -> new FlashDriveItem(DyeColor.WHITE));
     public static final RegistryObject<FlashDriveItem> ORANGE_FLASH_DRIVE = REGISTER.register("orange_flash_drive", () -> new FlashDriveItem(DyeColor.ORANGE));

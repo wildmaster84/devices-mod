@@ -649,8 +649,8 @@ public class Laptop extends Screen implements System {
     }
 
     private boolean isValidApplication(AppInfo info) {
-        if (MrCrayfishDeviceMod.proxy.hasAllowedApplications()) {
-            return MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(info);
+        if (MrCrayfishDeviceMod.getInstance().hasAllowedApplications()) {
+            return MrCrayfishDeviceMod.getInstance().getAllowedApplications().contains(info);
         }
         return true;
     }
