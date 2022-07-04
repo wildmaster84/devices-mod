@@ -5,68 +5,47 @@ import com.mrcrayfish.device.object.AppInfo;
 /**
  * Author: MrCrayfish
  */
-public class LocalEntry implements AppEntry
-{
-    private AppInfo info;
-
-    public LocalEntry(AppInfo info)
-    {
-        this.info = info;
-    }
+public record LocalEntry(AppInfo info) implements AppEntry {
 
     @Override
-    public String getId()
-    {
+    public String id() {
         return info.getId().toString();
     }
 
     @Override
-    public String getName()
-    {
+    public String name() {
         return info.getName();
     }
 
     @Override
-    public String getAuthor()
-    {
+    public String author() {
         return info.getAuthor();
     }
 
     @Override
-    public String getDescription()
-    {
+    public String description() {
         return info.getDescription();
     }
 
     @Override
-    public String getVersion()
-    {
+    public String version() {
         return info.getVersion();
     }
 
     @Override
-    public String getIcon()
-    {
+    public String icon() {
         return info.getIcon();
     }
 
     @Override
-    public String[] getScreenshots()
-    {
+    public String[] screenshots() {
         return info.getScreenshots();
     }
 
-    public AppInfo getInfo()
-    {
-        return info;
-    }
-
     @Override
-    public boolean equals(Object obj)
-    {
-        if(obj instanceof AppEntry)
-        {
-            return ((AppEntry) obj).getId().equals(getId());
+    public boolean equals(Object obj) {
+        if (obj instanceof AppEntry) {
+            return ((AppEntry) obj).id().equals(id());
         }
         return false;
     }

@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.programs.system;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Icons;
@@ -17,276 +19,253 @@ import com.mrcrayfish.device.programs.system.component.Palette;
 import com.mrcrayfish.device.programs.system.object.ColorScheme;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.List;
 import java.util.Stack;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class ApplicationSettings extends SystemApplication
 {
-	private Button buttonPrevious;
+    private Button buttonPrevious;
 
-	private Layout layoutMain;
-	private Layout layoutGeneral;
-	private CheckBox checkBoxShowApps;
+    private Layout layoutMain;
+    private Layout layoutGeneral;
+    private CheckBox checkBoxShowApps;
 
-	private Layout layoutPersonalise;
-	private Button buttonWallpaperLeft;
-	private Button buttonWallpaperRight;
-	private Button buttonWallpaperUrl;
+    private Layout layoutPersonalise;
+    private Button buttonWallpaperLeft;
+    private Button buttonWallpaperRight;
+    private Button buttonWallpaperUrl;
 
-	private Layout layoutColorScheme;
-	private Button buttonColorSchemeApply;
+    private Layout layoutColorScheme;
+    private Button buttonColorSchemeApply;
 
-	private Stack<Layout> predecessor = new Stack<>();
+    private final Stack<Layout> predecessor = new Stack<>();
 
-	@Override
-	public void init(@Nullable NBTTagCompound intent)
-	{
-		buttonPrevious = new Button(2, 2, Icons.ARROW_LEFT);
-		buttonPrevious.setVisible(false);
-		buttonPrevious.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-			if(mouseButton == 0)
-			{
-				if(predecessor.size() > 0)
-				{
-					setCurrentLayout(predecessor.pop());
-				}
-				if(predecessor.isEmpty())
-				{
-					buttonPrevious.setVisible(false);
-				}
-			}
-		});
-
-		layoutMain = new Menu("Home");
-
-		Button buttonColorScheme = new Button(5, 26, "Personalise", Icons.EDIT);
-		buttonColorScheme.setSize(90, 20);
-		buttonColorScheme.setToolTip("Personalise", "Change the wallpaper, UI colors, and more!");
-		buttonColorScheme.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-			if(mouseButton == 0)
-			{
-				showMenu(layoutPersonalise);
-			}
-		});
-		layoutMain.addComponent(buttonColorScheme);
-
-		layoutGeneral = new Menu("General");
-		layoutGeneral.addComponent(buttonPrevious);
-
-		checkBoxShowApps = new CheckBox("Show All Apps", 5, 5);
-		checkBoxShowApps.setSelected(Settings.isShowAllApps());
-		checkBoxShowApps.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-			Settings.setShowAllApps(checkBoxShowApps.isSelected());
-			Laptop laptop = getLaptop();
-			laptop.getTaskBar().setupApplications(laptop.getApplications());
-		});
-		layoutGeneral.addComponent(checkBoxShowApps);
-
-		layoutPersonalise = new Menu("Personalise");
-		layoutPersonalise.addComponent(buttonPrevious);
-		layoutPersonalise.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
-		{
-			int wallpaperX = 7;
-			int wallpaperY = 28;
-			Gui.drawRect(x + wallpaperX - 1, y + wallpaperY - 1, x + wallpaperX - 1 + 122, y + wallpaperY - 1 + 70, getLaptop().getSettings().getColorScheme().getHeaderColor());
-			GlStateManager.color(1.0F, 1.0F, 1.0F);
-			List<ResourceLocation> wallpapers = getLaptop().getWallapapers();
-			mc.getTextureManager().bindTexture(wallpapers.get(getLaptop().getCurrentWallpaper()));
-			RenderUtil.drawRectWithFullTexture(x + wallpaperX, y + wallpaperY, 0, 0, 120, 68);
-			mc.fontRenderer.drawString("Wallpaper", x + wallpaperX + 3, y + wallpaperY + 3, getLaptop().getSettings().getColorScheme().getTextColor(), true);
-		});
-
-		buttonWallpaperLeft = new Button(135, 27, Icons.ARROW_LEFT);
-		buttonWallpaperLeft.setSize(25, 20);
-		buttonWallpaperLeft.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-			if(mouseButton != 0)
-				return;
-
-			Laptop laptop = getLaptop();
-			if(laptop != null)
-			{
-				laptop.prevWallpaper();
-			}
+    @Override
+    public void init(@Nullable CompoundTag intent) {
+        buttonPrevious = new Button(2, 2, Icons.ARROW_LEFT);
+        buttonPrevious.setVisible(false);
+        buttonPrevious.setClickListener((mouseX, mouseY, mouseButton) ->
+        {
+            if (mouseButton == 0) {
+                if (predecessor.size() > 0) {
+                    setCurrentLayout(predecessor.pop());
+                }
+                if(predecessor.isEmpty()) {
+                    buttonPrevious.setVisible(false);
+                }
+            }
         });
-		layoutPersonalise.addComponent(buttonWallpaperLeft);
 
-		buttonWallpaperRight = new Button(165, 27, Icons.ARROW_RIGHT);
-		buttonWallpaperRight.setSize(25, 20);
-		buttonWallpaperRight.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-			if(mouseButton != 0)
-				return;
+        layoutMain = new Menu("Home");
 
-			Laptop laptop = getLaptop();
-			if(laptop != null)
-			{
-				laptop.nextWallpaper();
-			}
-		});
-		layoutPersonalise.addComponent(buttonWallpaperRight);
-
-		buttonWallpaperUrl = new Button(135, 52, "Load", Icons.EARTH);
-		buttonWallpaperUrl.setSize(55, 20);
-		buttonWallpaperUrl.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-			if(mouseButton != 0)
-				return;
-
-			Dialog dialog = new Dialog.Message("This feature has not be added yet!");
-			openDialog(dialog);
+        Button buttonColorScheme = new Button(5, 26, "Personalise", Icons.EDIT);
+        buttonColorScheme.setSize(90, 20);
+        buttonColorScheme.setToolTip("Personalise", "Change the wallpaper, UI colors, and more!");
+        buttonColorScheme.setClickListener((mouseX, mouseY, mouseButton) ->
+        {
+            if(mouseButton == 0) {
+                showMenu(layoutPersonalise);
+            }
         });
-		layoutPersonalise.addComponent(buttonWallpaperUrl);
+        layoutMain.addComponent(buttonColorScheme);
 
-		Button buttonReset = new Button(6, 100, "Reset Color Scheme");
-		buttonReset.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-            if(mouseButton == 0)
-			{
-				Laptop.getSystem().getSettings().getColorScheme().resetDefault();
-			}
+        layoutGeneral = new Menu("General");
+        layoutGeneral.addComponent(buttonPrevious);
+
+        checkBoxShowApps = new CheckBox("Show All Apps", 5, 5);
+        checkBoxShowApps.setSelected(Settings.isShowAllApps());
+        checkBoxShowApps.setClickListener((mouseX, mouseY, mouseButton) ->
+        {
+            Settings.setShowAllApps(checkBoxShowApps.isSelected());
+            Laptop laptop = getLaptop();
+            assert laptop != null;
+            laptop.getTaskBar().setupApplications(laptop.getApplications());
         });
-		layoutPersonalise.addComponent(buttonReset);
+        layoutGeneral.addComponent(checkBoxShowApps);
 
-		layoutColorScheme = new Menu("UI Colors");
-		layoutPersonalise.addComponent(buttonPrevious);
+        layoutPersonalise = new Menu("Personalise");
+        layoutPersonalise.addComponent(buttonPrevious);
+        layoutPersonalise.setBackground((pose, gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
+        {
+            int wallpaperX = 7;
+            int wallpaperY = 28;
+            assert getLaptop() != null;
+            Gui.fill(pose, x + wallpaperX - 1, y + wallpaperY - 1, x + wallpaperX - 1 + 122, y + wallpaperY - 1 + 70, getLaptop().getSettings().getColorScheme().getHeaderColor());
+            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+            List<ResourceLocation> wallpapers = getLaptop().getWallapapers();
+            RenderSystem.setShaderTexture(0, wallpapers.get(getLaptop().getCurrentWallpaper()));
+            RenderUtil.drawRectWithFullTexture(x + wallpaperX, y + wallpaperY, 0, 0, 120, 68);
+            mc.font.drawShadow(pose, "Wallpaper", x + wallpaperX + 3, y + wallpaperY + 3, getLaptop().getSettings().getColorScheme().getTextColor());
+        });
 
-		ComboBox.Custom<Integer> comboBoxTextColor = createColorPicker(145, 26);
-		layoutColorScheme.addComponent(comboBoxTextColor);
+        buttonWallpaperLeft = new Button(135, 27, Icons.ARROW_LEFT);
+        buttonWallpaperLeft.setSize(25, 20);
+        buttonWallpaperLeft.setClickListener((mouseX, mouseY, mouseButton) ->
+        {
+            if(mouseButton != 0)
+                return;
 
-		ComboBox.Custom<Integer> comboBoxTextSecondaryColor = createColorPicker(145, 44);
-		layoutColorScheme.addComponent(comboBoxTextSecondaryColor);
+            Laptop laptop = getLaptop();
+            if(laptop != null) {
+                laptop.prevWallpaper();
+            }
+        });
+        layoutPersonalise.addComponent(buttonWallpaperLeft);
 
-		ComboBox.Custom<Integer> comboBoxHeaderColor = createColorPicker(145, 62);
-		layoutColorScheme.addComponent(comboBoxHeaderColor);
+        buttonWallpaperRight = new Button(165, 27, Icons.ARROW_RIGHT);
+        buttonWallpaperRight.setSize(25, 20);
+        buttonWallpaperRight.setClickListener((mouseX, mouseY, mouseButton) ->
+        {
+            if(mouseButton != 0)
+                return;
 
-		ComboBox.Custom<Integer> comboBoxBackgroundColor = createColorPicker(145, 80);
-		layoutColorScheme.addComponent(comboBoxBackgroundColor);
+            Laptop laptop = getLaptop();
+            if(laptop != null) {
+                laptop.nextWallpaper();
+            }
+        });
+        layoutPersonalise.addComponent(buttonWallpaperRight);
 
-		ComboBox.Custom<Integer> comboBoxBackgroundSecondaryColor = createColorPicker(145, 98);
-		layoutColorScheme.addComponent(comboBoxBackgroundSecondaryColor);
+        buttonWallpaperUrl = new Button(135, 52, "Load", Icons.EARTH);
+        buttonWallpaperUrl.setSize(55, 20);
+        buttonWallpaperUrl.setClickListener((mouseX, mouseY, mouseButton) ->
+        {
+            if(mouseButton != 0)
+                return;
 
-		ComboBox.Custom<Integer> comboBoxItemBackgroundColor = createColorPicker(145, 116);
-		layoutColorScheme.addComponent(comboBoxItemBackgroundColor);
+            Dialog dialog = new Dialog.Message("This feature has not be added yet!");
+            openDialog(dialog);
+        });
+        layoutPersonalise.addComponent(buttonWallpaperUrl);
 
-		ComboBox.Custom<Integer> comboBoxItemHighlightColor = createColorPicker(145, 134);
-		layoutColorScheme.addComponent(comboBoxItemHighlightColor);
+        Button buttonReset = new Button(6, 100, "Reset Color Scheme");
+        buttonReset.setClickListener((mouseX, mouseY, mouseButton) ->
+        {
+            if(mouseButton == 0) {
+                Laptop.getSystem().getSettings().getColorScheme().resetDefault();
+            }
+        });
+        layoutPersonalise.addComponent(buttonReset);
 
-		buttonColorSchemeApply = new Button(5, 79, Icons.CHECK);
-		buttonColorSchemeApply.setEnabled(false);
-		buttonColorSchemeApply.setToolTip("Apply", "Set these colors as the new color scheme");
-		buttonColorSchemeApply.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-			if(mouseButton == 0)
-			{
-				ColorScheme colorScheme = Laptop.getSystem().getSettings().getColorScheme();
-				colorScheme.setBackgroundColor(comboBoxHeaderColor.getValue());
-				buttonColorSchemeApply.setEnabled(false);
-			}
-		});
-		layoutColorScheme.addComponent(buttonColorSchemeApply);
+        layoutColorScheme = new Menu("UI Colors");
+        layoutPersonalise.addComponent(buttonPrevious);
 
-		setCurrentLayout(layoutMain);
-	}
+        ComboBox.Custom<Integer> comboBoxTextColor = createColorPicker(145, 26);
+        layoutColorScheme.addComponent(comboBoxTextColor);
 
-	@Override
-	public void load(NBTTagCompound tagCompound)
-	{
+        ComboBox.Custom<Integer> comboBoxTextSecondaryColor = createColorPicker(145, 44);
+        layoutColorScheme.addComponent(comboBoxTextSecondaryColor);
 
-	}
+        ComboBox.Custom<Integer> comboBoxHeaderColor = createColorPicker(145, 62);
+        layoutColorScheme.addComponent(comboBoxHeaderColor);
 
-	@Override
-	public void save(NBTTagCompound tagCompound)
-	{
+        ComboBox.Custom<Integer> comboBoxBackgroundColor = createColorPicker(145, 80);
+        layoutColorScheme.addComponent(comboBoxBackgroundColor);
 
-	}
+        ComboBox.Custom<Integer> comboBoxBackgroundSecondaryColor = createColorPicker(145, 98);
+        layoutColorScheme.addComponent(comboBoxBackgroundSecondaryColor);
 
-	private void showMenu(Layout layout)
-	{
-		predecessor.push(getCurrentLayout());
-		buttonPrevious.setVisible(true);
-		setCurrentLayout(layout);
-	}
+        ComboBox.Custom<Integer> comboBoxItemBackgroundColor = createColorPicker(145, 116);
+        layoutColorScheme.addComponent(comboBoxItemBackgroundColor);
 
-	@Override
-	public void onClose()
-	{
-		super.onClose();
-		predecessor.clear();
-	}
+        ComboBox.Custom<Integer> comboBoxItemHighlightColor = createColorPicker(145, 134);
+        layoutColorScheme.addComponent(comboBoxItemHighlightColor);
 
-	private static class Menu extends Layout
-	{
-		private String title;
+        buttonColorSchemeApply = new Button(5, 79, Icons.CHECK);
+        buttonColorSchemeApply.setEnabled(false);
+        buttonColorSchemeApply.setToolTip("Apply", "Set these colors as the new color scheme");
+        buttonColorSchemeApply.setClickListener((mouseX, mouseY, mouseButton) ->
+        {
+            if(mouseButton == 0) {
+                ColorScheme colorScheme = Laptop.getSystem().getSettings().getColorScheme();
+                colorScheme.setBackgroundColor(comboBoxHeaderColor.getValue());
+                buttonColorSchemeApply.setEnabled(false);
+            }
+        });
+        layoutColorScheme.addComponent(buttonColorSchemeApply);
 
-		public Menu(String title)
-		{
-			super(200, 150);
-			this.title = title;
-		}
+        setCurrentLayout(layoutMain);
+    }
 
-		@Override
-		public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks)
-		{
-			Color color = new Color(Laptop.getSystem().getSettings().getColorScheme().getHeaderColor());
-			Gui.drawRect(x, y, x + width, y + 20, color.getRGB());
-			Gui.drawRect(x, y + 20, x + width, y + 21, color.darker().getRGB());
-			mc.fontRenderer.drawString(title, x + 22, y + 6, Color.WHITE.getRGB(), true);
-			super.render(laptop, mc, x, y, mouseX, mouseY, windowActive, partialTicks);
-		}
-	}
+    @Override
+    public void load(CompoundTag tagCompound) {
 
-	public ComboBox.Custom<Integer> createColorPicker(int left, int top)
-	{
-		ComboBox.Custom<Integer> colorPicker = new ComboBox.Custom<>(left, top, 50, 100, 100);
-		colorPicker.setValue(Color.RED.getRGB());
-		colorPicker.setItemRenderer(new ItemRenderer<Integer>()
-		{
-			@Override
-			public void render(Integer integer, Gui gui, Minecraft mc, int x, int y, int width, int height)
-			{
-				if(integer != null)
-				{
-					Gui.drawRect(x, y, x + width, y + height, integer);
-				}
-			}
-		});
-		colorPicker.setChangeListener((oldValue, newValue) ->
-		{
-			buttonColorSchemeApply.setEnabled(true);
-		});
+    }
 
-		Palette palette = new Palette(5, 5, colorPicker);
-		Layout layout = colorPicker.getLayout();
-		layout.addComponent(palette);
+    @Override
+    public void save(CompoundTag tagCompound) {
 
-		return colorPicker;
-	}
+    }
 
-	public static class SettingsTrayItem extends TrayItem
-	{
-		public SettingsTrayItem()
-		{
-			super(Icons.WRENCH);
-		}
+    private void showMenu(Layout layout) {
+        predecessor.push(getCurrentLayout());
+        buttonPrevious.setVisible(true);
+        setCurrentLayout(layout);
+    }
 
-		@Override
-		public void handleClick(int mouseX, int mouseY, int mouseButton)
-		{
-			AppInfo info = ApplicationManager.getApplication("cdm:settings");
-			if(info != null)
-			{
-				Laptop.getSystem().openApplication(info);
-			}
-		}
-	}
+    @Override
+    public void onClose() {
+        super.onClose();
+        predecessor.clear();
+    }
+
+    private static class Menu extends Layout {
+        private final String title;
+
+        public Menu(String title) {
+            super(200, 150);
+            this.title = title;
+        }
+
+        @Override
+        public void render(PoseStack pose, Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks) {
+            Color color = new Color(Laptop.getSystem().getSettings().getColorScheme().getHeaderColor());
+            Gui.fill(pose, x, y, x + width, y + 20, color.getRGB());
+            Gui.fill(pose, x, y + 20, x + width, y + 21, color.darker().getRGB());
+            mc.font.drawShadow(pose, title, x + 22, y + 6, Color.WHITE.getRGB());
+            super.render(pose, laptop, mc, x, y, mouseX, mouseY, windowActive, partialTicks);
+        }
+    }
+
+    public ComboBox.Custom<Integer> createColorPicker(int left, int top) {
+        ComboBox.Custom<Integer> colorPicker = new ComboBox.Custom<>(left, top, 50, 100, 100);
+        colorPicker.setValue(Color.RED.getRGB());
+        colorPicker.setItemRenderer(new ItemRenderer<>() {
+            @Override
+            public void render(PoseStack pose, Integer integer, GuiComponent gui, Minecraft mc, int x, int y, int width, int height) {
+                if (integer != null) {
+                    Gui.fill(pose, x, y, x + width, y + height, integer);
+                }
+            }
+        });
+        colorPicker.setChangeListener((oldValue, newValue) ->
+                buttonColorSchemeApply.setEnabled(true));
+
+        Palette palette = new Palette(5, 5, colorPicker);
+        Layout layout = colorPicker.getLayout();
+        layout.addComponent(palette);
+
+        return colorPicker;
+    }
+
+    public static class SettingsTrayItem extends TrayItem {
+        public SettingsTrayItem() {
+            super(Icons.WRENCH);
+        }
+
+        @Override
+        public void handleClick(int mouseX, int mouseY, int mouseButton) {
+            AppInfo info = ApplicationManager.getApplication("cdm:settings");
+            if(info != null) {
+                Laptop.getSystem().openApplication(info);
+            }
+        }
+    }
 }

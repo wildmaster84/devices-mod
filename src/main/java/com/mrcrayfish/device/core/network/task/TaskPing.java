@@ -1,65 +1,54 @@
 package com.mrcrayfish.device.core.network.task;
 
 import com.mrcrayfish.device.api.task.Task;
-import com.mrcrayfish.device.tileentity.TileEntityNetworkDevice;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import com.mrcrayfish.device.block.entity.NetworkDeviceBlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
  * Author: MrCrayfish
  */
-public class TaskPing extends Task
-{
+public class TaskPing extends Task {
     private BlockPos sourceDevicePos;
     private int strength;
 
-    private TaskPing()
-    {
+    private TaskPing() {
         super("ping");
     }
 
-    public TaskPing(BlockPos sourceDevicePos)
-    {
+    public TaskPing(BlockPos sourceDevicePos) {
         this();
         this.sourceDevicePos = sourceDevicePos;
     }
 
     @Override
-    public void prepareRequest(NBTTagCompound nbt)
-    {
-        nbt.setLong("sourceDevicePos", sourceDevicePos.toLong());
+    public void prepareRequest(CompoundTag nbt) {
+        nbt.putLong("sourceDevicePos", sourceDevicePos.asLong());
     }
 
     @Override
-    public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
-    {
-        TileEntity tileEntity = world.getTileEntity(BlockPos.fromLong(nbt.getLong("sourceDevicePos")));
-        if(tileEntity instanceof TileEntityNetworkDevice)
-        {
-            TileEntityNetworkDevice tileEntityNetworkDevice = (TileEntityNetworkDevice) tileEntity;
-            if(tileEntityNetworkDevice.isConnected())
-            {
-                this.strength = tileEntityNetworkDevice.getSignalStrength();
+    public void processRequest(CompoundTag nbt, Level level, Player player) {
+        BlockEntity blockEntity = level.getBlockEntity(BlockPos.of(nbt.getLong("sourceDevicePos")));
+        if (blockEntity instanceof NetworkDeviceBlockEntity networkDevice) {
+            if (networkDevice.isConnected()) {
+                this.strength = networkDevice.getSignalStrength();
                 this.setSuccessful();
             }
         }
     }
 
     @Override
-    public void prepareResponse(NBTTagCompound nbt)
-    {
-        if(this.isSucessful())
-        {
-            nbt.setInteger("strength", strength);
+    public void prepareResponse(CompoundTag nbt) {
+        if (this.isSucessful()) {
+            nbt.putInt("strength", strength);
         }
     }
 
     @Override
-    public void processResponse(NBTTagCompound nbt)
-    {
+    public void processResponse(CompoundTag nbt) {
 
     }
 }

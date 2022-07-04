@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.programs.system.component;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Icons;
@@ -16,7 +17,7 @@ import com.mrcrayfish.device.programs.system.object.RemoteEntry;
 import com.mrcrayfish.device.util.GuiHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -25,24 +26,22 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class AppGrid extends Component
-{
-    private int padding = 5;
-    private int horizontalItems;
-    private int verticalItems;
-    private List<AppEntry> entries = new ArrayList<>();
-    private ApplicationAppStore store;
+public class AppGrid extends Component {
+    private final int padding = 5;
+    private final int horizontalItems;
+    private final int verticalItems;
+    private final List<AppEntry> entries = new ArrayList<>();
+    private final ApplicationAppStore store;
 
-    private int itemWidth;
-    private int itemHeight;
+    private final int itemWidth;
+    private final int itemHeight;
 
     private long lastClick = 0;
     private int clickedIndex;
 
     private Layout container;
 
-    public AppGrid(int left, int top, int horizontalItems, int verticalItems, ApplicationAppStore store)
-    {
+    public AppGrid(int left, int top, int horizontalItems, int verticalItems, ApplicationAppStore store) {
         super(left, top);
         this.horizontalItems = horizontalItems;
         this.verticalItems = verticalItems;
@@ -52,12 +51,10 @@ public class AppGrid extends Component
     }
 
     @Override
-    protected void init(Layout layout)
-    {
+    protected void init(Layout layout) {
         container = new Layout(0, 0, ApplicationAppStore.LAYOUT_WIDTH, horizontalItems * itemHeight + (horizontalItems + 1) * padding);
         int size = Math.min(entries.size(), verticalItems * horizontalItems);
-        for(int i = 0; i < size; i++)
-        {
+        for (int i = 0; i < size; i++) {
             AppEntry entry = entries.get(i);
             int itemX = left + (i % horizontalItems) * (itemWidth + padding) + padding;
             int itemY = top + (i / horizontalItems) * (itemHeight + padding) + padding;
@@ -67,38 +64,29 @@ public class AppGrid extends Component
     }
 
     @Override
-    protected void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks)
-    {
+    protected void render(PoseStack pose, Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks) {
         int size = Math.min(entries.size(), verticalItems * horizontalItems);
-        for(int i = 0; i < size; i++)
-        {
+        for (int i = 0; i < size; i++) {
             int itemX = x + (i % horizontalItems) * (itemWidth + padding) + padding;
             int itemY = y + (i / horizontalItems) * (itemHeight + padding) + padding;
-            if(GuiHelper.isMouseWithin(mouseX, mouseY, itemX, itemY, itemWidth, itemHeight))
-            {
-                Gui.drawRect(itemX, itemY, itemX + itemWidth, itemY + itemHeight, Color.GRAY.getRGB());
-                Gui.drawRect(itemX + 1, itemY + 1, itemX + itemWidth - 1, itemY + itemHeight - 1, Laptop.getSystem().getSettings().getColorScheme().getItemBackgroundColor());
+            if (GuiHelper.isMouseWithin(mouseX, mouseY, itemX, itemY, itemWidth, itemHeight)) {
+                Gui.fill(pose, itemX, itemY, itemX + itemWidth, itemY + itemHeight, Color.GRAY.getRGB());
+                Gui.fill(pose, itemX + 1, itemY + 1, itemX + itemWidth - 1, itemY + itemHeight - 1, Laptop.getSystem().getSettings().getColorScheme().getItemBackgroundColor());
             }
         }
     }
 
     @Override
-    protected void handleMouseClick(int mouseX, int mouseY, int mouseButton)
-    {
+    protected void handleMouseClick(int mouseX, int mouseY, int mouseButton) {
         int size = Math.min(entries.size(), verticalItems * horizontalItems);
-        for(int i = 0; i < size; i++)
-        {
+        for (int i = 0; i < size; i++) {
             int itemX = xPosition + (i % horizontalItems) * (itemWidth + padding) + padding;
             int itemY = yPosition + (i / horizontalItems) * (itemHeight + padding) + padding;
-            if(GuiHelper.isMouseWithin(mouseX, mouseY, itemX, itemY, itemWidth, itemHeight))
-            {
-                if(System.currentTimeMillis() - this.lastClick <= 200 && clickedIndex == i)
-                {
+            if (GuiHelper.isMouseWithin(mouseX, mouseY, itemX, itemY, itemWidth, itemHeight)) {
+                if (System.currentTimeMillis() - this.lastClick <= 200 && clickedIndex == i) {
                     this.lastClick = 0;
                     store.openApplication(entries.get(i));
-                }
-                else
-                {
+                } else {
                     this.lastClick = System.currentTimeMillis();
                     this.clickedIndex = i;
                 }
@@ -106,67 +94,54 @@ public class AppGrid extends Component
         }
     }
 
-    public void addEntry(AppInfo info)
-    {
+    public void addEntry(AppInfo info) {
         this.entries.add(new LocalEntry(info));
     }
 
-    public void addEntry(AppEntry entry)
-    {
+    public void addEntry(AppEntry entry) {
         this.entries.add(adjustEntry(entry));
     }
 
-    private AppEntry adjustEntry(AppEntry entry)
-    {
-        AppInfo info = ApplicationManager.getApplication(entry.getId());
-        if(info != null)
-        {
+    private AppEntry adjustEntry(AppEntry entry) {
+        AppInfo info = ApplicationManager.getApplication(entry.id());
+        if (info != null) {
             return new LocalEntry(info);
         }
         return entry;
     }
 
-    private Layout generateAppTile(AppEntry entry, int left, int top)
-    {
+    private Layout generateAppTile(AppEntry entry, int left, int top) {
         Layout layout = new Layout(left, top, itemWidth, itemHeight);
 
         int iconOffset = (itemWidth - 14 * 3) / 2;
-        if(entry instanceof LocalEntry)
-        {
-            LocalEntry localEntry = (LocalEntry) entry;
-            Image image = new Image(iconOffset, padding, 14 * 3, 14 * 3, localEntry.getInfo().getIconU(), localEntry.getInfo().getIconV(), 14, 14, 224, 224, Laptop.ICON_TEXTURES);
+        if (entry instanceof LocalEntry localEntry) {
+            Image image = new Image(iconOffset, padding, 14 * 3, 14 * 3, localEntry.info().getIconU(), localEntry.info().getIconV(), 14, 14, 224, 224, Laptop.ICON_TEXTURES);
             layout.addComponent(image);
-        }
-        else if(entry instanceof RemoteEntry)
-        {
-            RemoteEntry remoteEntry = (RemoteEntry) entry;
-            ResourceLocation resource = new ResourceLocation(remoteEntry.getId());
-            Image image = new Image(iconOffset, padding, 14 * 3, 14 * 3, ApplicationAppStore.CERTIFIED_APPS_URL + "/assets/" + resource.getResourceDomain() + "/" + resource.getResourcePath() + "/icon.png");
+        } else if (entry instanceof RemoteEntry remoteEntry) {
+            ResourceLocation resource = new ResourceLocation(remoteEntry.id);
+            Image image = new Image(iconOffset, padding, 14 * 3, 14 * 3, ApplicationAppStore.CERTIFIED_APPS_URL + "/assets/" + resource.getNamespace() + "/" + resource.getPath() + "/icon.png");
             layout.addComponent(image);
         }
 
-        String clippedName = RenderUtil.clipStringToWidth(entry.getName(), itemWidth - padding * 2);
+        String clippedName = RenderUtil.clipStringToWidth(entry.name(), itemWidth - padding * 2);
         Label labelName = new Label(clippedName, itemWidth / 2, 50);
         labelName.setAlignment(Component.ALIGN_CENTER);
         layout.addComponent(labelName);
 
-        String clippedAuthor = RenderUtil.clipStringToWidth(entry.getAuthor(), itemWidth - padding * 2);
+        String clippedAuthor = RenderUtil.clipStringToWidth(entry.author(), itemWidth - padding * 2);
         Label labelAuthor = new Label(clippedAuthor, itemWidth / 2, 62);
         labelAuthor.setAlignment(Component.ALIGN_CENTER);
         labelAuthor.setShadow(false);
         layout.addComponent(labelAuthor);
 
-        if(store.certifiedApps.contains(entry))
-        {
+        if (store.certifiedApps.contains(entry)) {
             Image certifiedIcon = new Image(15, 38, Icons.VERIFIED);
             layout.addComponent(certifiedIcon);
         }
 
-        if(entry instanceof LocalEntry)
-        {
-            AppInfo info = ((LocalEntry) entry).getInfo();
-            if(Laptop.getSystem().getInstalledApplications().contains(info))
-            {
+        if (entry instanceof LocalEntry) {
+            AppInfo info = ((LocalEntry) entry).info();
+            if (Laptop.getSystem().getInstalledApplications().contains(info)) {
                 Image installedIcon = new Image(itemWidth - 10 - 15, 38, Icons.CHECK);
                 layout.addComponent(installedIcon);
             }
@@ -174,24 +149,17 @@ public class AppGrid extends Component
         return layout;
     }
 
-    public void reloadIcons()
-    {
-        if(container != null)
-        {
+    public void reloadIcons() {
+        if (container != null) {
             reloadIcons(container);
         }
     }
 
-    private void reloadIcons(Layout layout)
-    {
-        layout.components.forEach(component ->
-        {
-            if(component instanceof Layout)
-            {
+    private void reloadIcons(Layout layout) {
+        layout.components.forEach(component -> {
+            if (component instanceof Layout) {
                 reloadIcons((Layout) component);
-            }
-            else if(component instanceof Image)
-            {
+            } else if (component instanceof Image) {
                 ((Image) component).reload();
             }
         });

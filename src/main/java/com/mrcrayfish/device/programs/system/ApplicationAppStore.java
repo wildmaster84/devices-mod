@@ -23,11 +23,11 @@ import com.mrcrayfish.device.programs.system.layout.LayoutAppPage;
 import com.mrcrayfish.device.programs.system.layout.LayoutSearchApps;
 import com.mrcrayfish.device.programs.system.object.AppEntry;
 import com.mrcrayfish.device.programs.system.object.RemoteEntry;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -35,171 +35,150 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ApplicationAppStore extends SystemApplication
-{
-	public static final String CERTIFIED_APPS_URL = "https://raw.githubusercontent.com/MrCrayfish/DeviceMod-CertifiedApps/master";
+public class ApplicationAppStore extends SystemApplication {
+    public static final String CERTIFIED_APPS_URL = "https://raw.githubusercontent.com/MrCrayfish/DeviceMod-CertifiedApps/master";
 
-	public static final int LAYOUT_WIDTH = 250;
-	public static final int LAYOUT_HEIGHT = 150;
+    public static final int LAYOUT_WIDTH = 250;
+    public static final int LAYOUT_HEIGHT = 150;
+    public List<AppEntry> certifiedApps = new ArrayList<>();
+    private Layout layoutMain;
 
-	private Layout layoutMain;
+    @Override
+    public void init(@Nullable CompoundTag intent) {
+        layoutMain = new Layout(LAYOUT_WIDTH, LAYOUT_HEIGHT);
 
-	public List<AppEntry> certifiedApps = new ArrayList<>();
+        ScrollableLayout homePageLayout = new ScrollableLayout(0, 0, LAYOUT_WIDTH, 368, LAYOUT_HEIGHT);
+        homePageLayout.setScrollSpeed(10);
+        homePageLayout.setBackground((pose, gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> {
+            Color color = new Color(Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor());
+            int offset = 60;
+            Gui.fill(pose, x, y + offset, x + LAYOUT_WIDTH, y + offset + 1, color.brighter().getRGB());
+            Gui.fill(pose, x, y + offset + 1, x + LAYOUT_WIDTH, y + offset + 19, color.getRGB());
+            Gui.fill(pose, x, y + offset + 19, x + LAYOUT_WIDTH, y + offset + 20, color.darker().getRGB());
 
-	@Override
-	public void init(@Nullable NBTTagCompound intent)
-	{
-		layoutMain = new Layout(LAYOUT_WIDTH, LAYOUT_HEIGHT);
-
-		ScrollableLayout homePageLayout = new ScrollableLayout(0, 0, LAYOUT_WIDTH, 368, LAYOUT_HEIGHT);
-		homePageLayout.setScrollSpeed(10);
-		homePageLayout.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
-		{
-			Color color = new Color(Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor());
-			int offset = 60;
-			Gui.drawRect(x, y + offset, x + LAYOUT_WIDTH, y + offset + 1, color.brighter().getRGB());
-			Gui.drawRect(x, y + offset + 1, x + LAYOUT_WIDTH, y + offset + 19, color.getRGB());
-			Gui.drawRect(x, y + offset + 19, x + LAYOUT_WIDTH, y + offset + 20, color.darker().getRGB());
-
-			offset = 172;
-			Gui.drawRect(x, y + offset, x + LAYOUT_WIDTH, y + offset + 1, color.brighter().getRGB());
-			Gui.drawRect(x, y + offset + 1, x + LAYOUT_WIDTH, y + offset + 19, color.getRGB());
-			Gui.drawRect(x, y + offset + 19, x + LAYOUT_WIDTH, y + offset + 20, color.darker().getRGB());
+            offset = 172;
+            Gui.fill(pose, x, y + offset, x + LAYOUT_WIDTH, y + offset + 1, color.brighter().getRGB());
+            Gui.fill(pose, x, y + offset + 1, x + LAYOUT_WIDTH, y + offset + 19, color.getRGB());
+            Gui.fill(pose, x, y + offset + 19, x + LAYOUT_WIDTH, y + offset + 20, color.darker().getRGB());
         });
 
-		Image imageBanner = new Image(0, 0, LAYOUT_WIDTH, 60);
-		imageBanner.setImage(new ResourceLocation(Reference.MOD_ID, "textures/gui/app_market_background.png"));
-		imageBanner.setDrawFull(true);
-		homePageLayout.addComponent(imageBanner);
+        Image imageBanner = new Image(0, 0, LAYOUT_WIDTH, 60);
+        imageBanner.setImage(new ResourceLocation(Reference.MOD_ID, "textures/gui/app_market_background.png"));
+        imageBanner.setDrawFull(true);
+        homePageLayout.addComponent(imageBanner);
 
-		Button btnSearch = new Button(5, 5, Icons.SEARCH);
-		btnSearch.setToolTip("Search", "Find a specific application");
-		btnSearch.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-			if(mouseButton == 0)
-			{
-				this.setCurrentLayout(new LayoutSearchApps(this, getCurrentLayout()));
-			}
-		});
-		homePageLayout.addComponent(btnSearch);
+        Button btnSearch = new Button(5, 5, Icons.SEARCH);
+        btnSearch.setToolTip("Search", "Find a specific application");
+        btnSearch.setClickListener((mouseX, mouseY, mouseButton) -> {
+            if (mouseButton == 0) {
+                this.setCurrentLayout(new LayoutSearchApps(this, getCurrentLayout()));
+            }
+        });
+        homePageLayout.addComponent(btnSearch);
 
-		Button btnManageApps = new Button(23, 5, Icons.HAMMER);
-		btnManageApps.setToolTip("Manage Apps", "Manage your installed applications");
-		homePageLayout.addComponent(btnManageApps);
+        Button btnManageApps = new Button(23, 5, Icons.HAMMER);
+        btnManageApps.setToolTip("Manage Apps", "Manage your installed applications");
+        homePageLayout.addComponent(btnManageApps);
 
-		Image image = new Image(5, 33, 20, 20, Icons.SHOP);
-		homePageLayout.addComponent(image);
+        Image image = new Image(5, 33, 20, 20, Icons.SHOP);
+        homePageLayout.addComponent(image);
 
-		Label labelBanner = new Label("App Market", 32, 35);
-		labelBanner.setScale(2);
-		homePageLayout.addComponent(labelBanner);
+        Label labelBanner = new Label("App Market", 32, 35);
+        labelBanner.setScale(2);
+        homePageLayout.addComponent(labelBanner);
 
-		Label labelCertified = new Label(TextFormatting.WHITE + TextFormatting.BOLD.toString() + "Certified Apps", 10, 66);
-		homePageLayout.addComponent(labelCertified);
+        Label labelCertified = new Label(ChatFormatting.WHITE + ChatFormatting.BOLD.toString() + "Certified Apps", 10, 66);
+        homePageLayout.addComponent(labelCertified);
 
-		Label labelCertifiedDesc = new Label(TextFormatting.GRAY + "Verified by MrCrayfish", LAYOUT_WIDTH - 10, 66);
-		labelCertifiedDesc.setAlignment(Component.ALIGN_RIGHT);
-		labelCertifiedDesc.setScale(1.0);
-		labelCertifiedDesc.setShadow(false);
-		homePageLayout.addComponent(labelCertifiedDesc);
+        Label labelCertifiedDesc = new Label(ChatFormatting.GRAY + "Verified by MrCrayfish", LAYOUT_WIDTH - 10, 66);
+        labelCertifiedDesc.setAlignment(Component.ALIGN_RIGHT);
+        labelCertifiedDesc.setScale(1d);
+        labelCertifiedDesc.setShadow(false);
+        homePageLayout.addComponent(labelCertifiedDesc);
 
-		Spinner spinner = new Spinner((LAYOUT_WIDTH - 12) / 2, 120);
-		homePageLayout.addComponent(spinner);
+        Spinner spinner = new Spinner((LAYOUT_WIDTH - 12) / 2, 120);
+        homePageLayout.addComponent(spinner);
 
-		OnlineRequest.getInstance().make(CERTIFIED_APPS_URL + "/certified_apps.json", (success, response) ->
-		{
-			certifiedApps.clear();
-			spinner.setVisible(false);
-            if(success)
-			{
-				Minecraft.getMinecraft().addScheduledTask(() ->
-				{
-					AppGrid grid = new AppGrid(0, 81, 3, 1, this);
-					certifiedApps.addAll(parseJson(response));
-					shuffleAndShrink(certifiedApps, 3).forEach(grid::addEntry);
-					homePageLayout.addComponent(grid);
-					grid.reloadIcons();
+        OnlineRequest.getInstance().make(CERTIFIED_APPS_URL + "/certified_apps.json", (success, response) -> {
+            certifiedApps.clear();
+            spinner.setVisible(false);
+            if (success) {
+                Minecraft.getInstance().doRunTask(() -> {
+                    AppGrid grid = new AppGrid(0, 81, 3, 1, this);
+                    certifiedApps.addAll(parseJson(response));
+                    shuffleAndShrink(certifiedApps, 3).forEach(grid::addEntry);
+                    homePageLayout.addComponent(grid);
+                    grid.reloadIcons();
                 });
-			}
-			else
-			{
-				//TODO error handling
-			}
+            } else {
+                //TODO error handling
+            }
         });
 
-		Label labelOther = new Label(TextFormatting.WHITE + TextFormatting.BOLD.toString() + "Other Apps", 10, 178);
-		homePageLayout.addComponent(labelOther);
+        Label labelOther = new Label(ChatFormatting.WHITE + ChatFormatting.BOLD.toString() + "Other Apps", 10, 178);
+        homePageLayout.addComponent(labelOther);
 
-		Label labelOtherDesc = new Label(TextFormatting.GRAY + "Community Created", LAYOUT_WIDTH - 10, 178);
-		labelOtherDesc.setAlignment(Component.ALIGN_RIGHT);
-		labelOtherDesc.setScale(1.0);
-		labelOtherDesc.setShadow(false);
-		homePageLayout.addComponent(labelOtherDesc);
+        Label labelOtherDesc = new Label(ChatFormatting.GRAY + "Community Created", LAYOUT_WIDTH - 10, 178);
+        labelOtherDesc.setAlignment(Component.ALIGN_RIGHT);
+        labelOtherDesc.setScale(1d);
+        labelOtherDesc.setShadow(false);
+        homePageLayout.addComponent(labelOtherDesc);
 
-		AppGrid other = new AppGrid(0, 192, 3, 2, this);
-		shuffleAndShrink(ApplicationManager.getAvailableApplications(), 6).forEach(other::addEntry);
-		homePageLayout.addComponent(other);
+        AppGrid other = new AppGrid(0, 192, 3, 2, this);
+        shuffleAndShrink(ApplicationManager.getAvailableApplications(), 6).forEach(other::addEntry);
+        homePageLayout.addComponent(other);
 
-		layoutMain.addComponent(homePageLayout);
+        layoutMain.addComponent(homePageLayout);
 
-		this.setCurrentLayout(layoutMain);
-	}
+        this.setCurrentLayout(layoutMain);
+    }
 
-	@Override
-	public void load(NBTTagCompound tagCompound) 
-	{
-		
-	}
+    @Override
+    public void load(CompoundTag tagCompound) {
 
-	@Override
-	public void save(NBTTagCompound tagCompound) 
-	{
-		
-	}
+    }
 
-	public List<RemoteEntry> parseJson(String json)
-	{
-		List<RemoteEntry> entries = new ArrayList<>();
-		JsonParser parser = new JsonParser();
-		JsonArray array = parser.parse(json).getAsJsonArray();
-		Gson gson = new Gson();
-		array.forEach(element -> entries.add(gson.fromJson(element, new TypeToken<RemoteEntry>(){}.getType())));
-		return entries;
-	}
+    @Override
+    public void save(CompoundTag tagCompound) {
 
-	public void openApplication(AppEntry entry)
-	{
-		Layout layout = new LayoutAppPage(getLaptop(), entry, this);
-		this.setCurrentLayout(layout);
-		Button btnPrevious = new Button(2, 2, Icons.ARROW_LEFT);
-		btnPrevious.setClickListener((mouseX1, mouseY1, mouseButton1) ->
-		{
-			this.setCurrentLayout(layoutMain);
-		});
-		layout.addComponent(btnPrevious);
-	}
+    }
 
-	private <T> List<T> shuffleAndShrink(List<T> list, int newSize)
-	{
-		Collections.shuffle(list);
-		return list.subList(0, Math.min(list.size(), newSize));
-	}
+    public List<RemoteEntry> parseJson(String json) {
+        List<RemoteEntry> entries = new ArrayList<>();
+        JsonParser parser = new JsonParser();
+        JsonArray array = parser.parse(json).getAsJsonArray();
+        Gson gson = new Gson();
+        array.forEach(element -> entries.add(gson.fromJson(element, new TypeToken<RemoteEntry>() {
+        }.getType())));
+        return entries;
+    }
 
-	public static class StoreTrayItem extends TrayItem
-	{
-		public StoreTrayItem()
-		{
-			super(Icons.SHOP);
-		}
+    public void openApplication(AppEntry entry) {
+        Layout layout = new LayoutAppPage(getLaptop(), entry, this);
+        this.setCurrentLayout(layout);
+        Button btnPrevious = new Button(2, 2, Icons.ARROW_LEFT);
+        btnPrevious.setClickListener((mouseX1, mouseY1, mouseButton1) -> {
+            this.setCurrentLayout(layoutMain);
+        });
+        layout.addComponent(btnPrevious);
+    }
 
-		@Override
-		public void handleClick(int mouseX, int mouseY, int mouseButton)
-		{
-			AppInfo info = ApplicationManager.getApplication("cdm:app_store");
-			if(info != null)
-			{
-				Laptop.getSystem().openApplication(info);
-			}
-		}
-	}
+    private <T> List<T> shuffleAndShrink(List<T> list, int newSize) {
+        Collections.shuffle(list);
+        return list.subList(0, Math.min(list.size(), newSize));
+    }
+
+    public static class StoreTrayItem extends TrayItem {
+        public StoreTrayItem() {
+            super(Icons.SHOP);
+        }
+
+        @Override
+        public void handleClick(int mouseX, int mouseY, int mouseButton) {
+            AppInfo info = ApplicationManager.getApplication("cdm:app_store");
+            if (info != null) {
+                Laptop.getSystem().openApplication(info);
+            }
+        }
+    }
 }

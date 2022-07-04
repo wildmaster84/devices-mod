@@ -1,6 +1,8 @@
 {
-    "pack": {
-        "description": "Device Resources",
-        "pack_format": 3
-    }
+  "pack": {
+    "description": "device-mod resources",
+    "pack_format": 8,
+    "forge:resource_pack_format": 8,
+    "forge:data_pack_format": 9
+  }
 }

@@ -1,11 +1,11 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "particle": "blocks/anvil_base",
-        "0": "blocks/cauldron_side",
-        "1": "blocks/cauldron_inner",
-        "2": "blocks/wool_colored_red",
-        "3": "cdm:model/usb"
+      "particle": "block/anvil_base",
+      "0": "block/cauldron_side",
+      "1": "block/cauldron_inner",
+      "2": "block/wool_colored_red",
+      "3": "cdm:model/usb"
     },
     "elements": [
         {

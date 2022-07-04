@@ -1,85 +1,72 @@
 package com.mrcrayfish.device.core.network;
 
+import com.mrcrayfish.device.block.entity.NetworkDeviceBlockEntity;
 import com.mrcrayfish.device.core.Device;
-import com.mrcrayfish.device.tileentity.TileEntityNetworkDevice;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.UUID;
 
-/**
- * Author: MrCrayfish
- */
-public class NetworkDevice extends Device
-{
-    private NetworkDevice() {}
+public class NetworkDevice extends Device {
+    private NetworkDevice() {
+        super();
+    }
 
-    public NetworkDevice(TileEntityNetworkDevice device)
-    {
+    public NetworkDevice(NetworkDeviceBlockEntity device) {
         super(device);
     }
 
-    public NetworkDevice(UUID id, String name, Router router)
-    {
+    public NetworkDevice(@NotNull UUID id, @NotNull String name, @NotNull Router router) {
         super(id, name);
     }
 
-    public boolean isConnected(World world)
-    {
-        if(pos == null)
+    public boolean isConnected(Level level) {
+        if (pos == null) {
             return false;
+        }
 
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if(tileEntity instanceof TileEntityNetworkDevice)
-        {
-            TileEntityNetworkDevice device = (TileEntityNetworkDevice) tileEntity;
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity instanceof NetworkDeviceBlockEntity device) {
             Router router = device.getRouter();
-            return router != null && router.getId().equals(router.getId());
+            return router != null && router.getId().equals(this.getId());
         }
         return false;
     }
 
     @Nullable
     @Override
-    public TileEntityNetworkDevice getDevice(World world)
-    {
-        if(pos == null)
+    public NetworkDeviceBlockEntity getDevice(@NotNull Level level) {
+        if (pos == null)
             return null;
 
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if(tileEntity instanceof TileEntityNetworkDevice)
-        {
-            TileEntityNetworkDevice tileEntityNetworkDevice = (TileEntityNetworkDevice) tileEntity;
-            if(tileEntityNetworkDevice.getId().equals(getId()))
-            {
-                return tileEntityNetworkDevice;
-            }
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity instanceof NetworkDeviceBlockEntity device) {
+            return device;
         }
         return null;
     }
 
-    public NBTTagCompound toTag(boolean includePos)
-    {
-        NBTTagCompound tag = super.toTag(includePos);
-        if(includePos && pos != null)
-        {
-            tag.setLong("pos", pos.toLong());
+    @Override
+    public CompoundTag toTag(boolean includePos) {
+        CompoundTag tag = super.toTag(includePos);
+        if (includePos && pos != null) {
+            tag.putLong("pos", pos.asLong());
         }
         return tag;
     }
 
-    public static NetworkDevice fromTag(NBTTagCompound tag)
-    {
+    public static NetworkDevice fromTag(CompoundTag tag) {
         NetworkDevice device = new NetworkDevice();
         device.id = UUID.fromString(tag.getString("id"));
         device.name = tag.getString("name");
-        if(tag.hasKey("pos", Constants.NBT.TAG_LONG))
-        {
-            device.pos = BlockPos.fromLong(tag.getLong("pos"));
+
+        if (tag.contains("pos", Tag.TAG_LONG)) {
+            device.pos = BlockPos.of(tag.getLong("pos"));
         }
         return device;
     }

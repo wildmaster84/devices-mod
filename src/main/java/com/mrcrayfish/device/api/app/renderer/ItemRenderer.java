@@ -1,12 +1,12 @@
 package com.mrcrayfish.device.api.app.renderer;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiComponent;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
-public abstract class ItemRenderer<E>
-{
-    public abstract void render(E e, Gui gui, Minecraft mc, int x, int y, int width, int height);
+public abstract class ItemRenderer<E> {
+    public abstract void render(PoseStack pose, E e, GuiComponent gui, Minecraft mc, int x, int y, int width, int height);
 }

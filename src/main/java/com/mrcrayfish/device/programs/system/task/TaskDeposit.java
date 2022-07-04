@@ -4,49 +4,41 @@ import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.utils.BankUtil;
 import com.mrcrayfish.device.programs.system.object.Account;
 import com.mrcrayfish.device.util.InventoryUtil;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 
 /**
  * Author: MrCrayfish
  */
-public class TaskDeposit extends Task
-{
+public class TaskDeposit extends Task {
     private int amount;
 
-    protected TaskDeposit()
-    {
+    protected TaskDeposit() {
         super("bank_deposit");
     }
 
-    public TaskDeposit(int amount)
-    {
+    public TaskDeposit(int amount) {
         this();
         this.amount = amount;
     }
 
     @Override
-    public void prepareRequest(NBTTagCompound nbt)
-    {
-        nbt.setInteger("amount", this.amount);
+    public void prepareRequest(CompoundTag nbt) {
+        nbt.putInt("amount", this.amount);
     }
 
     @Override
-    public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
-    {
+    public void processRequest(CompoundTag nbt, Level level, Player player) {
         Account account = BankUtil.INSTANCE.getAccount(player);
-        int amount = nbt.getInteger("amount");
+        int amount = nbt.getInt("amount");
         long value = account.getBalance() + amount;
-        if(value > Integer.MAX_VALUE)
-        {
+        if (value > Integer.MAX_VALUE) {
             amount = Integer.MAX_VALUE - account.getBalance();
         }
-        if(InventoryUtil.removeItemWithAmount(player, Items.EMERALD, amount))
-        {
-            if(account.deposit(amount))
-            {
+        if (InventoryUtil.removeItemWithAmount(player, Items.EMERALD, amount)) {
+            if (account.deposit(amount)) {
                 this.amount = account.getBalance();
                 this.setSuccessful();
             }
@@ -54,11 +46,11 @@ public class TaskDeposit extends Task
     }
 
     @Override
-    public void prepareResponse(NBTTagCompound nbt)
-    {
-        nbt.setInteger("balance", this.amount);
+    public void prepareResponse(CompoundTag nbt) {
+        nbt.putInt("balance", this.amount);
     }
 
     @Override
-    public void processResponse(NBTTagCompound nbt) {}
+    public void processResponse(CompoundTag nbt) {
+    }
 }

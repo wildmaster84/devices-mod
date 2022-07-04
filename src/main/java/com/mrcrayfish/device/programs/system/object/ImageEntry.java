@@ -1,45 +1,38 @@
 package com.mrcrayfish.device.programs.system.object;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Author: MrCrayfish
  */
-public class ImageEntry
-{
-    private Type type;
+public class ImageEntry {
+    private final Type type;
     private ResourceLocation resource;
     private String url;
 
-    public ImageEntry(ResourceLocation resource)
-    {
+    public ImageEntry(ResourceLocation resource) {
         this.type = Type.LOCAL;
         this.resource = resource;
     }
 
-    public ImageEntry(String url)
-    {
+    public ImageEntry(String url) {
         this.type = Type.REMOTE;
         this.url = url;
     }
 
-    public Type getType()
-    {
+    public Type getType() {
         return type;
     }
 
-    public ResourceLocation getResource()
-    {
+    public ResourceLocation getResource() {
         return resource;
     }
 
-    public String getUrl()
-    {
+    public String getUrl() {
         return url;
     }
 
-    public enum Type
-    {
-        LOCAL, REMOTE;
+    public enum Type {
+        LOCAL, REMOTE
     }
 }

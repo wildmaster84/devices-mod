@@ -1,9 +1,9 @@
 package com.mrcrayfish.device.api.app.listener;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
-public interface KeyListener
-{
-    boolean onKeyTyped(char c);
+@SuppressWarnings("UnusedReturnValue")
+public interface KeyListener {
+    boolean onCharTypes(char c);
 }

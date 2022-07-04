@@ -1,25 +1,21 @@
 package com.mrcrayfish.device.api.io;
 
 import com.mrcrayfish.device.core.io.FileSystem;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.UUID;
 
-/**
- * Author: MrCrayfish
- */
-public class Drive
-{
-    private String name;
-    private UUID uuid;
-    private Type type;
+public class Drive {
+
+    private final String name;
+    private final UUID uuid;
+    private final Type type;
     private Folder root;
 
     private boolean synced = false;
 
-    public Drive(NBTTagCompound driveTag)
-    {
+    public Drive(CompoundTag driveTag) {
         this.name = driveTag.getString("name");
         this.uuid = UUID.fromString(driveTag.getString("uuid"));
         this.type = Type.fromString(driveTag.getString("type"));
@@ -30,8 +26,7 @@ public class Drive
      *
      * @return the drive name
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
@@ -40,8 +35,7 @@ public class Drive
      *
      * @return the drive uuid
      */
-    public UUID getUUID()
-    {
+    public UUID getUUID() {
         return uuid;
     }
 
@@ -51,18 +45,16 @@ public class Drive
      *
      * @return the drive type
      */
-    public Type getType()
-    {
+    public Type getType() {
         return type;
     }
 
     /**
      * Gets the root {@link Folder} of this Drive
      *
-     * @return
+     * @return the root folder
      */
-    public Folder getRoot()
-    {
+    public Folder getRoot() {
         return root;
     }
 
@@ -71,10 +63,8 @@ public class Drive
      *
      * @param root the root folder of this drive
      */
-    public void syncRoot(Folder root)
-    {
-        if(!synced)
-        {
+    public void syncRoot(Folder root) {
+        if (!synced) {
             this.root = root;
             root.setDrive(this);
             root.validate();
@@ -87,8 +77,7 @@ public class Drive
      *
      * @return is drive structure synced
      */
-    public boolean isSynced()
-    {
+    public boolean isSynced() {
         return synced;
     }
 
@@ -100,25 +89,22 @@ public class Drive
      * @param path the directory of the folder
      */
     @Nullable
-    public final Folder getFolder(String path)
-    {
-        if(path == null)
+    public final Folder getFolder(String path) {
+        if (path == null)
             throw new IllegalArgumentException("The path can not be null");
 
-        if(!FileSystem.PATTERN_DIRECTORY.matcher(path).matches())
+        if (!FileSystem.PATTERN_DIRECTORY.matcher(path).matches())
             throw new IllegalArgumentException("The path \"" + path + "\" does not follow the correct format");
 
-        if(path.equals("/"))
+        if (path.equals("/"))
             return root;
 
         Folder prev = root;
         String[] folders = path.split("/");
-        if(folders.length > 0 && folders.length <= 10)
-        {
-            for(int i = 1; i < folders.length; i++)
-            {
+        if (folders.length > 0 && folders.length <= 10) {
+            for (int i = 1; i < folders.length; i++) {
                 Folder temp = prev.getFolder(folders[i]);
-                if(temp == null) return null;
+                if (temp == null) return null;
                 prev = temp;
             }
             return prev;
@@ -127,21 +113,16 @@ public class Drive
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return name;
     }
 
-    public enum Type
-    {
+    public enum Type {
         INTERNAL, EXTERNAL, NETWORK, UNKNOWN;
 
-        public static Type fromString(String type)
-        {
-            for(Type t : values())
-            {
-                if(t.toString().equals(type))
-                {
+        public static Type fromString(String type) {
+            for (Type t : values()) {
+                if (t.toString().equals(type)) {
                     return t;
                 }
             }

@@ -1,8 +1,16 @@
 {
 	"variants": {
-		"facing=north": { "model": "cdm:paper" },
-		"facing=east":  { "model": "cdm:paper" },
-		"facing=south": { "model": "cdm:paper" },
-		"facing=west":  { "model": "cdm:paper" }
+		"facing=north": {
+			"model": "cdm:block/paper"
+		},
+		"facing=east": {
+			"model": "cdm:block/paper"
+		},
+		"facing=south": {
+			"model": "cdm:block/paper"
+		},
+		"facing=west": {
+			"model": "cdm:block/paper"
+		}
 	}
 }

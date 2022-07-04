@@ -2,34 +2,31 @@ package com.mrcrayfish.device.core.print.task;
 
 import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.api.task.Task;
+import com.mrcrayfish.device.block.entity.NetworkDeviceBlockEntity;
+import com.mrcrayfish.device.block.entity.PrinterBlockEntity;
 import com.mrcrayfish.device.core.network.NetworkDevice;
 import com.mrcrayfish.device.core.network.Router;
-import com.mrcrayfish.device.tileentity.TileEntityNetworkDevice;
-import com.mrcrayfish.device.tileentity.TileEntityPrinter;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.UUID;
 
 /**
  * Author: MrCrayfish
  */
-public class TaskPrint extends Task
-{
+public class TaskPrint extends Task {
     private BlockPos devicePos;
     private UUID printerId;
     private IPrint print;
 
-    private TaskPrint()
-    {
+    private TaskPrint() {
         super("print");
     }
 
-    public TaskPrint(BlockPos devicePos, NetworkDevice printer, IPrint print)
-    {
+    public TaskPrint(BlockPos devicePos, NetworkDevice printer, IPrint print) {
         this();
         this.devicePos = devicePos;
         this.printerId = printer.getId();
@@ -37,28 +34,22 @@ public class TaskPrint extends Task
     }
 
     @Override
-    public void prepareRequest(NBTTagCompound nbt)
-    {
-        nbt.setLong("devicePos", devicePos.toLong());
-        nbt.setUniqueId("printerId", printerId);
-        nbt.setTag("print", IPrint.writeToTag(print));
+    public void prepareRequest(CompoundTag nbt) {
+        nbt.putLong("devicePos", devicePos.asLong());
+        nbt.putUUID("printerId", printerId);
+        nbt.put("print", IPrint.save(print));
     }
 
     @Override
-    public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
-    {
-        TileEntity tileEntity = world.getTileEntity(BlockPos.fromLong(nbt.getLong("devicePos")));
-        if(tileEntity instanceof TileEntityNetworkDevice)
-        {
-            TileEntityNetworkDevice device = (TileEntityNetworkDevice) tileEntity;
+    public void processRequest(CompoundTag nbt, Level level, Player player) {
+        BlockEntity tileEntity = level.getBlockEntity(BlockPos.of(nbt.getLong("devicePos")));
+        if (tileEntity instanceof NetworkDeviceBlockEntity device) {
             Router router = device.getRouter();
-            if(router != null)
-            {
-                TileEntityNetworkDevice printer = router.getDevice(world, nbt.getUniqueId("printerId"));
-                if(printer != null && printer instanceof TileEntityPrinter)
-                {
-                    IPrint print = IPrint.loadFromTag(nbt.getCompoundTag("print"));
-                    ((TileEntityPrinter) printer).addToQueue(print);
+            if (router != null) {
+                NetworkDeviceBlockEntity printer = router.getDevice(level, nbt.getUUID("printerId"));
+                if (printer instanceof PrinterBlockEntity) {
+                    IPrint print = IPrint.load(nbt.getCompound("print"));
+                    ((PrinterBlockEntity) printer).addToQueue(print);
                     this.setSuccessful();
                 }
             }
@@ -66,14 +57,12 @@ public class TaskPrint extends Task
     }
 
     @Override
-    public void prepareResponse(NBTTagCompound nbt)
-    {
+    public void prepareResponse(CompoundTag nbt) {
 
     }
 
     @Override
-    public void processResponse(NBTTagCompound nbt)
-    {
+    public void processResponse(CompoundTag nbt) {
 
     }
 }

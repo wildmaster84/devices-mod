@@ -1,12 +1,14 @@
 package com.mrcrayfish.device.programs.system.component;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.device.api.ApplicationManager;
-import com.mrcrayfish.device.api.app.*;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Dialog;
+import com.mrcrayfish.device.api.app.*;
 import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Label;
+import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.listener.ItemClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.Drive;
@@ -25,15 +27,15 @@ import com.mrcrayfish.device.core.io.task.TaskGetStructure;
 import com.mrcrayfish.device.core.io.task.TaskSetupFileBrowser;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.system.SystemApplication;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 
 import java.awt.*;
 import java.lang.System;
@@ -47,8 +49,8 @@ import java.util.stream.Collectors;
 /**
  * Created by Casey on 20-Jun-17.
  */
-public class FileBrowser extends Component
-{
+@SuppressWarnings("FieldCanBeLocal")
+public class FileBrowser extends Component {
     private static final ResourceLocation ASSETS = new ResourceLocation("cdm:textures/gui/file_browser.png");
 
     private static final Color HEADER_BACKGROUND = Color.decode("0x535861");
@@ -56,26 +58,22 @@ public class FileBrowser extends Component
     private static final Color ITEM_SELECTED = Color.decode("0x757575");
     private static final Color PROTECTED_FILE = new Color(155, 237, 242);
 
-    private static final ListItemRenderer<File> ITEM_RENDERER = new ListItemRenderer<File>(18)
-    {
+    private static final ListItemRenderer<File> ITEM_RENDERER = new ListItemRenderer<>(18) {
         @Override
-        public void render(File file, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
-        {
+        public void render(PoseStack pose, File file, GuiComponent gui, Minecraft mc, int x, int y, int width, int height, boolean selected) {
             Color bgColor = new Color(Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor());
-            Gui.drawRect(x, y, x + width, y + height, selected ? bgColor.brighter().brighter().getRGB() : bgColor.brighter().getRGB());
+            Gui.fill(pose, x, y, x + width, y + height, selected ? bgColor.brighter().brighter().getRGB() : bgColor.brighter().getRGB());
 
-            GlStateManager.color(1.0F, 1.0F, 1.0F);
-            Minecraft.getMinecraft().getTextureManager().bindTexture(ASSETS);
-            if(file.isFolder())
-            {
+            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+            RenderSystem.setShaderTexture(0, ASSETS);
+            if (file.isFolder()) {
                 RenderUtil.drawRectWithTexture(x + 3, y + 2, 0, 0, 14, 14, 14, 14);
-            }
-            else
-            {
+            } else {
+                assert file.getOpeningApp() != null;
                 AppInfo info = ApplicationManager.getApplication(file.getOpeningApp());
                 RenderUtil.drawApplicationIcon(info, x + 3, y + 2);
             }
-            gui.drawString(Minecraft.getMinecraft().fontRenderer, file.getName(), x + 22, y + 5, file.isProtected() ? PROTECTED_FILE.getRGB() : Laptop.getSystem().getSettings().getColorScheme().getTextColor());
+            drawString(pose, Minecraft.getInstance().font, file.getName(), x + 22, y + 5, file.isProtected() ? PROTECTED_FILE.getRGB() : Laptop.getSystem().getSettings().getColorScheme().getTextColor());
         }
     };
 
@@ -100,7 +98,7 @@ public class FileBrowser extends Component
     private Layout layoutLoading;
     private Spinner spinnerLoading;
 
-    private Stack<Folder> predecessor = new Stack<>();
+    private final Stack<Folder> predecessor = new Stack<>();
     private Drive currentDrive;
     private Folder currentFolder;
 
@@ -120,7 +118,7 @@ public class FileBrowser extends Component
     /**
      * The default constructor for a component. For your component to
      * be laid out correctly, make sure you use the x and y parameters
-     * from {@link Wrappable#init(NBTTagCompound)} and pass them into the
+     * from {@link Wrappable#init(CompoundTag)} and pass them into the
      * x and y arguments of this constructor.
      * <p>
      * Laying out the components is a simple relative positioning. So for left (x position),
@@ -130,29 +128,24 @@ public class FileBrowser extends Component
      * @param left how many pixels from the left
      * @param top  how many pixels from the top
      */
-    public FileBrowser(int left, int top, Wrappable wrappable, Mode mode)
-    {
+    public FileBrowser(int left, int top, Wrappable wrappable, Mode mode) {
         super(left, top);
         this.wrappable = wrappable;
         this.mode = mode;
     }
 
     @Override
-    public void init(Layout layout)
-    {
+    public void init(Layout layout) {
         layoutMain = new Layout(mode.getWidth(), mode.getHeight());
-        layoutMain.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
-        {
+        layoutMain.setBackground((pose, gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> {
             Color color = new Color(Laptop.getSystem().getSettings().getColorScheme().getHeaderColor());
-            Gui.drawRect(x, y, x + width, y + 20, color.getRGB());
-            Gui.drawRect(x, y + 20, x + width, y + 21, color.darker().getRGB());
+            Gui.fill(pose, x, y, x + width, y + 20, color.getRGB());
+            Gui.fill(pose, x, y + 20, x + width, y + 21, color.darker().getRGB());
         });
 
         btnPreviousFolder = new Button(5, 2, Icons.ARROW_LEFT);
-        btnPreviousFolder.setClickListener((mouseX, mouseY, mouseButton) ->
-        {
-            if(mouseButton == 0)
-            {
+        btnPreviousFolder.setClickListener((mouseX, mouseY, mouseButton) -> {
+            if (mouseButton == 0) {
                 goToPreviousFolder();
             }
         });
@@ -162,11 +155,9 @@ public class FileBrowser extends Component
 
         int btnIndex = 0;
 
-        btnNewFolder = new Button(5, 25 + btnIndex * 20, Icons.NEW_FOLDER);
-        btnNewFolder.setClickListener((mouseX, mouseY, mouseButton) ->
-        {
-            if(mouseButton == 0)
-            {
+        btnNewFolder = new Button(5, 25, Icons.NEW_FOLDER);
+        btnNewFolder.setClickListener((mouseX, mouseY, mouseButton) -> {
+            if (mouseButton == 0) {
                 createFolder();
             }
         });
@@ -176,10 +167,8 @@ public class FileBrowser extends Component
         btnIndex++;
 
         btnRename = new Button(5, 25 + btnIndex * 20, Icons.RENAME);
-        btnRename.setClickListener((mouseX, mouseY, mouseButton) ->
-        {
-            if(mouseButton == 0)
-            {
+        btnRename.setClickListener((mouseX, mouseY, mouseButton) -> {
+            if (mouseButton == 0) {
                 renameSelectedFile();
             }
         });
@@ -187,15 +176,12 @@ public class FileBrowser extends Component
         btnRename.setEnabled(false);
         layoutMain.addComponent(btnRename);
 
-        if(mode == Mode.FULL)
-        {
+        if (mode == Mode.FULL) {
             btnIndex++;
 
             btnCopy = new Button(5, 25 + btnIndex * 20, Icons.COPY);
-            btnCopy.setClickListener((mouseX, mouseY, mouseButton) ->
-            {
-                if(mouseButton == 0)
-                {
+            btnCopy.setClickListener((mouseX, mouseY, mouseButton) -> {
+                if (mouseButton == 0) {
                     setClipboardFileToSelected();
                 }
             });
@@ -206,10 +192,8 @@ public class FileBrowser extends Component
             btnIndex++;
 
             btnCut = new Button(5, 25 + btnIndex * 20, Icons.CUT);
-            btnCut.setClickListener((mouseX, mouseY, mouseButton) ->
-            {
-                if(mouseButton == 0)
-                {
+            btnCut.setClickListener((mouseX, mouseY, mouseButton) -> {
+                if (mouseButton == 0) {
                     cutSelectedFile();
                 }
             });
@@ -220,10 +204,8 @@ public class FileBrowser extends Component
             btnIndex++;
 
             btnPaste = new Button(5, 25 + btnIndex * 20, Icons.CLIPBOARD);
-            btnPaste.setClickListener((mouseX, mouseY, mouseButton) ->
-            {
-                if(mouseButton == 0)
-                {
+            btnPaste.setClickListener((mouseX, mouseY, mouseButton) -> {
+                if (mouseButton == 0) {
                     pasteClipboardFile();
                 }
             });
@@ -235,10 +217,8 @@ public class FileBrowser extends Component
         btnIndex++;
 
         btnDelete = new Button(5, 25 + btnIndex * 20, Icons.TRASH);
-        btnDelete.setClickListener((mouseX, mouseY, mouseButton) ->
-        {
-            if(mouseButton == 0)
-            {
+        btnDelete.setClickListener((mouseX, mouseY, mouseButton) -> {
+            if (mouseButton == 0) {
                 deleteSelectedFile();
             }
         });
@@ -249,94 +229,68 @@ public class FileBrowser extends Component
         fileList = new ItemList<>(mode.getOffset(), 25, 180, mode.getVisibleItems());
         fileList.setListItemRenderer(ITEM_RENDERER);
         fileList.sortBy(File.SORT_BY_NAME);
-        fileList.setItemClickListener((file, index, mouseButton) ->
-        {
-            if(mouseButton == 0)
-            {
+        fileList.setItemClickListener((file, index, mouseButton) -> {
+            if (mouseButton == 0) {
                 btnRename.setEnabled(true);
                 btnDelete.setEnabled(true);
-                if(mode == Mode.FULL)
-                {
+                if (mode == Mode.FULL) {
                     btnCopy.setEnabled(true);
                     btnCut.setEnabled(true);
                 }
-                if(System.currentTimeMillis() - this.lastClick <= 200)
-                {
-                    if(file.isFolder())
-                    {
+                if (System.currentTimeMillis() - this.lastClick <= 200) {
+                    if (file.isFolder()) {
                         fileList.setSelectedIndex(-1);
-                        openFolder((Folder) file, true, (folder, success) ->
-                        {
-                            if(mode == Mode.FULL)
-                            {
+                        openFolder((Folder) file, true, (folder, success) -> {
+                            if (mode == Mode.FULL) {
                                 btnRename.setEnabled(false);
                                 btnCopy.setEnabled(false);
                                 btnCut.setEnabled(false);
                                 btnDelete.setEnabled(false);
                             }
                         });
-                    }
-                    else if(mode == Mode.FULL && wrappable instanceof SystemApplication)
-                    {
-                        SystemApplication systemApp = (SystemApplication) wrappable;
+                    } else if (mode == Mode.FULL && wrappable instanceof SystemApplication systemApp) {
                         Laptop laptop = systemApp.getLaptop();
-                        if(laptop != null)
-                        {
+                        if (laptop != null) {
                             //TODO change to check if application is installed
                             Application targetApp = laptop.getApplication(file.getOpeningApp());
-                            if(targetApp != null)
-                            {
-                                if(!laptop.isApplicationInstalled(targetApp.getInfo()))
-                                {
-                                    createErrorDialog("This file could not be open because the application '" + TextFormatting.YELLOW + targetApp.getInfo().getName() + TextFormatting.RESET + "' is not installed.");
-                                }
-                                else if(!laptop.openApplication(targetApp.getInfo(), file))
-                                {
+                            if (targetApp != null) {
+                                if (!laptop.isApplicationInstalled(targetApp.getInfo())) {
+                                    createErrorDialog("This file could not be open because the application '" + ChatFormatting.YELLOW + targetApp.getInfo().getName() + ChatFormatting.RESET + "' is not installed.");
+                                } else if (!laptop.openApplication(targetApp.getInfo(), file)) {
                                     laptop.sendApplicationToFront(systemApp.getInfo());
                                     createErrorDialog(targetApp.getInfo().getName() + " was unable to open the file.");
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 createErrorDialog("The application designed for this file does not exist.");
                             }
                         }
                     }
-                }
-                else
-                {
+                } else {
                     this.lastClick = System.currentTimeMillis();
                 }
             }
-            if(itemClickListener != null)
-            {
+            if (itemClickListener != null) {
                 itemClickListener.onClick(file, index, mouseButton);
             }
         });
         layoutMain.addComponent(fileList);
 
         comboBoxDrive = new ComboBox.List<>(26, 3, 44, 100, new Drive[]{});
-        comboBoxDrive.setChangeListener((oldValue, newValue) ->
-        {
-            openDrive(newValue);
-        });
-        comboBoxDrive.setListItemRenderer(new ListItemRenderer<Drive>(12)
-        {
+        comboBoxDrive.setChangeListener((oldValue, newValue) -> openDrive(newValue));
+        comboBoxDrive.setListItemRenderer(new ListItemRenderer<>(12) {
             @Override
-            public void render(Drive drive, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
-            {
+            public void render(PoseStack pose, Drive drive, GuiComponent gui, Minecraft mc, int x, int y, int width, int height, boolean selected) {
                 Color bgColor = new Color(getColorScheme().getBackgroundColor());
-                drawRect(x, y, x + width, y + height, selected ? bgColor.brighter().brighter().getRGB() : bgColor.brighter().getRGB());
-                mc.getTextureManager().bindTexture(ASSETS);
-                GlStateManager.color(1.0F, 1.0F, 1.0F);
+                fill(pose, x, y, x + width, y + height, selected ? bgColor.brighter().brighter().getRGB() : bgColor.brighter().getRGB());
+                RenderSystem.setShaderTexture(0, ASSETS);
+                RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
                 RenderUtil.drawRectWithTexture(x + 2, y + 2, drive.getType().ordinal() * 8, 30, 8, 8, 8, 8);
 
                 String text = drive.getName();
-                if(mc.fontRenderer.getStringWidth(text) > 87)
-                {
-                    text = mc.fontRenderer.trimStringToWidth(drive.getName(), 78) + "...";
+                if (mc.font.width(text) > 87) {
+                    text = mc.font.plainSubstrByWidth(drive.getName(), 78) + "...";
                 }
-                mc.fontRenderer.drawString(text, x + 13, y + 2, Color.WHITE.getRGB(), true);
+                mc.font.drawShadow(pose, text, x + 13, y + 2, Color.WHITE.getRGB());
             }
         });
         layoutMain.addComponent(comboBoxDrive);
@@ -346,10 +300,7 @@ public class FileBrowser extends Component
         layout.addComponent(layoutMain);
 
         layoutLoading = new Layout(mode.getOffset(), 25, fileList.getWidth(), fileList.getHeight());
-        layoutLoading.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
-        {
-            Gui.drawRect(x, y, x + width, y + height, Window.Color_WINDOW_DARK);
-        });
+        layoutLoading.setBackground((pose, gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> Gui.fill(pose, x, y, x + width, y + height, Window.Color_WINDOW_DARK));
         layoutLoading.setVisible(false);
 
         spinnerLoading = new Spinner((layoutLoading.width - 12) / 2, (layoutLoading.height - 12) / 2);
@@ -357,66 +308,52 @@ public class FileBrowser extends Component
         layout.addComponent(layoutLoading);
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
-    public void handleLoad()
-    {
-        if(!loadedStructure)
-        {
+    public void handleLoad() {
+        if (!loadedStructure) {
             setLoading(true);
             Task task = new TaskSetupFileBrowser(Laptop.getPos(), Laptop.getMainDrive() == null);
-            task.setCallback((nbt, success) ->
-            {
-                if(success)
-                {
-                    if(Laptop.getMainDrive() == null)
-                    {
-                        NBTTagCompound structureTag = nbt.getCompoundTag("structure");
-                        Drive drive = new Drive(nbt.getCompoundTag("main_drive"));
+            task.setCallback((nbt, success) -> {
+                if (success) {
+                    if (Laptop.getMainDrive() == null) {
+                        assert nbt != null;
+                        CompoundTag structureTag = nbt.getCompound("structure");
+                        Drive drive = new Drive(nbt.getCompound("main_drive"));
                         drive.syncRoot(Folder.fromTag(FileSystem.LAPTOP_DRIVE_NAME, structureTag));
                         drive.getRoot().validate();
                         Laptop.setMainDrive(drive);
                     }
 
-                    NBTTagList driveList = nbt.getTagList("available_drives", Constants.NBT.TAG_COMPOUND);
-                    Drive[] drives = new Drive[driveList.tagCount() + 1];
+                    assert nbt != null;
+                    ListTag driveList = nbt.getList("available_drives", Tag.TAG_COMPOUND);
+                    Drive[] drives = new Drive[driveList.size() + 1];
                     drives[0] = currentDrive = Laptop.getMainDrive();
-                    for(int i = 0; i < driveList.tagCount(); i++)
-                    {
-                        NBTTagCompound driveTag = driveList.getCompoundTagAt(i);
+                    for (int i = 0; i < driveList.size(); i++) {
+                        CompoundTag driveTag = driveList.getCompound(i);
                         drives[i + 1] = new Drive(driveTag);
                     }
                     comboBoxDrive.setItems(drives);
 
                     Folder folder = currentDrive.getFolder(initialFolder);
-                    if(folder != null)
-                    {
+                    if (folder != null) {
                         pushPredecessors(folder);
-                        openFolder(folder, false, (folder1, success1) ->
-                        {
-                            if(!success1)
-                            {
+                        openFolder(folder, false, (folder1, success1) -> {
+                            if (!success1) {
                                 createErrorDialog("A critical error occurred while initializing.");
                             }
                         });
                         return;
-                    }
-                    else
-                    {
-                        openFolder(currentDrive.getRoot(), false, (folder12, success12) ->
-                        {
-                            if(success)
-                            {
+                    } else {
+                        openFolder(currentDrive.getRoot(), false, (folder12, success12) -> {
+                            if (success) {
                                 createErrorDialog("Unable to open directory '" + initialFolder + "'");
-                            }
-                            else
-                            {
+                            } else {
                                 createErrorDialog("A critical error occurred while initializing.");
                             }
                         });
                     }
-                }
-                else
-                {
+                } else {
                     createErrorDialog("A critical error occurred while initializing.");
                 }
                 setLoading(false);
@@ -427,54 +364,40 @@ public class FileBrowser extends Component
     }
 
     @Override
-    public void handleTick()
-    {
-        if(refreshList)
-        {
+    public void handleTick() {
+        if (refreshList) {
             fileList.removeAll();
             fileList.setItems(currentFolder.getFiles());
         }
     }
 
-    public void openFolder(String directory)
-    {
+    public void openFolder(String directory) {
         this.initialFolder = directory;
     }
 
-    private void openDrive(Drive drive)
-    {
+    private void openDrive(Drive drive) {
         predecessor.clear();
-        if(drive.isSynced())
-        {
-            openFolder(drive.getRoot(), false, (folder, success) ->
-            {
-                if(!success)
-                {
+        if (drive.isSynced()) {
+            openFolder(drive.getRoot(), false, (folder, success) -> {
+                if (!success) {
                     createErrorDialog("Unable to open drive '" + drive.getName() + "'");
                 }
             });
-        }
-        else
-        {
+        } else {
             setLoading(true);
             TaskGetStructure task = new TaskGetStructure(drive, Laptop.getPos());
-            task.setCallback((nbt, success) ->
-            {
+            task.setCallback((nbt, success) -> {
                 setLoading(false);
-                if(success)
-                {
-                    Folder folder = Folder.fromTag(nbt.getString("file_name"), nbt.getCompoundTag("structure"));
+                if (success) {
+                    assert nbt != null;
+                    Folder folder = Folder.fromTag(nbt.getString("file_name"), nbt.getCompound("structure"));
                     drive.syncRoot(folder);
-                    openFolder(drive.getRoot(), false, (folder1, success1) ->
-                    {
-                        if(!success1)
-                        {
+                    openFolder(drive.getRoot(), false, (folder1, success1) -> {
+                        if (!success1) {
                             createErrorDialog("Unable to open drive '" + drive.getName() + "'");
                         }
                     });
-                }
-                else
-                {
+                } else {
                     createErrorDialog("Unable to retrieve drive structure for '" + drive.getName() + "'");
                 }
             });
@@ -482,53 +405,44 @@ public class FileBrowser extends Component
         }
     }
 
-    private void openFolder(Folder folder, boolean push, Callback<Folder> callback)
-    {
-        if(!folder.isSynced())
-        {
+    private void openFolder(Folder folder, boolean push, Callback<Folder> callback) {
+        if (!folder.isSynced()) {
             BlockPos pos = Laptop.getPos();
-            if(pos == null)
-            {
-                if(callback != null)
-                {
+            if (pos == null) {
+                if (callback != null) {
                     callback.execute(null, false);
                 }
                 return;
             }
-            
+
             setLoading(true);
             Task task = new TaskGetFiles(folder, pos); //TODO convert to file system
-            task.setCallback((nbt, success) ->
-            {
-                if(success && nbt.hasKey("files", Constants.NBT.TAG_LIST))
-                {
-                    NBTTagList files = nbt.getTagList("files", Constants.NBT.TAG_COMPOUND);
-                    folder.syncFiles(files);
-                    setCurrentFolder(folder, push);
+            task.setCallback((nbt, success) -> {
+                if (success) {
+                    assert nbt != null;
+                    if (nbt.contains("files", Tag.TAG_LIST)) {
+                        ListTag files = nbt.getList("files", Tag.TAG_COMPOUND);
+                        folder.syncFiles(files);
+                        setCurrentFolder(folder, push);
+                    }
                 }
-                if(callback != null)
-                {
+                if (callback != null) {
                     callback.execute(folder, success);
                 }
                 setLoading(false);
             });
             TaskManager.sendTask(task);
-        }
-        else
-        {
+        } else {
             setCurrentFolder(folder, push);
-            if(callback != null)
-            {
+            if (callback != null) {
                 callback.execute(folder, true);
             }
             setLoading(false);
         }
     }
 
-    private void setCurrentFolder(Folder folder, boolean push)
-    {
-        if(push)
-        {
+    private void setCurrentFolder(Folder folder, boolean push) {
+        if (push) {
             predecessor.push(currentFolder);
             btnPreviousFolder.setEnabled(true);
         }
@@ -537,8 +451,7 @@ public class FileBrowser extends Component
         fileList.removeAll();
 
         List<File> files = folder.getFiles();
-        if(filter != null)
-        {
+        if (filter != null) {
             files = files.stream().filter(filter).collect(Collectors.toList());
         }
         fileList.setItems(files);
@@ -546,30 +459,24 @@ public class FileBrowser extends Component
         updatePath();
     }
 
-    private void pushPredecessors(Folder folder)
-    {
+    private void pushPredecessors(Folder folder) {
         List<Folder> predecessors = new ArrayList<>();
         Folder temp = folder.getParent();
-        while(temp != null)
-        {
+        while (temp != null) {
             predecessors.add(temp);
             temp = temp.getParent();
         }
         Collections.reverse(predecessors);
-        predecessors.forEach(f -> predecessor.push(f));
-        if(predecessor.size() > 0)
-        {
+        predecessors.forEach(predecessor::push);
+        if (predecessor.size() > 0) {
             btnPreviousFolder.setEnabled(true);
         }
     }
 
-    private void createFolder()
-    {
+    private void createFolder() {
         Dialog.Input dialog = new Dialog.Input("Enter a name");
-        dialog.setResponseHandler((success, v) ->
-        {
-            if(success)
-            {
+        dialog.setResponseHandler((success, v) -> {
+            if (success) {
                 addFile(new Folder(v));
             }
             return true;
@@ -579,24 +486,17 @@ public class FileBrowser extends Component
         wrappable.openDialog(dialog);
     }
 
-    private void goToPreviousFolder()
-    {
-        if(predecessor.size() > 0)
-        {
+    private void goToPreviousFolder() {
+        if (predecessor.size() > 0) {
             setLoading(true);
             Folder folder = predecessor.pop();
-            openFolder(folder, false, (folder2, success) ->
-            {
-                if(success)
-                {
-                    if(isRootFolder())
-                    {
+            openFolder(folder, false, (folder2, success) -> {
+                if (success) {
+                    if (isRootFolder()) {
                         btnPreviousFolder.setEnabled(false);
                     }
                     updatePath();
-                }
-                else
-                {
+                } else {
                     createErrorDialog("Unable to open previous folder");
                 }
                 setLoading(false);
@@ -604,59 +504,48 @@ public class FileBrowser extends Component
         }
     }
 
-    public File getSelectedFile()
-    {
+    public File getSelectedFile() {
         return fileList.getSelectedItem();
     }
 
-    public void addFile(File file)
-    {
+    public void addFile(File file) {
         addFile(file, null);
     }
 
-    public void addFile(File file, Callback<FileSystem.Response> callback)
-    {
+    public void addFile(File file, Callback<FileSystem.Response> callback) {
         setLoading(true);
-        currentFolder.add(file, (response, success) ->
-        {
-            if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
-            {
+        currentFolder.add(file, (response, success) -> {
+            assert response != null;
+            if (response.getStatus() == FileSystem.Status.SUCCESSFUL) {
                 fileList.addItem(file);
                 FileBrowser.refreshList = true;
             }
-            if(callback != null)
-            {
+            if (callback != null) {
                 callback.execute(response, success);
             }
             setLoading(false);
         });
     }
 
-    public void addFile(File file, boolean override, Callback<FileSystem.Response> callback)
-    {
+    public void addFile(File file, boolean override, Callback<FileSystem.Response> callback) {
         setLoading(true);
-        currentFolder.add(file, override, (response, success) ->
-        {
-            if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
-            {
+        currentFolder.add(file, override, (response, success) -> {
+            assert response != null;
+            if (response.getStatus() == FileSystem.Status.SUCCESSFUL) {
                 fileList.addItem(file);
                 FileBrowser.refreshList = true;
             }
-            if(callback != null)
-            {
+            if (callback != null) {
                 callback.execute(response, success);
             }
             setLoading(false);
         });
     }
 
-    private void deleteSelectedFile()
-    {
+    private void deleteSelectedFile() {
         File file = fileList.getSelectedItem();
-        if(file != null)
-        {
-            if(file.isProtected())
-            {
+        if (file != null) {
+            if (file.isProtected()) {
                 String message = "This " + (file.isFolder() ? "folder" : "file") + " is protected and can not be deleted.";
                 Dialog.Message dialog = new Dialog.Message(message);
                 wrappable.openDialog(dialog);
@@ -666,25 +555,20 @@ public class FileBrowser extends Component
             Dialog.Confirmation dialog = new Dialog.Confirmation();
             StringBuilder builder = new StringBuilder();
             builder.append("Are you sure you want to delete this ");
-            if(file.isFolder())
-            {
+            if (file.isFolder()) {
                 builder.append("folder");
-            }
-            else
-            {
+            } else {
                 builder.append("file");
             }
             builder.append(" '").append(file.getName()).append("'?");
             dialog.setMessageText(builder.toString());
             dialog.setTitle("Delete");
             dialog.setPositiveText("Yes");
-            dialog.setPositiveListener((mouseX, mouseY, mouseButton) ->
-            {
+            dialog.setPositiveListener((mouseX, mouseY, mouseButton) -> {
                 removeFile(fileList.getSelectedIndex());
                 btnRename.setEnabled(false);
                 btnDelete.setEnabled(false);
-                if(mode == Mode.FULL)
-                {
+                if (mode == Mode.FULL) {
                     btnCopy.setEnabled(false);
                     btnCut.setEnabled(false);
                 }
@@ -693,23 +577,18 @@ public class FileBrowser extends Component
         }
     }
 
-    private void removeFile(int index)
-    {
+    private void removeFile(int index) {
         File file = fileList.getItem(index);
-        if(file != null)
-        {
-            if(file.isProtected())
-            {
+        if (file != null) {
+            if (file.isProtected()) {
                 String message = "This " + (file.isFolder() ? "folder" : "file") + " is protected and can not be deleted.";
                 Dialog.Message dialog = new Dialog.Message(message);
                 wrappable.openDialog(dialog);
                 return;
             }
             setLoading(true);
-            currentFolder.delete(file, (response, success) ->
-            {
-                if(success)
-                {
+            currentFolder.delete(file, (response, success) -> {
+                if (success) {
                     fileList.removeItem(index);
                     FileBrowser.refreshList = true;
                 }
@@ -718,23 +597,18 @@ public class FileBrowser extends Component
         }
     }
 
-    public void removeFile(String name)
-    {
+    public void removeFile(String name) {
         File file = currentFolder.getFile(name);
-        if(file != null)
-        {
-            if(file.isProtected())
-            {
+        if (file != null) {
+            if (file.isProtected()) {
                 String message = "This " + (file.isFolder() ? "folder" : "file") + " is protected and can not be deleted.";
                 Dialog.Message dialog = new Dialog.Message(message);
                 wrappable.openDialog(dialog);
                 return;
             }
             setLoading(true);
-            currentFolder.delete(file, (o, success) ->
-            {
-                if(success)
-                {
+            currentFolder.delete(file, (o, success) -> {
+                if (success) {
                     int index = fileList.getItems().indexOf(file);
                     fileList.removeItem(index);
                     FileBrowser.refreshList = true;
@@ -744,13 +618,10 @@ public class FileBrowser extends Component
         }
     }
 
-    private void setClipboardFileToSelected()
-    {
+    private void setClipboardFileToSelected() {
         File file = fileList.getSelectedItem();
-        if(file != null)
-        {
-            if(file.isProtected())
-            {
+        if (file != null) {
+            if (file.isProtected()) {
                 String message = "This " + (file.isFolder() ? "folder" : "file") + " is protected and can not be copied.";
                 Dialog.Message dialog = new Dialog.Message(message);
                 wrappable.openDialog(dialog);
@@ -759,21 +630,16 @@ public class FileBrowser extends Component
             clipboardDir = null;
             clipboardFile = file;
             btnPaste.setEnabled(true);
-        }
-        else
-        {
+        } else {
             Dialog.Message dialog = new Dialog.Message("The file/folder you are trying to copy does not exist.");
             wrappable.openDialog(dialog);
         }
     }
 
-    private void cutSelectedFile()
-    {
+    private void cutSelectedFile() {
         File file = fileList.getSelectedItem();
-        if(file != null)
-        {
-            if(file.isProtected())
-            {
+        if (file != null) {
+            if (file.isProtected()) {
                 String message = "This " + (file.isFolder() ? "folder" : "file") + " is protected and can not be cut.";
                 Dialog.Message dialog = new Dialog.Message(message);
                 wrappable.openDialog(dialog);
@@ -783,83 +649,61 @@ public class FileBrowser extends Component
             clipboardDir = currentFolder;
             clipboardFile = file;
             btnPaste.setEnabled(true);
-        }
-        else
-        {
+        } else {
             Dialog.Message dialog = new Dialog.Message("The file/folder you are trying to cut does not exist.");
             wrappable.openDialog(dialog);
         }
     }
 
-    private void pasteClipboardFile()
-    {
-        if(clipboardFile != null)
-        {
-            if(canPasteHere())
-            {
+    private void pasteClipboardFile() {
+        if (clipboardFile != null) {
+            if (canPasteHere()) {
                 handleCopyCut(false);
-            }
-            else
-            {
+            } else {
                 Dialog.Message dialog = new Dialog.Message("Destination folder can't be a subfolder");
                 wrappable.openDialog(dialog);
             }
         }
     }
 
-    private void handleCopyCut(boolean override)
-    {
-        final Callback<FileSystem.Response> CALLBACK = (response, success) ->
-        {
-            if(response.getStatus() == FileSystem.Status.FILE_EXISTS)
-            {
+    private void handleCopyCut(boolean override) {
+        final Callback<FileSystem.Response> CALLBACK = (response, success) -> {
+            assert response != null;
+            if (response.getStatus() == FileSystem.Status.FILE_EXISTS) {
                 Dialog.Confirmation dialog = new Dialog.Confirmation("A file with the same name already exists in this directory. Do you want to override it?");
                 dialog.setPositiveText("Override");
-                dialog.setPositiveListener((mouseX, mouseY, mouseButton) ->
-                {
-                    if(mouseButton == 0)
-                    {
+                dialog.setPositiveListener((mouseX, mouseY, mouseButton) -> {
+                    if (mouseButton == 0) {
                         handleCopyCut(true);
                     }
                 });
                 wrappable.openDialog(dialog);
-            }
-            else if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
-            {
+            } else if (response.getStatus() == FileSystem.Status.SUCCESSFUL) {
                 resetClipboard();
-            }
-            else
-            {
+            } else {
                 createErrorDialog(response.getMessage());
             }
             setLoading(false);
         };
 
         setLoading(true);
-        if(clipboardDir != null)
-        {
+        if (clipboardDir != null) {
             clipboardFile.moveTo(currentFolder, override, CALLBACK);
-        }
-        else
-        {
+        } else {
             clipboardFile.copyTo(currentFolder, override, CALLBACK);
         }
     }
 
-    private void resetClipboard()
-    {
-        if(clipboardDir != null)
-        {
+    private void resetClipboard() {
+        if (clipboardDir != null) {
             clipboardDir.refresh();
             clipboardDir = null;
             clipboardFile = null;
             btnPaste.setEnabled(false);
         }
         currentFolder.refresh();
-        openFolder(currentFolder, false, (folder, success) ->
-        {
-            if(mode == Mode.FULL)
-            {
+        openFolder(currentFolder, false, (folder, success) -> {
+            if (mode == Mode.FULL) {
                 btnRename.setEnabled(false);
                 btnCopy.setEnabled(false);
                 btnCut.setEnabled(false);
@@ -868,59 +712,44 @@ public class FileBrowser extends Component
         });
     }
 
-    private boolean canPasteHere()
-    {
-        if(clipboardFile != null)
-        {
-            if(clipboardFile instanceof Folder)
-            {
-                if(predecessor.contains(clipboardFile) || currentFolder == clipboardFile)
-                {
-                    return false;
-                }
+    private boolean canPasteHere() {
+        if (clipboardFile != null) {
+            if (clipboardFile instanceof Folder) {
+                return !predecessor.contains(clipboardFile) && currentFolder != clipboardFile;
             }
         }
         return true;
     }
 
-    private boolean isRootFolder()
-    {
+    private boolean isRootFolder() {
         return predecessor.size() == 0;
     }
 
-    private void updatePath()
-    {
+    private void updatePath() {
         String path = currentFolder.getPath();
-        path = path.replace("/", TextFormatting.GOLD + "/" + TextFormatting.RESET);
-        int width = Minecraft.getMinecraft().fontRenderer.getStringWidth(path);
-        if(width > 144)
-        {
-            path = "..." + Minecraft.getMinecraft().fontRenderer.trimStringToWidth(path, 144, true);
+        path = path.replace("/", ChatFormatting.GOLD + "/" + ChatFormatting.RESET);
+        int width = Minecraft.getInstance().font.width(path);
+        if (width > 144) {
+            path = "..." + Minecraft.getInstance().font.plainSubstrByWidth(path, 144, true);
         }
         labelPath.setText(path);
     }
 
-    public void setLoading(boolean loading)
-    {
+    public void setLoading(boolean loading) {
         layoutLoading.setVisible(loading);
-        if(loading)
-        {
+        if (loading) {
             disableAllButtons();
-        }
-        else
-        {
+        } else {
             updateButtons();
         }
     }
 
-    private void updateButtons()
-    {
+    private void updateButtons() {
         boolean hasSelectedFile = fileList.getSelectedIndex() != -1;
         btnNewFolder.setEnabled(true);
         btnRename.setEnabled(hasSelectedFile);
         btnDelete.setEnabled(hasSelectedFile);
-        if(mode == Mode.FULL)
-        {
+        if (mode == Mode.FULL) {
             btnCopy.setEnabled(hasSelectedFile);
             btnCut.setEnabled(hasSelectedFile);
             btnPaste.setEnabled(clipboardFile != null);
@@ -928,27 +757,22 @@ public class FileBrowser extends Component
         btnPreviousFolder.setEnabled(!isRootFolder());
     }
 
-    private void disableAllButtons()
-    {
+    private void disableAllButtons() {
         btnPreviousFolder.setEnabled(false);
         btnNewFolder.setEnabled(false);
         btnRename.setEnabled(false);
         btnDelete.setEnabled(false);
-        if(mode == Mode.FULL)
-        {
+        if (mode == Mode.FULL) {
             btnCopy.setEnabled(false);
             btnCut.setEnabled(false);
             btnPaste.setEnabled(false);
         }
     }
 
-    private void renameSelectedFile()
-    {
+    private void renameSelectedFile() {
         File file = fileList.getSelectedItem();
-        if(file != null)
-        {
-            if(file.isProtected())
-            {
+        if (file != null) {
+            if (file.isProtected()) {
                 String message = "This " + (file.isFolder() ? "folder" : "file") + " is protected and can not be renamed.";
                 Dialog.Message dialog = new Dialog.Message(message);
                 wrappable.openDialog(dialog);
@@ -956,19 +780,14 @@ public class FileBrowser extends Component
             }
 
             Dialog.Input dialog = new Dialog.Input("Enter a name");
-            dialog.setResponseHandler((success, s) ->
-            {
-                if(success)
-                {
+            dialog.setResponseHandler((success, s) -> {
+                if (success) {
                     setLoading(true);
-                    file.rename(s, (response, success1) ->
-                    {
-                        if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
-                        {
+                    file.rename(s, (response, success1) -> {
+                        assert response != null;
+                        if (response.getStatus() == FileSystem.Status.SUCCESSFUL) {
                             dialog.close();
-                        }
-                        else
-                        {
+                        } else {
                             createErrorDialog(response.getMessage());
                         }
                         setLoading(false);
@@ -982,25 +801,21 @@ public class FileBrowser extends Component
         }
     }
 
-    private void createErrorDialog(String message)
-    {
+    private void createErrorDialog(String message) {
         Dialog.Message dialog = new Dialog.Message(message);
         dialog.setTitle("Error");
         wrappable.openDialog(dialog);
     }
 
-    public void setFilter(Predicate<File> filter)
-    {
+    public void setFilter(Predicate<File> filter) {
         this.filter = filter;
     }
 
-    public void setItemClickListener(ItemClickListener<File> itemClickListener)
-    {
+    public void setItemClickListener(ItemClickListener<File> itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
 
-    public enum Mode
-    {
+    public enum Mode {
         FULL(225, 145, 26, 6), BASIC(211, 105, 26, 4);
 
         private final int width;
@@ -1008,31 +823,26 @@ public class FileBrowser extends Component
         private final int offset;
         private final int visibleItems;
 
-        Mode(int width, int height, int offset, int visibleItems)
-        {
+        Mode(int width, int height, int offset, int visibleItems) {
             this.width = width;
             this.height = height;
             this.offset = offset;
             this.visibleItems = visibleItems;
         }
 
-        public int getWidth()
-        {
+        public int getWidth() {
             return width;
         }
 
-        public int getHeight()
-        {
+        public int getHeight() {
             return height;
         }
 
-        public int getOffset()
-        {
+        public int getOffset() {
             return offset;
         }
 
-        public int getVisibleItems()
-        {
+        public int getVisibleItems() {
             return visibleItems;
         }
     }

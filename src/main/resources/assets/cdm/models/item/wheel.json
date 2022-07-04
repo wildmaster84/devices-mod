@@ -1,8 +1,8 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "0": "blocks/concrete_black",
-        "1": "blocks/stone"
+      "0": "block/concrete_black",
+      "1": "block/stone"
     },
     "display": {
         "gui": {

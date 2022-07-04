@@ -8,7 +8,7 @@ import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.object.TrayItem;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
 
 import javax.annotation.Nullable;
 
@@ -22,25 +22,22 @@ public class ApplicationFileBrowser extends SystemApplication
 		this.setDefaultHeight(145);
 	}
 
-	@Override
-	public void init(@Nullable NBTTagCompound intent)
-	{
-		browser = new FileBrowser(0, 0, this, FileBrowser.Mode.FULL);
-		browser.openFolder(FileSystem.DIR_HOME);
-		this.addComponent(browser);
-	}
+    @Override
+    public void init(@Nullable CompoundTag intent) {
+        browser = new FileBrowser(0, 0, this, FileBrowser.Mode.FULL);
+        browser.openFolder(FileSystem.DIR_HOME);
+        this.addComponent(browser);
+    }
 
-	@Override
-	public void load(NBTTagCompound tagCompound)
-	{
+    @Override
+    public void load(CompoundTag tagCompound) {
 
-	}
+    }
 
-	@Override
-	public void save(NBTTagCompound tagCompound) 
-	{
-		
-	}
+    @Override
+    public void save(CompoundTag tagCompound) {
+
+    }
 
 	public static class FileBrowserTrayItem extends TrayItem
 	{

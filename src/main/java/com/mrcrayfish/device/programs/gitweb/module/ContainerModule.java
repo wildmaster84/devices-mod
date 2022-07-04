@@ -1,41 +1,36 @@
 package com.mrcrayfish.device.programs.gitweb.module;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.Text;
+import com.mrcrayfish.device.programs.gitweb.component.GitWebFrame;
 import com.mrcrayfish.device.programs.gitweb.component.container.ContainerBox;
 import com.mrcrayfish.device.programs.gitweb.component.container.CraftingBox;
-import com.mrcrayfish.device.programs.gitweb.component.GitWebFrame;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Map;
 
 /**
  * Author: MrCrayfish
  */
-public abstract class ContainerModule extends Module
-{
+public abstract class ContainerModule extends Module {
     @Override
-    public String[] getRequiredData()
-    {
+    public String[] getRequiredData() {
         return new String[0];
     }
 
     @Override
-    public String[] getOptionalData()
-    {
-        return new String[] { "title", "desc" };
+    public String[] getOptionalData() {
+        return new String[]{"title", "desc"};
     }
 
     @Override
-    public final int calculateHeight(Map<String, String> data, int width)
-    {
+    public final int calculateHeight(Map<String, String> data, int width) {
         int height = getHeight() + 22;
-        if(data.containsKey("desc"))
-        {
+        if (data.containsKey("desc")) {
             String desc = GitWebFrame.parseFormatting(data.get("desc"));
             Text text = new Text(desc, 0, data.containsKey("title") ? 12 : 5, width - CraftingBox.WIDTH - 5);
             text.setPadding(5);
@@ -45,21 +40,17 @@ public abstract class ContainerModule extends Module
     }
 
     @Override
-    public final void generate(GitWebFrame frame, Layout layout, int width, Map<String, String> data)
-    {
+    public final void generate(GitWebFrame frame, Layout layout, int width, Map<String, String> data) {
         int craftingX = (width - ContainerBox.WIDTH) / 2;
         int craftingY = 5;
 
-        if(data.containsKey("title") || data.containsKey("desc"))
-        {
-            if(data.containsKey("title"))
-            {
+        if (data.containsKey("title") || data.containsKey("desc")) {
+            if (data.containsKey("title")) {
                 String s = GitWebFrame.parseFormatting(data.get("title"));
-                Label label = new Label(TextFormatting.BOLD + s, 5, 5);
+                Label label = new Label(ChatFormatting.BOLD + s, 5, 5);
                 layout.addComponent(label);
             }
-            if(data.containsKey("desc"))
-            {
+            if (data.containsKey("desc")) {
                 String s = GitWebFrame.parseFormatting(data.get("desc"));
                 Text text = new Text(s, 0, data.containsKey("title") ? 12 : 5, width - ContainerBox.WIDTH - 5);
                 text.setPadding(5);
@@ -78,16 +69,11 @@ public abstract class ContainerModule extends Module
 
     public abstract ContainerBox createContainer(Map<String, String> data);
 
-    protected ItemStack getItem(Map<String, String> data, String key)
-    {
-        if(data.containsKey(key))
-        {
-            try
-            {
-                return new ItemStack(JsonToNBT.getTagFromJson(data.get(key)));
-            }
-            catch(NBTException e)
-            {
+    protected ItemStack getItem(Map<String, String> data, String key) {
+        if (data.containsKey(key)) {
+            try {
+                return ItemStack.of(TagParser.parseTag(data.get(key)));
+            } catch (CommandSyntaxException e) {
                 return ItemStack.EMPTY;
             }
         }

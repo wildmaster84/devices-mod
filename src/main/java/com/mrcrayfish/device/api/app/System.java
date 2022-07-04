@@ -3,16 +3,14 @@ package com.mrcrayfish.device.api.app;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.core.Settings;
 import com.mrcrayfish.device.object.AppInfo;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
-public interface System
-{
+public interface System {
     /**
      * Open a context on the screen
      */
@@ -47,10 +45,10 @@ public interface System
     /**
      * Opens the specified application with an intent tag
      *
-     * @param info the app info instance of the application to be opened
+     * @param info      the app info instance of the application to be opened
      * @param intentTag the tag to pass data to the initialization of an application
      */
-    void openApplication(AppInfo info, NBTTagCompound intentTag);
+    void openApplication(AppInfo info, CompoundTag intentTag);
 
     /**
      * Opens the specified application with a file

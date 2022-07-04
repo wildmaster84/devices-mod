@@ -1,179 +1,107 @@
 package com.mrcrayfish.device;
 
-import com.mrcrayfish.device.api.ApplicationManager;
-import com.mrcrayfish.device.api.print.PrintingManager;
-import com.mrcrayfish.device.api.task.TaskManager;
-import com.mrcrayfish.device.core.io.task.*;
-import com.mrcrayfish.device.core.network.task.TaskConnect;
-import com.mrcrayfish.device.core.network.task.TaskGetDevices;
-import com.mrcrayfish.device.core.network.task.TaskPing;
-import com.mrcrayfish.device.core.print.task.TaskPrint;
-import com.mrcrayfish.device.core.task.TaskInstallApp;
-import com.mrcrayfish.device.entity.EntitySeat;
-import com.mrcrayfish.device.event.BankEvents;
-import com.mrcrayfish.device.event.EmailEvents;
-import com.mrcrayfish.device.gui.GuiHandler;
-import com.mrcrayfish.device.init.DeviceTileEntites;
-import com.mrcrayfish.device.init.RegistrationHandler;
-import com.mrcrayfish.device.network.PacketHandler;
-import com.mrcrayfish.device.programs.*;
-import com.mrcrayfish.device.programs.debug.ApplicationTextArea;
-import com.mrcrayfish.device.programs.email.ApplicationEmail;
-import com.mrcrayfish.device.programs.email.task.*;
-import com.mrcrayfish.device.programs.example.ApplicationExample;
-import com.mrcrayfish.device.programs.example.task.TaskNotificationTest;
-import com.mrcrayfish.device.programs.gitweb.ApplicationGitWeb;
-import com.mrcrayfish.device.programs.system.ApplicationAppStore;
-import com.mrcrayfish.device.programs.system.ApplicationBank;
-import com.mrcrayfish.device.programs.system.ApplicationFileBrowser;
-import com.mrcrayfish.device.programs.system.ApplicationSettings;
-import com.mrcrayfish.device.programs.system.task.*;
-import com.mrcrayfish.device.proxy.CommonProxy;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.launchwrapper.Launch;
-import net.minecraft.util.ResourceLocation;
+import com.mojang.logging.LogUtils;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
-import org.apache.logging.log4j.Logger;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import org.slf4j.Logger;
 
-@Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, acceptedMinecraftVersions = Reference.WORKING_MC_VERSION)
-public class MrCrayfishDeviceMod 
-{
-	@Instance(Reference.MOD_ID)
-	public static MrCrayfishDeviceMod instance;
-	
-	@SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.COMMON_PROXY_CLASS)
-	public static CommonProxy proxy;
-	
-	public static final CreativeTabs TAB_DEVICE = new DeviceTab("cdmTabDevice");
+import java.util.stream.Collectors;
 
-	private static Logger logger;
+// The value here should match an entry in the META-INF/mods.toml file
+@Mod(Reference.MOD_ID)
+public class MrCrayfishDeviceMod {
+    private static MrCrayfishDeviceMod instance;
 
-	public static final boolean DEVELOPER_MODE = true;
+    public static CommonProxy proxy;
 
-	@EventHandler
-	public void preInit(FMLPreInitializationEvent event) throws LaunchException
-	{
-		if(DEVELOPER_MODE && !(Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"))
-		{
-			throw new LaunchException();
-		}
-		logger = event.getModLog();
+    public static final CreativeModeTab TAB_DEVICE = new DeviceTab("cdmTabDevice");
 
-		DeviceConfig.load(event.getSuggestedConfigurationFile());
-		MinecraftForge.EVENT_BUS.register(new DeviceConfig());
+    public static final Logger LOGGER = LogUtils.getLogger();
 
-		RegistrationHandler.init();
-		
-		proxy.preInit();
-	}
-	
-	@EventHandler
-	public void init(FMLInitializationEvent event) 
-	{
-		/* Tile Entity Registering */
-		DeviceTileEntites.register();
+    public static final boolean DEVELOPER_MODE = true;
 
-		EntityRegistry.registerModEntity(new ResourceLocation("cdm:seat"), EntitySeat.class, "Seat", 0, this, 80, 1, false);
+    public MrCrayfishDeviceMod() throws LaunchException {
+        if (DEVELOPER_MODE && FMLEnvironment.production) {
+            throw new LaunchException();
+        }
 
-		/* Packet Registering */
-		PacketHandler.init();
+        instance = this;
 
-		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
+        DeviceConfig.init();
 
-		MinecraftForge.EVENT_BUS.register(new EmailEvents());
-		MinecraftForge.EVENT_BUS.register(new BankEvents());
+        proxy = DistExecutor.unsafeRunForDist(() -> CommonProxy.Client::new, () -> CommonProxy.Server::new);
 
-		registerApplications();
+        proxy.init();
 
-		proxy.init();
-	}
-	
-	@EventHandler
-	public void postInit(FMLPostInitializationEvent event) 
-	{
-		proxy.postInit();
-	}
+        // Register the setup method for modloading
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+        // Register the enqueueIMC method for modloading
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
+        // Register the processIMC method for modloading
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
 
-	private void registerApplications()
-	{
-		// Applications (Both)
-		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "settings"), ApplicationSettings.class);
-		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "bank"), ApplicationBank.class);
-		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "file_browser"), ApplicationFileBrowser.class);
-		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "gitweb"), ApplicationGitWeb.class);
-		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "note_stash"), ApplicationNoteStash.class);
-		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "pixel_painter"), ApplicationPixelPainter.class);
-		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "ender_mail"), ApplicationEmail.class);
-		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "app_store"), ApplicationAppStore.class);
+        // Register ourselves for server and other game events we are interested in
+        MinecraftForge.EVENT_BUS.register(this);
+    }
 
-		// Core
-		TaskManager.registerTask(TaskInstallApp.class);
-		TaskManager.registerTask(TaskUpdateApplicationData.class);
-		TaskManager.registerTask(TaskPrint.class);
-		TaskManager.registerTask(TaskUpdateSystemData.class);
-		TaskManager.registerTask(TaskConnect.class);
-		TaskManager.registerTask(TaskPing.class);
-		TaskManager.registerTask(TaskGetDevices.class);
+    public static MrCrayfishDeviceMod getInstance() {
+        return instance;
+    }
 
-		//Bank
-		TaskManager.registerTask(TaskDeposit.class);
-		TaskManager.registerTask(TaskWithdraw.class);
-		TaskManager.registerTask(TaskGetBalance.class);
-		TaskManager.registerTask(TaskPay.class);
-		TaskManager.registerTask(TaskAdd.class);
-		TaskManager.registerTask(TaskRemove.class);
+    public static ResourceLocation res(String path) {
+        return new ResourceLocation(Reference.MOD_ID, path);
+    }
 
-		//File browser
-		TaskManager.registerTask(TaskSendAction.class);
-		TaskManager.registerTask(TaskSetupFileBrowser.class);
-		TaskManager.registerTask(TaskGetFiles.class);
-		TaskManager.registerTask(TaskGetStructure.class);
-		TaskManager.registerTask(TaskGetMainDrive.class);
+    private void setup(final FMLCommonSetupEvent event) {
+        // Some preinit code
+        LOGGER.info("HELLO FROM PREINIT");
+        LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
+    }
 
-		//Ender Mail
-		TaskManager.registerTask(TaskUpdateInbox.class);
-		TaskManager.registerTask(TaskSendEmail.class);
-		TaskManager.registerTask(TaskCheckEmailAccount.class);
-		TaskManager.registerTask(TaskRegisterEmailAccount.class);
-		TaskManager.registerTask(TaskDeleteEmail.class);
-		TaskManager.registerTask(TaskViewEmail.class);
+    private void enqueueIMC(final InterModEnqueueEvent event) {
+        // Some example code to dispatch IMC to another mod
+        InterModComms.sendTo("device-mod", "helloworld", () -> {
+            LOGGER.info("Hello world from the MDK");
+            return "Hello world";
+        });
+    }
 
-		if(!DEVELOPER_MODE)
-		{
-			// Applications (Normal)
-			//ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "boat_racers"), ApplicationBoatRacers.class);
-			//ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "mine_bay"), ApplicationMineBay.class);
+    private void processIMC(final InterModProcessEvent event) {
+        // Some example code to receive and process InterModComms from other mods
+        LOGGER.info("Got IMC {}", event.getIMCStream().
+                map(m -> m.messageSupplier().get()).
+                collect(Collectors.toList()));
+    }
 
-			// Tasks (Normal)
-			//TaskManager.registerTask(TaskAddAuction.class);
-			//TaskManager.registerTask(TaskGetAuctions.class);
-			//TaskManager.registerTask(TaskBuyItem.class);
-		}
-		else
-		{
-			// Applications (Developers)
-			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "example"), ApplicationExample.class);
-			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "icons"), ApplicationIcons.class);
-			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "text_area"), ApplicationTextArea.class);
-			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "test"), ApplicationTest.class);
+    // You can use SubscribeEvent and let the Event Bus discover methods to call
+    @SubscribeEvent
+    public void onServerStarting(ServerStartingEvent event) {
+        // Do something when the server starts
+        LOGGER.info("HELLO from server starting");
+    }
 
-			TaskManager.registerTask(TaskNotificationTest.class);
-		}
-
-		PrintingManager.registerPrint(new ResourceLocation(Reference.MOD_ID, "picture"), ApplicationPixelPainter.PicturePrint.class);
-	}
-
-	public static Logger getLogger()
-	{
-		return logger;
-	}
+    // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
+    // Event bus for receiving Registry Events)
+    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+    public static class RegistryEvents {
+        @SubscribeEvent
+        public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
+            // Register a new block here
+            LOGGER.info("HELLO from Register Block");
+        }
+    }
 }

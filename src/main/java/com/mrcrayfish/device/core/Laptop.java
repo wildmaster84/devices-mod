@@ -1,6 +1,9 @@
 package com.mrcrayfish.device.core;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.ApplicationManager;
@@ -15,823 +18,710 @@ import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.RenderUtil;
-import com.mrcrayfish.device.core.client.LaptopFontRenderer;
+import com.mrcrayfish.device.block.entity.LaptopBlockEntity;
+import com.mrcrayfish.device.core.client.LaptopFont;
 import com.mrcrayfish.device.core.task.TaskInstallApp;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.system.SystemApplication;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import com.mrcrayfish.device.programs.system.task.TaskUpdateApplicationData;
 import com.mrcrayfish.device.programs.system.task.TaskUpdateSystemData;
-import com.mrcrayfish.device.tileentity.TileEntityLaptop;
-import com.mrcrayfish.device.util.GuiHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.util.Constants;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
-import java.awt.Color;
-import java.io.IOException;
-import java.util.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 //TODO Intro message (created by mrcrayfish, donate here)
 
-public class Laptop extends GuiScreen implements System
-{
-	public static final int ID = 1;
-	
-	private static final ResourceLocation LAPTOP_GUI = new ResourceLocation(Reference.MOD_ID, "textures/gui/laptop.png");
+public class Laptop extends Screen implements System {
+    public static final int ID = 1;
+    public static final ResourceLocation ICON_TEXTURES = new ResourceLocation(Reference.MOD_ID, "textures/atlas/app_icons.png");
+    public static final int ICON_SIZE = 14;
+    public static final Font font = new LaptopFont(Minecraft.getInstance());
+    private static final ResourceLocation LAPTOP_GUI = new ResourceLocation(Reference.MOD_ID, "textures/gui/laptop.png");
+    private static final List<Application> APPLICATIONS = new ArrayList<>();
+    private static final List<ResourceLocation> WALLPAPERS = new ArrayList<>();
 
-	public static final ResourceLocation ICON_TEXTURES = new ResourceLocation(Reference.MOD_ID, "textures/atlas/app_icons.png");
-	public static final int ICON_SIZE = 14;
+    private static final int BORDER = 10;
+    private static final int DEVICE_WIDTH = 384;
+    static final int SCREEN_WIDTH = DEVICE_WIDTH - BORDER * 2;
+    private static final int DEVICE_HEIGHT = 216;
+    static final int SCREEN_HEIGHT = DEVICE_HEIGHT - BORDER * 2;
 
-	public static final FontRenderer fontRenderer = new LaptopFontRenderer(Minecraft.getMinecraft());
+    private static System system;
+    private static BlockPos pos;
+    private static Drive mainDrive;
+    protected List<AppInfo> installedApps = new ArrayList<>();
+    private final Settings settings;
+    private final TaskBar bar;
+    private final Window<?>[] windows;
+    private Layout context = null;
+    private final CompoundTag appData;
+    private final CompoundTag systemData;
+    private int currentWallpaper;
+    private int lastMouseX, lastMouseY;
+    private boolean dragging = false;
 
-	private static final List<Application> APPLICATIONS = new ArrayList<>();
-	private static final List<ResourceLocation> WALLPAPERS = new ArrayList<>();
+    public Laptop(LaptopBlockEntity laptop) {
+        super(new TextComponent("Laptop"));
+        this.appData = laptop.getApplicationData();
+        this.systemData = laptop.getSystemData();
+        this.windows = new Window[5];
+        this.settings = Settings.fromTag(systemData.getCompound("Settings"));
+        this.bar = new TaskBar(this);
+        this.currentWallpaper = systemData.getInt("CurrentWallpaper");
+        if (currentWallpaper < 0 || currentWallpaper >= WALLPAPERS.size()) {
+            this.currentWallpaper = 0;
+        }
+        Laptop.system = this;
+        Laptop.pos = laptop.getBlockPos();
+    }
 
-	private static final int BORDER = 10;
-	private static final int DEVICE_WIDTH = 384;
-	private static final int DEVICE_HEIGHT = 216;
-	static final int SCREEN_WIDTH = DEVICE_WIDTH - BORDER * 2;
-	static final int SCREEN_HEIGHT = DEVICE_HEIGHT - BORDER * 2;
+    /**
+     * Returns the position of the laptop the player is currently using. This method can ONLY be
+     * called when the laptop GUI is open, otherwise it will return a null position.
+     *
+     * @return the position of the laptop currently in use
+     */
+    @Nullable
+    public static BlockPos getPos() {
+        return pos;
+    }
 
-	private static System system;
-	private static BlockPos pos;
-	private static Drive mainDrive;
+    public static void addWallpaper(ResourceLocation wallpaper) {
+        if (wallpaper != null) {
+            WALLPAPERS.add(wallpaper);
+        }
+    }
 
-	private Settings settings;
-	private TaskBar bar;
-	private Window[] windows;
-	private Layout context = null;
+    public static System getSystem() {
+        return system;
+    }
 
-	private NBTTagCompound appData;
-	private NBTTagCompound systemData;
+    @Nullable
+    public static Drive getMainDrive() {
+        return mainDrive;
+    }
 
-	private int currentWallpaper;
-	private int lastMouseX, lastMouseY;
-	private boolean dragging = false;
+    public static void setMainDrive(Drive mainDrive) {
+        if (Laptop.mainDrive == null) {
+            Laptop.mainDrive = mainDrive;
+        }
+    }
 
-	protected List<AppInfo> installedApps = new ArrayList<>();
+    @Override
+    public void init() {
+        Minecraft.getInstance().keyboardHandler.setSendRepeatsToGui(true);
+        int posX = (width - DEVICE_WIDTH) / 2;
+        int posY = (height - DEVICE_HEIGHT) / 2;
+        bar.init(posX + BORDER, posY + DEVICE_HEIGHT - 28);
 
-	public Laptop(TileEntityLaptop laptop)
-	{
-		this.appData = laptop.getApplicationData();
-		this.systemData = laptop.getSystemData();
-		this.windows = new Window[5];
-		this.settings = Settings.fromTag(systemData.getCompoundTag("Settings"));
-		this.bar = new TaskBar(this);
-		this.currentWallpaper = systemData.getInteger("CurrentWallpaper");
-		if(currentWallpaper < 0 || currentWallpaper >= WALLPAPERS.size()) {
-			this.currentWallpaper = 0;
-		}
-		Laptop.system = this;
-		Laptop.pos = laptop.getPos();
-	}
+        installedApps.clear();
+        ListTag tagList = systemData.getList("InstalledApps", Tag.TAG_STRING);
+        for (int i = 0; i < tagList.size(); i++) {
+            AppInfo info = ApplicationManager.getApplication(tagList.getString(i));
+            if (info != null) {
+                installedApps.add(info);
+            }
+        }
+        installedApps.sort(AppInfo.SORT_NAME);
+    }
 
-	/**
-	 * Returns the position of the laptop the player is currently using. This method can ONLY be
-	 * called when the laptop GUI is open, otherwise it will return a null position.
-	 *
-	 * @return the position of the laptop currently in use
-	 */
-	@Nullable
-	public static BlockPos getPos()
-	{
-		return pos;
-	}
-
-	@Override
-	public void initGui() 
-	{
-		Keyboard.enableRepeatEvents(true);
-		int posX = (width - DEVICE_WIDTH) / 2;
-		int posY = (height - DEVICE_HEIGHT) / 2;
-		bar.init(posX + BORDER, posY + DEVICE_HEIGHT - 28);
-
-		installedApps.clear();
-		NBTTagList tagList = systemData.getTagList("InstalledApps", Constants.NBT.TAG_STRING);
-		for(int i = 0; i < tagList.tagCount(); i++)
-		{
-			AppInfo info = ApplicationManager.getApplication(tagList.getStringTagAt(i));
-			if(info != null)
-			{
-				installedApps.add(info);
-			}
-		}
-		installedApps.sort(AppInfo.SORT_NAME);
-	}
-
-	@Override
-	public void onGuiClosed()
-    {
-        Keyboard.enableRepeatEvents(false);
+    @Override
+    public void removed() {
+        Minecraft.getInstance().keyboardHandler.setSendRepeatsToGui(false);
 
         /* Close all windows and sendTask application data */
-        for(Window window : windows)
-		{
-        	if(window != null)
-			{
-        		window.close();
-			}
-		}
+        for (Window<?> window : windows) {
+            if (window != null) {
+                window.close();
+            }
+        }
 
-		/* Send system data */
-		this.updateSystemData();
+        /* Send system data */
+        this.updateSystemData();
 
-		Laptop.pos = null;
+        Laptop.pos = null;
         Laptop.system = null;
-		Laptop.mainDrive = null;
+        Laptop.mainDrive = null;
     }
 
-    private void updateSystemData()
-	{
-		systemData.setInteger("CurrentWallpaper", currentWallpaper);
-		systemData.setTag("Settings", settings.toTag());
+    private void updateSystemData() {
+        systemData.putInt("CurrentWallpaper", currentWallpaper);
+        systemData.put("Settings", settings.toTag());
 
-		NBTTagList tagListApps = new NBTTagList();
-		installedApps.forEach(info -> tagListApps.appendTag(new NBTTagString(info.getFormattedId())));
-		systemData.setTag("InstalledApps", tagListApps);
+        ListTag tagListApps = new ListTag();
+        installedApps.forEach(info -> tagListApps.add(StringTag.valueOf(info.getFormattedId())));
+        systemData.put("InstalledApps", tagListApps);
 
-		TaskManager.sendTask(new TaskUpdateSystemData(pos, systemData));
-	}
-	
-	@Override
-	public void onResize(Minecraft mcIn, int width, int height)
-	{
-		super.onResize(mcIn, width, height);
-		for(Window window : windows)
-		{
-			if(window != null)
-			{
-				window.content.markForLayoutUpdate();
-			}
-		}
-	}
-	
-	@Override
-	public void updateScreen()
-	{
-		bar.onTick();
-
-		for(Window window : windows)
-		{
-			if(window != null)
-			{
-				window.onTick();
-			}
-		}
-
-		FileBrowser.refreshList = false;
-	}
-	
-	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) 
-	{
-		//Fixes the strange partialTicks that Forge decided to give us
-		partialTicks = Minecraft.getMinecraft().getRenderPartialTicks();
-
-		this.drawDefaultBackground();
-		
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.getTextureManager().bindTexture(LAPTOP_GUI);
-		
-		/* Physical Screen */
-		int posX = (width - DEVICE_WIDTH) / 2;
-		int posY = (height - DEVICE_HEIGHT) / 2;
-		
-		/* Corners */
-		this.drawTexturedModalRect(posX, posY, 0, 0, BORDER, BORDER); // TOP-LEFT
-		this.drawTexturedModalRect(posX + DEVICE_WIDTH - BORDER, posY, 11, 0, BORDER, BORDER); // TOP-RIGHT
-		this.drawTexturedModalRect(posX + DEVICE_WIDTH - BORDER, posY + DEVICE_HEIGHT - BORDER, 11, 11, BORDER, BORDER); // BOTTOM-RIGHT
-		this.drawTexturedModalRect(posX, posY + DEVICE_HEIGHT - BORDER, 0, 11, BORDER, BORDER); // BOTTOM-LEFT
-		
-		/* Edges */
-		RenderUtil.drawRectWithTexture(posX + BORDER, posY, 10, 0, SCREEN_WIDTH, BORDER, 1, BORDER); // TOP
-		RenderUtil.drawRectWithTexture(posX + DEVICE_WIDTH - BORDER, posY + BORDER, 11, 10, BORDER, SCREEN_HEIGHT, BORDER, 1); // RIGHT
-		RenderUtil.drawRectWithTexture(posX + BORDER, posY + DEVICE_HEIGHT - BORDER, 10, 11, SCREEN_WIDTH, BORDER, 1, BORDER); // BOTTOM
-		RenderUtil.drawRectWithTexture(posX, posY + BORDER, 0, 11, BORDER, SCREEN_HEIGHT, BORDER, 1); // LEFT
-		
-		/* Center */
-		RenderUtil.drawRectWithTexture(posX + BORDER, posY + BORDER, 10, 10, SCREEN_WIDTH, SCREEN_HEIGHT, 1, 1);
-		
-		/* Wallpaper */
-		this.mc.getTextureManager().bindTexture(WALLPAPERS.get(currentWallpaper));
-		RenderUtil.drawRectWithFullTexture(posX + 10, posY + 10, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-		if(!MrCrayfishDeviceMod.DEVELOPER_MODE)
-		{
-			drawString(fontRenderer, "Alpha v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
-		}
-		else
-		{
-			drawString(fontRenderer, "Developer Version - " + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
-		}
-
-		boolean insideContext = false;
-		if(context != null)
-		{
-			insideContext = GuiHelper.isMouseInside(mouseX, mouseY, context.xPosition, context.yPosition, context.xPosition + context.width, context.yPosition + context.height);
-		}
-
-		Image.CACHE.forEach((s, cachedImage) -> cachedImage.delete());
-
-		/* Window */
-		for(int i = windows.length - 1; i >= 0; i--)
-		{
-			Window window = windows[i];
-			if(window != null)
-			{
-				window.render(this, mc, posX + BORDER, posY + BORDER, mouseX, mouseY, i == 0 && !insideContext, partialTicks);
-			}
-		}
-
-		/* Application Bar */
-		bar.render(this, mc, posX + 10, posY + DEVICE_HEIGHT - 28, mouseX, mouseY, partialTicks);
-
-		if(context != null)
-		{
-			context.render(this, mc, context.xPosition, context.yPosition, mouseX, mouseY, true, partialTicks);
-		}
-
-		Image.CACHE.entrySet().removeIf(entry ->
-		{
-			Image.CachedImage cachedImage = entry.getValue();
-			if(cachedImage.isDynamic() && cachedImage.isPendingDeletion())
-			{
-				int texture = cachedImage.getTextureId();
-				if(texture != -1)
-				{
-					GL11.glDeleteTextures(texture);
-				}
-				return true;
-			}
-			return false;
-		});
-
-		super.drawScreen(mouseX, mouseY, partialTicks);
-	}
-	
-	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
-	{
-		this.lastMouseX = mouseX;
-		this.lastMouseY = mouseY;
-		
-		int posX = (width - SCREEN_WIDTH) / 2;
-		int posY = (height - SCREEN_HEIGHT) / 2;
-
-		if(this.context != null)
-		{
-			int dropdownX = context.xPosition;
-			int dropdownY = context.yPosition;
-			if(GuiHelper.isMouseInside(mouseX, mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height))
-			{
-				this.context.handleMouseClick(mouseX, mouseY, mouseButton);
-				return;
-			}
-			else
-			{
-				this.context = null;
-			}
-		}
-
-		this.bar.handleClick(this, posX, posY + SCREEN_HEIGHT - TaskBar.BAR_HEIGHT, mouseX, mouseY, mouseButton);
-
-		for(int i = 0; i < windows.length; i++)
-		{
-			Window<Application> window = windows[i];
-			if(window != null)
-			{
-				Window<Dialog> dialogWindow = window.getContent().getActiveDialog();
-				if(isMouseWithinWindow(mouseX, mouseY, window) || isMouseWithinWindow(mouseX, mouseY, dialogWindow))
-				{
-					windows[i] = null;
-					updateWindowStack();
-					windows[0] = window;
-
-					windows[0].handleMouseClick(this, posX, posY, mouseX, mouseY, mouseButton);
-					
-					if(isMouseWithinWindowBar(mouseX, mouseY, dialogWindow))
-					{
-						this.dragging = true;
-						return;
-					}
-		
-					if(isMouseWithinWindowBar(mouseX, mouseY, window) && dialogWindow == null)
-					{
-						this.dragging = true;
-						return;
-					}
-					break;
-				}
-			}
-		}
-		
-		super.mouseClicked(mouseX, mouseY, mouseButton);
-	}
-	
-	@Override
-	protected void mouseReleased(int mouseX, int mouseY, int state) 
-	{
-		super.mouseReleased(mouseX, mouseY, state);
-		this.dragging = false;
-		if(this.context != null)
-		{
-			int dropdownX = context.xPosition;
-			int dropdownY = context.yPosition;
-			if(GuiHelper.isMouseInside(mouseX, mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height))
-			{
-				this.context.handleMouseRelease(mouseX, mouseY, state);
-			}
-		}
-		else if(windows[0] != null)
-		{
-			windows[0].handleMouseRelease(mouseX, mouseY, state);
-		}
-	}
-	
-	@Override
-	public void handleKeyboardInput() throws IOException
-    {
-        if (Keyboard.getEventKeyState())
-        {
-        	char pressed = Keyboard.getEventCharacter();
-        	int code = Keyboard.getEventKey();
-
-            if(windows[0] != null)
-    		{
-    			windows[0].handleKeyTyped(pressed, code);
-    		}
-            
-            super.keyTyped(pressed, code);
-        }
-        else
-        {
-        	if(windows[0] != null)
-    		{
-    			windows[0].handleKeyReleased(Keyboard.getEventCharacter(), Keyboard.getEventKey());
-    		}
-        }
-
-        this.mc.dispatchKeypresses();
+        TaskManager.sendTask(new TaskUpdateSystemData(pos, systemData));
     }
-	
-	@Override
-	protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) 
-	{
-		int posX = (width - SCREEN_WIDTH) / 2;
-		int posY = (height - SCREEN_HEIGHT) / 2;
 
-		if(this.context != null)
-		{
-			int dropdownX = context.xPosition;
-			int dropdownY = context.yPosition;
-			if(GuiHelper.isMouseInside(mouseX, mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height))
-			{
-				this.context.handleMouseDrag(mouseX, mouseY, clickedMouseButton);
-			}
-			return;
-		}
+    @Override
+    public void resize(@NotNull Minecraft minecraft, int width, int height) {
+        super.resize(minecraft, width, height);
+        for (Window<?> window : windows) {
+            if (window != null) {
+                window.content.markForLayoutUpdate();
+            }
+        }
+    }
 
-		if(windows[0] != null)
-		{
-			Window<Application> window = windows[0];
-			Window<Dialog> dialogWindow = window.getContent().getActiveDialog();
-			if(dragging)
-			{
-				if(isMouseOnScreen(mouseX, mouseY))
-				{
-					if(dialogWindow == null)
-					{
-						window.handleWindowMove(posX, posY, -(lastMouseX - mouseX), -(lastMouseY - mouseY));
-					}
-					else
-					{
-						dialogWindow.handleWindowMove(posX, posY, -(lastMouseX - mouseX), -(lastMouseY - mouseY));
-					}
-				}
-				else
-				{
-					dragging = false;
-				}
-			}
-			else
-			{
-				if(isMouseWithinWindow(mouseX, mouseY, window) || isMouseWithinWindow(mouseX, mouseY, dialogWindow))
-				{
-					window.handleMouseDrag(mouseX, mouseY, clickedMouseButton);
-				}
-			}
-		}
-		this.lastMouseX = mouseX;
-		this.lastMouseY = mouseY;
-	}
-	
-	@Override
-	public void handleMouseInput() throws IOException
-	{
-		super.handleMouseInput();
-		int mouseX = Mouse.getEventX() * this.width / this.mc.displayWidth;
-        int mouseY = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
-		int scroll = Mouse.getEventDWheel();
-		if(scroll != 0)
-		{
-			if(windows[0] != null)
-			{
-				windows[0].handleMouseScroll(mouseX, mouseY, scroll >= 0);
-			}
-		}
-	}
+    @Override
+    public void tick() {
+        bar.onTick();
 
-	@Override
-	public void drawHoveringText(List<String> textLines, int x, int y) 
-	{
-		super.drawHoveringText(textLines, x, y);
-	}
+        for (Window<?> window : windows) {
+            if (window != null) {
+                window.onTick();
+            }
+        }
 
-	public boolean sendApplicationToFront(AppInfo info)
-	{
-		for(int i = 0; i < windows.length; i++)
-		{
-			Window window = windows[i];
-			if(window != null && window.content instanceof Application && ((Application) window.content).getInfo() == info)
-			{
-				windows[i] = null;
-				updateWindowStack();
-				windows[0] = window;
-				return true;
-			}
-		}
-		return false;
-	}
+        FileBrowser.refreshList = false;
+    }
 
-	@Override
-	public void openApplication(AppInfo info)
-	{
-		openApplication(info, (NBTTagCompound) null);
-	}
+    @Override
+    public void render(@NotNull PoseStack pose, int mouseX, int mouseY, float partialTicks) {
+        //Fixes the strange partialTicks that Forge decided to give us
+        partialTicks = Minecraft.getInstance().getFrameTime();
 
-	@Override
-	public void openApplication(AppInfo info, NBTTagCompound intentTag)
-	{
-		Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
-		optional.ifPresent(application -> openApplication(application, intentTag));
-	}
+        this.renderBackground(pose);
 
-	private void openApplication(Application app, NBTTagCompound intent)
-	{
-		if(!isApplicationInstalled(app.getInfo()))
-			return;
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        RenderSystem.setShaderTexture(0, LAPTOP_GUI);
 
-		if(!isValidApplication(app.getInfo()))
-			return;
+        /* Physical Screen */
+        int posX = (width - DEVICE_WIDTH) / 2;
+        int posY = (height - DEVICE_HEIGHT) / 2;
 
-		if(sendApplicationToFront(app.getInfo()))
-			return;
+        /* Corners */
+        blit(pose, posX, posY, 0, 0, BORDER, BORDER); // TOP-LEFT
+        blit(pose, posX + DEVICE_WIDTH - BORDER, posY, 11, 0, BORDER, BORDER); // TOP-RIGHT
+        blit(pose, posX + DEVICE_WIDTH - BORDER, posY + DEVICE_HEIGHT - BORDER, 11, 11, BORDER, BORDER); // BOTTOM-RIGHT
+        blit(pose, posX, posY + DEVICE_HEIGHT - BORDER, 0, 11, BORDER, BORDER); // BOTTOM-LEFT
 
-		Window<Application> window = new Window<>(app, this);
-		window.init((width - SCREEN_WIDTH) / 2, (height - SCREEN_HEIGHT) / 2, intent);
+        /* Edges */
+        RenderUtil.drawRectWithTexture(posX + BORDER, posY, 10, 0, SCREEN_WIDTH, BORDER, 1, BORDER); // TOP
+        RenderUtil.drawRectWithTexture(posX + DEVICE_WIDTH - BORDER, posY + BORDER, 11, 10, BORDER, SCREEN_HEIGHT, BORDER, 1); // RIGHT
+        RenderUtil.drawRectWithTexture(posX + BORDER, posY + DEVICE_HEIGHT - BORDER, 10, 11, SCREEN_WIDTH, BORDER, 1, BORDER); // BOTTOM
+        RenderUtil.drawRectWithTexture(posX, posY + BORDER, 0, 11, BORDER, SCREEN_HEIGHT, BORDER, 1); // LEFT
 
-		if(appData.hasKey(app.getInfo().getFormattedId()))
-		{
-			app.load(appData.getCompoundTag(app.getInfo().getFormattedId()));
-		}
+        /* Center */
+        RenderUtil.drawRectWithTexture(posX + BORDER, posY + BORDER, 10, 10, SCREEN_WIDTH, SCREEN_HEIGHT, 1, 1);
 
-		if(app instanceof SystemApplication)
-		{
-			((SystemApplication) app).setLaptop(this);
-		}
+        /* Wallpaper */
+        RenderSystem.setShaderTexture(0, WALLPAPERS.get(currentWallpaper));
+        RenderUtil.drawRectWithFullTexture(posX + 10, posY + 10, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-		if(app.getCurrentLayout() == null)
-		{
-			app.restoreDefaultLayout();
-		}
-		
-		addWindow(window);
+        if (!MrCrayfishDeviceMod.DEVELOPER_MODE) {
+            drawString(pose, font, "Alpha v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
+        } else {
+            drawString(pose, font, "Developer Version - " + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
+        }
 
-	    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-	}
+        boolean insideContext = false;
+        if (context != null) {
+            insideContext = isMouseInside(mouseX, mouseY, context.xPosition, context.yPosition, context.xPosition + context.width, context.yPosition + context.height);
+        }
 
-	@Override
-	public boolean openApplication(AppInfo info, File file)
-	{
-		if(!isApplicationInstalled(info))
-			return false;
+        Image.CACHE.forEach((s, cachedImage) -> cachedImage.delete());
 
-		if(!isValidApplication(info))
-			return false;
+        /* Window */
+        for (int i = windows.length - 1; i >= 0; i--) {
+            Window<?> window = windows[i];
+            if (window != null) {
+                window.render(pose, this, minecraft, posX + BORDER, posY + BORDER, mouseX, mouseY, i == 0 && !insideContext, partialTicks);
+            }
+        }
 
-		Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
-		if(optional.isPresent())
-		{
-			Application application = optional.get();
-			boolean alreadyRunning = isApplicationRunning(info);
-			openApplication(application, null);
-			if(isApplicationRunning(info))
-			{
-				if(!application.handleFile(file))
-				{
-					if(!alreadyRunning)
-					{
-						closeApplication(application);
-					}
-					return false;
-				}
-				return true;
-			}
-		}
-		return false;
-	}
+        /* Application Bar */
+        bar.render(pose, this, minecraft, posX + 10, posY + DEVICE_HEIGHT - 28, mouseX, mouseY, partialTicks);
 
-	@Override
-	public void closeApplication(AppInfo info)
-	{
-		Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
-		optional.ifPresent(this::closeApplication);
-	}
+        if (context != null) {
+            context.render(pose, this, minecraft, context.xPosition, context.yPosition, mouseX, mouseY, true, partialTicks);
+        }
 
-	private void closeApplication(Application app)
-	{
-		for(int i = 0; i < windows.length; i++)
-		{
-			Window<Application> window = windows[i];
-			if(window != null)
-			{
-				if(window.content.getInfo().equals(app.getInfo()))
-				{
-					if(app.isDirty())
-					{
-						NBTTagCompound container = new NBTTagCompound();
-						app.save(container);
-						app.clean();
-						appData.setTag(app.getInfo().getFormattedId(), container);
-						TaskManager.sendTask(new TaskUpdateApplicationData(pos.getX(), pos.getY(), pos.getZ(), app.getInfo().getFormattedId(), container));
-					}
-
-					if(app instanceof SystemApplication)
-					{
-						((SystemApplication) app).setLaptop(null);
-					}
-
-					window.handleClose();
-					windows[i] = null;
-					return;
-				}
-			}
-		}
-	}
-	
-	private void addWindow(Window<Application> window)
-	{
-		if(hasReachedWindowLimit())
-			return;
-
-		updateWindowStack();
-		windows[0] = window;
-	}
-
-	private void updateWindowStack()
-	{
-		for(int i = windows.length - 1; i >= 0; i--)
-		{
-			if(windows[i] != null)
-			{
-				if(i + 1 < windows.length)
-				{
-					if(i == 0 || windows[i - 1] != null)
-					{
-						if(windows[i + 1] == null)
-						{
-							windows[i + 1] = windows[i];
-							windows[i] = null;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	private boolean hasReachedWindowLimit()
-	{
-		for(Window window : windows)
-		{
-			if(window == null) return false;
-		}
-		return true;
-	}
-
-	private boolean isMouseOnScreen(int mouseX, int mouseY)
-	{
-		int posX = (width - SCREEN_WIDTH) / 2;
-		int posY = (height - SCREEN_HEIGHT) / 2;
-		return GuiHelper.isMouseInside(mouseX, mouseY, posX, posY, posX + SCREEN_WIDTH, posY + SCREEN_HEIGHT);
-	}
-
-	private boolean isMouseWithinWindowBar(int mouseX, int mouseY, Window window)
-	{
-		if(window == null) return false;
-		int posX = (width - SCREEN_WIDTH) / 2;
-		int posY = (height - SCREEN_HEIGHT) / 2;
-		return GuiHelper.isMouseInside(mouseX, mouseY, posX + window.offsetX + 1, posY + window.offsetY + 1, posX + window.offsetX + window.width - 13, posY + window.offsetY + 11);
-	}
-
-	private boolean isMouseWithinWindow(int mouseX, int mouseY, Window window)
-	{
-		if(window == null) return false;
-		int posX = (width - SCREEN_WIDTH) / 2;
-		int posY = (height - SCREEN_HEIGHT) / 2;
-		return GuiHelper.isMouseInside(mouseX, mouseY, posX + window.offsetX, posY + window.offsetY, posX + window.offsetX + window.width, posY + window.offsetY + window.height);
-	}
-	
-	public boolean isMouseWithinApp(int mouseX, int mouseY, Window window)
-	{
-		int posX = (width - SCREEN_WIDTH) / 2;
-		int posY = (height - SCREEN_HEIGHT) / 2;
-		return GuiHelper.isMouseInside(mouseX, mouseY, posX + window.offsetX + 1, posY + window.offsetY + 13, posX + window.offsetX + window.width - 1, posY + window.offsetY + window.height - 1);
-	}
-
-	public boolean isApplicationRunning(AppInfo info)
-	{
-		for(Window window : windows) 
-		{
-			if(window != null && ((Application) window.content).getInfo() == info)
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public void nextWallpaper()
-	{
-		if(currentWallpaper + 1 < WALLPAPERS.size())
-		{
-			currentWallpaper++;
-		}
-	}
-	
-	public void prevWallpaper()
-	{
-		if(currentWallpaper - 1 >= 0)
-		{
-			currentWallpaper--;
-		}
-	}
-
-	public int getCurrentWallpaper()
-	{
-		return currentWallpaper;
-	}
-
-	public static void addWallpaper(ResourceLocation wallpaper)
-	{
-		if(wallpaper != null)
-		{
-			WALLPAPERS.add(wallpaper);
-		}
-	}
-
-	public List<ResourceLocation> getWallapapers()
-	{
-		return ImmutableList.copyOf(WALLPAPERS);
-	}
-
-	@Nullable
-	public Application getApplication(String appId)
-	{
-		return APPLICATIONS.stream().filter(app -> app.getInfo().getFormattedId().equals(appId)).findFirst().orElse(null);
-	}
-
-	@Override
-	public List<AppInfo> getInstalledApplications()
-	{
-		return ImmutableList.copyOf(installedApps);
-	}
-
-	public boolean isApplicationInstalled(AppInfo info)
-	{
-		return info.isSystemApp() || installedApps.contains(info);
-	}
-
-	private boolean isValidApplication(AppInfo info)
-	{
-		if(MrCrayfishDeviceMod.proxy.hasAllowedApplications())
-		{
-			return MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(info);
-		}
-		return true;
-	}
-
-	public void installApplication(AppInfo info, @Nullable Callback<Object> callback)
-	{
-		if(!isValidApplication(info))
-			return;
-
-		Task task = new TaskInstallApp(info, pos, true);
-		task.setCallback((tagCompound, success) ->
-		{
-            if(success)
-			{
-				installedApps.add(info);
-				installedApps.sort(AppInfo.SORT_NAME);
-			}
-			if(callback != null)
-			{
-				callback.execute(null, success);
-			}
+        Image.CACHE.entrySet().removeIf(entry ->
+        {
+            Image.CachedImage cachedImage = entry.getValue();
+            if (cachedImage.isDynamic() && cachedImage.isPendingDeletion()) {
+                int texture = cachedImage.getTextureId();
+                if (texture != -1) {
+                    GL11.glDeleteTextures(texture);
+                }
+                return true;
+            }
+            return false;
         });
-		TaskManager.sendTask(task);
-	}
 
-	public void removeApplication(AppInfo info, @Nullable Callback<Object> callback)
-	{
-		if(!isValidApplication(info))
-			return;
+        super.render(pose, mouseX, mouseY, partialTicks);
+    }
 
-		Task task = new TaskInstallApp(info, pos, false);
-		task.setCallback((tagCompound, success) ->
-		{
-			if(success)
-			{
-				installedApps.remove(info);
-			}
-			if(callback != null)
-			{
-				callback.execute(null, success);
-			}
-		});
-		TaskManager.sendTask(task);
-	}
+    private boolean isMouseInside(int mouseX, int mouseY, int startX, int startY, int endX, int endY) {
+        return mouseX >= startX && mouseX <= endX && mouseY >= startY && mouseY <= endY;
+    }
 
-	public static System getSystem()
-	{
-		return system;
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+        this.lastMouseX = (int) mouseX;
+        this.lastMouseY = (int) mouseY;
 
-	public static void setMainDrive(Drive mainDrive)
-	{
-		if(Laptop.mainDrive == null)
-		{
-			Laptop.mainDrive = mainDrive;
-		}
-	}
+        int posX = (width - SCREEN_WIDTH) / 2;
+        int posY = (height - SCREEN_HEIGHT) / 2;
 
-	@Nullable
-	public static Drive getMainDrive()
-	{
-		return mainDrive;
-	}
+        if (this.context != null) {
+            int dropdownX = context.xPosition;
+            int dropdownY = context.yPosition;
+            if (isMouseInside((int) mouseX, (int) mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height)) {
+                this.context.handleMouseClick((int) mouseX, (int) mouseY, mouseButton);
+                return false;
+            } else {
+                this.context = null;
+            }
+        }
 
-	public List<Application> getApplications()
-	{
-		return APPLICATIONS;
-	}
+        this.bar.handleClick(this, posX, posY + SCREEN_HEIGHT - TaskBar.BAR_HEIGHT, (int) mouseX, (int) mouseY, mouseButton);
 
-	public TaskBar getTaskBar()
-	{
-		return bar;
-	}
+        for (int i = 0; i < windows.length; i++) {
+            Window<Application> window = (Window<Application>) windows[i];
+            if (window != null) {
+                Window<Dialog> dialogWindow = window.getContent().getActiveDialog();
+                if (isMouseWithinWindow((int) mouseX, (int) mouseY, window) || isMouseWithinWindow((int) mouseX, (int) mouseY, dialogWindow)) {
+                    windows[i] = null;
+                    updateWindowStack();
+                    windows[0] = window;
 
-	public Settings getSettings()
-	{
-		return settings;
-	}
+                    windows[0].handleMouseClick(this, posX, posY, (int) mouseX, (int) mouseY, mouseButton);
 
-	@Override
-	public boolean doesGuiPauseGame()
-	{
-		return false;
-	}
+                    if (isMouseWithinWindowBar((int) mouseX, (int) mouseY, dialogWindow)) {
+                        this.dragging = true;
+                        return false;
+                    }
 
-	@Override
-	public void openContext(Layout layout, int x, int y)
-	{
-		layout.updateComponents(x, y);
-		context = layout;
-		layout.init();
-	}
+                    if (isMouseWithinWindowBar((int) mouseX, (int) mouseY, window) && dialogWindow == null) {
+                        this.dragging = true;
+                        return false;
+                    }
+                    break;
+                }
+            }
+        }
 
-	@Override
-	public boolean hasContext()
-	{
-		return context != null;
-	}
+        return super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
 
-	@Override
-	public void closeContext()
-	{
-		context = null;
-		dragging = false;
-	}
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int state) {
+        super.mouseReleased(mouseX, mouseY, state);
+        this.dragging = false;
+        if (this.context != null) {
+            int dropdownX = context.xPosition;
+            int dropdownY = context.yPosition;
+            if (isMouseInside((int) mouseX, (int) mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height)) {
+                this.context.handleMouseRelease((int) mouseX, (int) mouseY, state);
+            }
+        } else if (windows[0] != null) {
+            windows[0].handleMouseRelease((int) mouseX, (int) mouseY, state);
+        }
+        return true;
+    }
+
+    @Override
+    public void afterKeyboardAction() {
+//        if (Keyboard.getEventKeyState()) {
+//            char pressed = Keyboard.getEventCharacter();
+//            int code = Keyboard.getEventKey();
+//
+//            if (windows[0] != null) {
+//                windows[0].handleKeyTyped(pressed, code);
+//            }
+//
+////            super.charTyped(pressed, code);
+//        } else {
+//        }
+
+        // Todo - handle key presses
+//        this.minecraft.dispatchKeypresses();
+    }
+
+    @Override
+    public boolean charTyped(char codePoint, int modifiers) {
+        boolean override = super.charTyped(codePoint, modifiers);
+        if (!override && windows[0] != null)
+            windows[0].handleKeyTyped(codePoint, modifiers);
+        return override;
+    }
+
+    @Override
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        boolean b = super.keyReleased(keyCode, scanCode, modifiers);
+
+        if (keyCode >= 32 && keyCode < 256 && windows[0] != null) {
+            windows[0].handleKeyReleased((char) InputConstants.getKey(keyCode, scanCode).getValue(), keyCode);
+            return true;
+        }
+        return b;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        int posX = (width - SCREEN_WIDTH) / 2;
+        int posY = (height - SCREEN_HEIGHT) / 2;
+
+        if (this.context != null) {
+            int dropdownX = context.xPosition;
+            int dropdownY = context.yPosition;
+            if (isMouseInside((int) mouseX, (int) mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height)) {
+                this.context.handleMouseDrag((int) mouseX, (int) mouseY, button);
+            }
+            return true;
+        }
+
+        if (windows[0] != null) {
+            Window<Application> window = (Window<Application>) windows[0];
+            Window<Dialog> dialogWindow = window.getContent().getActiveDialog();
+            if (dragging) {
+                if (isMouseOnScreen((int) mouseX, (int) mouseY)) {
+                    Objects.requireNonNullElse(dialogWindow, window).handleWindowMove(posX, posY, (int) -(lastMouseX - mouseX), (int) -(lastMouseY - mouseY));
+                } else {
+                    dragging = false;
+                }
+            } else {
+                if (isMouseWithinWindow((int) mouseX, (int) mouseY, window) || isMouseWithinWindow((int) mouseX, (int) mouseY, dialogWindow)) {
+                    window.handleMouseDrag((int) mouseX, (int) mouseY, button);
+                }
+            }
+        }
+        this.lastMouseX = (int) mouseX;
+        this.lastMouseY = (int) mouseY;
+        return true;
+    }
+
+    @Override
+    public void mouseMoved(double pMouseX, double pMouseY) {
+
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        if (delta != 0) {
+            if (windows[0] != null) {
+                windows[0].handleMouseScroll((int) mouseX, (int) mouseY, delta >= 0);
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void renderComponentTooltip(@NotNull PoseStack pose, @NotNull List<Component> tooltips, int x, int y) {
+        super.renderComponentTooltip(pose, tooltips, x, y);
+    }
+
+    public boolean sendApplicationToFront(AppInfo info) {
+        for (int i = 0; i < windows.length; i++) {
+            Window<?> window = windows[i];
+            if (window != null && window.content instanceof Application && ((Application) window.content).getInfo() == info) {
+                windows[i] = null;
+                updateWindowStack();
+                windows[0] = window;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void openApplication(AppInfo info) {
+        openApplication(info, (CompoundTag) null);
+    }
+
+    @Override
+    public void openApplication(AppInfo info, CompoundTag intentTag) {
+        Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
+        optional.ifPresent(application -> openApplication(application, intentTag));
+    }
+
+    private void openApplication(Application app, CompoundTag intent) {
+        if (!isApplicationInstalled(app.getInfo()))
+            return;
+
+        if (!isValidApplication(app.getInfo()))
+            return;
+
+        if (sendApplicationToFront(app.getInfo()))
+            return;
+
+        Window<Application> window = new Window<>(app, this);
+        window.init((width - SCREEN_WIDTH) / 2, (height - SCREEN_HEIGHT) / 2, intent);
+
+        if (appData.contains(app.getInfo().getFormattedId())) {
+            app.load(appData.getCompound(app.getInfo().getFormattedId()));
+        }
+
+        if (app instanceof SystemApplication) {
+            ((SystemApplication) app).setLaptop(this);
+        }
+
+        if (app.getCurrentLayout() == null) {
+            app.restoreDefaultLayout();
+        }
+
+        addWindow(window);
+
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1f));
+    }
+
+    @Override
+    public boolean openApplication(AppInfo info, File file) {
+        if (!isApplicationInstalled(info))
+            return false;
+
+        if (!isValidApplication(info))
+            return false;
+
+        Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
+        if (optional.isPresent()) {
+            Application application = optional.get();
+            boolean alreadyRunning = isApplicationRunning(info);
+            openApplication(application, null);
+            if (isApplicationRunning(info)) {
+                if (!application.handleFile(file)) {
+                    if (!alreadyRunning) {
+                        closeApplication(application);
+                    }
+                    return false;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void closeApplication(AppInfo info) {
+        Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
+        optional.ifPresent(this::closeApplication);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void closeApplication(Application app) {
+        for (int i = 0; i < windows.length; i++) {
+            Window<Application> window = (Window<Application>) windows[i];
+            if (window != null) {
+                if (window.content.getInfo().equals(app.getInfo())) {
+                    if (app.isDirty()) {
+                        CompoundTag container = new CompoundTag();
+                        app.save(container);
+                        app.clean();
+                        appData.put(app.getInfo().getFormattedId(), container);
+                        TaskManager.sendTask(new TaskUpdateApplicationData(pos.getX(), pos.getY(), pos.getZ(), app.getInfo().getFormattedId(), container));
+                    }
+
+                    if (app instanceof SystemApplication) {
+                        ((SystemApplication) app).setLaptop(null);
+                    }
+
+                    window.handleClose();
+                    windows[i] = null;
+                    return;
+                }
+            }
+        }
+    }
+
+    private void addWindow(Window<Application> window) {
+        if (hasReachedWindowLimit())
+            return;
+
+        updateWindowStack();
+        windows[0] = window;
+    }
+
+    private void updateWindowStack() {
+        for (int i = windows.length - 1; i >= 0; i--) {
+            if (windows[i] != null) {
+                if (i + 1 < windows.length) {
+                    if (i == 0 || windows[i - 1] != null) {
+                        if (windows[i + 1] == null) {
+                            windows[i + 1] = windows[i];
+                            windows[i] = null;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean hasReachedWindowLimit() {
+        for (Window<?> window : windows) {
+            if (window == null) return false;
+        }
+        return true;
+    }
+
+    private boolean isMouseOnScreen(int mouseX, int mouseY) {
+        int posX = (width - SCREEN_WIDTH) / 2;
+        int posY = (height - SCREEN_HEIGHT) / 2;
+        return isMouseInside(mouseX, mouseY, posX, posY, posX + SCREEN_WIDTH, posY + SCREEN_HEIGHT);
+    }
+
+    private boolean isMouseWithinWindowBar(int mouseX, int mouseY, Window<?> window) {
+        if (window == null) return false;
+        int posX = (width - SCREEN_WIDTH) / 2;
+        int posY = (height - SCREEN_HEIGHT) / 2;
+        return isMouseInside(mouseX, mouseY, posX + window.offsetX + 1, posY + window.offsetY + 1, posX + window.offsetX + window.width - 13, posY + window.offsetY + 11);
+    }
+
+    private boolean isMouseWithinWindow(int mouseX, int mouseY, Window<?> window) {
+        if (window == null) return false;
+        int posX = (width - SCREEN_WIDTH) / 2;
+        int posY = (height - SCREEN_HEIGHT) / 2;
+        return isMouseInside(mouseX, mouseY, posX + window.offsetX, posY + window.offsetY, posX + window.offsetX + window.width, posY + window.offsetY + window.height);
+    }
+
+    public boolean isMouseWithinApp(int mouseX, int mouseY, Window<?> window) {
+        int posX = (width - SCREEN_WIDTH) / 2;
+        int posY = (height - SCREEN_HEIGHT) / 2;
+        return isMouseInside(mouseX, mouseY, posX + window.offsetX + 1, posY + window.offsetY + 13, posX + window.offsetX + window.width - 1, posY + window.offsetY + window.height - 1);
+    }
+
+    public boolean isApplicationRunning(AppInfo info) {
+        for (Window<?> window : windows) {
+            if (window != null && ((Application) window.content).getInfo() == info) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void nextWallpaper() {
+        if (currentWallpaper + 1 < WALLPAPERS.size()) {
+            currentWallpaper++;
+        }
+    }
+
+    public void prevWallpaper() {
+        if (currentWallpaper - 1 >= 0) {
+            currentWallpaper--;
+        }
+    }
+
+    public int getCurrentWallpaper() {
+        return currentWallpaper;
+    }
+
+    public List<ResourceLocation> getWallapapers() {
+        return ImmutableList.copyOf(WALLPAPERS);
+    }
+
+    @Nullable
+    public Application getApplication(String appId) {
+        return APPLICATIONS.stream().filter(app -> app.getInfo().getFormattedId().equals(appId)).findFirst().orElse(null);
+    }
+
+    @Override
+    public List<AppInfo> getInstalledApplications() {
+        return ImmutableList.copyOf(installedApps);
+    }
+
+    public boolean isApplicationInstalled(AppInfo info) {
+        return info.isSystemApp() || installedApps.contains(info);
+    }
+
+    private boolean isValidApplication(AppInfo info) {
+        if (MrCrayfishDeviceMod.proxy.hasAllowedApplications()) {
+            return MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(info);
+        }
+        return true;
+    }
+
+    public void installApplication(AppInfo info, @Nullable Callback<Object> callback) {
+        if (!isValidApplication(info))
+            return;
+
+        Task task = new TaskInstallApp(info, pos, true);
+        task.setCallback((tagCompound, success) ->
+        {
+            if (success) {
+                installedApps.add(info);
+                installedApps.sort(AppInfo.SORT_NAME);
+            }
+            if (callback != null) {
+                callback.execute(null, success);
+            }
+        });
+        TaskManager.sendTask(task);
+    }
+
+    public void removeApplication(AppInfo info, @Nullable Callback<Object> callback) {
+        if (!isValidApplication(info))
+            return;
+
+        Task task = new TaskInstallApp(info, pos, false);
+        task.setCallback((tagCompound, success) ->
+        {
+            if (success) {
+                installedApps.remove(info);
+            }
+            if (callback != null) {
+                callback.execute(null, success);
+            }
+        });
+        TaskManager.sendTask(task);
+    }
+
+    public List<Application> getApplications() {
+        return APPLICATIONS;
+    }
+
+    public TaskBar getTaskBar() {
+        return bar;
+    }
+
+    public Settings getSettings() {
+        return settings;
+    }
+
+    @Override
+    public boolean isPauseScreen() {
+        return false;
+    }
+
+    @Override
+    public void openContext(Layout layout, int x, int y) {
+        layout.updateComponents(x, y);
+        context = layout;
+        layout.init();
+    }
+
+    @Override
+    public boolean hasContext() {
+        return context != null;
+    }
+
+    @Override
+    public void closeContext() {
+        context = null;
+        dragging = false;
+    }
 }

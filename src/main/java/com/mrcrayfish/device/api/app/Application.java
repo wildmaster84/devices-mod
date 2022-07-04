@@ -1,6 +1,6 @@
 package com.mrcrayfish.device.api.app;
 
-import com.mrcrayfish.device.MrCrayfishDeviceMod;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Window;
@@ -9,39 +9,38 @@ import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.util.GLHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 
-import javax.annotation.Nullable;
-import java.lang.*;
+import java.util.Objects;
 
 /**
  * The abstract base class for creating applications.
  *
  * @author MrCrayfish
  */
-public abstract class Application extends Wrappable
-{
-	protected final AppInfo info = null;
-	private BlockPos laptopPositon;
+public abstract class Application extends Wrappable {
+    protected final AppInfo info = null;
+    private final Layout defaultLayout = new Layout();
+    private BlockPos laptopPositon;
+    private int width, height;
+    private Layout currentLayout;
 
-	private int width, height;
-
-	private final Layout defaultLayout = new Layout();
-	private Layout currentLayout;
-
-    /** If set to true, will update NBT data for Application */
+    /**
+     * If set to true, will update NBT data for Application
+     */
     private boolean needsDataUpdate = false;
 
-	/** If set to true, will update layout */
-	private boolean pendingLayoutUpdate = false;
+    /**
+     * If set to true, will update layout
+     */
+    private boolean pendingLayoutUpdate = false;
 
-	public AppInfo getInfo()
-	{
-		return info;
-	}
+    public AppInfo getInfo() {
+        return info;
+    }
 
     /**
      * Adds a component to the default layout. Don't get this confused with your
@@ -51,23 +50,28 @@ public abstract class Application extends Wrappable
      *
      * @param c the component to add to the default layout
      */
-    protected final void addComponent(Component c)
-    {
-        if(c != null)
-        {
+    protected final void addComponent(Component c) {
+        if (c != null) {
             defaultLayout.addComponent(c);
         }
     }
 
     /**
+     * Gets the current layout being displayed
+     *
+     * @return the current layout
+     */
+    public final Layout getCurrentLayout() {
+        return currentLayout;
+    }
+
+    /**
      * Sets the current layout of the application.
      *
-     * @param layout
+     * @param layout the layout to set
      */
-    public final void setCurrentLayout(Layout layout)
-    {
-        if(currentLayout != null)
-        {
+    public final void setCurrentLayout(Layout layout) {
+        if (currentLayout != null) {
             currentLayout.handleUnload();
         }
         this.currentLayout = layout;
@@ -77,75 +81,67 @@ public abstract class Application extends Wrappable
         this.currentLayout.handleLoad();
     }
 
-	/**
-	 * Gets the current layout being displayed
-	 * 
-	 * @return the current layout
-	 */
-	public final Layout getCurrentLayout()
-	{
-		return currentLayout;
-	}
+    /**
+     * Restores the current layout to the default layout
+     */
+    public final void restoreDefaultLayout() {
+        this.setCurrentLayout(defaultLayout);
+    }
 
-	/**
-	 * Restores the current layout to the default layout
-	 */
-	public final void restoreDefaultLayout()
-	{
-		this.setCurrentLayout(defaultLayout);
-	}
-
-	/**
-	 * The default initialization method. Clears any components in the default
-	 * layout and sets it as the current layout. If you override this method and
-	 * are using the default layout, make sure you call it using
-	 * <code>super.init(x, y)</code>
-	 * <p>
-	 * The parameters passed are the x and y location of the top left corner or
-	 * your application window.
-	 */
-	@Override
-	public abstract void init(@Nullable NBTTagCompound intent);
+    /**
+     * The default initialization method. Clears any components in the default
+     * layout and sets it as the current layout. If you override this method and
+     * are using the default layout, make sure you call it using
+     * <code>super.init(x, y)</code>
+     * <p>
+     * The parameters passed are the x and y location of the top left corner or
+     * your application window.
+     */
+    @Override
+    public abstract void init(@Nullable CompoundTag intent);
 
     @Override
-    public void onTick()
-    {
+    public void onTick() {
         currentLayout.handleTick();
     }
 
     // TODO Remove laptop instance
 
     /**
-     * @param laptop
-     * @param mc
-     * @param x
-     * @param y
-     * @param mouseX
-     * @param mouseY
-     * @param active
-     * @param partialTicks
+     * Renders the application. This method is called every frame.
+     *
+     * @param pose         the current pose stack.
+     * @param laptop       the laptop instance.
+     * @param mc           the minecraft instance.
+     * @param x            the x position of the top left corner of the application window.
+     * @param y            the y position of the top left corner of the application window.
+     * @param mouseX       the x position of the mouse.
+     * @param mouseY       the y position of the mouse.
+     * @param active       if the application is focused.
+     * @param partialTicks the render partial ticks.
      */
     @Override
-    public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active, float partialTicks)
-    {
-        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+    public void render(PoseStack pose, Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active, float partialTicks) {
+//        GL11.glEnable(GL11.GL_SCISSOR_TEST);
 
         GLHelper.pushScissor(x, y, width, height);
-        currentLayout.render(laptop, mc, x, y, mouseX, mouseY, active, partialTicks);
+        currentLayout.render(pose, laptop, mc, x, y, mouseX, mouseY, active, partialTicks);
         GLHelper.popScissor();
 
-        if(!GLHelper.isScissorStackEmpty())
-        {
-            MrCrayfishDeviceMod.getLogger().error("ERROR: A component is not popping it's scissor!");
-        }
-        GLHelper.clearScissorStack();
+        // TODO Port this to 1.18.2 if possible
+//        if (!GLHelper.isScissorStackEmpty()) {
+//            MrCrayfishDeviceMod.getLogger().error("ERROR: A component is not popping it's scissor!");
+//        }
+//        GLHelper.clearScissorStack();
 
-        GL11.glDisable(GL11.GL_SCISSOR_TEST);
+//        GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
-        currentLayout.renderOverlay(laptop, mc, mouseX, mouseY, active);
+        currentLayout.renderOverlay(pose, laptop, mc, mouseX, mouseY, active);
 
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderHelper.disableStandardItemLighting();
+        GL11.glColor4f(1f, 1f, 1f, 1f);
+
+        // TODO Port this to 1.18.2 if possible
+//        Lighting.turnOff();
     }
 
     /**
@@ -157,8 +153,7 @@ public abstract class Application extends Wrappable
      * @param mouseButton the clicked mouse button
      */
     @Override
-    public void handleMouseClick(int mouseX, int mouseY, int mouseButton)
-    {
+    public void handleMouseClick(int mouseX, int mouseY, int mouseButton) {
         currentLayout.handleMouseClick(mouseX, mouseY, mouseButton);
     }
 
@@ -171,8 +166,7 @@ public abstract class Application extends Wrappable
      * @param mouseButton the pressed mouse button
      */
     @Override
-    public void handleMouseDrag(int mouseX, int mouseY, int mouseButton)
-    {
+    public void handleMouseDrag(int mouseX, int mouseY, int mouseButton) {
         currentLayout.handleMouseDrag(mouseX, mouseY, mouseButton);
     }
 
@@ -185,8 +179,7 @@ public abstract class Application extends Wrappable
      * @param mouseButton the button that was released
      */
     @Override
-    public void handleMouseRelease(int mouseX, int mouseY, int mouseButton)
-    {
+    public void handleMouseRelease(int mouseX, int mouseY, int mouseButton) {
         currentLayout.handleMouseRelease(mouseX, mouseY, mouseButton);
     }
 
@@ -199,8 +192,7 @@ public abstract class Application extends Wrappable
      * @param direction the direction of the scroll. true is up, false is down
      */
     @Override
-    public void handleMouseScroll(int mouseX, int mouseY, boolean direction)
-    {
+    public void handleMouseScroll(int mouseX, int mouseY, boolean direction) {
         currentLayout.handleMouseScroll(mouseX, mouseY, direction);
     }
 
@@ -212,14 +204,12 @@ public abstract class Application extends Wrappable
      * @param code      the typed character code
      */
     @Override
-    public void handleKeyTyped(char character, int code)
-    {
+    public void handleKeyTyped(char character, int code) {
         currentLayout.handleKeyTyped(character, code);
     }
 
     @Override
-    public void handleKeyReleased(char character, int code)
-    {
+    public void handleKeyReleased(char character, int code) {
         currentLayout.handleKeyReleased(character, code);
     }
 
@@ -229,34 +219,32 @@ public abstract class Application extends Wrappable
      * Updates the components of the current layout to adjust to new window
      * position. There is really be no reason to call this method.
      *
-     * @param x
-     * @param y
+     * @param x the x position of the top left corner of the application window.
+     * @param y the y position of the top left corner of the application window.
      */
     @Override
-    public final void updateComponents(int x, int y)
-    {
+    public final void updateComponents(int x, int y) {
         currentLayout.updateComponents(x, y);
     }
 
-	/**
-	 * Called when the application is closed
-	 */
-	@Override
-	public void onClose()
-	{
-		defaultLayout.clear();
-		currentLayout = null;
-	}
+    /**
+     * Called when the application is closed
+     */
+    @Override
+    public void onClose() {
+        defaultLayout.clear();
+        currentLayout = null;
+    }
 
     /**
      * Called when you first load up your application. Allows you to read any
      * stored data you have saved. Only called if you have saved data. This
-     * method is called after {{@link Wrappable#init(NBTTagCompound)} so you can update any
+     * method is called after {{@link Wrappable#init(CompoundTag)} so you can update any
      * Components with this data.
      *
      * @param tagCompound the tag compound where you saved data is
      */
-    public abstract void load(NBTTagCompound tagCompound);
+    public abstract void load(CompoundTag tagCompound);
 
     /**
      * Allows you to save data from your application. This is only called if
@@ -265,7 +253,7 @@ public abstract class Application extends Wrappable
      *
      * @param tagCompound the tag compound to save your data to
      */
-    public abstract void save(NBTTagCompound tagCompound);
+    public abstract void save(CompoundTag tagCompound);
 
     /**
      * Sets the defaults layout width. It should be noted that the width must be
@@ -273,9 +261,8 @@ public abstract class Application extends Wrappable
      *
      * @param width the width
      */
-    protected final void setDefaultWidth(int width)
-    {
-        if(width < 20) throw new IllegalArgumentException("Width must be larger than 20");
+    protected final void setDefaultWidth(int width) {
+        if (width < 20) throw new IllegalArgumentException("Width must be larger than 20");
         this.defaultLayout.width = width;
     }
 
@@ -285,9 +272,8 @@ public abstract class Application extends Wrappable
      *
      * @param height the height
      */
-    protected final void setDefaultHeight(int height)
-    {
-        if(height < 20) throw new IllegalArgumentException("Height must be larger than 20");
+    protected final void setDefaultHeight(int height) {
+        if (height < 20) throw new IllegalArgumentException("Height must be larger than 20");
         this.defaultLayout.height = height;
     }
 
@@ -295,8 +281,7 @@ public abstract class Application extends Wrappable
      * Marks that data in this application has changed and needs to be saved.
      * You must call this otherwise your data wont be saved!
      */
-    protected void markDirty()
-    {
+    protected void markDirty() {
         needsDataUpdate = true;
     }
 
@@ -305,21 +290,18 @@ public abstract class Application extends Wrappable
      *
      * @return if currently requiring data to be saved
      */
-    public final boolean isDirty()
-    {
+    public final boolean isDirty() {
         return needsDataUpdate;
     }
 
     /**
      * Cancels the data saving for this application
      */
-    public final void clean()
-    {
+    public final void clean() {
         needsDataUpdate = false;
     }
 
-    public final void markForLayoutUpdate()
-    {
+    public final void markForLayoutUpdate() {
         this.pendingLayoutUpdate = true;
     }
 
@@ -329,8 +311,7 @@ public abstract class Application extends Wrappable
      * @return if pending layout update
      */
     @Override
-    public final boolean isPendingLayoutUpdate()
-    {
+    public final boolean isPendingLayoutUpdate() {
         return pendingLayoutUpdate;
     }
 
@@ -338,21 +319,19 @@ public abstract class Application extends Wrappable
      * Clears the pending layout update
      */
     @Override
-    public final void clearPendingLayout()
-    {
+    public final void clearPendingLayout() {
         this.pendingLayoutUpdate = false;
     }
 
-	/**
-	 * Gets the width of this application including the border.
-	 * 
-	 * @return the height
-	 */
-	@Override
-	public final int getWidth()
-	{
-		return width;
-	}
+    /**
+     * Gets the width of this application including the border.
+     *
+     * @return the height
+     */
+    @Override
+    public final int getWidth() {
+        return width;
+    }
 
     /**
      * Gets the height of this application including the title bar.
@@ -360,48 +339,40 @@ public abstract class Application extends Wrappable
      * @return the height
      */
     @Override
-    public final int getHeight()
-    {
+    public final int getHeight() {
         return height;
     }
 
-	/**
-	 * Gets the text in the title bar of the application. You can change the
-	 * text by setting a custom title for your layout. See
-	 * {@link Layout#setTitle}.
-	 * 
-	 * @return The display name
-	 */
-	@Override
-	public String getWindowTitle()
-	{
-		if(currentLayout.hasTitle())
-		{
-			return currentLayout.getTitle();
-		}
-		return info.getName();
-	}
+    /**
+     * Gets the text in the title bar of the application. You can change the
+     * text by setting a custom title for your layout. See
+     * {@link Layout#setTitle}.
+     *
+     * @return The display name
+     */
+    @Override
+    public String getWindowTitle() {
+        if (currentLayout.hasTitle()) {
+            return currentLayout.getTitle();
+        }
+        return Objects.requireNonNull(info).getName();
+    }
 
-    public String getApplicationFolderPath()
-    {
-        return FileSystem.DIR_APPLICATION_DATA + "/" + info.getFormattedId();
+    public String getApplicationFolderPath() {
+        return FileSystem.DIR_APPLICATION_DATA + "/" + Objects.requireNonNull(info).getFormattedId();
     }
 
     /**
      * Gets the active dialog window for this application
      *
-     * @return
+     * @return the dialog window
      */
     @Nullable
-    public Window<Dialog> getActiveDialog()
-    {
+    public Window<Dialog> getActiveDialog() {
         Window<Dialog> dialogWindow = getWindow().getDialogWindow();
-        if(dialogWindow != null)
-        {
-            while(true)
-            {
-                if(dialogWindow.getDialogWindow() == null)
-                {
+        if (dialogWindow != null) {
+            while (true) {
+                if (dialogWindow.getDialogWindow() == null) {
                     return dialogWindow;
                 }
                 dialogWindow = dialogWindow.getDialogWindow();
@@ -417,23 +388,18 @@ public abstract class Application extends Wrappable
      *
      * @param file the file attempting to be opened
      */
-    public boolean handleFile(File file)
-    {
+    public boolean handleFile(File file) {
         return false;
     }
 
-	/**
-	 * Check if an application is equal to another. Checking the ID is
-	 * sufficient as they should be unique.
-	 */
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (obj == null)
-			return false;
-		if (!(obj instanceof Application))
-			return false;
-		Application app = (Application) obj;
-		return app.info.getFormattedId().equals(this.info.getFormattedId());
-	}
+    /**
+     * Check if an application is equal to another. Checking the ID is
+     * sufficient as they should be unique.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (!(obj instanceof Application app)) return false;
+        return Objects.requireNonNull(app.info).getFormattedId().equals(Objects.requireNonNull(this.info).getFormattedId());
+    }
 }

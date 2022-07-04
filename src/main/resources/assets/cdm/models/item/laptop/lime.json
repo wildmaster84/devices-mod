@@ -1,6 +1,6 @@
 {
     "parent": "cdm:item/laptop",
     "textures": {
-        "2": "blocks/wool_colored_lime"
+        "2": "block/wool_colored_lime"
     }
 }

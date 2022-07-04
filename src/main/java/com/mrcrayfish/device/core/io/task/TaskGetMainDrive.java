@@ -3,50 +3,44 @@ package com.mrcrayfish.device.core.io.task;
 import com.mrcrayfish.device.api.io.Drive;
 import com.mrcrayfish.device.api.io.Folder;
 import com.mrcrayfish.device.api.task.Task;
+import com.mrcrayfish.device.block.entity.LaptopBlockEntity;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.io.drive.AbstractDrive;
-import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
  * Author: MrCrayfish
  */
-public class TaskGetMainDrive extends Task
-{
+public class TaskGetMainDrive extends Task {
     private BlockPos pos;
 
     private AbstractDrive mainDrive;
 
-    private TaskGetMainDrive()
-    {
+    private TaskGetMainDrive() {
         super("get_main_drive");
     }
 
-    public TaskGetMainDrive(BlockPos pos)
-    {
+    public TaskGetMainDrive(BlockPos pos) {
         this();
         this.pos = pos;
     }
 
     @Override
-    public void prepareRequest(NBTTagCompound nbt)
-    {
-        nbt.setLong("pos", pos.toLong());
+    public void prepareRequest(CompoundTag nbt) {
+        nbt.putLong("pos", pos.asLong());
     }
 
     @Override
-    public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
-    {
-        TileEntity tileEntity = world.getTileEntity(BlockPos.fromLong(nbt.getLong("pos")));
-        if(tileEntity instanceof TileEntityLaptop)
-        {
-            TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
+    public void processRequest(CompoundTag nbt, Level level, Player player) {
+        BlockEntity tileEntity = level.getBlockEntity(BlockPos.of(nbt.getLong("pos")));
+        if (tileEntity instanceof LaptopBlockEntity) {
+            LaptopBlockEntity laptop = (LaptopBlockEntity) tileEntity;
             FileSystem fileSystem = laptop.getFileSystem();
             mainDrive = fileSystem.getMainDrive();
             this.setSuccessful();
@@ -54,33 +48,27 @@ public class TaskGetMainDrive extends Task
     }
 
     @Override
-    public void prepareResponse(NBTTagCompound nbt)
-    {
-        if(this.isSucessful())
-        {
-            NBTTagCompound mainDriveTag = new NBTTagCompound();
-            mainDriveTag.setString("name", mainDrive.getName());
-            mainDriveTag.setString("uuid", mainDrive.getUUID().toString());
-            mainDriveTag.setString("type", mainDrive.getType().toString());
-            nbt.setTag("main_drive", mainDriveTag);
-            nbt.setTag("structure", mainDrive.getDriveStructure().toTag());
+    public void prepareResponse(CompoundTag nbt) {
+        if (this.isSucessful()) {
+            CompoundTag mainDriveTag = new CompoundTag();
+            mainDriveTag.putString("name", mainDrive.getName());
+            mainDriveTag.putString("uuid", mainDrive.getUuid().toString());
+            mainDriveTag.putString("type", mainDrive.getType().toString());
+            nbt.put("main_drive", mainDriveTag);
+            nbt.put("structure", mainDrive.getDriveStructure().toTag());
         }
     }
 
     @Override
-    public void processResponse(NBTTagCompound nbt)
-    {
-        if(this.isSucessful())
-        {
-            if(Minecraft.getMinecraft().currentScreen instanceof Laptop)
-            {
-                NBTTagCompound structureTag = nbt.getCompoundTag("structure");
-                Drive drive = new Drive(nbt.getCompoundTag("main_drive"));
+    public void processResponse(CompoundTag nbt) {
+        if (this.isSucessful()) {
+            if (Minecraft.getInstance().screen instanceof Laptop) {
+                CompoundTag structureTag = nbt.getCompound("structure");
+                Drive drive = new Drive(nbt.getCompound("main_drive"));
                 drive.syncRoot(Folder.fromTag(FileSystem.LAPTOP_DRIVE_NAME, structureTag));
                 drive.getRoot().validate();
 
-                if(Laptop.getMainDrive() == null)
-                {
+                if (Laptop.getMainDrive() == null) {
                     Laptop.setMainDrive(drive);
                 }
             }

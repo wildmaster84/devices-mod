@@ -1,146 +1,115 @@
 package com.mrcrayfish.device.core.network;
 
 import com.mrcrayfish.device.DeviceConfig;
-import com.mrcrayfish.device.tileentity.TileEntityNetworkDevice;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
+import com.mrcrayfish.device.block.entity.NetworkDeviceBlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
-/**
- * Author: MrCrayfish
- */
-public class Router
-{
+public class Router {
     private final Map<UUID, NetworkDevice> NETWORK_DEVICES = new HashMap<>();
 
     private int timer;
     private UUID routerId;
     private BlockPos pos;
 
-    public Router(BlockPos pos)
-    {
+    public Router(BlockPos pos) {
         this.pos = pos;
     }
 
-    public void update(World world)
-    {
-        if(++timer >= DeviceConfig.getBeaconInterval())
-        {
-            sendBeacon(world);
+    public void tick(Level level) {
+        if (++timer >= DeviceConfig.BEACON_INTERVAL.get()) {
+            sendBeacon(level);
             timer = 0;
         }
     }
 
-    public boolean addDevice(UUID id, String name)
-    {
-        if(NETWORK_DEVICES.size() >= DeviceConfig.getMaxDevices())
-        {
+    public boolean addDevice(UUID id, String name) {
+        if (NETWORK_DEVICES.size() >= DeviceConfig.MAX_DEVICES.get()) {
             return NETWORK_DEVICES.containsKey(id);
         }
-        if(!NETWORK_DEVICES.containsKey(id))
-        {
+        if (!NETWORK_DEVICES.containsKey(id)) {
             NETWORK_DEVICES.put(id, new NetworkDevice(id, name, this));
         }
-        timer = DeviceConfig.getBeaconInterval();
+        timer = DeviceConfig.BEACON_INTERVAL.get();
         return true;
     }
 
-    public boolean addDevice(TileEntityNetworkDevice device)
-    {
-        if(NETWORK_DEVICES.size() >= DeviceConfig.getMaxDevices())
-        {
+    public boolean addDevice(NetworkDeviceBlockEntity device) {
+        if (NETWORK_DEVICES.size() >= DeviceConfig.MAX_DEVICES.get()) {
             return NETWORK_DEVICES.containsKey(device.getId());
         }
-        if(!NETWORK_DEVICES.containsKey(device.getId()))
-        {
+        if (!NETWORK_DEVICES.containsKey(device.getId())) {
             NETWORK_DEVICES.put(device.getId(), new NetworkDevice(device));
         }
         return true;
     }
 
-    public boolean isDeviceRegistered(TileEntityNetworkDevice device)
-    {
+    public boolean isDeviceRegistered(NetworkDeviceBlockEntity device) {
         return NETWORK_DEVICES.containsKey(device.getId());
     }
 
-    public boolean isDeviceConnected(TileEntityNetworkDevice device)
-    {
+    public boolean isDeviceConnected(NetworkDeviceBlockEntity device) {
         return isDeviceRegistered(device) && NETWORK_DEVICES.get(device.getId()).getPos() != null;
     }
 
-    public void removeDevice(TileEntityNetworkDevice device)
-    {
+    public void removeDevice(NetworkDeviceBlockEntity device) {
         NETWORK_DEVICES.remove(device.getId());
     }
 
     @Nullable
-    public TileEntityNetworkDevice getDevice(World world, UUID id)
-    {
-        return NETWORK_DEVICES.containsKey(id) ? NETWORK_DEVICES.get(id).getDevice(world) : null;
+    public NetworkDeviceBlockEntity getDevice(Level level, UUID id) {
+        return NETWORK_DEVICES.containsKey(id) ? NETWORK_DEVICES.get(id).getDevice(level) : null;
     }
 
-    public Collection<NetworkDevice> getNetworkDevices()
-    {
+    public Collection<NetworkDevice> getNetworkDevices() {
         return NETWORK_DEVICES.values();
     }
 
-    public Collection<NetworkDevice> getConnectedDevices(World world)
-    {
-        sendBeacon(world);
-        return NETWORK_DEVICES.values().stream().filter(networkDevice -> networkDevice.getPos() != null).collect(Collectors.toList());
+    public Collection<NetworkDevice> getConnectedDevices(Level level) {
+        sendBeacon(level);
+        return NETWORK_DEVICES.values().stream().filter(device -> device.getPos() != null).toList();
     }
 
-    public Collection<NetworkDevice> getConnectedDevices(final World world, Class<? extends TileEntityNetworkDevice> type)
-    {
-        final Predicate<NetworkDevice> DEVICE_TYPE = networkDevice ->
-        {
-            if(networkDevice.getPos() == null)
+    public Collection<NetworkDevice> getConnectedDevices(final Level level, Class<? extends NetworkDeviceBlockEntity> type) {
+        final Predicate<NetworkDevice> DEVICE_TYPE = networkDevice -> {
+            if (networkDevice.getPos() == null)
                 return false;
 
-            TileEntity tileEntity = world.getTileEntity(networkDevice.getPos());
-            if(tileEntity instanceof TileEntityNetworkDevice)
-            {
-                return type.isAssignableFrom(tileEntity.getClass());
+            BlockEntity blockEntity = level.getBlockEntity(networkDevice.getPos());
+            if (blockEntity instanceof NetworkDeviceBlockEntity device) {
+                return type.isAssignableFrom(device.getClass());
             }
             return false;
         };
-        return getConnectedDevices(world).stream().filter(DEVICE_TYPE).collect(Collectors.toList());
+        return getConnectedDevices(level).stream().filter(DEVICE_TYPE).toList();
     }
 
-    private void sendBeacon(World world)
-    {
-        if(world.isRemote)
+    private void sendBeacon(Level level) {
+        if (level.isClientSide)
             return;
 
-        NETWORK_DEVICES.forEach((id, device) -> device.setPos(null));
-        int range = DeviceConfig.getSignalRange();
-        for(int y = -range; y < range + 1; y++)
-        {
-            for(int z = -range; z < range + 1; z++)
-            {
-                for(int x = -range; x < range + 1; x++)
-                {
+        NETWORK_DEVICES.forEach((uuid, device) -> device.setPos(null));
+        int range = DeviceConfig.SIGNAL_RANGE.get();
+        for (int x = -range; x <= range; x++) {
+            for (int y = -range; y <= range; y++) {
+                for (int z = -range; z <= range; z++) {
                     BlockPos currentPos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
-                    TileEntity tileEntity = world.getTileEntity(currentPos);
-                    if(tileEntity instanceof TileEntityNetworkDevice)
-                    {
-                        TileEntityNetworkDevice tileEntityNetworkDevice = (TileEntityNetworkDevice) tileEntity;
-                        if(!NETWORK_DEVICES.containsKey(tileEntityNetworkDevice.getId()))
+                    BlockEntity blockEntity = level.getBlockEntity(currentPos);
+                    if (blockEntity instanceof NetworkDeviceBlockEntity device) {
+                        if (!NETWORK_DEVICES.containsKey(device.getId()))
                             continue;
-                        if(tileEntityNetworkDevice.receiveBeacon(this))
-                        {
-                            NETWORK_DEVICES.get(tileEntityNetworkDevice.getId()).update(tileEntityNetworkDevice);
+                        if (device.receiveBeacon(this)) {
+                            NETWORK_DEVICES.get(device.getId()).setPos(currentPos);
                         }
                     }
                 }
@@ -148,61 +117,52 @@ public class Router
         }
     }
 
-    public UUID getId()
-    {
-        if(routerId == null)
-        {
+    public UUID getId() {
+        if (routerId == null) {
             routerId = UUID.randomUUID();
         }
         return routerId;
     }
 
-    public BlockPos getPos()
-    {
+    public BlockPos getPos() {
         return pos;
     }
 
-    public void setPos(BlockPos pos)
-    {
+    public void setPos(BlockPos pos) {
         this.pos = pos;
     }
 
-    public NBTTagCompound toTag(boolean includePos)
-    {
-        NBTTagCompound tag = new NBTTagCompound();
-        tag.setUniqueId("id", getId());
+    public CompoundTag toTag(boolean includePos) {
+        CompoundTag tag = new CompoundTag();
+        tag.putUUID("id", getId());
 
-        NBTTagList deviceList = new NBTTagList();
+        ListTag deviceList = new ListTag();
         NETWORK_DEVICES.forEach((id, device) -> {
-            deviceList.appendTag(device.toTag(includePos));
+            deviceList.add(device.toTag(includePos));
         });
-        tag.setTag("network_devices", deviceList);
+        tag.put("network_devices", deviceList);
 
         return tag;
     }
 
-    public static Router fromTag(BlockPos pos, NBTTagCompound tag)
-    {
+    public static Router fromTag(BlockPos pos, CompoundTag tag) {
         Router router = new Router(pos);
-        router.routerId = tag.getUniqueId("id");
+        router.routerId = tag.getUUID("id");
 
-        NBTTagList deviceList = tag.getTagList("network_devices", Constants.NBT.TAG_COMPOUND);
-        for(int i = 0; i < deviceList.tagCount(); i++)
-        {
-            NetworkDevice device = NetworkDevice.fromTag(deviceList.getCompoundTagAt(i));
+        ListTag deviceList = tag.getList("network_devices", 10);
+        for (int i = 0; i < deviceList.size(); i++) {
+            NetworkDevice device = NetworkDevice.fromTag(deviceList.getCompound(i));
             router.NETWORK_DEVICES.put(device.getId(), device);
         }
         return router;
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
-        if(obj == null)
+    public boolean equals(Object obj) {
+        if (obj == null)
             return false;
-        if(!(obj instanceof Router))
+        if (!(obj instanceof Router router))
             return false;
-        Router router = (Router) obj;
-        return router.getId().equals(routerId);
+        return router.getId().equals(getId());
     }
 }

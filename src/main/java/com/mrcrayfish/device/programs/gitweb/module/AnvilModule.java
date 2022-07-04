@@ -2,7 +2,7 @@ package com.mrcrayfish.device.programs.gitweb.module;
 
 import com.mrcrayfish.device.programs.gitweb.component.container.AnvilBox;
 import com.mrcrayfish.device.programs.gitweb.component.container.ContainerBox;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,11 +12,9 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public class AnvilModule extends ContainerModule
-{
+public class AnvilModule extends ContainerModule {
     @Override
-    public String[] getOptionalData()
-    {
+    public String[] getOptionalData() {
         List<String> optionalData = new ArrayList<>();
         optionalData.addAll(Arrays.asList(super.getOptionalData()));
         optionalData.add("slot-1");
@@ -26,14 +24,12 @@ public class AnvilModule extends ContainerModule
     }
 
     @Override
-    public int getHeight()
-    {
+    public int getHeight() {
         return AnvilBox.HEIGHT;
     }
 
     @Override
-    public ContainerBox createContainer(Map<String, String> data)
-    {
+    public ContainerBox createContainer(Map<String, String> data) {
         ItemStack source = getItem(data, "slot-1");
         ItemStack addition = getItem(data, "slot-2");
         ItemStack result = getItem(data, "slot-result");

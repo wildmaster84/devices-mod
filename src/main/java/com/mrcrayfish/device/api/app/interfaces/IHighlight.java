@@ -1,11 +1,10 @@
 package com.mrcrayfish.device.api.app.interfaces;
 
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
-public interface IHighlight
-{
-    TextFormatting[] getKeywordFormatting(String text);
+public interface IHighlight {
+    ChatFormatting[] getKeywordFormatting(String text);
 }

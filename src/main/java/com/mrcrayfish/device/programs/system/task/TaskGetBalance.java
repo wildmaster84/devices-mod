@@ -3,36 +3,34 @@ package com.mrcrayfish.device.programs.system.task;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.utils.BankUtil;
 import com.mrcrayfish.device.programs.system.object.Account;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
-public class TaskGetBalance extends Task 
-{
-	private int balance;
-	
-	public TaskGetBalance()
-	{
-		super("bank_get_balance");
-	}
+public class TaskGetBalance extends Task {
+    private int balance;
 
-	@Override
-	public void prepareRequest(NBTTagCompound nbt) {}
+    public TaskGetBalance() {
+        super("bank_get_balance");
+    }
 
-	@Override
-	public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
-	{
-		Account account = BankUtil.INSTANCE.getAccount(player);
-		this.balance = account.getBalance();
-		this.setSuccessful();
-	}
+    @Override
+    public void prepareRequest(CompoundTag nbt) {
+    }
 
-	@Override
-	public void prepareResponse(NBTTagCompound nbt)
-	{
-		nbt.setInteger("balance", this.balance);
-	}
+    @Override
+    public void processRequest(CompoundTag nbt, Level level, Player player) {
+        Account account = BankUtil.INSTANCE.getAccount(player);
+        this.balance = account.getBalance();
+        this.setSuccessful();
+    }
 
-	@Override
-	public void processResponse(NBTTagCompound nbt) {}
+    @Override
+    public void prepareResponse(CompoundTag nbt) {
+        nbt.putInt("balance", this.balance);
+    }
+
+    @Override
+    public void processResponse(CompoundTag nbt) {
+    }
 }

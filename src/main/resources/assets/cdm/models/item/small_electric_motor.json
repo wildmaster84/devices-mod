@@ -1,10 +1,10 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "0": "blocks/concrete_gray",
-        "1": "blocks/hardened_clay_stained_cyan",
-        "2": "blocks/concrete_white",
-        "3": "blocks/gold_block"
+      "0": "block/concrete_gray",
+      "1": "block/hardened_clay_stained_cyan",
+      "2": "block/concrete_white",
+      "3": "block/gold_block"
     },
     "display": {
         "gui": {

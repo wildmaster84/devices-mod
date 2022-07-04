@@ -1,20 +1,18 @@
 package com.mrcrayfish.device;
 
-import com.mrcrayfish.device.init.DeviceBlocks;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.ItemStack;
+import com.mrcrayfish.device.init.DeviceItems;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
-public class DeviceTab extends CreativeTabs 
-{
-	public DeviceTab(String label) 
-	{
-		super(label);
-	}
+public class DeviceTab extends CreativeModeTab {
+    public DeviceTab(String label) {
+        super(label);
+    }
 
-	@Override
-	public ItemStack getTabIconItem() 
-	{
-		return new ItemStack(DeviceBlocks.LAPTOP, 1, EnumDyeColor.RED.getMetadata());
-	}
+    @NotNull
+    @Override
+    public ItemStack makeIcon() {
+        return new ItemStack(DeviceItems.RED_LAPTOP.get());
+    }
 }

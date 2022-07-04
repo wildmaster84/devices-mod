@@ -1,9 +1,9 @@
 package com.mrcrayfish.device.core.io;
 
 import com.mrcrayfish.device.core.io.FileSystem.Status;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,36 +12,46 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
-public class ServerFolder extends ServerFile
-{
+public class ServerFolder extends ServerFile {
     private List<ServerFile> files = new ArrayList<>();
 
-    public ServerFolder(String name)
-    {
+    public ServerFolder(String name) {
         this(name, false);
     }
 
-    private ServerFolder(String name, boolean protect)
-    {
+    private ServerFolder(String name, boolean protect) {
         this.name = name;
         this.protect = protect;
     }
 
-    public FileSystem.Response add(ServerFile file, boolean override)
-    {
-        if(file == null)
-            return FileSystem.createResponse(Status.FILE_INVALID, "Illegal file");
+    public static ServerFolder fromTag(String name, CompoundTag folderTag) {
+        ServerFolder folder = new ServerFolder(name);
 
-        if(!FileSystem.PATTERN_FILE_NAME.matcher(file.getName()).matches())
+        if (folderTag.contains("protected", Tag.TAG_BYTE)) folder.protect = folderTag.getBoolean("protected");
+
+        CompoundTag fileList = folderTag.getCompound("files");
+        for (String fileName : fileList.getAllKeys()) {
+            CompoundTag fileTag = fileList.getCompound(fileName);
+            if (fileTag.contains("files")) {
+                folder.add(ServerFolder.fromTag(fileName, fileTag), false);
+            } else {
+                folder.add(ServerFile.fromTag(fileName, fileTag), false);
+            }
+        }
+        return folder;
+    }
+
+    public FileSystem.Response add(ServerFile file, boolean override) {
+        if (file == null) return FileSystem.createResponse(Status.FILE_INVALID, "Illegal file");
+
+        if (!FileSystem.PATTERN_FILE_NAME.matcher(file.getName()).matches())
             return FileSystem.createResponse(Status.FILE_INVALID_NAME, "Invalid file name");
 
-        if(hasFile(file.name))
-        {
-            if(!override)
-                return FileSystem.createResponse(Status.FILE_EXISTS, "A file with that name already exists");
-            if(getFile(file.name).isProtected())
+        if (hasFile(file.name)) {
+            if (!override) return FileSystem.createResponse(Status.FILE_EXISTS, "A file with that name already exists");
+            if (getFile(file.name).isProtected())
                 return FileSystem.createResponse(Status.FILE_IS_PROTECTED, "Unable to override protected files");
             files.remove(getFile(file.name));
         }
@@ -51,20 +61,17 @@ public class ServerFolder extends ServerFile
         return FileSystem.createSuccessResponse();
     }
 
-    public FileSystem.Response delete(String name)
-    {
+    public FileSystem.Response delete(String name) {
         return delete(getFile(name));
     }
 
-    public FileSystem.Response delete(ServerFile file)
-    {
-        if(file == null)
-            return FileSystem.createResponse(Status.FILE_INVALID, "Illegal file");
+    public FileSystem.Response delete(ServerFile file) {
+        if (file == null) return FileSystem.createResponse(Status.FILE_INVALID, "Illegal file");
 
-        if(!files.contains(file))
+        if (!files.contains(file))
             return FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "The file does not exist in this folder");
 
-        if(file.isProtected())
+        if (file.isProtected())
             return FileSystem.createResponse(Status.FILE_IS_PROTECTED, "Cannot delete protected files");
 
         file.parent = null;
@@ -72,118 +79,77 @@ public class ServerFolder extends ServerFile
         return FileSystem.createSuccessResponse();
     }
 
-    public boolean hasFile(String name)
-    {
+    public boolean hasFile(String name) {
         return files.stream().anyMatch(file -> file.name.equalsIgnoreCase(name));
     }
 
     @Nullable
-    public ServerFile getFile(String name)
-    {
+    public ServerFile getFile(String name) {
         return files.stream().filter(file -> file.name.equalsIgnoreCase(name)).findFirst().orElse(null);
     }
 
-    public boolean hasFolder(String name)
-    {
+    public boolean hasFolder(String name) {
         return files.stream().anyMatch(file -> file.isFolder() && file.name.equalsIgnoreCase(name));
     }
 
     @Nullable
-    public ServerFolder getFolder(String name)
-    {
+    public ServerFolder getFolder(String name) {
         return (ServerFolder) files.stream().filter(file -> file.isFolder() && file.name.equalsIgnoreCase(name)).findFirst().orElse(null);
     }
 
-    public List<ServerFile> getFiles()
-    {
+    public List<ServerFile> getFiles() {
         return files;
     }
 
-    public List<ServerFile> search(Predicate<ServerFile> conditions, boolean includeSubServerFolders)
-    {
+    public void setFiles(List<ServerFile> files) {
+        this.files = files;
+    }
+
+    public List<ServerFile> search(Predicate<ServerFile> conditions, boolean includeSubServerFolders) {
         List<ServerFile> found = NonNullList.create();
         search(found, conditions, includeSubServerFolders);
         return found;
     }
 
-    private void search(List<ServerFile> results, Predicate<ServerFile> conditions, boolean includeSubServerFolders)
-    {
-        files.stream().forEach(file ->
-        {
-            if(file.isFolder())
-            {
-                if(includeSubServerFolders)
-                {
+    private void search(List<ServerFile> results, Predicate<ServerFile> conditions, boolean includeSubServerFolders) {
+        files.stream().forEach(file -> {
+            if (file.isFolder()) {
+                if (includeSubServerFolders) {
                     ((ServerFolder) file).search(results, conditions, includeSubServerFolders);
                 }
-            }
-            else if(conditions.test(file))
-            {
+            } else if (conditions.test(file)) {
                 results.add(file);
             }
         });
     }
 
-    public void setFiles(List<ServerFile> files)
-    {
-        this.files = files;
-    }
-
     @Override
-    public boolean isFolder()
-    {
+    public boolean isFolder() {
         return true;
     }
 
     @Override
-    public NBTTagCompound toTag()
-    {
-        NBTTagCompound folderTag = new NBTTagCompound();
+    public CompoundTag toTag() {
+        CompoundTag folderTag = new CompoundTag();
 
-        NBTTagCompound fileList = new NBTTagCompound();
-        files.stream().forEach(file -> fileList.setTag(file.getName(), file.toTag()));
-        folderTag.setTag("files", fileList);
+        CompoundTag fileList = new CompoundTag();
+        files.stream().forEach(file -> fileList.put(file.getName(), file.toTag()));
+        folderTag.put("files", fileList);
 
-        if(protect) folderTag.setBoolean("protected", true);
+        if (protect) folderTag.putBoolean("protected", true);
 
         return folderTag;
     }
 
-    public static ServerFolder fromTag(String name, NBTTagCompound folderTag)
-    {
-        ServerFolder folder = new ServerFolder(name);
-
-        if(folderTag.hasKey("protected", Constants.NBT.TAG_BYTE))
-            folder.protect = folderTag.getBoolean("protected");
-
-        NBTTagCompound fileList = folderTag.getCompoundTag("files");
-        for(String fileName : fileList.getKeySet())
-        {
-            NBTTagCompound fileTag = fileList.getCompoundTag(fileName);
-            if(fileTag.hasKey("files"))
-            {
-                folder.add(ServerFolder.fromTag(fileName, fileTag), false);
-            }
-            else
-            {
-                folder.add(ServerFile.fromTag(fileName, fileTag), false);
-            }
-        }
-        return folder;
-    }
-
     @Override
-    public FileSystem.Response setData(@Nonnull NBTTagCompound data)
-    {
+    public FileSystem.Response setData(@Nonnull CompoundTag data) {
         return FileSystem.createResponse(Status.FILE_INVALID_DATA, "Data can not be set to a folder");
     }
 
     @Override
-    public ServerFile copy()
-    {
+    public ServerFile copy() {
         ServerFolder folder = new ServerFolder(name);
-        files.forEach(f ->
-        {
+        files.forEach(f -> {
             ServerFile copy = f.copy();
             copy.protect = false;
             folder.add(copy, false);
@@ -191,14 +157,11 @@ public class ServerFolder extends ServerFile
         return folder;
     }
 
-    public ServerFolder copyStructure()
-    {
+    public ServerFolder copyStructure() {
         ServerFolder folder = new ServerFolder(name, protect);
-        files.forEach(f ->
-        {
-            if(f.isFolder())
-            {
-                folder.add(((ServerFolder)f).copyStructure(), false);
+        files.forEach(f -> {
+            if (f.isFolder()) {
+                folder.add(((ServerFolder) f).copyStructure(), false);
             }
         });
         return folder;

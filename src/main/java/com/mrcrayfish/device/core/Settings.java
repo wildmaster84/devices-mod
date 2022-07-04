@@ -1,46 +1,40 @@
 package com.mrcrayfish.device.core;
 
 import com.mrcrayfish.device.programs.system.object.ColorScheme;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
-public class Settings
-{
+public class Settings {
     private static boolean showAllApps = true;
 
     private ColorScheme colorScheme = new ColorScheme();
 
-    public static void setShowAllApps(boolean showAllApps)
-    {
+    public static void setShowAllApps(boolean showAllApps) {
         Settings.showAllApps = showAllApps;
     }
 
-    public static boolean isShowAllApps()
-    {
+    public static boolean isShowAllApps() {
         return Settings.showAllApps;
     }
 
-    public ColorScheme getColorScheme()
-    {
+    public ColorScheme getColorScheme() {
         return colorScheme;
     }
 
-    public NBTTagCompound toTag()
-    {
-        NBTTagCompound tag = new NBTTagCompound();
-        tag.setBoolean("showAllApps", showAllApps);
-        tag.setTag("colorScheme", colorScheme.toTag());
+    public CompoundTag toTag() {
+        CompoundTag tag = new CompoundTag();
+        tag.putBoolean("showAllApps", showAllApps);
+        tag.put("colorScheme", colorScheme.toTag());
         return tag;
     }
 
-    public static Settings fromTag(NBTTagCompound tag)
-    {
+    public static Settings fromTag(CompoundTag tag) {
         //showAllApps = tag.getBoolean("showAllApps");
 
         Settings settings = new Settings();
-        settings.colorScheme = ColorScheme.fromTag(tag.getCompoundTag("colorScheme"));
+        settings.colorScheme = ColorScheme.fromTag(tag.getCompound("colorScheme"));
         return settings;
     }
 }

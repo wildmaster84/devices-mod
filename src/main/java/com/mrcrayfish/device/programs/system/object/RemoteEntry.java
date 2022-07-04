@@ -5,64 +5,54 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class RemoteEntry implements AppEntry
-{
+public class RemoteEntry implements AppEntry {
     public String id;
     public String name;
     public String author;
     public String description;
     public int screenshots;
-    public String project_id;
+    public String projectId;
 
     @Override
-    public String getId()
-    {
+    public String id() {
         return id;
     }
 
     @Override
-    public String getName()
-    {
+    public String name() {
         return name;
     }
 
     @Override
-    public String getAuthor()
-    {
+    public String author() {
         return author;
     }
 
     @Override
-    public String getDescription()
-    {
+    public String description() {
         return description;
     }
 
     @Override
     @Nullable
-    public String getVersion()
-    {
+    public String version() {
         return null;
     }
 
     @Override
-    public String getIcon()
-    {
+    public String icon() {
         return null;
     }
 
     @Override
-    public String[] getScreenshots()
-    {
+    public String[] screenshots() {
         return null;
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
-        if(obj instanceof AppEntry)
-        {
-            return ((AppEntry) obj).getId().equals(getId());
+    public boolean equals(Object obj) {
+        if (obj instanceof AppEntry) {
+            return ((AppEntry) obj).id().equals(id);
         }
         return false;
     }

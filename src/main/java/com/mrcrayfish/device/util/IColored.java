@@ -1,13 +1,9 @@
 package com.mrcrayfish.device.util;
 
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.world.item.DyeColor;
 
-/**
- * Author: MrCrayfish
- */
-public interface IColored
-{
-    EnumDyeColor getColor();
+public interface IColored extends IHasColor {
+    DyeColor getColor();
 
-    void setColor(EnumDyeColor color);
+    void setColor(DyeColor color);
 }

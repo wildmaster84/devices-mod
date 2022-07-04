@@ -1,126 +1,115 @@
 package com.mrcrayfish.device.api.utils;
 
+import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.gui.Font;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 
-public class RenderUtil
-{
-	public static void renderItem(int x, int y, ItemStack stack, boolean overlay)
-	{
-		GlStateManager.disableDepth();
-		GlStateManager.enableLighting();
-		RenderHelper.enableGUIStandardItemLighting();
-		Minecraft.getMinecraft().getRenderItem().renderItemAndEffectIntoGUI(stack, x, y);
-		if(overlay) Minecraft.getMinecraft().getRenderItem().renderItemOverlays(Minecraft.getMinecraft().fontRenderer, stack, x, y);
-		GlStateManager.enableAlpha();
-		GlStateManager.disableLighting();
-	}
-	
-	public static void drawRectWithTexture(double x, double y, float u, float v, int width, int height, float textureWidth, float textureHeight)
-    {
-		drawRectWithTexture(x, y, 0, u, v, width, height, textureWidth, textureHeight);
-    }
-	
-	/**
-	 * Texture size must be 256x256
-	 * 
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param u
-	 * @param v
-	 * @param width
-	 * @param height
-	 * @param textureWidth
-	 * @param textureHeight
-	 */
-	public static void drawRectWithTexture(double x, double y, double z, float u, float v, int width, int height, float textureWidth, float textureHeight)
-    {
-		float scale = 0.00390625F;
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        buffer.pos(x, y + height, z).tex((double)(u * scale), (double)(v + textureHeight) * scale).endVertex();
-        buffer.pos(x + width, y + height, z).tex((double)(u + textureWidth) * scale, (double)(v + textureHeight) * scale).endVertex();
-        buffer.pos(x + width, y, z).tex((double)(u + textureWidth) * scale, (double)(v * scale)).endVertex();
-        buffer.pos(x, y, z).tex((double)(u * scale), (double)(v * scale)).endVertex();
-        tessellator.draw();
+@SuppressWarnings("unused")
+public class RenderUtil {
+    public static void renderItem(int x, int y, ItemStack stack, boolean overlay) {
+        RenderSystem.disableDepthTest();
+        // Todo - Port to 1.18.2 if possible
+//        RenderSystem.enableLighting();
+        Lighting.setupForFlatItems();
+        Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(stack, x, y);
+        if (overlay)
+            Minecraft.getInstance().getItemRenderer().renderGuiItemDecorations(Minecraft.getInstance().font, stack, x, y);
+
+        // Todo - Port to 1.18.2 if possible
+//        RenderSystem.enableAlpha();
+//        Lighting.turnOff();
     }
 
-	public static void drawRectWithFullTexture(double x, double y, float u, float v, int width, int height)
-	{
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buffer = tessellator.getBuffer();
-		buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-		buffer.pos(x, y + height, 0).tex(0, 1).endVertex();
-		buffer.pos(x + width, y + height, 0).tex(1, 1).endVertex();
-		buffer.pos(x + width, y, 0).tex(1, 0).endVertex();
-		buffer.pos(x, y, 0).tex(0, 0).endVertex();
-		tessellator.draw();
-	}
+    public static void drawRectWithTexture(double x, double y, float u, float v, int width, int height, float textureWidth, float textureHeight) {
+        drawRectWithTexture(x, y, 0, u, v, width, height, textureWidth, textureHeight);
+    }
 
-	public static void drawRectWithTexture(double x, double y, float u, float v, int width, int height, float textureWidth, float textureHeight, int sourceWidth, int sourceHeight)
-	{
-		float scaleWidth = 1.0F / sourceWidth;
-		float scaleHeight = 1.0F / sourceHeight;
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buffer = tessellator.getBuffer();
-		buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-		buffer.pos(x, y + height, 0).tex((double)(u * scaleWidth), (double)(v + textureHeight) * scaleHeight).endVertex();
-		buffer.pos(x + width, y + height, 0).tex((double)(u + textureWidth) * scaleWidth, (double)(v + textureHeight) * scaleHeight).endVertex();
-		buffer.pos(x + width, y, 0).tex((double)(u + textureWidth) * scaleWidth, (double)(v * scaleHeight)).endVertex();
-		buffer.pos(x, y, 0).tex((double)(u * scaleWidth), (double)(v * scaleHeight)).endVertex();
-		tessellator.draw();
-	}
+    /**
+     * Texture size must be 256x256
+     *
+     * @param x             the x position of the rectangle
+     * @param y             the y position of the rectangle
+     * @param z             the z position of the rectangle
+     * @param u             the x position of the texture
+     * @param v             the y position of the texture
+     * @param width         the width of the rectangle
+     * @param height        the height of the rectangle
+     * @param textureWidth  the width of the texture
+     * @param textureHeight the height of the texture
+     */
+    public static void drawRectWithTexture(double x, double y, double z, float u, float v, int width, int height, float textureWidth, float textureHeight) {
+        float scale = 0.00390625f;
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder buffer = tesselator.getBuilder();
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        buffer.vertex(x, y + height, z).uv(u * scale, (v + textureHeight) * scale).endVertex();
+        buffer.vertex(x + width, y + height, z).uv((u + textureWidth) * scale, (v + textureHeight) * scale).endVertex();
+        buffer.vertex(x + width, y, z).uv((u + textureWidth) * scale, v * scale).endVertex();
+        buffer.vertex(x, y, z).uv(u * scale, v * scale).endVertex();
+        tesselator.end();
+    }
 
-	public static void drawApplicationIcon(@Nullable AppInfo info, double x, double y)
-	{
-		//TODO: Reset color GlStateManager.color(1.0F, 1.0F, 1.0F);
-		Minecraft.getMinecraft().getTextureManager().bindTexture(Laptop.ICON_TEXTURES);
-		if(info != null)
-		{
-			drawRectWithTexture(x, y, info.getIconU(), info.getIconV(), 14, 14, 14, 14, 224, 224);
-		}
-		else
-		{
-			drawRectWithTexture(x, y, 0, 0, 14, 14, 14, 14, 224, 224);
-		}
-	}
+    public static void drawRectWithFullTexture(double x, double y, float u, float v, int width, int height) {
+        Tesselator tessellator = Tesselator.getInstance();
+        BufferBuilder buffer = tessellator.getBuilder();
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        buffer.vertex(x, y + height, 0).uv(0, 1).endVertex();
+        buffer.vertex(x + width, y + height, 0).uv(1, 1).endVertex();
+        buffer.vertex(x + width, y, 0).uv(1, 0).endVertex();
+        buffer.vertex(x, y, 0).uv(0, 0).endVertex();
+        tessellator.end();
+    }
 
-	public static void drawStringClipped(String text, int x, int y, int width, int color, boolean shadow)
-	{
-		Laptop.fontRenderer.drawString(clipStringToWidth(text, width) + TextFormatting.RESET, x, y, color, shadow);
-	}
+    public static void drawRectWithTexture(double x, double y, float u, float v, int width, int height, float textureWidth, float textureHeight, int sourceWidth, int sourceHeight) {
+        float scaleWidth = 1f / sourceWidth;
+        float scaleHeight = 1f / sourceHeight;
+        Tesselator tessellator = Tesselator.getInstance();
+        BufferBuilder buffer = tessellator.getBuilder();
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        buffer.vertex(x, y + height, 0).uv(u * scaleWidth, (v + textureHeight) * scaleHeight).endVertex();
+        buffer.vertex(x + width, y + height, 0).uv((u + textureWidth) * scaleWidth, (v + textureHeight) * scaleHeight).endVertex();
+        buffer.vertex(x + width, y, 0).uv((u + textureWidth) * scaleWidth, v * scaleHeight).endVertex();
+        buffer.vertex(x, y, 0).uv(u * scaleWidth, v * scaleHeight).endVertex();
+        tessellator.end();
+    }
 
-	public static String clipStringToWidth(String text, int width)
-	{
-		FontRenderer fontRenderer = Laptop.fontRenderer;
-		String clipped = text;
-		if(fontRenderer.getStringWidth(clipped) > width)
-		{
-			clipped = fontRenderer.trimStringToWidth(clipped, width - 8) + "...";
-		}
-		return clipped;
-	}
+    public static void drawApplicationIcon(@Nullable AppInfo info, double x, double y) {
+        //TODO: Reset color GlStateManager.color(1f, 1f, 1f);
+        RenderSystem.setShaderTexture(0, Laptop.ICON_TEXTURES);
+        if (info != null) {
+            drawRectWithTexture(x, y, info.getIconU(), info.getIconV(), 14, 14, 14, 14, 224, 224);
+        } else {
+            drawRectWithTexture(x, y, 0, 0, 14, 14, 14, 14, 224, 224);
+        }
+    }
 
-	public static boolean isMouseInside(int mouseX, int mouseY, int x1, int y1, int x2, int y2)
-	{
-		return mouseX >= x1 && mouseX <= x2 && mouseY >= y1 && mouseY <= y2;
-	}
+    public static void drawStringClipped(PoseStack pose, String text, int x, int y, int width, int color, boolean shadow) {
+        if (shadow) Laptop.font.drawShadow(pose, clipStringToWidth(text, width) + ChatFormatting.RESET, x, y, color);
+        else Laptop.font.draw(pose, clipStringToWidth(text, width) + ChatFormatting.RESET, x, y, color);
+    }
 
-	public static int color(int color, int defaultColor)
-	{
-		return color != -1 && color > 0 ? color : defaultColor;
-	}
+    public static String clipStringToWidth(String text, int width) {
+        Font fontRenderer = Laptop.font;
+        String clipped = text;
+        if (fontRenderer.width(clipped) > width) {
+            clipped = fontRenderer.plainSubstrByWidth(clipped, width - 8) + "...";
+        }
+        return clipped;
+    }
+
+    public static boolean isMouseInside(int mouseX, int mouseY, int x1, int y1, int x2, int y2) {
+        return mouseX >= x1 && mouseX <= x2 && mouseY >= y1 && mouseY <= y2;
+    }
+
+    public static int color(int color, int defaultColor) {
+        return color > 0 ? color : defaultColor;
+    }
 }

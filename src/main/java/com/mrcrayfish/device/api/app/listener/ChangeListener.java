@@ -6,8 +6,7 @@ package com.mrcrayfish.device.api.app.listener;
  *
  * @author MrCrayfish
  */
-public interface ChangeListener<T>
-{
+public interface ChangeListener<T> {
     /**
      * Called when the value is changed
      *

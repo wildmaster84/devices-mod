@@ -1,103 +1,90 @@
 package com.mrcrayfish.device.core;
 
-import com.mrcrayfish.device.tileentity.TileEntityDevice;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
+import com.mrcrayfish.device.block.entity.DeviceBlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.UUID;
 
-/**
- * Author: MrCrayfish
- */
-public class Device
-{
+public class Device {
     protected UUID id;
     protected String name;
     protected BlockPos pos;
 
-    protected Device() {}
+    protected Device() {
 
-    public Device(TileEntityDevice device)
-    {
+    }
+
+    public Device(@NotNull DeviceBlockEntity device) {
         this.id = device.getId();
         update(device);
     }
 
-    public Device(UUID id, String name)
-    {
+    public Device(@NotNull UUID id, @NotNull String name) {
         this.id = id;
         this.name = name;
     }
 
-    public UUID getId()
-    {
+    @NotNull
+    public UUID getId() {
         return id;
     }
 
-    public String getName()
-    {
+    @NotNull
+    public String getName() {
         return name;
     }
 
     @Nullable
-    public BlockPos getPos()
-    {
+    public BlockPos getPos() {
         return pos;
     }
 
-    public void setPos(BlockPos pos)
-    {
+    public void setPos(@Nullable BlockPos pos) {
         this.pos = pos;
     }
 
-    public void update(TileEntityDevice device)
-    {
+    public void update(@NotNull DeviceBlockEntity device) {
         name = device.getCustomName();
-        pos = device.getPos();
+        pos = device.getBlockPos();
     }
 
     @Nullable
-    public TileEntityDevice getDevice(World world)
-    {
-        if(pos == null)
+    public DeviceBlockEntity getDevice(@NotNull Level level) {
+        if (pos == null)
             return null;
 
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if(tileEntity instanceof TileEntityDevice)
-        {
-            TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity;
-            if(tileEntityDevice.getId().equals(getId()))
-            {
-                return tileEntityDevice;
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity instanceof DeviceBlockEntity deviceBlockEntity) {
+            if (deviceBlockEntity.getId().equals(getId())) {
+                return deviceBlockEntity;
             }
         }
+
         return null;
     }
 
-    public NBTTagCompound toTag(boolean includePos)
-    {
-        NBTTagCompound tag = new NBTTagCompound();
-        tag.setString("id", id.toString());
-        tag.setString("name", name);
-        if(includePos && pos != null)
-        {
-            tag.setLong("pos", pos.toLong());
+    public CompoundTag toTag(boolean includePos) {
+        CompoundTag tag = new CompoundTag();
+        tag.putString("id", getId().toString());
+        tag.putString("name", getName());
+        if (includePos) {
+            tag.putLong("pos", pos.asLong());
         }
         return tag;
     }
 
-    public static Device fromTag(NBTTagCompound tag)
-    {
+    public static Device fromTag(CompoundTag tag) {
         Device device = new Device();
         device.id = UUID.fromString(tag.getString("id"));
         device.name = tag.getString("name");
-        if(tag.hasKey("pos", Constants.NBT.TAG_LONG))
-        {
-            device.pos = BlockPos.fromLong(tag.getLong("pos"));
+        if (tag.contains("pos", Tag.TAG_LONG)) {
+            device.pos = BlockPos.of(tag.getLong("pos"));
         }
         return device;
     }

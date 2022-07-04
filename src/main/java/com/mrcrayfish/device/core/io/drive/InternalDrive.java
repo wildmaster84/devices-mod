@@ -1,50 +1,42 @@
 package com.mrcrayfish.device.core.io.drive;
 
 import com.mrcrayfish.device.core.io.ServerFolder;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.Constants;
-
-import javax.annotation.Nullable;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
-public final class InternalDrive extends AbstractDrive
-{
-    public InternalDrive(String name)
-    {
+public final class InternalDrive extends AbstractDrive {
+    public InternalDrive(String name) {
         super(name);
     }
 
-    @Nullable
-    public static AbstractDrive fromTag(NBTTagCompound driveTag)
-    {
+    public static @NotNull AbstractDrive fromTag(CompoundTag driveTag) {
         AbstractDrive drive = new InternalDrive(driveTag.getString("name"));
-        if(driveTag.hasKey("root", Constants.NBT.TAG_COMPOUND))
-        {
-            NBTTagCompound folderTag = driveTag.getCompoundTag("root");
-            drive.root = ServerFolder.fromTag(folderTag.getString("file_name"), folderTag.getCompoundTag("data"));
+        if (driveTag.contains("root", Tag.TAG_COMPOUND)) {
+            CompoundTag folderTag = driveTag.getCompound("root");
+            drive.root = ServerFolder.fromTag(folderTag.getString("file_name"), folderTag.getCompound("data"));
         }
         return drive;
     }
 
     @Override
-    public NBTTagCompound toTag()
-    {
-        NBTTagCompound driveTag = new NBTTagCompound();
-        driveTag.setString("name", name);
+    public CompoundTag toTag() {
+        CompoundTag driveTag = new CompoundTag();
+        driveTag.putString("name", name);
 
-        NBTTagCompound folderTag = new NBTTagCompound();
-        folderTag.setString("file_name", root.getName());
-        folderTag.setTag("data", root.toTag());
-        driveTag.setTag("root", folderTag);
+        CompoundTag folderTag = new CompoundTag();
+        folderTag.putString("file_name", root.getName());
+        folderTag.put("data", root.toTag());
+        driveTag.put("root", folderTag);
 
         return driveTag;
     }
 
     @Override
-    public Type getType()
-    {
+    public Type getType() {
         return Type.INTERNAL;
     }
 }

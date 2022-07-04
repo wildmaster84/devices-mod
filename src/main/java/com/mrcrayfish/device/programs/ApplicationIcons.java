@@ -4,8 +4,8 @@ import com.mrcrayfish.device.api.app.*;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.ComboBox;
 import com.mrcrayfish.device.programs.system.layout.StandardLayout;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
 
 import javax.annotation.Nullable;
 
@@ -27,15 +27,14 @@ public class ApplicationIcons extends Application
     }
 
     @Override
-    public void init(@Nullable NBTTagCompound intent)
-    {
-        layoutMain = new StandardLayout(TextFormatting.BOLD + "Icons", 330, 153, this, null);
+    public void init(@Nullable CompoundTag intent) {
+        layoutMain = new StandardLayout(ChatFormatting.BOLD + "Icons", 330, 153, this, null);
         layoutMain.setIcon(Icons.HOME);
 
         layoutContainer = new Layout(330, 153);
         layoutMain.addComponent(layoutContainer);
 
-        IconSet[] iconSets = new IconSet[] { new IconSet("Standard Icons", Icons.values()), new IconSet("Alphabet", Alphabet.values()) };
+        IconSet[] iconSets = new IconSet[]{new IconSet("Standard Icons", Icons.values()), new IconSet("Alphabet", Alphabet.values())};
         iconSetComboBox = new ComboBox.List<>(191, 3, 100, iconSets);
         iconSetComboBox.setChangeListener((oldValue, newValue) ->
         {
@@ -102,14 +101,12 @@ public class ApplicationIcons extends Application
     }
 
     @Override
-    public void load(NBTTagCompound tagCompound)
-    {
+    public void load(CompoundTag tagCompound) {
 
     }
 
     @Override
-    public void save(NBTTagCompound tagCompound)
-    {
+    public void save(CompoundTag tagCompound) {
 
     }
 

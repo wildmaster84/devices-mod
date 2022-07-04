@@ -1,54 +1,49 @@
 package com.mrcrayfish.device.api.app.component;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
-public class Spinner extends Component 
-{
-	protected final int MAX_PROGRESS = 31;
-	protected int currentProgress = 0;
-	
-	protected Color spinnerColor = Color.WHITE;
-	
-	/**
-	 * Default spinner constructor
-	 * 
-	 * @param left how many pixels from the left
-	 * @param top how many pixels from the top
-	 */
-	public Spinner(int left, int top)
-	{
-		super(left, top);
-	}
-	
-	@Override
-	public void handleTick() 
-	{
-		if(currentProgress >= MAX_PROGRESS)
-		{
-			currentProgress = 0;
-		}
-		currentProgress++;
-	}
+public class Spinner extends Component {
+    protected final int MAX_PROGRESS = 31;
+    protected int currentProgress = 0;
 
-	@Override
-	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks) 
-	{
-		if (this.visible)
-        {
-			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			Color bgColor = new Color(getColorScheme().getBackgroundColor()).brighter().brighter();
-			float[] hsb = Color.RGBtoHSB(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), null);
-			bgColor = new Color(Color.HSBtoRGB(hsb[0], hsb[1], 1.0F));
-			GL11.glColor4f(bgColor.getRed() / 255F, bgColor.getGreen() / 255F, bgColor.getBlue() / 255F, 1.0F);
-			mc.getTextureManager().bindTexture(Component.COMPONENTS_GUI);
-			drawTexturedModalRect(xPosition, yPosition, (currentProgress % 8) * 12, 12 + 12 * (int) Math.floor((double) currentProgress / 8), 12, 12);
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+    protected Color spinnerColor = Color.WHITE;
+
+    /**
+     * Default spinner constructor
+     *
+     * @param left how many pixels from the left
+     * @param top  how many pixels from the top
+     */
+    public Spinner(int left, int top) {
+        super(left, top);
+    }
+
+    @Override
+    public void handleTick() {
+        if (currentProgress >= MAX_PROGRESS) {
+            currentProgress = 0;
         }
-	}
+        currentProgress++;
+    }
+
+    @Override
+    public void render(PoseStack pose, Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks) {
+        if (this.visible) {
+            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+            Color bgColor = new Color(getColorScheme().getBackgroundColor()).brighter().brighter();
+            float[] hsb = Color.RGBtoHSB(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), null);
+            bgColor = new Color(Color.HSBtoRGB(hsb[0], hsb[1], 1f));
+            GL11.glColor4f(bgColor.getRed() / 255f, bgColor.getGreen() / 255f, bgColor.getBlue() / 255f, 1f);
+            RenderSystem.setShaderTexture(0, Component.COMPONENTS_GUI);
+            blit(pose, xPosition, yPosition, (currentProgress % 8) * 12, 12 + 12 * (int) Math.floor((double) currentProgress / 8), 12, 12);
+            GL11.glColor4f(1f, 1f, 1f, 1f);
+        }
+    }
 }

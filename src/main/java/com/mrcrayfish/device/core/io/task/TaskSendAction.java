@@ -2,34 +2,31 @@ package com.mrcrayfish.device.core.io.task;
 
 import com.mrcrayfish.device.api.io.Drive;
 import com.mrcrayfish.device.api.task.Task;
+import com.mrcrayfish.device.block.entity.LaptopBlockEntity;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.io.action.FileAction;
-import com.mrcrayfish.device.tileentity.TileEntityLaptop;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
  * Author: MrCrayfish
  */
-public class TaskSendAction extends Task
-{
+public class TaskSendAction extends Task {
     private String uuid;
     private FileAction action;
     private BlockPos pos;
 
     private FileSystem.Response response;
 
-    private TaskSendAction()
-    {
+    private TaskSendAction() {
         super("send_action");
     }
 
-    public TaskSendAction(Drive drive, FileAction action)
-    {
+    public TaskSendAction(Drive drive, FileAction action) {
         this();
         this.uuid = drive.getUUID().toString();
         this.action = action;
@@ -37,35 +34,29 @@ public class TaskSendAction extends Task
     }
 
     @Override
-    public void prepareRequest(NBTTagCompound nbt)
-    {
-        nbt.setString("uuid", uuid);
-        nbt.setTag("action", action.toTag());
-        nbt.setLong("pos", pos.toLong());
+    public void prepareRequest(CompoundTag nbt) {
+        nbt.putString("uuid", uuid);
+        nbt.put("action", action.toTag());
+        nbt.putLong("pos", pos.asLong());
     }
 
     @Override
-    public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
-    {
-        FileAction action = FileAction.fromTag(nbt.getCompoundTag("action"));
-        TileEntity tileEntity = world.getTileEntity(BlockPos.fromLong(nbt.getLong("pos")));
-        if(tileEntity instanceof TileEntityLaptop)
-        {
-            TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
-            response = laptop.getFileSystem().readAction(nbt.getString("uuid"), action, world);
+    public void processRequest(CompoundTag nbt, Level level, Player player) {
+        FileAction action = FileAction.fromTag(nbt.getCompound("action"));
+        BlockEntity tileEntity = level.getBlockEntity(BlockPos.of(nbt.getLong("pos")));
+        if (tileEntity instanceof LaptopBlockEntity laptop) {
+            response = laptop.getFileSystem().readAction(nbt.getString("uuid"), action, level);
             this.setSuccessful();
         }
     }
 
     @Override
-    public void prepareResponse(NBTTagCompound nbt)
-    {
-        nbt.setTag("response", response.toTag());
+    public void prepareResponse(CompoundTag nbt) {
+        nbt.put("response", response.toTag());
     }
 
     @Override
-    public void processResponse(NBTTagCompound nbt)
-    {
+    public void processResponse(CompoundTag nbt) {
 
     }
 }

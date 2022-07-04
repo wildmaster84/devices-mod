@@ -11,17 +11,16 @@ import com.mrcrayfish.device.programs.gitweb.component.GitWebFrame;
 import com.mrcrayfish.device.programs.gitweb.layout.TextLayout;
 import com.mrcrayfish.device.programs.system.layout.StandardLayout;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
 
 import javax.annotation.Nullable;
 import java.awt.*;
 
 /**
  * The Device Mod implementations of an internet browser. Originally created by MinecraftDoodler.
- * Licensed under GPL 3.0
+ * Licensed under GPL 3d
  */
-public class ApplicationGitWeb extends Application
-{
+public class ApplicationGitWeb extends Application {
     private Layout layoutBrowser;
     private Layout layoutPref;
 
@@ -35,23 +34,19 @@ public class ApplicationGitWeb extends Application
     private TextLayout scrollable;
 
     @Override
-    public void init(@Nullable NBTTagCompound intent)
-    {
+    public void init(@Nullable CompoundTag intent) {
         layoutBrowser = new StandardLayout("GitWeb", 362, 240, this, null);
-        layoutBrowser.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
-        {
+        layoutBrowser.setBackground((pose, gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> {
             Color color = new Color(Laptop.getSystem().getSettings().getColorScheme().getItemBackgroundColor());
-            Gui.drawRect(x, y + 21, x + width, y + 164, Color.GRAY.getRGB());
+            Gui.fill(pose, x, y + 21, x + width, y + 164, Color.GRAY.getRGB());
         });
 
         layoutPref = new Layout(200, 120);
 
         textFieldAddress = new TextField(2, 2, 304);
         textFieldAddress.setPlaceholder("Enter Address");
-        textFieldAddress.setKeyListener(c ->
-        {
-            if(c == '\r')
-            {
+        textFieldAddress.setKeyListener(c -> {
+            if (c == '\r') {
                 webFrame.loadWebsite(this.getAddress());
                 return false;
             }
@@ -80,16 +75,14 @@ public class ApplicationGitWeb extends Application
 
         webFrame = new GitWebFrame(this, 0, 21, 362, 143);
         webFrame.loadWebsite("welcome.official");
-        webFrame.setLoadingCallback((s, success) ->
-        {
+        webFrame.setLoadingCallback((s, success) -> {
             spinnerLoading.setVisible(true);
             textFieldAddress.setFocused(false);
             textFieldAddress.setEditable(false);
             textFieldAddress.setText(s);
             btnSearch.setEnabled(false);
         });
-        webFrame.setLoadedCallback((s, success) ->
-        {
+        webFrame.setLoadedCallback((s, success) -> {
             spinnerLoading.setVisible(false);
             textFieldAddress.setEditable(true);
             btnSearch.setEnabled(true);
@@ -100,19 +93,19 @@ public class ApplicationGitWeb extends Application
     }
 
     @Override
-    public void handleKeyTyped(char character, int code)
-    {
+    public void handleKeyTyped(char character, int code) {
         super.handleKeyTyped(character, code);
     }
 
-    private String getAddress()
-    {
+    private String getAddress() {
         return textFieldAddress.getText().replace("\\s+", "");
     }
 
     @Override
-    public void load(NBTTagCompound tag) {}
+    public void load(CompoundTag tag) {
+    }
 
     @Override
-    public void save(NBTTagCompound tag) {}
+    public void save(CompoundTag tag) {
+    }
 }

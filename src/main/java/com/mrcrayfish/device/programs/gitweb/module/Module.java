@@ -8,8 +8,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public abstract class Module
-{
+public abstract class Module {
     public abstract String[] getRequiredData();
 
     public abstract String[] getOptionalData();
