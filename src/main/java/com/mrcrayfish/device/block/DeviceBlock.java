@@ -47,7 +47,7 @@ public abstract class DeviceBlock extends HorizontalDirectionalBlock implements 
     @Override
     public BlockState getStateForPlacement(@NotNull BlockPlaceContext pContext) {
         BlockState state = super.getStateForPlacement(pContext);
-        return state != null ? state.setValue(FACING, Objects.requireNonNull(pContext.getPlayer()).getDirection()) : null;
+        return state != null ? state.setValue(FACING, Objects.requireNonNull(pContext.getPlayer(), "Player in block placement context is null.").getDirection().getOpposite()) : null;
     }
 
     @Override
@@ -129,7 +129,7 @@ public abstract class DeviceBlock extends HorizontalDirectionalBlock implements 
         }
 
         @Override
-        public void setPlacedBy(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        public void setPlacedBy(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable LivingEntity placer, @NotNull ItemStack stack) {
             super.setPlacedBy(level, pos, state, placer, stack);
             BlockEntity blockEntity = level.getBlockEntity(pos);
             if (blockEntity instanceof IColored colored) {
@@ -141,7 +141,7 @@ public abstract class DeviceBlock extends HorizontalDirectionalBlock implements 
 
 
         @Override
-        protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
+        protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> pBuilder) {
             super.createBlockStateDefinition(pBuilder);
             pBuilder.add(FACING);
         }
