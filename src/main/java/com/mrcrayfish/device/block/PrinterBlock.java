@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.block;
 
+import com.mrcrayfish.device.DeviceType;
 import com.mrcrayfish.device.block.entity.PrinterBlockEntity;
 import com.mrcrayfish.device.util.IHasColor;
 import net.minecraft.core.BlockPos;
@@ -77,7 +78,7 @@ public class PrinterBlock extends DeviceBlock.Colored implements IHasColor {
             Block.box(12, 3, 4, 16, 9.3, 12));
 
     public PrinterBlock(DyeColor color) {
-        super(Properties.of(Material.HEAVY_METAL, color).strength(6f).sound(SoundType.METAL), color);
+        super(Properties.of(Material.HEAVY_METAL, color).strength(6f).sound(SoundType.METAL), color, DeviceType.PRINTER);
         this.registerDefaultState(getStateDefinition().any().setValue(FACING, Direction.NORTH));
     }
 

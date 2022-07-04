@@ -1,7 +1,7 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "0": "cdm:items/circuit_board_red"
+        "0": "cdm:item/circuit_board_red"
     },
     "display": {
         "gui": {

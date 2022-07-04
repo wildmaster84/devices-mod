@@ -1,8 +1,8 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "0": "cdm:items/ram_red_back",
-        "1": "cdm:items/ram_red"
+      "0": "cdm:item/ram_red_back",
+      "1": "cdm:item/ram_red"
     },
     "display": {
         "gui": {

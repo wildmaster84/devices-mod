@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "cdm:white_laptop",
+    "cdm:orange_laptop",
+    "cdm:magenta_laptop",
+    "cdm:light_blue_laptop",
+    "cdm:yellow_laptop",
+    "cdm:lime_laptop",
+    "cdm:pink_laptop",
+    "cdm:gray_laptop",
+    "cdm:light_gray_laptop",
+    "cdm:cyan_laptop",
+    "cdm:purple_laptop",
+    "cdm:blue_laptop",
+    "cdm:brown_laptop",
+    "cdm:green_laptop",
+    "cdm:red_laptop",
+    "cdm:black_laptop"
+  ]
+}

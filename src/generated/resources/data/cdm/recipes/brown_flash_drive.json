@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "did",
+    "pfp",
+    "pcp"
+  ],
+  "key": {
+    "d": {
+      "item": "minecraft:brown_dye"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "p": {
+      "item": "cdm:plastic_frame"
+    },
+    "f": {
+      "item": "cdm:flash_chip"
+    },
+    "c": {
+      "item": "cdm:circuit_board"
+    }
+  },
+  "result": {
+    "item": "cdm:brown_flash_drive"
+  }
+}

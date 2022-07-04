@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "cdm:white_router",
+    "cdm:orange_router",
+    "cdm:magenta_router",
+    "cdm:light_blue_router",
+    "cdm:yellow_router",
+    "cdm:lime_router",
+    "cdm:pink_router",
+    "cdm:gray_router",
+    "cdm:light_gray_router",
+    "cdm:cyan_router",
+    "cdm:purple_router",
+    "cdm:blue_router",
+    "cdm:brown_router",
+    "cdm:green_router",
+    "cdm:red_router",
+    "cdm:black_router"
+  ]
+}

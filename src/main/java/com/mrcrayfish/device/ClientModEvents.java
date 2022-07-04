@@ -40,15 +40,15 @@ public class ClientModEvents {
             Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_7.png"));
         }
 
-        DeviceBlocks.getLaptops().forEach(block -> {
+        DeviceBlocks.getAllLaptops().forEach(block -> {
             LOGGER.debug("Setting render layer for laptop {}", block.getRegistryName());
             ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutout());
         });
-        DeviceBlocks.getPrinters().forEach(block -> {
+        DeviceBlocks.getAllPrinters().forEach(block -> {
             LOGGER.debug("Setting render layer for printer {}", block.getRegistryName());
             ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutout());
         });
-        DeviceBlocks.getRouters().forEach(block -> {
+        DeviceBlocks.getAllRouters().forEach(block -> {
             LOGGER.debug("Setting render layer for router {}", block.getRegistryName());
             ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutout());
         });

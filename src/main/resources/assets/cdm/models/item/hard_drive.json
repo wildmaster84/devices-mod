@@ -1,7 +1,7 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "0": "cdm:items/hard_drive"
+        "0": "cdm:item/hard_drive"
     },
     "display": {
         "gui": {

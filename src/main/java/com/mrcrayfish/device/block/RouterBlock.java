@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.block;
 
+import com.mrcrayfish.device.DeviceType;
 import com.mrcrayfish.device.block.entity.RouterBlockEntity;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.network.task.SyncBlockPacket;
@@ -58,23 +59,9 @@ public class RouterBlock extends DeviceBlock.Colored {
     };
 
     public RouterBlock(DyeColor color) {
-        super(Properties.of(Material.HEAVY_METAL).strength(6.0f).sound(SoundType.METAL), color);
+        super(Properties.of(Material.HEAVY_METAL).strength(6.0f).sound(SoundType.METAL), color, DeviceType.ROUTER);
         this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(VERTICAL, false));
-//        this.setCreativeTab(MrCrayfishDeviceMod.TAB_DEVICE);
-//        this.setUnlocalizedName("router");
-        this.setRegistryName("router");
     }
-
-//    @Override
-//    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
-//    {
-//        if(state.getValue(VERTICAL))
-//        {
-//            return SELECTION_VERTICAL_BOUNDING_BOX[state.getValue(FACING).getHorizontalIndex()];
-//        }
-//        return SELECTION_BOUNDING_BOX[state.getValue(FACING).getHorizontalIndex()];
-//    }
-
 
     @Override
     public @NotNull VoxelShape getShape(@NotNull BlockState pState, @NotNull BlockGetter pLevel, @NotNull BlockPos pPos, @NotNull CollisionContext pContext) {
@@ -86,20 +73,6 @@ public class RouterBlock extends DeviceBlock.Colored {
             default -> BODY_BOUNDING_BOX[0];
         };
     }
-
-//    @Override
-//    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_)
-//    {
-//        if(state.getValue(VERTICAL))
-//        {
-//            Block.addCollisionBoxToList(pos, entityBox, collidingBoxes, BODY_VERTICAL_BOUNDING_BOX[state.getValue(FACING).getHorizontalIndex()]);
-//        }
-//        else
-//        {
-//            Block.addCollisionBoxToList(pos, entityBox, collidingBoxes, BODY_BOUNDING_BOX[state.getValue(FACING).getHorizontalIndex()]);
-//        }
-//    }
-
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
@@ -143,6 +116,6 @@ public class RouterBlock extends DeviceBlock.Colored {
     @Override
     protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> pBuilder) {
         super.createBlockStateDefinition(pBuilder);
-        pBuilder.add(FACING, VERTICAL);
+        pBuilder.add(VERTICAL);
     }
 }

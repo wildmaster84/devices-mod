@@ -34,6 +34,7 @@ public class DeviceBlocks {
     public static final RegistryObject<LaptopBlock> GREEN_LAPTOP = REGISTER.register("green_laptop", () -> new LaptopBlock(DyeColor.GREEN));
     public static final RegistryObject<LaptopBlock> RED_LAPTOP = REGISTER.register("red_laptop", () -> new LaptopBlock(DyeColor.RED));
     public static final RegistryObject<LaptopBlock> BLACK_LAPTOP = REGISTER.register("black_laptop", () -> new LaptopBlock(DyeColor.BLACK));
+
     public static final RegistryObject<PrinterBlock> WHITE_PRINTER = REGISTER.register("white_printer", () -> new PrinterBlock(DyeColor.WHITE));
     public static final RegistryObject<PrinterBlock> ORANGE_PRINTER = REGISTER.register("orange_printer", () -> new PrinterBlock(DyeColor.ORANGE));
     public static final RegistryObject<PrinterBlock> MAGENTA_PRINTER = REGISTER.register("magenta_printer", () -> new PrinterBlock(DyeColor.MAGENTA));
@@ -50,6 +51,23 @@ public class DeviceBlocks {
     public static final RegistryObject<PrinterBlock> GREEN_PRINTER = REGISTER.register("green_printer", () -> new PrinterBlock(DyeColor.GREEN));
     public static final RegistryObject<PrinterBlock> RED_PRINTER = REGISTER.register("red_printer", () -> new PrinterBlock(DyeColor.RED));
     public static final RegistryObject<PrinterBlock> BLACK_PRINTER = REGISTER.register("black_printer", () -> new PrinterBlock(DyeColor.BLACK));
+
+    public static final RegistryObject<RouterBlock> WHITE_ROUTER = REGISTER.register("white_router", () -> new RouterBlock(DyeColor.WHITE));
+    public static final RegistryObject<RouterBlock> ORANGE_ROUTER = REGISTER.register("orange_router", () -> new RouterBlock(DyeColor.ORANGE));
+    public static final RegistryObject<RouterBlock> MAGENTA_ROUTER = REGISTER.register("magenta_router", () -> new RouterBlock(DyeColor.MAGENTA));
+    public static final RegistryObject<RouterBlock> LIGHT_BLUE_ROUTER = REGISTER.register("light_blue_router", () -> new RouterBlock(DyeColor.LIGHT_BLUE));
+    public static final RegistryObject<RouterBlock> YELLOW_ROUTER = REGISTER.register("yellow_router", () -> new RouterBlock(DyeColor.YELLOW));
+    public static final RegistryObject<RouterBlock> LIME_ROUTER = REGISTER.register("lime_router", () -> new RouterBlock(DyeColor.LIME));
+    public static final RegistryObject<RouterBlock> PINK_ROUTER = REGISTER.register("pink_router", () -> new RouterBlock(DyeColor.PINK));
+    public static final RegistryObject<RouterBlock> GRAY_ROUTER = REGISTER.register("gray_router", () -> new RouterBlock(DyeColor.GRAY));
+    public static final RegistryObject<RouterBlock> LIGHT_GRAY_ROUTER = REGISTER.register("light_gray_router", () -> new RouterBlock(DyeColor.LIGHT_GRAY));
+    public static final RegistryObject<RouterBlock> CYAN_ROUTER = REGISTER.register("cyan_router", () -> new RouterBlock(DyeColor.CYAN));
+    public static final RegistryObject<RouterBlock> PURPLE_ROUTER = REGISTER.register("purple_router", () -> new RouterBlock(DyeColor.PURPLE));
+    public static final RegistryObject<RouterBlock> BLUE_ROUTER = REGISTER.register("blue_router", () -> new RouterBlock(DyeColor.BLUE));
+    public static final RegistryObject<RouterBlock> BROWN_ROUTER = REGISTER.register("brown_router", () -> new RouterBlock(DyeColor.BROWN));
+    public static final RegistryObject<RouterBlock> GREEN_ROUTER = REGISTER.register("green_router", () -> new RouterBlock(DyeColor.GREEN));
+    public static final RegistryObject<RouterBlock> RED_ROUTER = REGISTER.register("red_router", () -> new RouterBlock(DyeColor.RED));
+    public static final RegistryObject<RouterBlock> BLACK_ROUTER = REGISTER.register("black_router", () -> new RouterBlock(DyeColor.BLACK));
     public static final RegistryObject<PaperBlock> PAPER = REGISTER.register("paper", PaperBlock::new);
 
     public static void register(IEventBus bus) {
@@ -60,15 +78,15 @@ public class DeviceBlocks {
         return REGISTER.getEntries().stream().map(RegistryObject::get);
     }
 
-    public static List<LaptopBlock> getLaptops() {
+    public static List<LaptopBlock> getAllLaptops() {
         return getAllBlocks().filter(block -> block instanceof LaptopBlock).map(block -> (LaptopBlock) block).toList();
     }
 
-    public static List<PrinterBlock> getPrinters() {
+    public static List<PrinterBlock> getAllPrinters() {
         return getAllBlocks().filter(block -> block instanceof PrinterBlock).map(block -> (PrinterBlock) block).toList();
     }
 
-    public static List<RouterBlock> getRouters() {
+    public static List<RouterBlock> getAllRouters() {
         return getAllBlocks().filter(block -> block instanceof RouterBlock).map(block -> (RouterBlock) block).toList();
     }
 }

@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.block;
 
+import com.mrcrayfish.device.DeviceType;
+import com.mrcrayfish.device.IDeviceType;
 import com.mrcrayfish.device.block.entity.DeviceBlockEntity;
 import com.mrcrayfish.device.util.BlockEntityUtil;
 import com.mrcrayfish.device.util.IColored;
@@ -32,9 +34,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 @SuppressWarnings("deprecation")
-public abstract class DeviceBlock extends HorizontalDirectionalBlock implements EntityBlock {
-    public DeviceBlock(Properties properties) {
+public abstract class DeviceBlock extends HorizontalDirectionalBlock implements EntityBlock, IDeviceType {
+    private final DeviceType deviceType;
+
+    public DeviceBlock(Properties properties, DeviceType deviceType) {
         super(properties.strength(0.5f));
+        this.deviceType = deviceType;
     }
 
     @NotNull
@@ -116,11 +121,16 @@ public abstract class DeviceBlock extends HorizontalDirectionalBlock implements 
         return blockEntity != null && blockEntity.triggerEvent(id, param);
     }
 
+    @Override
+    public DeviceType getDeviceType() {
+        return deviceType;
+    }
+
     public static abstract class Colored extends DeviceBlock {
         private final DyeColor color;
 
-        protected Colored(Properties properties, DyeColor color) {
-            super(properties);
+        protected Colored(Properties properties, DyeColor color, DeviceType deviceType) {
+            super(properties, deviceType);
             this.color = color;
         }
 

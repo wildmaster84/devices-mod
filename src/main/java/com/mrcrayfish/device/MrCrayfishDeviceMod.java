@@ -71,7 +71,7 @@ import java.util.stream.Collectors;
 public class MrCrayfishDeviceMod implements PreparableReloadListener {
     private static MrCrayfishDeviceMod instance;
 
-    public static final CreativeModeTab TAB_DEVICE = new DeviceTab("cdmTabDevice");
+    public static final CreativeModeTab TAB_DEVICE = new DeviceTab("cdm_tab_device");
 
     public static final Logger LOGGER = LogUtils.getLogger();
 

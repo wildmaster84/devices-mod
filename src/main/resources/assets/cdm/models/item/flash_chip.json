@@ -1,8 +1,8 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "0": "cdm:items/flash_chip",
-        "1": "cdm:items/flash_chip_bottom"
+      "0": "cdm:item/flash_chip",
+      "1": "cdm:item/flash_chip_bottom"
     },
     "display": {
         "gui": {

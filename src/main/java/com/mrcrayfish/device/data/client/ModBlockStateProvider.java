@@ -29,13 +29,13 @@ public class ModBlockStateProvider extends BlockStateProvider {
     @SuppressWarnings("DuplicatedCode")
     @Override
     protected void registerStatesAndModels() {
-        for (LaptopBlock block : DeviceBlocks.getLaptops()) {
+        for (LaptopBlock block : DeviceBlocks.getAllLaptops()) {
             laptop(block);
         }
-        for (PrinterBlock block : DeviceBlocks.getPrinters()) {
+        for (PrinterBlock block : DeviceBlocks.getAllPrinters()) {
             printer(block);
         }
-        for (RouterBlock block : DeviceBlocks.getRouters()) {
+        for (RouterBlock block : DeviceBlocks.getAllRouters()) {
             router(block);
         }
     }

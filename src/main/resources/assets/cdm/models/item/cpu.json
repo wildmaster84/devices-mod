@@ -1,8 +1,8 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "0": "cdm:items/cpu_red",
-        "1": "cdm:items/cpu_red_pins"
+      "0": "cdm:item/cpu_red",
+      "1": "cdm:item/cpu_red_pins"
     },
     "display": {
         "gui": {

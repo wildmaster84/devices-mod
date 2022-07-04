@@ -1,7 +1,6 @@
 {
   "result": {
-    "item": "cdm:office_chair",
-    "data": 4
+    "item": "cdm:office_chair"
   },
   "pattern": [
     "CDC",

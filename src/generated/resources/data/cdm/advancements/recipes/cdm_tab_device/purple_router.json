@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "cdm:purple_router"
+    ]
+  },
+  "criteria": {
+    "has_circuit_board": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "cdm:circuit_board"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "cdm:purple_router"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_circuit_board",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "cdm:white_printer",
+    "cdm:orange_printer",
+    "cdm:magenta_printer",
+    "cdm:light_blue_printer",
+    "cdm:yellow_printer",
+    "cdm:lime_printer",
+    "cdm:pink_printer",
+    "cdm:gray_printer",
+    "cdm:light_gray_printer",
+    "cdm:cyan_printer",
+    "cdm:purple_printer",
+    "cdm:blue_printer",
+    "cdm:brown_printer",
+    "cdm:green_printer",
+    "cdm:red_printer",
+    "cdm:black_printer"
+  ]
+}

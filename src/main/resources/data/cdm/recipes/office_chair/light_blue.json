@@ -1,7 +1,6 @@
 {
   "result": {
-    "item": "cdm:office_chair",
-    "data": 3
+    "item": "cdm:light_blue_office_chair"
   },
   "pattern": [
     "CDC",
@@ -11,7 +10,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "D": {
-      "item": "minecraft:wool",
+      "item": "minecraft:light_blue_wool",
       "data": 3
     },
     "C": {

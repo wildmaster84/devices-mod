@@ -1,0 +1,6 @@
+{
+  "parent": "cdm:block/router",
+  "textures": {
+    "1": "minecraft:block/purple_wool"
+  }
+}

@@ -1,8 +1,8 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "0": "cdm:items/controller_unit_red",
-        "1": "cdm:items/controller_unit_red_bottom"
+      "0": "cdm:item/controller_unit_red",
+      "1": "cdm:item/controller_unit_red_bottom"
     },
     "display": {
         "gui": {

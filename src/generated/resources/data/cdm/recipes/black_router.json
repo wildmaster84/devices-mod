@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "rdr",
+    "ppp",
+    "wcb"
+  ],
+  "key": {
+    "d": {
+      "item": "minecraft:black_dye"
+    },
+    "r": {
+      "item": "minecraft:end_rod"
+    },
+    "p": {
+      "item": "cdm:plastic_frame"
+    },
+    "w": {
+      "item": "cdm:wifi"
+    },
+    "c": {
+      "item": "cdm:circuit_board"
+    },
+    "b": {
+      "item": "cdm:battery"
+    }
+  },
+  "result": {
+    "item": "cdm:black_router"
+  }
+}
