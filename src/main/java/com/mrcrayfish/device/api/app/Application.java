@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.api.app;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.core.Laptop;
@@ -12,7 +13,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.opengl.GL11;
 
 import java.util.Objects;
 
@@ -138,7 +138,7 @@ public abstract class Application extends Wrappable {
 
         currentLayout.renderOverlay(pose, laptop, mc, mouseX, mouseY, active);
 
-        GL11.glColor4f(1f, 1f, 1f, 1f);
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
         // TODO Port this to 1.18.2 if possible
 //        Lighting.turnOff();

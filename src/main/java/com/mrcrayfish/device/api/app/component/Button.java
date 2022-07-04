@@ -17,7 +17,6 @@ import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -207,7 +206,7 @@ public class Button extends Component {
             Color bgColor = new Color(getColorScheme().getBackgroundColor()).brighter().brighter();
             float[] hsb = Color.RGBtoHSB(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), null);
             bgColor = new Color(Color.HSBtoRGB(hsb[0], hsb[1], 1f));
-            GL11.glColor4f(bgColor.getRed() / 255f, bgColor.getGreen() / 255f, bgColor.getBlue() / 255f, 1f);
+            RenderSystem.setShaderColor(bgColor.getRed() / 255f, bgColor.getGreen() / 255f, bgColor.getBlue() / 255f, 1f);
             this.hovered = GuiHelper.isMouseWithin(mouseX, mouseY, x, y, width, height) && windowActive;
             int i = this.getHoverState(this.hovered);
             RenderSystem.enableBlend();
@@ -230,7 +229,7 @@ public class Button extends Component {
             RenderUtil.drawRectWithTexture(x + 2, y + 2, 98 + i * 5, 14, width - 4, height - 4, 1, 1);
 
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-            GL11.glColor4f(1f, 1f, 1f, 1f);
+            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
             int contentWidth = (iconResource != null ? iconWidth : 0) + getTextWidth(text);
             if (iconResource != null && !StringUtils.isNotNullOrEmpty(text)) contentWidth += 3;

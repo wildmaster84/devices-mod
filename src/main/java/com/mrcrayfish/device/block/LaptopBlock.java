@@ -70,42 +70,66 @@ public class LaptopBlock extends DeviceBlock.Colored {
     @SuppressWarnings("deprecation")
     public InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
+        System.out.println("Using a laptop, block entity is " + blockEntity);
         if (blockEntity instanceof LaptopBlockEntity laptop) {
             if (player.isCrouching()) {
+                System.out.println("Using a laptop, player is crouching.");
                 if (!level.isClientSide) {
+                    System.out.println("Using a laptop, player is crouching, not client side.");
                     laptop.openClose();
+                    System.out.println("Using a laptop, player is crouching, not client side, laptop is open: " + laptop.isOpen());
                 }
+                return InteractionResult.SUCCESS;
             } else {
+                System.out.println("Using a laptop, player is not crouching.");
                 if (hit.getDirection() == state.getValue(FACING).getCounterClockWise(Direction.Axis.Y)) {
+                    System.out.println("Using a laptop, player is not crouching, hit direction is valid.");
                     ItemStack heldItem = player.getItemInHand(hand);
                     if (!heldItem.isEmpty() && heldItem.getItem() instanceof FlashDriveItem) {
+                        System.out.println("Using a laptop, player is not crouching, hit direction is valid, held item is flash drive.");
                         if (!level.isClientSide) {
+                            System.out.println("Using a laptop, player is not crouching, hit direction is valid, held item is flash drive, not client side.");
                             if (laptop.getFileSystem().setAttachedDrive(heldItem.copy())) {
+                                System.out.println("Using a laptop, player is not crouching, hit direction is valid, held item is flash drive, not client side, drive set.");
                                 heldItem.shrink(1);
+                                return InteractionResult.CONSUME;
                             } else {
                                 player.sendMessage(new TextComponent("No more available USB slots!"), Util.NIL_UUID);
+                                return InteractionResult.FAIL;
                             }
                         }
-                        return InteractionResult.CONSUME;
+                        return InteractionResult.PASS;
                     }
 
                     if (!level.isClientSide) {
+                        System.out.println("Using a laptop, player is not crouching, hit direction is valid, held item is not flash drive, not client side.");
                         ItemStack stack = laptop.getFileSystem().removeAttachedDrive();
                         if (stack != null) {
+                            System.out.println("Using a laptop, player is not crouching, hit direction is valid, held item is not flash drive, not client side, stack is not null.");
                             BlockPos summonPos = pos.relative(state.getValue(FACING).getCounterClockWise(Direction.Axis.Y));
+                            System.out.println("Using a laptop, player is not crouching, hit direction is valid, held item is not flash drive, not client side, stack is not null, summon pos: " + summonPos);
                             level.addFreshEntity(new ItemEntity(level, summonPos.getX() + 0.5, summonPos.getY(), summonPos.getZ() + 0.5, stack));
+                            System.out.println("Using a laptop, player is not crouching, hit direction is valid, held item is not flash drive, not client side, stack is not null, item entity added.");
                             BlockEntityUtil.markBlockForUpdate(level, pos);
+                            System.out.println("Using a laptop, player is not crouching, hit direction is valid, held item is not flash drive, not client side, stack is not null, marked for update.");
                         }
                     }
                     return InteractionResult.SUCCESS;
                 }
 
                 if (laptop.isOpen() && level.isClientSide) {
+                    System.out.println("Using a laptop, player is not crouching, hit direction is not valid, laptop is open, client side.");
                     Minecraft.getInstance().setScreen(new Laptop(laptop));
-//                    playerIn.openMenu(new SimpleMenuProvider(), MrCrayfishDeviceMod.instance, Laptop.ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
+                    System.out.println("Using a laptop, player is not crouching, hit direction is not valid, laptop is open, client side, pushed gui layer.");
+                    return InteractionResult.SUCCESS;
+//                    player.openMenu(new SimpleMenuProvider(), MrCrayfishDeviceMod.instance, Laptop.ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
                 }
+                System.out.println("Using a laptop, player is not crouching, hit direction is not valid, laptop is not open.");
             }
         }
+
+        System.out.println("Using a laptop, block entity is not laptop.");
+
         return InteractionResult.PASS;
     }
 

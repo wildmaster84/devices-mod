@@ -1,6 +1,5 @@
 package com.mrcrayfish.device.api.utils;
 
-import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mrcrayfish.device.core.Laptop;
@@ -8,6 +7,7 @@ import com.mrcrayfish.device.object.AppInfo;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
@@ -18,7 +18,7 @@ public class RenderUtil {
         RenderSystem.disableDepthTest();
         // Todo - Port to 1.18.2 if possible
 //        RenderSystem.enableLighting();
-        Lighting.setupForFlatItems();
+//        Lighting.setupForFlatItems();
         Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(stack, x, y);
         if (overlay)
             Minecraft.getInstance().getItemRenderer().renderGuiItemDecorations(Minecraft.getInstance().font, stack, x, y);
@@ -47,38 +47,41 @@ public class RenderUtil {
      */
     public static void drawRectWithTexture(double x, double y, double z, float u, float v, int width, int height, float textureWidth, float textureHeight) {
         float scale = 0.00390625f;
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder buffer = tesselator.getBuilder();
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         buffer.vertex(x, y + height, z).uv(u * scale, (v + textureHeight) * scale).endVertex();
         buffer.vertex(x + width, y + height, z).uv((u + textureWidth) * scale, (v + textureHeight) * scale).endVertex();
         buffer.vertex(x + width, y, z).uv((u + textureWidth) * scale, v * scale).endVertex();
         buffer.vertex(x, y, z).uv(u * scale, v * scale).endVertex();
-        tesselator.end();
+        buffer.end();
+        BufferUploader.end(buffer);
     }
 
     public static void drawRectWithFullTexture(double x, double y, float u, float v, int width, int height) {
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder buffer = tessellator.getBuilder();
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         buffer.vertex(x, y + height, 0).uv(0, 1).endVertex();
         buffer.vertex(x + width, y + height, 0).uv(1, 1).endVertex();
         buffer.vertex(x + width, y, 0).uv(1, 0).endVertex();
         buffer.vertex(x, y, 0).uv(0, 0).endVertex();
-        tessellator.end();
+        buffer.end();
+        BufferUploader.end(buffer);
     }
 
     public static void drawRectWithTexture(double x, double y, float u, float v, int width, int height, float textureWidth, float textureHeight, int sourceWidth, int sourceHeight) {
         float scaleWidth = 1f / sourceWidth;
         float scaleHeight = 1f / sourceHeight;
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder buffer = tessellator.getBuilder();
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         buffer.vertex(x, y + height, 0).uv(u * scaleWidth, (v + textureHeight) * scaleHeight).endVertex();
         buffer.vertex(x + width, y + height, 0).uv((u + textureWidth) * scaleWidth, (v + textureHeight) * scaleHeight).endVertex();
         buffer.vertex(x + width, y, 0).uv((u + textureWidth) * scaleWidth, v * scaleHeight).endVertex();
         buffer.vertex(x, y, 0).uv(u * scaleWidth, v * scaleHeight).endVertex();
-        tessellator.end();
+        buffer.end();
+        BufferUploader.end(buffer);
     }
 
     public static void drawApplicationIcon(@Nullable AppInfo info, double x, double y) {

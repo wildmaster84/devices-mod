@@ -16,7 +16,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -72,14 +71,14 @@ public class TaskBar {
     }
 
     public void render(PoseStack pose, Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, float partialTicks) {
-        GL11.glColor4f(1f, 1f, 1f, 0.75f);
+        RenderSystem.setShaderColor(1f, 1f, 1f, 0.75f);
         RenderSystem.enableBlend();
         RenderSystem.setShaderTexture(0, APP_BAR_GUI);
 
         Color bgColor = new Color(laptop.getSettings().getColorScheme().getBackgroundColor()).brighter().brighter();
         float[] hsb = Color.RGBtoHSB(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), null);
         bgColor = new Color(Color.HSBtoRGB(hsb[0], hsb[1], 1f));
-        GL11.glColor4f(bgColor.getRed() / 255f, bgColor.getGreen() / 255f, bgColor.getBlue() / 255f, 1f);
+        RenderSystem.setShaderColor(bgColor.getRed() / 255f, bgColor.getGreen() / 255f, bgColor.getBlue() / 255f, 1f);
 
         int trayItemsWidth = trayItems.size() * 14;
         RenderUtil.drawRectWithTexture(x, y, 0, 0, 1, 18, 1, 18);
@@ -88,7 +87,7 @@ public class TaskBar {
 
         RenderSystem.disableBlend();
 
-        GL11.glColor4f(1f, 1f, 1f, 1f);
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         for (int i = 0; i < APPS_DISPLAYED && i < laptop.installedApps.size(); i++) {
             AppInfo info = laptop.installedApps.get(i + offset);
             RenderUtil.drawApplicationIcon(info, x + 2 + i * 16, y + 2);
@@ -123,12 +122,13 @@ public class TaskBar {
             }
         }
 
-        GL11.glColor4f(1f, 1f, 1f, 1f);
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 //        RenderHelper.disableStandardItemLighting();
     }
 
     public void handleClick(Laptop laptop, int x, int y, int mouseX, int mouseY, int mouseButton) {
         if (isMouseInside(mouseX, mouseY, x + 1, y + 1, x + 236, y + 16)) {
+            System.out.println("Clicked on task bar");
             int appIndex = (mouseX - x - 1) / 16;
             if (appIndex >= 0 && appIndex <= offset + APPS_DISPLAYED && appIndex < laptop.installedApps.size()) {
                 laptop.openApplication(laptop.installedApps.get(appIndex));
@@ -139,8 +139,14 @@ public class TaskBar {
         int startX = x + 317;
         for (int i = 0; i < trayItems.size(); i++) {
             int posX = startX - (trayItems.size() - 1 - i) * 14;
+            System.out.println("posX = " + posX);
+            System.out.println("startX = " + startX);
+            System.out.println("i = " + i);
+            System.out.println("trayItems.size() = " + trayItems.size());
             if (isMouseInside(mouseX, mouseY, posX, y + 2, posX + 13, y + 15)) {
-                trayItems.get(i).handleClick(mouseX, mouseY, mouseButton);
+                TrayItem trayItem = trayItems.get(i);
+                trayItem.handleClick(mouseX, mouseY, mouseButton);
+                System.out.println("Clicked on tray item (" + i + ") " + trayItem.getClass().getSimpleName());
                 break;
             }
         }

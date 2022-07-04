@@ -33,7 +33,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -85,17 +84,17 @@ public abstract class Dialog extends Wrappable {
 
     @Override
     public void render(PoseStack pose, Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active, float partialTicks) {
-        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+//        GL11.glEnable(GL11.GL_SCISSOR_TEST);
 
         RenderSystem.enableScissor(x, y, width, height);
         customLayout.render(pose, laptop, mc, x, y, mouseX, mouseY, active, partialTicks);
         GLHelper.popScissor();
 
-        GL11.glDisable(GL11.GL_SCISSOR_TEST);
+//        GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
         customLayout.renderOverlay(pose, laptop, mc, mouseX, mouseY, active);
 
-        GL11.glColor4f(1f, 1f, 1f, 1f);
+//        GL11.glColor4f(1f, 1f, 1f, 1f);
         // TODO - Port this to 1.18.2
 //        RenderHelper.disableStandardItemLighting();
     }

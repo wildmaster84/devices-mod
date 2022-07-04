@@ -1,11 +1,12 @@
 package com.mrcrayfish.device.util;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
-import java.nio.FloatBuffer;
+import java.nio.ByteBuffer;
 import java.util.Stack;
 
 /**
@@ -43,7 +44,7 @@ public class GLHelper {
             Minecraft mc = Minecraft.getInstance();
             ScaledResolution resolution = new ScaledResolution(mc);
             int scale = resolution.getScaleFactor();
-            GL11.glScissor(scissor.x * scale, mc.getWindow().getHeight() - scissor.y * scale - scissor.height * scale, Math.max(0, scissor.width * scale), Math.max(0, scissor.height * scale));
+            RenderSystem.enableScissor(scissor.x * scale, mc.getWindow().getHeight() - scissor.y * scale - scissor.height * scale, Math.max(0, scissor.width * scale), Math.max(0, scissor.height * scale));
         }
     }
 
@@ -62,8 +63,8 @@ public class GLHelper {
         Minecraft mc = Minecraft.getInstance();
         ScaledResolution resolution = new ScaledResolution(mc);
         int scale = resolution.getScaleFactor();
-        FloatBuffer buffer = BufferUtils.createFloatBuffer(3);
-        GL11.glReadPixels(x * scale, mc.getWindow().getHeight() - y * scale - scale, 1, 1, GL11.GL_RGB, GL11.GL_FLOAT, buffer);
+        ByteBuffer buffer = BufferUtils.createByteBuffer(3);
+        RenderSystem.readPixels(x * scale, mc.getWindow().getHeight() - y * scale - scale, 1, 1, GL11.GL_RGB, GL11.GL_FLOAT, buffer);
         return new Color(buffer.get(0), buffer.get(1), buffer.get(2));
     }
 

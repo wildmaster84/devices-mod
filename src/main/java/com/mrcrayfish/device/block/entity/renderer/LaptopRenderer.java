@@ -8,6 +8,7 @@ import com.mrcrayfish.device.block.entity.LaptopBlockEntity;
 import com.mrcrayfish.device.init.DeviceItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
@@ -17,13 +18,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.Random;
 
 public class LaptopRenderer implements BlockEntityRenderer<LaptopBlockEntity> {
     private final Minecraft mc = Minecraft.getInstance();
 
     private final BlockEntityRendererProvider.Context context;
 
-    {
+    static {
         assert Minecraft.getInstance().level != null;
     }
 
@@ -50,9 +52,13 @@ public class LaptopRenderer implements BlockEntityRenderer<LaptopBlockEntity> {
                     pose.mulPose(blockEntity.getBlockState().getValue(LaptopBlock.FACING).getRotation());
                     pose.translate(-0.5, 0, -0.5);
                     pose.translate(0.595, -0.2075, -0.005);
-                    itemEntity.bobOffs = 0f;
-                    itemEntity.setItem(new ItemStack(DeviceItems.getFlashDriveByColor(blockEntity.getExternalDriveColor())));
-                    Minecraft.getInstance().getEntityRenderDispatcher().render(itemEntity, 0.0D, 0.0D, 0.0D, 0f, 0f, pose, bufferSource, packedLight);
+                    pose.translate(0, -2, 0);
+//                    itemEntity.bobOffs = 0f;
+//                    itemEntity.setItem(new ItemStack(DeviceItems.getFlashDriveByColor(blockEntity.getExternalDriveColor())));
+//                    Minecraft.getInstance().getEntityRenderDispatcher().render(itemEntity, 0.0D, 0.0D, 0.0D, 0f, 0f, pose, bufferSource, packedLight);
+                    ItemStack itemStack = new ItemStack(DeviceItems.getFlashDriveByColor(blockEntity.getExternalDriveColor()));
+                    Minecraft.getInstance().getItemRenderer().renderStatic(itemStack, ItemTransforms.TransformType.GROUND, packedLight, packedOverlay, pose, MultiBufferSource.immediate(Tesselator.getInstance().getBuilder()), new Random().nextInt());
+                    tesselator.end();
                     pose.translate(0.1, 0, 0);
                 }
                 pose.popPose();

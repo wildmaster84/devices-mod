@@ -19,7 +19,6 @@ import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.block.entity.LaptopBlockEntity;
-import com.mrcrayfish.device.core.client.LaptopFont;
 import com.mrcrayfish.device.core.task.TaskInstallApp;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.system.SystemApplication;
@@ -40,7 +39,6 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -55,7 +53,8 @@ public class Laptop extends Screen implements System {
     public static final int ID = 1;
     public static final ResourceLocation ICON_TEXTURES = new ResourceLocation(Reference.MOD_ID, "textures/atlas/app_icons.png");
     public static final int ICON_SIZE = 14;
-    public static final Font font = new LaptopFont(Minecraft.getInstance());
+    //    public static final Font font = new LaptopFont(Minecraft.getInstance());
+    public static final Font font = Minecraft.getInstance().font;
     private static final ResourceLocation LAPTOP_GUI = new ResourceLocation(Reference.MOD_ID, "textures/gui/laptop.png");
     private static final List<Application> APPLICATIONS = new ArrayList<>();
     private static final List<ResourceLocation> WALLPAPERS = new ArrayList<>();
@@ -265,7 +264,7 @@ public class Laptop extends Screen implements System {
             if (cachedImage.isDynamic() && cachedImage.isPendingDeletion()) {
                 int texture = cachedImage.getTextureId();
                 if (texture != -1) {
-                    GL11.glDeleteTextures(texture);
+                    RenderSystem.deleteTexture(texture);
                 }
                 return true;
             }

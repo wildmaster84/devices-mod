@@ -27,7 +27,6 @@ public class LaptopBlockEntity extends NetworkDeviceBlockEntity.Colored {
     @OnlyIn(Dist.CLIENT)
     private int prevRotation;
 
-    @OnlyIn(Dist.CLIENT)
     private DyeColor externalDriveColor;
 
     public LaptopBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
@@ -42,6 +41,7 @@ public class LaptopBlockEntity extends NetworkDeviceBlockEntity.Colored {
     @Override
     public void tick() {
         super.tick();
+        assert level != null;
         if (level.isClientSide) {
             prevRotation = rotation;
             if (!open) {
@@ -146,6 +146,7 @@ public class LaptopBlockEntity extends NetworkDeviceBlockEntity.Colored {
     public void setSystemData(CompoundTag systemData) {
         this.systemData = systemData;
         setChanged();
+        assert level != null;
         BlockEntityUtil.markBlockForUpdate(level, worldPosition);
     }
 
@@ -159,6 +160,7 @@ public class LaptopBlockEntity extends NetworkDeviceBlockEntity.Colored {
     public void setApplicationData(String appId, CompoundTag applicationData) {
         this.applicationData = applicationData;
         setChanged();
+        assert level != null;
         BlockEntityUtil.markBlockForUpdate(level, worldPosition);
     }
 
