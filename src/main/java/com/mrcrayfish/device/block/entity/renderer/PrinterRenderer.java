@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public record PrinterRenderer(
         BlockEntityRendererProvider.Context context) implements BlockEntityRenderer<PrinterBlockEntity> {

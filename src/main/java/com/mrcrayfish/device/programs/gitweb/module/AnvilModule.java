@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class AnvilModule extends ContainerModule {
     @Override

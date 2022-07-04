@@ -3,7 +3,7 @@ package com.mrcrayfish.device.programs.gitweb.module;
 import java.util.Map;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class ModuleEntry {
     private final Module module;

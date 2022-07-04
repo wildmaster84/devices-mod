@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import java.util.Collection;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class TaskGetDevices extends Task {
     private BlockPos devicePos;

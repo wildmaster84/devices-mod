@@ -26,7 +26,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class LayoutSearchApps extends StandardLayout {
     private static final Color ITEM_BACKGROUND = Color.decode("0x9E9E9E");

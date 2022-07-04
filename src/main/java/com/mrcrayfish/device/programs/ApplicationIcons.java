@@ -10,7 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import javax.annotation.Nullable;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class ApplicationIcons extends Application
 {

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class SyncApplicationPacket extends Packet<SyncApplicationPacket> {
     private final List<AppInfo> allowedApps;

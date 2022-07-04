@@ -11,7 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class TaskConnect extends Task {
     private BlockPos devicePos;

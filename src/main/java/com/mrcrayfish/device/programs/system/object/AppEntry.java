@@ -3,7 +3,7 @@ package com.mrcrayfish.device.programs.system.object;
 import javax.annotation.Nullable;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public interface AppEntry {
     String id();

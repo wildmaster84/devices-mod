@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.Objects;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class LaptopFont extends Font {
     private boolean debug = false;

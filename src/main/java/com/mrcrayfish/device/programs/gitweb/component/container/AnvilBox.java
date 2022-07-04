@@ -4,7 +4,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class AnvilBox extends ContainerBox {
     public static final int HEIGHT = 32;

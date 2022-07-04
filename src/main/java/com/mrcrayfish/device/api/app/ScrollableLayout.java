@@ -12,7 +12,7 @@ import net.minecraft.util.Mth;
 import java.awt.*;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class ScrollableLayout extends Layout {
     protected int placeholderColor = new Color(1f, 1f, 1f, 0.35f).getRGB();

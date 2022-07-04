@@ -11,7 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class PrintingManager {
     private static final HashBiMap<String, Class<? extends IPrint>> registeredPrints = HashBiMap.create();

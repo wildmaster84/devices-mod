@@ -24,7 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 @SuppressWarnings("unused")
 public class GitWebFrame extends Component {

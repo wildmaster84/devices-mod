@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class SyncConfigPacket extends Packet<SyncConfigPacket> {
     public SyncConfigPacket() {

@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class RouterBlock extends DeviceBlock.Colored {
     public static final BooleanProperty VERTICAL = BooleanProperty.create("vertical");

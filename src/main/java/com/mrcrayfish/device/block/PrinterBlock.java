@@ -24,37 +24,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class PrinterBlock extends DeviceBlock.Colored implements IHasColor {
-    // Box(...) functions have (x1, y1, z1, x2, y2, z2) as parameters
-    // Every voxel shape is rotated 90 degrees around the Y axis to match the block's orientation
-    private static final VoxelShape[] BODY_BOUNDING_BOX = {
-            box(5, 0d, 1, 14, 5, 15), // North
-            box(1, 0d, 5, 15, 5, 14), // East
-            box(2, 0d, 1, 11, 5, 15), // South
-            box(1, 0d, 2, 15, 5, 11), // West
-    };
-
-    private static final VoxelShape[] TRAY_BOUNDING_BOX = {
-            box(0.5, 0, 3.5, 5, 1, 12.5), // North
-            box(3.5, 0, 0.5, 12.5, 1, 5), // East
-            box(11.5, 0, 3.5, 15.5, 0, 12.5), // South
-            box(3.5, 0, 11.5, 12.5, 1, 15.5) // West
-    };
-
-    private static final VoxelShape[] PAPER_BOUNDING_BOX = {
-            box(1, 0d, 4, 13d, 9, 12), // North
-            box(4, 0d, 1, 12, 9, 13d), // East
-            box(2, 0d, 4, 15d, 9, 12), // South
-            box(4, 0d, 2, 12, 9, 15d) // West
-    };
-
-//    private static final AxisAlignedBB[] TRAY_BOUNDING_BOX = new Bounds(0.5, 0, 3.5, 5, 1, 12.5).getRotatedBounds();
-//    private static final AxisAlignedBB[] PAPER_BOUNDING_BOX = new Bounds(13, 0.0, 4, 1.0, 9, 12).getRotatedBounds();
-//
-//    private static final AxisAlignedBB SELECTION_BOUNDING_BOX = new AxisAlignedBB(0, 0, 0, 16, 8, 16);
-
     private static final VoxelShape SHAPE_NORTH = Shapes.or(
             Block.box(2, 0, 7, 14, 5, 12),
             Block.box(3.5, 0.1, 1, 12.5, 1.1, 7),

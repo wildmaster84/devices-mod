@@ -20,7 +20,7 @@ import java.awt.*;
 import java.util.Map;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class DownloadModule extends Module {
     @Override

@@ -8,7 +8,7 @@ import com.mrcrayfish.device.programs.gitweb.component.GitWebFrame;
 import java.util.Map;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class ParagraphModule extends Module {
     @Override

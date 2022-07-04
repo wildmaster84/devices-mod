@@ -7,7 +7,7 @@ import net.minecraft.client.gui.Gui;
 import java.util.Map;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class DividerModule extends Module {
     @Override

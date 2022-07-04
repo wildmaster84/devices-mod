@@ -29,7 +29,7 @@ import java.net.URI;
 import java.net.URL;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class LayoutAppPage extends Layout {
     private final Laptop laptop;

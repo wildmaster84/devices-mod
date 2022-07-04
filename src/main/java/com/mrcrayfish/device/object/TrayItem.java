@@ -4,7 +4,7 @@ import com.mrcrayfish.device.api.app.IIcon;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class TrayItem {
     private IIcon icon;

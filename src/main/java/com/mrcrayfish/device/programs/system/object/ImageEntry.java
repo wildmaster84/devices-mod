@@ -3,7 +3,7 @@ package com.mrcrayfish.device.programs.system.object;
 import net.minecraft.resources.ResourceLocation;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class ImageEntry {
     private final Type type;

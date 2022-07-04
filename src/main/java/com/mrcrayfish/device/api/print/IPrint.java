@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 //printing somethings takes makes ink cartridge take damage. cartridge can only stack to one
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public interface IPrint {
     static CompoundTag save(IPrint print) {

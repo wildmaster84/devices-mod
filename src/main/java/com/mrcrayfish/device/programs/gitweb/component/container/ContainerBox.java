@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public abstract class ContainerBox extends Component {
     public static final int WIDTH = 128;

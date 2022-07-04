@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public record RouterRenderer(
         BlockEntityRendererProvider.Context context) implements BlockEntityRenderer<RouterBlockEntity> {

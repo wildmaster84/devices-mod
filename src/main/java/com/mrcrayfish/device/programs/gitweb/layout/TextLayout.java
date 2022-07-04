@@ -4,7 +4,7 @@ import com.mrcrayfish.device.api.app.ScrollableLayout;
 import com.mrcrayfish.device.api.app.component.Text;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class TextLayout extends ScrollableLayout {
     public TextLayout(int left, int top, int visibleHeight, Text text) {

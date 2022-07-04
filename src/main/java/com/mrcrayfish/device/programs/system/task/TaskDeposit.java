@@ -10,7 +10,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class TaskDeposit extends Task {
     private int amount;

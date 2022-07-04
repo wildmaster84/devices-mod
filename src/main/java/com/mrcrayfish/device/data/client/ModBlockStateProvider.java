@@ -55,7 +55,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
             String name = Objects.requireNonNull(block.getRegistryName()).getPath();
             return ConfiguredModel.builder()
                     .modelFile(models()
-                            .withExistingParent(name, modLoc("block/laptop_" + state.getValue(LaptopBlock.TYPE).getSerializedName()))
+                            .withExistingParent(name, modLoc("block/laptop_full"))
                             .texture("2", mcLoc("block/" + block.getColor().getName() + "_wool")))
                     .rotationY((int) state.getValue(LaptopBlock.FACING).toYRot())
                     .build();

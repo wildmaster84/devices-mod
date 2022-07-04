@@ -10,7 +10,7 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class NotificationPacket extends Packet<NotificationPacket> {
     private final CompoundTag notificationTag;

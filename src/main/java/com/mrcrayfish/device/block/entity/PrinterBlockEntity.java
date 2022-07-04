@@ -23,7 +23,7 @@ import java.util.Deque;
 import static com.mrcrayfish.device.block.entity.PrinterBlockEntity.State.*;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class PrinterBlockEntity extends NetworkDeviceBlockEntity.Colored {
     private State state = IDLE;

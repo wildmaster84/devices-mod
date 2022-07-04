@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public record PaperRenderer(
         BlockEntityRendererProvider.Context context) implements BlockEntityRenderer<PaperBlockEntity> {

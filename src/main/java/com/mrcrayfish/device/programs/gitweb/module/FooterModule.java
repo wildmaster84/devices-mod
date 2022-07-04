@@ -11,7 +11,7 @@ import java.awt.*;
 import java.util.Map;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class FooterModule extends Module {
     @Override

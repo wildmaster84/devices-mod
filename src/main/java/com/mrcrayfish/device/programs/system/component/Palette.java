@@ -16,7 +16,7 @@ import net.minecraft.client.gui.Gui;
 import java.awt.*;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class Palette extends Component {
     private final ComboBox.Custom<Integer> colorPicker;

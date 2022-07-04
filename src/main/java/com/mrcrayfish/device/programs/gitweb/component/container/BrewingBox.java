@@ -8,7 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class BrewingBox extends ContainerBox {
     public static final int HEIGHT = 73;

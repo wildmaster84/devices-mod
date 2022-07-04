@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import java.util.UUID;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class TaskGetStructure extends Task {
     private String uuid;

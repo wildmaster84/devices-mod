@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 import java.awt.*;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class StandardLayout extends Layout {
     protected Application app;

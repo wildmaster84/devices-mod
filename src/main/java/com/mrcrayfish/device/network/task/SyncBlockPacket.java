@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class SyncBlockPacket extends Packet<SyncBlockPacket> {
     private final BlockPos routerPos;

@@ -3,7 +3,7 @@ package com.mrcrayfish.device.init;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class RegistrationHandler {
     public static void register(IEventBus modEventBus) {
