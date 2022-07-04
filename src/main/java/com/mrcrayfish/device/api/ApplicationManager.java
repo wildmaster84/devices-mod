@@ -32,6 +32,7 @@ public final class ApplicationManager {
     @Nullable
     public static Application registerApplication(ResourceLocation identifier, Class<? extends Application> clazz) {
         Application application = MrCrayfishDeviceMod.getInstance().registerApplication(identifier, clazz);
+        System.out.println("application = " + application);
         if (application != null) {
             APP_INFO.put(identifier, application.getInfo());
             return application;

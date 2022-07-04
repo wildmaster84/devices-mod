@@ -37,7 +37,7 @@ public class ApplicationBank extends SystemApplication {
     private static final ResourceLocation BANK_ASSETS = new ResourceLocation("cdm:textures/gui/bank.png");
     //    private static final ResourceLocation villagerTextures = new ResourceLocation("textures/entity/villager/villager.png");
 //    private static final VillagerModel<Villager> villagerModel = new VillagerModel<Villager>();
-    private final Villager villager;
+    private Villager villager;
     private Layout layoutStart;
     private Label labelTeller;
     private Text textWelcome;
@@ -66,8 +66,6 @@ public class ApplicationBank extends SystemApplication {
     private int rotation;
 
     {
-        assert Minecraft.getInstance().level != null;
-        villager = new Villager(EntityType.VILLAGER, Minecraft.getInstance().level, VillagerType.PLAINS);
     }
 
     public ApplicationBank() {
@@ -88,6 +86,9 @@ public class ApplicationBank extends SystemApplication {
         layoutStart = new Layout();
         layoutStart.setBackground((pose, gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
         {
+            assert Minecraft.getInstance().level != null;
+            villager = new Villager(EntityType.VILLAGER, Minecraft.getInstance().level, VillagerType.PLAINS);
+
             pose.pushPose();
             {
                 RenderSystem.enableDepthTest();

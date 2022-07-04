@@ -4,10 +4,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
-import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.gui.GuiButtonClose;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
@@ -79,13 +79,13 @@ public class Window<T extends Wrappable> {
         gui.blit(pose, x + offsetX, y + offsetY + height - 1, 0, 14, 1, 1);
 
         /* Edges */
-        RenderUtil.drawRectWithTexture(x + offsetX + 1, y + offsetY, 1, 0, width - 14, 13, 1, 13);
-        RenderUtil.drawRectWithTexture(x + offsetX + width - 1, y + offsetY + 13, 14, 13, 1, height - 14, 1, 1);
-        RenderUtil.drawRectWithTexture(x + offsetX + 1, y + offsetY + height - 1, 1, 14, width - 2, 1, 13, 1);
-        RenderUtil.drawRectWithTexture(x + offsetX, y + offsetY + 13, 0, 13, 1, height - 14, 1, 1);
+        GuiComponent.blit(pose, x + offsetX + 1, y + offsetY, 1, 0, width - 14, 13, 1, 13);
+        GuiComponent.blit(pose, x + offsetX + width - 1, y + offsetY + 13, 14, 13, 1, height - 14, 1, 1);
+        GuiComponent.blit(pose, x + offsetX + 1, y + offsetY + height - 1, 1, 14, width - 2, 1, 13, 1);
+        GuiComponent.blit(pose, x + offsetX, y + offsetY + 13, 0, 13, 1, height - 14, 1, 1);
 
         /* Center */
-        RenderUtil.drawRectWithTexture(x + offsetX + 1, y + offsetY + 13, 1, 13, width - 2, height - 14, 13, 1);
+        GuiComponent.blit(pose, x + offsetX + 1, y + offsetY + 13, 1, 13, width - 2, height - 14, 13, 1);
 
         String windowTitle = content.getWindowTitle();
         if (mc.font.width(windowTitle) > width - 2 - 13 - 3) // window width, border, close button, padding, padding

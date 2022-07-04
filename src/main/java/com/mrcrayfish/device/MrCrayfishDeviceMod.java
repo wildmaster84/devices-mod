@@ -68,7 +68,6 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -283,6 +282,10 @@ public class MrCrayfishDeviceMod implements PreparableReloadListener {
 
     @Nullable
     public Application registerApplication(ResourceLocation identifier, Class<? extends Application> clazz) {
+        if ("minecraft".equals(identifier.getNamespace())) {
+            throw new IllegalArgumentException("Invalid identifier domain");
+        }
+
         if (allowedApps == null) {
             allowedApps = new ArrayList<>();
         }
@@ -290,10 +293,6 @@ public class MrCrayfishDeviceMod implements PreparableReloadListener {
             allowedApps.add(new AppInfo(identifier, true));
         } else {
             allowedApps.add(new AppInfo(identifier, false));
-        }
-
-        if ("minecraft".equals(identifier.getNamespace())) {
-            throw new IllegalArgumentException("Invalid identifier domain");
         }
 
         try {
@@ -305,9 +304,10 @@ public class MrCrayfishDeviceMod implements PreparableReloadListener {
             Field field = Application.class.getDeclaredField("info");
             field.setAccessible(true);
 
-            Field modifiers = Field.class.getDeclaredField("modifiers");
-            modifiers.setAccessible(true);
-            modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+//            ObfuscationReflectionHelper.setPrivateValue(Field.class, field, field.getModifiers() & ~Modifier.FINAL, "modifiers");
+//            Field modifiers = Field.class.getDeclaredField("modifiers");
+//            modifiers.setAccessible(true);
+//            modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
 
             field.set(application, generateAppInfo(identifier, clazz));
 

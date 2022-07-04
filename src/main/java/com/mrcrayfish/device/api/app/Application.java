@@ -21,8 +21,10 @@ import java.util.Objects;
  *
  * @author MrCrayfish
  */
+@SuppressWarnings("SpellCheckingInspection")
 public abstract class Application extends Wrappable {
-    protected final AppInfo info = null;
+    @SuppressWarnings("FieldMayBeFinal")
+    private AppInfo info = null;
     private final Layout defaultLayout = new Layout();
     private BlockPos laptopPositon;
     private int width, height;
