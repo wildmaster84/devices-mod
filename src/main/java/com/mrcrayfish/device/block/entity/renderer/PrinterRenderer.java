@@ -28,7 +28,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.EmptyModelData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -142,13 +141,13 @@ public record PrinterRenderer(
         }
         pose.popPose();
 
-        pose.pushPose();
-        {
-            pose.translate(0, -0.5, 0);
-            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, pose, bufferSource, packedLight, packedOverlay, EmptyModelData.INSTANCE);
+//        pose.pushPose();
+//        {
+//            pose.translate(0, -0.5, 0);
+//            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, pose, bufferSource, packedLight, packedOverlay, EmptyModelData.INSTANCE);
 //                super.render(blockEntity, x, y, z, partialTicks, destroyStage, alpha);
-        }
-        pose.popPose();
+//        }
+//        pose.popPose();
     }
 
     public static class PaperModel extends Model {
