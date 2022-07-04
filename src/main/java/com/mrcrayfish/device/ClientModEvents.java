@@ -6,6 +6,9 @@ import com.mrcrayfish.device.block.entity.renderer.PrinterRenderer;
 import com.mrcrayfish.device.block.entity.renderer.RouterRenderer;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.init.DeviceBlockEntities;
+import com.mrcrayfish.device.init.DeviceBlocks;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -23,12 +26,6 @@ public class ClientModEvents {
     public static void clientSetup(FMLClientSetupEvent event) {
         LOGGER.info("Doing some client setup.");
 
-//            ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLaptop.class, new LaptopRenderer());
-//            ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPrinter.class, new PrinterRenderer());
-//            ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPaper.class, new PaperRenderer());
-//            ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRouter.class, new RouterRenderer());
-//            ClientRegistry.bindTileEntitySpecialRenderer(TileEntityOfficeChair.class, new OfficeChairRenderer());
-
         if (MrCrayfishDeviceMod.DEVELOPER_MODE) {
             LOGGER.info("Adding developer wallpaper.");
             Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/developer_wallpaper.png"));
@@ -42,6 +39,22 @@ public class ClientModEvents {
             Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_6.png"));
             Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_7.png"));
         }
+
+        DeviceBlocks.getLaptops().forEach(block -> {
+            LOGGER.debug("Setting render layer for laptop {}", block.getRegistryName());
+            ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutout());
+        });
+        DeviceBlocks.getPrinters().forEach(block -> {
+            LOGGER.debug("Setting render layer for printer {}", block.getRegistryName());
+            ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutout());
+        });
+        DeviceBlocks.getRouters().forEach(block -> {
+            LOGGER.debug("Setting render layer for router {}", block.getRegistryName());
+            ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutout());
+        });
+        LOGGER.debug("Setting render layer for paper {}", DeviceBlocks.PAPER.get().getRegistryName());
+        ItemBlockRenderTypes.setRenderLayer(DeviceBlocks.PAPER.get(), RenderType.cutout());
+
     }
 
     @SubscribeEvent

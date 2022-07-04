@@ -93,26 +93,10 @@ public class PrinterBlock extends DeviceBlock.Colored implements IHasColor {
         };
     }
 
-//    @Override
-//    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
-//    {
-//        return SELECTION_BOUNDING_BOX;
-//    }
-//
-//    @Override
-//    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entityIn, boolean p_185477_7_)
-//    {
-//        EnumFacing facing = state.getValue(FACING);
-//        Block.addCollisionBoxToList(pos, entityBox, collidingBoxes, BODY_BOUNDING_BOX[facing.getHorizontalIndex()]);
-//        Block.addCollisionBoxToList(pos, entityBox, collidingBoxes, TRAY_BOUNDING_BOX[facing.getHorizontalIndex()]);
-//        Block.addCollisionBoxToList(pos, entityBox, collidingBoxes, PAPER_BOUNDING_BOX[facing.getHorizontalIndex()]);
-//    }
-
-
     @NotNull
     @Override
     @SuppressWarnings("deprecation")
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult use(@NotNull BlockState state, Level level, @NotNull BlockPos pos, Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         ItemStack heldItem = player.getItemInHand(hand);
         BlockEntity tileEntity = level.getBlockEntity(pos);
         if (tileEntity instanceof PrinterBlockEntity) {

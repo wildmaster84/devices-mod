@@ -1,5 +1,5 @@
 {
-  "parent": "cdm:block/laptop_screen",
+  "parent": "cdm:block/laptop_full",
   "textures": {
     "2": "minecraft:block/gray_wool"
   }

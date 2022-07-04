@@ -1,9 +1,10 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-      "0": "block/cauldron_side",
-      "1": "block/cauldron_inner",
-      "2": "block/wool_colored_red"
+        "0": "block/cauldron_side",
+        "1": "block/cauldron_inner",
+        "2": "block/wool_colored_red",
+        "particle": "block/cauldron_side"
     },
     "display": {
         "gui": {

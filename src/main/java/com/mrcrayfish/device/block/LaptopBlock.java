@@ -20,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,6 +29,7 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,37 +39,37 @@ import java.util.Locale;
 public class LaptopBlock extends DeviceBlock.Colored {
     public static final EnumProperty<Type> TYPE = EnumProperty.create("type", Type.class);
 
-    private static final VoxelShape[] SCREEN_BOXES = new VoxelShape[]{
-            box(13, 1, 1, 15, 12, 15),
-            box(1, 1, 13, 15, 12, 15),
-            box(1, 1, 1, 3, 12, 15),
-            box(1, 1, 1, 15, 12, 3)
-    };
-    private static final VoxelShape BODY_OPEN_BOX = Block.box(1, 0, 1, 13, 1, 15);
-    private static final VoxelShape BODY_CLOSED_BOX = Block.box(1, 0, 1, 13, 2, 15);
-    private static final VoxelShape SELECTION_BOX_OPEN = Block.box(0, 0, 0, 16, 12, 16);
-    private static final VoxelShape SELECTION_BOX_CLOSED = Block.box(0, 0, 0, 16, 3, 16);
+    private static final VoxelShape SHAPE_OPEN_NORTH = Shapes.or(Block.box(1, 0, 12.5, 15, 11.4, 17), Block.box(1, 0, 1, 15, 1.3, 12.5));
+    private static final VoxelShape SHAPE_OPEN_EAST = Shapes.or(Block.box(-1, 0, 1, 3.5, 11.4, 15), Block.box(3.5, 0, 1, 15, 1.3, 15));
+    private static final VoxelShape SHAPE_OPEN_SOUTH = Shapes.or(Block.box(1, 0, -1, 15, 11.4, 3.5), Block.box(1, 0, 3.5, 15, 1.3, 15));
+    private static final VoxelShape SHAPE_OPEN_WEST = Shapes.or(Block.box(12.5, 0, 1, 17, 11.4, 15), Block.box(1, 0, 1, 12.5, 1.3, 15));
+    private static final VoxelShape SHAPE_CLOSED_NORTH = Shapes.or(Block.box(1, 0, -1, 15, 11.4, 3.5), Block.box(1, 0, 3.5, 15, 1.3, 15));
+    private static final VoxelShape SHAPE_CLOSED_EAST = Shapes.or(Block.box(12.5, 0, 1, 17, 11.4, 15), Block.box(1, 0, 1, 12.5, 1.3, 15));
+    private static final VoxelShape SHAPE_CLOSED_SOUTH = Shapes.or(Block.box(1, 0, 12.5, 15, 11.4, 17), Block.box(1, 0, 1, 15, 1.3, 12.5));
+    private static final VoxelShape SHAPE_CLOSED_WEST = Shapes.or(Block.box(-1, 0, 1, 3.5, 11.4, 15), Block.box(3.5, 0, 1, 15, 1.3, 15));
 
     public LaptopBlock(DyeColor color) {
-        super(BlockBehaviour.Properties.of(Material.HEAVY_METAL, color), color);
+        super(BlockBehaviour.Properties.of(Material.HEAVY_METAL, color).strength(6.0f).sound(SoundType.METAL), color);
         registerDefaultState(this.getStateDefinition().any().setValue(TYPE, Type.BASE));
     }
 
     @Override
     public @NotNull VoxelShape getShape(@NotNull BlockState pState, @NotNull BlockGetter pLevel, @NotNull BlockPos pPos, @NotNull CollisionContext pContext) {
-        BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-        if (blockEntity instanceof LaptopBlockEntity laptop) {
-            if (laptop.isOpen()) return BODY_OPEN_BOX;
-            else return BODY_CLOSED_BOX;
-        } else {
-            return SELECTION_BOX_OPEN;
-        }
+        return switch (pState.getValue(FACING)) {
+            case NORTH -> SHAPE_OPEN_NORTH;
+            case EAST -> SHAPE_OPEN_EAST;
+            case SOUTH -> SHAPE_OPEN_SOUTH;
+            case WEST -> SHAPE_OPEN_WEST;
+            default -> throw new IllegalStateException("Unexpected value: " + pState.getValue(FACING));
+        };
     }
 
+    @NotNull
     @Override
+    @SuppressWarnings("deprecation")
     public InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
-        BlockEntity tileEntity = level.getBlockEntity(pos);
-        if (tileEntity instanceof LaptopBlockEntity laptop) {
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity instanceof LaptopBlockEntity laptop) {
             if (player.isCrouching()) {
                 if (!level.isClientSide) {
                     laptop.openClose();
