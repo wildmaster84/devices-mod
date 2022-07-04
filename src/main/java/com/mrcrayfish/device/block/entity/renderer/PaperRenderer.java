@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Quaternion;
 import com.mrcrayfish.device.DeviceConfig;
+import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.block.PaperBlock;
@@ -97,13 +98,17 @@ public record PaperRenderer(
     }
 
     @Override
-    public void render(PaperBlockEntity blockEntity, float partialTick, PoseStack pose, @NotNull MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+    public void render(PaperBlockEntity blockEntity, float partialTick, @NotNull PoseStack pose, @NotNull MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+        BlockState state = Objects.requireNonNull(blockEntity.getLevel()).getBlockState(blockEntity.getBlockPos());
+        if (blockEntity.getBlockState().getBlock() != state.getBlock()) {
+            MrCrayfishDeviceMod.LOGGER.error("Paper block mismatch: {} != {}", blockEntity.getBlockState().getBlock(), state.getBlock());
+            return;
+        }
+
         pose.pushPose();
         {
             pose.translate(blockEntity.getBlockPos().getX(), blockEntity.getBlockPos().getY(), blockEntity.getBlockPos().getZ());
             pose.translate(0.5, 0.5, 0.5);
-            BlockState state = Objects.requireNonNull(blockEntity.getLevel()).getBlockState(blockEntity.getBlockPos());
-            if (blockEntity.getBlockState().getBlock() != state.getBlock()) return;
             pose.mulPose(state.getValue(PaperBlock.FACING).getRotation());
             pose.mulPose(new Quaternion(0, 0, 1, -blockEntity.getRotation()));
             pose.translate(-0.5, -0.5, -0.5);
