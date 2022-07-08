@@ -1,34 +1,34 @@
 {
-  "variants": {
-    "facing=north,type=base": {
-      "model": "cdm:block/magenta_laptop",
-      "y": 180
-    },
-    "facing=south,type=base": {
-      "model": "cdm:block/magenta_laptop"
-    },
-    "facing=west,type=base": {
-      "model": "cdm:block/magenta_laptop",
-      "y": 90
-    },
-    "facing=east,type=base": {
-      "model": "cdm:block/magenta_laptop",
-      "y": 270
-    },
-    "facing=north,type=screen": {
-      "model": "cdm:block/magenta_laptop",
-      "y": 180
-    },
-    "facing=south,type=screen": {
-      "model": "cdm:block/magenta_laptop"
-    },
-    "facing=west,type=screen": {
-      "model": "cdm:block/magenta_laptop",
-      "y": 90
-    },
-    "facing=east,type=screen": {
-      "model": "cdm:block/magenta_laptop",
-      "y": 270
+    "variants": {
+        "facing=north,type=base": {
+            "model": "devices:block/magenta_laptop",
+            "y": 180
+        },
+        "facing=south,type=base": {
+            "model": "devices:block/magenta_laptop"
+        },
+        "facing=west,type=base": {
+            "model": "devices:block/magenta_laptop",
+            "y": 90
+        },
+        "facing=east,type=base": {
+            "model": "devices:block/magenta_laptop",
+            "y": 270
+        },
+        "facing=north,type=screen": {
+            "model": "devices:block/magenta_laptop",
+            "y": 180
+        },
+        "facing=south,type=screen": {
+            "model": "devices:block/magenta_laptop"
+        },
+        "facing=west,type=screen": {
+            "model": "devices:block/magenta_laptop",
+            "y": 90
+        },
+        "facing=east,type=screen": {
+            "model": "devices:block/magenta_laptop",
+            "y": 270
+        }
     }
-  }
 }

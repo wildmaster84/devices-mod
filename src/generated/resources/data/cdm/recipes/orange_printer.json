@@ -1,31 +1,31 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "psp",
-    "mcb",
-    "pdp"
-  ],
-  "key": {
-    "d": {
-      "item": "minecraft:orange_dye"
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "psp",
+        "mcb",
+        "pdp"
+    ],
+    "key": {
+        "d": {
+            "item": "minecraft:orange_dye"
+        },
+        "p": {
+            "item": "devices:plastic_frame"
+        },
+        "s": {
+            "item": "devices:screen"
+        },
+        "m": {
+            "item": "devices:small_electric_motor"
+        },
+        "c": {
+            "item": "devices:carriage"
+        },
+        "b": {
+            "item": "devices:controller_unit"
+        }
     },
-    "p": {
-      "item": "cdm:plastic_frame"
-    },
-    "s": {
-      "item": "cdm:screen"
-    },
-    "m": {
-      "item": "cdm:small_electric_motor"
-    },
-    "c": {
-      "item": "cdm:carriage"
-    },
-    "b": {
-      "item": "cdm:controller_unit"
+    "result": {
+        "item": "devices:orange_printer"
     }
-  },
-  "result": {
-    "item": "cdm:orange_printer"
-  }
 }

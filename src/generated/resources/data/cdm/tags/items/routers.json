@@ -1,21 +1,21 @@
 {
-  "replace": false,
-  "values": [
-    "cdm:white_router",
-    "cdm:orange_router",
-    "cdm:magenta_router",
-    "cdm:light_blue_router",
-    "cdm:yellow_router",
-    "cdm:lime_router",
-    "cdm:pink_router",
-    "cdm:gray_router",
-    "cdm:light_gray_router",
-    "cdm:cyan_router",
-    "cdm:purple_router",
-    "cdm:blue_router",
-    "cdm:brown_router",
-    "cdm:green_router",
-    "cdm:red_router",
-    "cdm:black_router"
-  ]
+    "replace": false,
+    "values": [
+        "devices:white_router",
+        "devices:orange_router",
+        "devices:magenta_router",
+        "devices:light_blue_router",
+        "devices:yellow_router",
+        "devices:lime_router",
+        "devices:pink_router",
+        "devices:gray_router",
+        "devices:light_gray_router",
+        "devices:cyan_router",
+        "devices:purple_router",
+        "devices:blue_router",
+        "devices:brown_router",
+        "devices:green_router",
+        "devices:red_router",
+        "devices:black_router"
+    ]
 }

@@ -1,21 +1,21 @@
 {
-  "replace": false,
-  "values": [
-    "cdm:white_flash_drive",
-    "cdm:orange_flash_drive",
-    "cdm:magenta_flash_drive",
-    "cdm:light_blue_flash_drive",
-    "cdm:yellow_flash_drive",
-    "cdm:lime_flash_drive",
-    "cdm:pink_flash_drive",
-    "cdm:gray_flash_drive",
-    "cdm:light_gray_flash_drive",
-    "cdm:cyan_flash_drive",
-    "cdm:purple_flash_drive",
-    "cdm:blue_flash_drive",
-    "cdm:brown_flash_drive",
-    "cdm:green_flash_drive",
-    "cdm:red_flash_drive",
-    "cdm:black_flash_drive"
-  ]
+    "replace": false,
+    "values": [
+        "devices:white_flash_drive",
+        "devices:orange_flash_drive",
+        "devices:magenta_flash_drive",
+        "devices:light_blue_flash_drive",
+        "devices:yellow_flash_drive",
+        "devices:lime_flash_drive",
+        "devices:pink_flash_drive",
+        "devices:gray_flash_drive",
+        "devices:light_gray_flash_drive",
+        "devices:cyan_flash_drive",
+        "devices:purple_flash_drive",
+        "devices:blue_flash_drive",
+        "devices:brown_flash_drive",
+        "devices:green_flash_drive",
+        "devices:red_flash_drive",
+        "devices:black_flash_drive"
+    ]
 }

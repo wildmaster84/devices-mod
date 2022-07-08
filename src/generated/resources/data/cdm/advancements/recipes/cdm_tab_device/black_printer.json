@@ -1,34 +1,34 @@
 {
-  "parent": "minecraft:recipes/root",
-  "rewards": {
-    "recipes": [
-      "cdm:black_printer"
-    ]
-  },
-  "criteria": {
-    "has_carriage": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "cdm:carriage"
-            ]
-          }
+    "parent": "minecraft:recipes/root",
+    "rewards": {
+        "recipes": [
+            "devices:black_printer"
         ]
-      }
     },
-    "has_the_recipe": {
-      "trigger": "minecraft:recipe_unlocked",
-      "conditions": {
-        "recipe": "cdm:black_printer"
-      }
-    }
-  },
-  "requirements": [
-    [
-      "has_carriage",
-      "has_the_recipe"
+    "criteria": {
+        "has_carriage": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "items": [
+                            "devices:carriage"
+                        ]
+                    }
+                ]
+            }
+        },
+        "has_the_recipe": {
+            "trigger": "minecraft:recipe_unlocked",
+            "conditions": {
+                "recipe": "devices:black_printer"
+            }
+        }
+    },
+    "requirements": [
+        [
+            "has_carriage",
+            "has_the_recipe"
+        ]
     ]
-  ]
 }

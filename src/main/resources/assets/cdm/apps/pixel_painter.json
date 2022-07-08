@@ -3,7 +3,7 @@
     "author": "MrCrayfish",
     "description": "${desc}",
     "version": "1.0",
-    "icon": "cdm:textures/app/icon/pixel_painter.png",
+    "icon": "devices:textures/app/icon/pixel_painter.png",
     "screenshots": [
         "https://i.imgur.com/7CzbiA7.png",
         "https://i.imgur.com/4AiXzf8.jpg",

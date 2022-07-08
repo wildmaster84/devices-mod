@@ -117,7 +117,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Specify the mod-id for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'cdm', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'devices', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
                 devicemod {
@@ -172,7 +172,7 @@ dependencies {
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "cdm",
+                "Specification-Title"     : "devices",
                 "Specification-Vendor"    : "Ultreon Team",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,

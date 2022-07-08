@@ -1,5 +1,5 @@
 {
-    "parent": "cdm:item/laptop",
+    "parent": "devices:item/laptop",
     "textures": {
         "2": "block/wool_colored_lime"
     }

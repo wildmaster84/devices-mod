@@ -1,19 +1,19 @@
 {
-  "variants": {
-    "facing=north": {
-      "model": "cdm:block/brown_printer",
-      "y": 180
-    },
-    "facing=south": {
-      "model": "cdm:block/brown_printer"
-    },
-    "facing=west": {
-      "model": "cdm:block/brown_printer",
-      "y": 90
-    },
-    "facing=east": {
-      "model": "cdm:block/brown_printer",
-      "y": 270
+    "variants": {
+        "facing=north": {
+            "model": "devices:block/brown_printer",
+            "y": 180
+        },
+        "facing=south": {
+            "model": "devices:block/brown_printer"
+        },
+        "facing=west": {
+            "model": "devices:block/brown_printer",
+            "y": 90
+        },
+        "facing=east": {
+            "model": "devices:block/brown_printer",
+            "y": 270
+        }
     }
-  }
 }

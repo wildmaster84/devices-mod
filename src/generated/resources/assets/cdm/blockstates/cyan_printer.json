@@ -1,19 +1,19 @@
 {
-  "variants": {
-    "facing=north": {
-      "model": "cdm:block/cyan_printer",
-      "y": 180
-    },
-    "facing=south": {
-      "model": "cdm:block/cyan_printer"
-    },
-    "facing=west": {
-      "model": "cdm:block/cyan_printer",
-      "y": 90
-    },
-    "facing=east": {
-      "model": "cdm:block/cyan_printer",
-      "y": 270
+    "variants": {
+        "facing=north": {
+            "model": "devices:block/cyan_printer",
+            "y": 180
+        },
+        "facing=south": {
+            "model": "devices:block/cyan_printer"
+        },
+        "facing=west": {
+            "model": "devices:block/cyan_printer",
+            "y": 90
+        },
+        "facing=east": {
+            "model": "devices:block/cyan_printer",
+            "y": 270
+        }
     }
-  }
 }

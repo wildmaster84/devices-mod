@@ -1,16 +1,16 @@
 {
-	"variants": {
-		"facing=north": {
-			"model": "cdm:block/paper"
-		},
-		"facing=east": {
-			"model": "cdm:block/paper"
-		},
-		"facing=south": {
-			"model": "cdm:block/paper"
-		},
-		"facing=west": {
-			"model": "cdm:block/paper"
-		}
-	}
+    "variants": {
+        "facing=north": {
+            "model": "devices:block/paper"
+        },
+        "facing=east": {
+            "model": "devices:block/paper"
+        },
+        "facing=south": {
+            "model": "devices:block/paper"
+        },
+        "facing=west": {
+            "model": "devices:block/paper"
+        }
+    }
 }

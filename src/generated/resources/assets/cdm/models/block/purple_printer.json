@@ -1,6 +1,6 @@
 {
-  "parent": "cdm:block/printer",
-  "textures": {
-    "2": "minecraft:block/purple_wool"
-  }
+    "parent": "devices:block/printer",
+    "textures": {
+        "2": "minecraft:block/purple_wool"
+    }
 }

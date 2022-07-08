@@ -1,6 +1,6 @@
 {
-  "parent": "cdm:item/flash_drive",
-  "textures": {
-    "1": "minecraft:block/purple_wool"
-  }
+    "parent": "devices:item/flash_drive",
+    "textures": {
+        "1": "minecraft:block/purple_wool"
+    }
 }

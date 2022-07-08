@@ -1,22 +1,22 @@
 {
-  "result": {
-    "item": "cdm:battery"
-  },
-  "pattern": [
-    "III",
-    "IRI",
-    "IBI"
-  ],
-  "type": "minecraft:crafting_shaped",
-  "key": {
-    "I": {
-      "item": "minecraft:iron_ingot"
+    "result": {
+        "item": "devices:battery"
     },
-    "R": {
-      "item": "minecraft:redstone_block"
-    },
-    "B": {
-      "item": "minecraft:blaze_powder"
+    "pattern": [
+        "III",
+        "IRI",
+        "IBI"
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "I": {
+            "item": "minecraft:iron_ingot"
+        },
+        "R": {
+            "item": "minecraft:redstone_block"
+        },
+        "B": {
+            "item": "minecraft:blaze_powder"
+        }
     }
-  }
 }

@@ -1,21 +1,21 @@
 {
-  "replace": false,
-  "values": [
-    "cdm:white_printer",
-    "cdm:orange_printer",
-    "cdm:magenta_printer",
-    "cdm:light_blue_printer",
-    "cdm:yellow_printer",
-    "cdm:lime_printer",
-    "cdm:pink_printer",
-    "cdm:gray_printer",
-    "cdm:light_gray_printer",
-    "cdm:cyan_printer",
-    "cdm:purple_printer",
-    "cdm:blue_printer",
-    "cdm:brown_printer",
-    "cdm:green_printer",
-    "cdm:red_printer",
-    "cdm:black_printer"
-  ]
+    "replace": false,
+    "values": [
+        "devices:white_printer",
+        "devices:orange_printer",
+        "devices:magenta_printer",
+        "devices:light_blue_printer",
+        "devices:yellow_printer",
+        "devices:lime_printer",
+        "devices:pink_printer",
+        "devices:gray_printer",
+        "devices:light_gray_printer",
+        "devices:cyan_printer",
+        "devices:purple_printer",
+        "devices:blue_printer",
+        "devices:brown_printer",
+        "devices:green_printer",
+        "devices:red_printer",
+        "devices:black_printer"
+    ]
 }

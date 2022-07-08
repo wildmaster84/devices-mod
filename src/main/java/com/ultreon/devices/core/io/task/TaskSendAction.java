@@ -1,0 +1,62 @@
+package com.ultreon.devices.core.io.task;
+
+import com.ultreon.devices.api.io.Drive;
+import com.ultreon.devices.api.task.Task;
+import com.ultreon.devices.block.entity.LaptopBlockEntity;
+import com.ultreon.devices.core.Laptop;
+import com.ultreon.devices.core.io.FileSystem;
+import com.ultreon.devices.core.io.action.FileAction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
+/**
+ * @author MrCrayfish
+ */
+public class TaskSendAction extends Task {
+    private String uuid;
+    private FileAction action;
+    private BlockPos pos;
+
+    private FileSystem.Response response;
+
+    private TaskSendAction() {
+        super("send_action");
+    }
+
+    public TaskSendAction(Drive drive, FileAction action) {
+        this();
+        this.uuid = drive.getUUID().toString();
+        this.action = action;
+        this.pos = Laptop.getPos();
+    }
+
+    @Override
+    public void prepareRequest(CompoundTag nbt) {
+        nbt.putString("uuid", uuid);
+        nbt.put("action", action.toTag());
+        nbt.putLong("pos", pos.asLong());
+    }
+
+    @Override
+    public void processRequest(CompoundTag nbt, Level level, Player player) {
+        FileAction action = FileAction.fromTag(nbt.getCompound("action"));
+        BlockEntity tileEntity = level.getBlockEntity(BlockPos.of(nbt.getLong("pos")));
+        if (tileEntity instanceof LaptopBlockEntity laptop) {
+            response = laptop.getFileSystem().readAction(nbt.getString("uuid"), action, level);
+            this.setSuccessful();
+        }
+    }
+
+    @Override
+    public void prepareResponse(CompoundTag nbt) {
+        nbt.put("response", response.toTag());
+    }
+
+    @Override
+    public void processResponse(CompoundTag nbt) {
+
+    }
+}

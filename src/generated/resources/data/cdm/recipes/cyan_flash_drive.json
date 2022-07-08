@@ -1,28 +1,28 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "did",
-    "pfp",
-    "pcp"
-  ],
-  "key": {
-    "d": {
-      "item": "minecraft:cyan_dye"
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "did",
+        "pfp",
+        "pcp"
+    ],
+    "key": {
+        "d": {
+            "item": "minecraft:cyan_dye"
+        },
+        "i": {
+            "item": "minecraft:iron_ingot"
+        },
+        "p": {
+            "item": "devices:plastic_frame"
+        },
+        "f": {
+            "item": "devices:flash_chip"
+        },
+        "c": {
+            "item": "devices:circuit_board"
+        }
     },
-    "i": {
-      "item": "minecraft:iron_ingot"
-    },
-    "p": {
-      "item": "cdm:plastic_frame"
-    },
-    "f": {
-      "item": "cdm:flash_chip"
-    },
-    "c": {
-      "item": "cdm:circuit_board"
+    "result": {
+        "item": "devices:cyan_flash_drive"
     }
-  },
-  "result": {
-    "item": "cdm:cyan_flash_drive"
-  }
 }

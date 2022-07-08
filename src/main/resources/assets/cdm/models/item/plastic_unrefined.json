@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "cdm:item/plastic_unrefined"
+        "layer0": "devices:item/plastic_unrefined"
     }
 }

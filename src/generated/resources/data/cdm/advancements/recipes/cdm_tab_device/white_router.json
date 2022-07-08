@@ -1,34 +1,34 @@
 {
-  "parent": "minecraft:recipes/root",
-  "rewards": {
-    "recipes": [
-      "cdm:white_router"
-    ]
-  },
-  "criteria": {
-    "has_circuit_board": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "cdm:circuit_board"
-            ]
-          }
+    "parent": "minecraft:recipes/root",
+    "rewards": {
+        "recipes": [
+            "devices:white_router"
         ]
-      }
     },
-    "has_the_recipe": {
-      "trigger": "minecraft:recipe_unlocked",
-      "conditions": {
-        "recipe": "cdm:white_router"
-      }
-    }
-  },
-  "requirements": [
-    [
-      "has_circuit_board",
-      "has_the_recipe"
+    "criteria": {
+        "has_circuit_board": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "items": [
+                            "devices:circuit_board"
+                        ]
+                    }
+                ]
+            }
+        },
+        "has_the_recipe": {
+            "trigger": "minecraft:recipe_unlocked",
+            "conditions": {
+                "recipe": "devices:white_router"
+            }
+        }
+    },
+    "requirements": [
+        [
+            "has_circuit_board",
+            "has_the_recipe"
+        ]
     ]
-  ]
 }

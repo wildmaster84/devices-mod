@@ -1,6 +1,6 @@
 {
-  "parent": "cdm:block/laptop_full",
-  "textures": {
-    "2": "minecraft:block/lime_wool"
-  }
+    "parent": "devices:block/laptop_full",
+    "textures": {
+        "2": "minecraft:block/lime_wool"
+    }
 }
