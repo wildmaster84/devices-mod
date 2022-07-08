@@ -34,21 +34,21 @@ public class TaskPrint extends Task {
     }
 
     @Override
-    public void prepareRequest(CompoundTag nbt) {
-        nbt.putLong("devicePos", devicePos.asLong());
-        nbt.putUUID("printerId", printerId);
-        nbt.put("print", IPrint.save(print));
+    public void prepareRequest(CompoundTag tag) {
+        tag.putLong("devicePos", devicePos.asLong());
+        tag.putUUID("printerId", printerId);
+        tag.put("print", IPrint.save(print));
     }
 
     @Override
-    public void processRequest(CompoundTag nbt, Level level, Player player) {
-        BlockEntity tileEntity = level.getBlockEntity(BlockPos.of(nbt.getLong("devicePos")));
+    public void processRequest(CompoundTag tag, Level level, Player player) {
+        BlockEntity tileEntity = level.getBlockEntity(BlockPos.of(tag.getLong("devicePos")));
         if (tileEntity instanceof NetworkDeviceBlockEntity device) {
             Router router = device.getRouter();
             if (router != null) {
-                NetworkDeviceBlockEntity printer = router.getDevice(level, nbt.getUUID("printerId"));
+                NetworkDeviceBlockEntity printer = router.getDevice(level, tag.getUUID("printerId"));
                 if (printer instanceof PrinterBlockEntity) {
-                    IPrint print = IPrint.load(nbt.getCompound("print"));
+                    IPrint print = IPrint.load(tag.getCompound("print"));
                     ((PrinterBlockEntity) printer).addToQueue(print);
                     this.setSuccessful();
                 }
@@ -57,12 +57,12 @@ public class TaskPrint extends Task {
     }
 
     @Override
-    public void prepareResponse(CompoundTag nbt) {
+    public void prepareResponse(CompoundTag tag) {
 
     }
 
     @Override
-    public void processResponse(CompoundTag nbt) {
+    public void processResponse(CompoundTag tag) {
 
     }
 }

@@ -26,7 +26,7 @@ public class ClientModEvents {
     public static void clientSetup(FMLClientSetupEvent event) {
         LOGGER.info("Doing some client setup.");
 
-        if (MrCrayfishDeviceMod.DEVELOPER_MODE) {
+        if (DevicesMod.DEVELOPER_MODE) {
             LOGGER.info("Adding developer wallpaper.");
             Laptop.addWallpaper(new ResourceLocation("devices:textures/gui/developer_wallpaper.png"));
         } else {

@@ -1,6 +1,6 @@
 package com.ultreon.devices.api;
 
-import com.ultreon.devices.MrCrayfishDeviceMod;
+import com.ultreon.devices.DevicesMod;
 import com.ultreon.devices.api.app.Application;
 import com.ultreon.devices.object.AppInfo;
 import net.minecraft.resources.ResourceLocation;
@@ -31,7 +31,7 @@ public final class ApplicationManager {
      */
     @Nullable
     public static Application registerApplication(ResourceLocation identifier, Class<? extends Application> clazz) {
-        Application application = MrCrayfishDeviceMod.getInstance().registerApplication(identifier, clazz);
+        Application application = DevicesMod.getInstance().registerApplication(identifier, clazz);
         System.out.println("application = " + application);
         if (application != null) {
             APP_INFO.put(identifier, application.getInfo());
@@ -48,7 +48,7 @@ public final class ApplicationManager {
      * @return the application list
      */
     public static List<AppInfo> getAvailableApplications() {
-        final Predicate<AppInfo> FILTER = info -> !info.isSystemApp() && (!MrCrayfishDeviceMod.getInstance().hasAllowedApplications() || MrCrayfishDeviceMod.getInstance().getAllowedApplications().contains(info));
+        final Predicate<AppInfo> FILTER = info -> !info.isSystemApp() && (!DevicesMod.getInstance().hasAllowedApplications() || DevicesMod.getInstance().getAllowedApplications().contains(info));
         return APP_INFO.values().stream().filter(FILTER).collect(Collectors.toList());
     }
 

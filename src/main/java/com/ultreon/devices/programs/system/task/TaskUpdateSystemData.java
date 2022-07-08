@@ -29,9 +29,9 @@ public class TaskUpdateSystemData extends Task {
     }
 
     @Override
-    public void processRequest(CompoundTag tag, Level world, Player player) {
+    public void processRequest(CompoundTag tag, Level level, Player player) {
         BlockPos pos = BlockPos.of(tag.getLong("pos"));
-        BlockEntity tileEntity = world.getBlockEntity(pos);
+        BlockEntity tileEntity = level.getBlockEntity(pos);
         if (tileEntity instanceof LaptopBlockEntity laptop)
             laptop.setSystemData(tag.getCompound("data"));
         this.setSuccessful();

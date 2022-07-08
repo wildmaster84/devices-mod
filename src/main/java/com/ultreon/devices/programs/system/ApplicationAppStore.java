@@ -6,10 +6,13 @@ import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.ultreon.devices.Reference;
 import com.ultreon.devices.api.ApplicationManager;
+import com.ultreon.devices.api.app.Component;
 import com.ultreon.devices.api.app.Icons;
 import com.ultreon.devices.api.app.Layout;
 import com.ultreon.devices.api.app.ScrollableLayout;
 import com.ultreon.devices.api.app.component.Button;
+import com.ultreon.devices.api.app.component.Image;
+import com.ultreon.devices.api.app.component.Label;
 import com.ultreon.devices.api.app.component.Spinner;
 import com.ultreon.devices.api.utils.OnlineRequest;
 import com.ultreon.devices.core.Laptop;
@@ -59,7 +62,7 @@ public class ApplicationAppStore extends SystemApplication {
             Gui.fill(pose, x, y + offset + 19, x + LAYOUT_WIDTH, y + offset + 20, color.darker().getRGB());
         });
 
-        com.ultreon.devices.api.app.component.Image imageBanner = new com.ultreon.devices.api.app.component.Image(0, 0, LAYOUT_WIDTH, 60);
+        Image imageBanner = new Image(0, 0, LAYOUT_WIDTH, 60);
         imageBanner.setImage(new ResourceLocation(Reference.MOD_ID, "textures/gui/app_market_background.png"));
         imageBanner.setDrawFull(true);
         homePageLayout.addComponent(imageBanner);
@@ -77,18 +80,18 @@ public class ApplicationAppStore extends SystemApplication {
         btnManageApps.setToolTip("Manage Apps", "Manage your installed applications");
         homePageLayout.addComponent(btnManageApps);
 
-        com.ultreon.devices.api.app.component.Image image = new com.ultreon.devices.api.app.component.Image(5, 33, 20, 20, Icons.SHOP);
+        Image image = new Image(5, 33, 20, 20, Icons.SHOP);
         homePageLayout.addComponent(image);
 
-        com.ultreon.devices.api.app.component.Label labelBanner = new com.ultreon.devices.api.app.component.Label("App Market", 32, 35);
+        Label labelBanner = new Label("App Market", 32, 35);
         labelBanner.setScale(2);
         homePageLayout.addComponent(labelBanner);
 
-        com.ultreon.devices.api.app.component.Label labelCertified = new com.ultreon.devices.api.app.component.Label(ChatFormatting.WHITE + ChatFormatting.BOLD.toString() + "Certified Apps", 10, 66);
+        Label labelCertified = new Label(ChatFormatting.WHITE + ChatFormatting.BOLD.toString() + "Certified Apps", 10, 66);
         homePageLayout.addComponent(labelCertified);
 
-        com.ultreon.devices.api.app.component.Label labelCertifiedDesc = new com.ultreon.devices.api.app.component.Label(ChatFormatting.GRAY + "Verified by MrCrayfish", LAYOUT_WIDTH - 10, 66);
-        labelCertifiedDesc.setAlignment(com.ultreon.devices.api.app.Component.ALIGN_RIGHT);
+        Label labelCertifiedDesc = new Label(ChatFormatting.GRAY + "Verified by Ultreon Team", LAYOUT_WIDTH - 10, 66);
+        labelCertifiedDesc.setAlignment(Component.ALIGN_RIGHT);
         labelCertifiedDesc.setScale(1d);
         labelCertifiedDesc.setShadow(false);
         homePageLayout.addComponent(labelCertifiedDesc);
@@ -112,11 +115,11 @@ public class ApplicationAppStore extends SystemApplication {
             }
         });
 
-        com.ultreon.devices.api.app.component.Label labelOther = new com.ultreon.devices.api.app.component.Label(ChatFormatting.WHITE + ChatFormatting.BOLD.toString() + "Other Apps", 10, 178);
+        Label labelOther = new Label(ChatFormatting.WHITE + ChatFormatting.BOLD.toString() + "Other Apps", 10, 178);
         homePageLayout.addComponent(labelOther);
 
-        com.ultreon.devices.api.app.component.Label labelOtherDesc = new com.ultreon.devices.api.app.component.Label(ChatFormatting.GRAY + "Community Created", LAYOUT_WIDTH - 10, 178);
-        labelOtherDesc.setAlignment(com.ultreon.devices.api.app.Component.ALIGN_RIGHT);
+        Label labelOtherDesc = new Label(ChatFormatting.GRAY + "Community Created", LAYOUT_WIDTH - 10, 178);
+        labelOtherDesc.setAlignment(Component.ALIGN_RIGHT);
         labelOtherDesc.setScale(1d);
         labelOtherDesc.setShadow(false);
         homePageLayout.addComponent(labelOtherDesc);
@@ -131,12 +134,12 @@ public class ApplicationAppStore extends SystemApplication {
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
+    public void load(CompoundTag tag) {
 
     }
 
     @Override
-    public void save(CompoundTag tagCompound) {
+    public void save(CompoundTag tag) {
 
     }
 

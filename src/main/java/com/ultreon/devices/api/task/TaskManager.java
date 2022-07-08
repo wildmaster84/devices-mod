@@ -1,6 +1,6 @@
 package com.ultreon.devices.api.task;
 
-import com.ultreon.devices.MrCrayfishDeviceMod;
+import com.ultreon.devices.DevicesMod;
 import com.ultreon.devices.network.PacketHandler;
 import com.ultreon.devices.network.task.RequestPacket;
 
@@ -30,7 +30,7 @@ public final class TaskManager {
             Constructor<? extends Task> constructor = clazz.getDeclaredConstructor();
             constructor.setAccessible(true);
             Task task = constructor.newInstance();
-            MrCrayfishDeviceMod.LOGGER.info("Registering task '" + task.getName() + "'");
+            DevicesMod.LOGGER.info("Registering task '" + task.getName() + "'");
             get().registeredRequests.put(task.getName(), task);
         } catch (InstantiationException e) {
             System.err.println("- Missing constructor '" + clazz.getSimpleName() + "()'");

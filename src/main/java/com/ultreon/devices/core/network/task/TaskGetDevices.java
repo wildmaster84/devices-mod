@@ -38,21 +38,22 @@ public class TaskGetDevices extends Task {
     }
 
     @Override
-    public void prepareRequest(CompoundTag nbt) {
-        nbt.putLong("devicePos", devicePos.asLong());
+    public void prepareRequest(CompoundTag tag) {
+        tag.putLong("devicePos", devicePos.asLong());
         if (targetDeviceClass != null) {
-            nbt.putString("targetClass", targetDeviceClass.getName());
+            tag.putString("targetClass", targetDeviceClass.getName());
         }
     }
 
     @Override
-    public void processRequest(CompoundTag nbt, Level level, Player player) {
-        BlockPos devicePos = BlockPos.of(nbt.getLong("devicePos"));
-        Class targetDeviceClass = null;
+    @SuppressWarnings("unchecked")
+    public void processRequest(CompoundTag tag, Level level, Player player) {
+        BlockPos devicePos = BlockPos.of(tag.getLong("devicePos"));
+        Class<? extends NetworkDeviceBlockEntity> targetDeviceClass = null;
         try {
-            Class targetClass = Class.forName(nbt.getString("targetClass"));
+            Class<?> targetClass = Class.forName(tag.getString("targetClass"));
             if (NetworkDeviceBlockEntity.class.isAssignableFrom(targetClass)) {
-                targetDeviceClass = targetClass;
+                targetDeviceClass = (Class<? extends NetworkDeviceBlockEntity>) targetClass;
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -75,16 +76,16 @@ public class TaskGetDevices extends Task {
     }
 
     @Override
-    public void prepareResponse(CompoundTag nbt) {
+    public void prepareResponse(CompoundTag tag) {
         if (this.isSucessful()) {
             ListTag deviceList = new ListTag();
             foundDevices.forEach(device -> deviceList.add(device.toTag(true)));
-            nbt.put("network_devices", deviceList);
+            tag.put("network_devices", deviceList);
         }
     }
 
     @Override
-    public void processResponse(CompoundTag nbt) {
+    public void processResponse(CompoundTag tag) {
 
     }
 }

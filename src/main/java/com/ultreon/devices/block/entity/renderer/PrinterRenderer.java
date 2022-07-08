@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Quaternion;
-import com.ultreon.devices.MrCrayfishDeviceMod;
+import com.ultreon.devices.DevicesMod;
 import com.ultreon.devices.Reference;
 import com.ultreon.devices.api.print.IPrint;
 import com.ultreon.devices.api.print.PrintingManager;
@@ -152,7 +152,7 @@ public record PrinterRenderer(
 
     public static class PaperModel extends Model {
         public static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/model/paper.png");
-        public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MrCrayfishDeviceMod.res("paper_model"), "main");
+        public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(DevicesMod.res("paper_model"), "main");
         private final ModelPart root;
 //        private final ModelPart main;
 

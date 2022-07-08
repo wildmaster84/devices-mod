@@ -32,31 +32,31 @@ public class TaskInstallApp extends Task {
     }
 
     @Override
-    public void prepareRequest(CompoundTag nbt) {
-        nbt.putString("appId", appId);
-        nbt.putLong("pos", laptopPos.asLong());
-        nbt.putBoolean("install", install);
+    public void prepareRequest(CompoundTag tag) {
+        tag.putString("appId", appId);
+        tag.putLong("pos", laptopPos.asLong());
+        tag.putBoolean("install", install);
     }
 
     @Override
-    public void processRequest(CompoundTag nbt, Level level, Player player) {
-        String appId = nbt.getString("appId");
-        BlockEntity tileEntity = level.getBlockEntity(BlockPos.of(nbt.getLong("pos")));
+    public void processRequest(CompoundTag tag, Level level, Player player) {
+        String appId = tag.getString("appId");
+        BlockEntity tileEntity = level.getBlockEntity(BlockPos.of(tag.getLong("pos")));
         if (tileEntity instanceof LaptopBlockEntity laptop) {
             CompoundTag systemData = laptop.getSystemData();
-            ListTag tagList = systemData.getList("InstalledApps", Tag.TAG_STRING);
+            ListTag list = systemData.getList("InstalledApps", Tag.TAG_STRING);
 
-            if (nbt.getBoolean("install")) {
-                for (int i = 0; i < tagList.size(); i++) {
-                    if (tagList.getString(i).equals(appId)) {
+            if (tag.getBoolean("install")) {
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.getString(i).equals(appId)) {
                         return;
                     }
                 }
-                tagList.add(StringTag.valueOf(appId));
+                list.add(StringTag.valueOf(appId));
                 this.setSuccessful();
             } else {
-                tagList.removeIf(tag -> {
-                    if (tag.getAsString().equals(appId)) {
+                list.removeIf(appTag -> {
+                    if (appTag.getAsString().equals(appId)) {
                         this.setSuccessful();
                         return true;
                     } else {
@@ -64,17 +64,17 @@ public class TaskInstallApp extends Task {
                     }
                 });
             }
-            systemData.put("InstalledApps", tagList);
+            systemData.put("InstalledApps", list);
         }
     }
 
     @Override
-    public void prepareResponse(CompoundTag nbt) {
+    public void prepareResponse(CompoundTag tag) {
 
     }
 
     @Override
-    public void processResponse(CompoundTag nbt) {
+    public void processResponse(CompoundTag tag) {
 
     }
 }

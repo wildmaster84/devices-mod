@@ -1,8 +1,8 @@
 package com.ultreon.devices.item;
 
 import com.ultreon.devices.DeviceType;
+import com.ultreon.devices.DevicesMod;
 import com.ultreon.devices.IDeviceType;
-import com.ultreon.devices.MrCrayfishDeviceMod;
 import com.ultreon.devices.Reference;
 import com.ultreon.devices.util.IHasColor;
 import net.minecraft.ChatFormatting;
@@ -24,7 +24,7 @@ public class FlashDriveItem extends Item implements IHasColor, SubItems, IDevice
     private final DyeColor color;
 
     public FlashDriveItem(DyeColor color) {
-        super(new Properties().tab(MrCrayfishDeviceMod.TAB_DEVICE).rarity(Rarity.UNCOMMON).stacksTo(1));
+        super(new Properties().tab(DevicesMod.TAB_DEVICE).rarity(Rarity.UNCOMMON).stacksTo(1));
         this.color = color;
     }
 

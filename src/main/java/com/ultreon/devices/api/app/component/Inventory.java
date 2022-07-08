@@ -44,6 +44,7 @@ public class Inventory extends Component {
             RenderSystem.setShaderTexture(0, CHEST_GUI_TEXTURE);
             RenderUtil.drawRectWithTexture(pose, xPosition, yPosition, 7, 139, 162, 54, 162, 54);
 
+            assert mc.player != null;
             net.minecraft.world.entity.player.Inventory inventory = mc.player.getInventory();
             for (int i = 9; i < inventory.getContainerSize() - 4; i++) {
                 int offsetX = (i % 9) * 18;

@@ -25,16 +25,16 @@ public class TaskDeposit extends Task {
     }
 
     @Override
-    public void prepareRequest(CompoundTag nbt) {
-        nbt.putInt("amount", this.amount);
+    public void prepareRequest(CompoundTag tag) {
+        tag.putInt("amount", this.amount);
     }
 
     @Override
-    public void processRequest(CompoundTag nbt, Level level, Player player) {
+    public void processRequest(CompoundTag tag, Level level, Player player) {
         Account account = BankUtil.INSTANCE.getAccount(player);
-        int amount = nbt.getInt("amount");
+        int amount = tag.getInt("amount");
         long value = account.getBalance() + amount;
-        if (value > Integer.MAX_VALUE) {
+        if (value < 0) {
             amount = Integer.MAX_VALUE - account.getBalance();
         }
         if (InventoryUtil.removeItemWithAmount(player, Items.EMERALD, amount)) {
@@ -46,11 +46,11 @@ public class TaskDeposit extends Task {
     }
 
     @Override
-    public void prepareResponse(CompoundTag nbt) {
-        nbt.putInt("balance", this.amount);
+    public void prepareResponse(CompoundTag tag) {
+        tag.putInt("balance", this.amount);
     }
 
     @Override
-    public void processResponse(CompoundTag nbt) {
+    public void processResponse(CompoundTag tag) {
     }
 }

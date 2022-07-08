@@ -1,6 +1,6 @@
 package com.ultreon.devices.network;
 
-import com.ultreon.devices.MrCrayfishDeviceMod;
+import com.ultreon.devices.DevicesMod;
 import com.ultreon.devices.Reference;
 import com.ultreon.devices.network.task.*;
 import net.minecraft.resources.ResourceKey;
@@ -13,7 +13,7 @@ import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public class PacketHandler {
-    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(MrCrayfishDeviceMod.res("main_channel"), () -> Reference.VERSION, it -> it.equals(Reference.VERSION), it -> it.equals(Reference.VERSION));
+    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(DevicesMod.res("main_channel"), () -> Reference.VERSION, it -> it.equals(Reference.VERSION), it -> it.equals(Reference.VERSION));
     private static int id = 0;
 
     public static void init() {

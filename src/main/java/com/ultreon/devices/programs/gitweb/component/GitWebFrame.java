@@ -247,12 +247,12 @@ public class GitWebFrame extends Component {
         String url;
 
         if (directory == null) {
-            url = "https://raw.githubusercontent.com/MrCrayfish/GitWeb-Sites/master/" + extension + "/" + domain + "/index";
+            url = "https://raw.githubusercontent.com/Ultreon/gitweb-sites/master/" + extension + "/" + domain + "/index";
         } else {
             if (directory.endsWith("/")) {
                 directory = directory.substring(0, directory.length() - 1);
             }
-            url = "https://raw.githubusercontent.com/MrCrayfish/GitWeb-Sites/master/" + extension + "/" + domain + directory + "/index";
+            url = "https://raw.githubusercontent.com/Ultreon/gitweb-sites/master/" + extension + "/" + domain + directory + "/index";
         }
 
         if (loadingCallback != null) {

@@ -28,18 +28,18 @@ public class TaskConnect extends Task {
     }
 
     @Override
-    public void prepareRequest(CompoundTag nbt) {
-        nbt.putLong("devicePos", devicePos.asLong());
-        nbt.putLong("routerPos", routerPos.asLong());
+    public void prepareRequest(CompoundTag tag) {
+        tag.putLong("devicePos", devicePos.asLong());
+        tag.putLong("routerPos", routerPos.asLong());
     }
 
     @Override
-    public void processRequest(CompoundTag nbt, Level level, Player player) {
-        BlockEntity tileEntity = level.getBlockEntity(BlockPos.of(nbt.getLong("routerPos")));
+    public void processRequest(CompoundTag tag, Level level, Player player) {
+        BlockEntity tileEntity = level.getBlockEntity(BlockPos.of(tag.getLong("routerPos")));
         if (tileEntity instanceof RouterBlockEntity tileEntityRouter) {
             Router router = tileEntityRouter.getRouter();
 
-            BlockEntity tileEntity1 = level.getBlockEntity(BlockPos.of(nbt.getLong("devicePos")));
+            BlockEntity tileEntity1 = level.getBlockEntity(BlockPos.of(tag.getLong("devicePos")));
             if (tileEntity1 instanceof NetworkDeviceBlockEntity tileEntityNetworkDevice) {
                 if (router.addDevice(tileEntityNetworkDevice)) {
                     tileEntityNetworkDevice.connect(router);
@@ -50,12 +50,12 @@ public class TaskConnect extends Task {
     }
 
     @Override
-    public void prepareResponse(CompoundTag nbt) {
+    public void prepareResponse(CompoundTag tag) {
 
     }
 
     @Override
-    public void processResponse(CompoundTag nbt) {
+    public void processResponse(CompoundTag tag) {
 
     }
 }

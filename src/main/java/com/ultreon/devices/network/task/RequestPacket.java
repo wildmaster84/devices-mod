@@ -32,9 +32,9 @@ public class RequestPacket extends Packet<RequestPacket> {
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(this.id);
         buf.writeUtf(this.request.getName());
-        CompoundTag nbt = new CompoundTag();
-        this.request.prepareRequest(nbt);
-        buf.writeNbt(nbt);
+        CompoundTag tag = new CompoundTag();
+        this.request.prepareRequest(tag);
+        buf.writeNbt(tag);
     }
 
     @Override

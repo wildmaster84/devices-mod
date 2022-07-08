@@ -2,7 +2,7 @@ package com.ultreon.devices.core;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.ultreon.devices.MrCrayfishDeviceMod;
+import com.ultreon.devices.DevicesMod;
 import com.ultreon.devices.api.app.Application;
 import com.ultreon.devices.api.utils.RenderUtil;
 import com.ultreon.devices.core.network.TrayItemWifi;
@@ -26,7 +26,7 @@ import java.util.function.Predicate;
 public class TaskBar {
     public static final ResourceLocation APP_BAR_GUI = new ResourceLocation("devices:textures/gui/application_bar.png");
     public static final int BAR_HEIGHT = 18;
-    private static final int APPS_DISPLAYED = MrCrayfishDeviceMod.DEVELOPER_MODE ? 18 : 10;
+    private static final int APPS_DISPLAYED = DevicesMod.DEVELOPER_MODE ? 18 : 10;
     private final Laptop laptop;
 
     private final int offset = 0;
@@ -51,12 +51,12 @@ public class TaskBar {
             if (app instanceof SystemApplication) {
                 return true;
             }
-            if (MrCrayfishDeviceMod.getInstance().hasAllowedApplications()) {
-                if (MrCrayfishDeviceMod.getInstance().getAllowedApplications().contains(app.getInfo())) {
-                    return !MrCrayfishDeviceMod.DEVELOPER_MODE || Settings.isShowAllApps();
+            if (DevicesMod.getInstance().hasAllowedApplications()) {
+                if (DevicesMod.getInstance().getAllowedApplications().contains(app.getInfo())) {
+                    return !DevicesMod.DEVELOPER_MODE || Settings.isShowAllApps();
                 }
                 return false;
-            } else if (MrCrayfishDeviceMod.DEVELOPER_MODE) {
+            } else if (DevicesMod.DEVELOPER_MODE) {
                 return Settings.isShowAllApps();
             }
             return true;

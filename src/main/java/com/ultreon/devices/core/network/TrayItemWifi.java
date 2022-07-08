@@ -79,7 +79,7 @@ public class TrayItemWifi extends TrayItem {
             if (mouseButton == 0) {
                 if (itemListRouters.getSelectedItem() != null) {
                     TaskConnect connect = new TaskConnect(Laptop.getPos(), itemListRouters.getSelectedItem().getPos());
-                    connect.setCallback((tagCompound, success) -> {
+                    connect.setCallback((tag, success) -> {
                         if (success) {
                             item.setIcon(Icons.WIFI_HIGH);
                             Laptop.getSystem().closeContext();
@@ -140,10 +140,10 @@ public class TrayItemWifi extends TrayItem {
 
     private void runPingTask() {
         TaskPing task = new TaskPing(Laptop.getPos());
-        task.setCallback((tagCompound, success) -> {
+        task.setCallback((tag, success) -> {
             if (success) {
-                assert tagCompound != null;
-                int strength = tagCompound.getInt("strength");
+                assert tag != null;
+                int strength = tag.getInt("strength");
                 switch (strength) {
                     case 2 -> setIcon(Icons.WIFI_LOW);
                     case 1 -> setIcon(Icons.WIFI_MED);

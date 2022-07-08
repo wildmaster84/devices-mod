@@ -1,6 +1,6 @@
 package com.ultreon.devices.network.task;
 
-import com.ultreon.devices.MrCrayfishDeviceMod;
+import com.ultreon.devices.DevicesMod;
 import com.ultreon.devices.api.app.Notification;
 import com.ultreon.devices.network.Packet;
 import net.minecraft.nbt.CompoundTag;
@@ -30,7 +30,7 @@ public class NotificationPacket extends Packet<NotificationPacket> {
 
     @Override
     public boolean onMessage(Supplier<NetworkEvent.Context> ctx) {
-        MrCrayfishDeviceMod.getInstance().showNotification(notificationTag);
+        DevicesMod.getInstance().showNotification(notificationTag);
         return true;
     }
 }

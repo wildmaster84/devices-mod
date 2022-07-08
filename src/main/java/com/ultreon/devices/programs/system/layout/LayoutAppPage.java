@@ -2,7 +2,7 @@ package com.ultreon.devices.programs.system.layout;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.ultreon.devices.MrCrayfishDeviceMod;
+import com.ultreon.devices.DevicesMod;
 import com.ultreon.devices.api.app.Icons;
 import com.ultreon.devices.api.app.Layout;
 import com.ultreon.devices.api.app.ScrollableLayout;
@@ -180,7 +180,7 @@ public class LayoutAppPage extends Layout {
             class_.getMethod("browse", URI.class).invoke(object, uri);
         } catch (Throwable throwable1) {
             Throwable throwable = throwable1.getCause();
-            MrCrayfishDeviceMod.LOGGER.error("Couldn't open link: {}", throwable == null ? "<UNKNOWN>" : throwable.getMessage());
+            DevicesMod.LOGGER.error("Couldn't open link: {}", throwable == null ? "<UNKNOWN>" : throwable.getMessage());
         }
     }
 }

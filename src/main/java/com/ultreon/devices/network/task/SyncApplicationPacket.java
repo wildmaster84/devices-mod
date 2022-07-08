@@ -1,7 +1,7 @@
 package com.ultreon.devices.network.task;
 
 import com.google.common.collect.ImmutableList;
-import com.ultreon.devices.MrCrayfishDeviceMod;
+import com.ultreon.devices.DevicesMod;
 import com.ultreon.devices.api.ApplicationManager;
 import com.ultreon.devices.network.Packet;
 import com.ultreon.devices.object.AppInfo;
@@ -27,7 +27,7 @@ public class SyncApplicationPacket extends Packet<SyncApplicationPacket> {
             if (info != null) {
                 builder.add(info);
             } else {
-                MrCrayfishDeviceMod.LOGGER.error("Missing application '" + appId + "'");
+                DevicesMod.LOGGER.error("Missing application '" + appId + "'");
             }
         }
 
@@ -48,7 +48,7 @@ public class SyncApplicationPacket extends Packet<SyncApplicationPacket> {
 
     @Override
     public boolean onMessage(Supplier<NetworkEvent.Context> ctx) {
-        ObfuscationReflectionHelper.setPrivateValue(MrCrayfishDeviceMod.class, MrCrayfishDeviceMod.getInstance(), allowedApps, "allowedApps");
+        ObfuscationReflectionHelper.setPrivateValue(DevicesMod.class, DevicesMod.getInstance(), allowedApps, "allowedApps");
         return true;
     }
 }

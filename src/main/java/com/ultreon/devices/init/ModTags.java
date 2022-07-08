@@ -1,6 +1,6 @@
 package com.ultreon.devices.init;
 
-import com.ultreon.devices.MrCrayfishDeviceMod;
+import com.ultreon.devices.DevicesMod;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -18,7 +18,7 @@ public final class ModTags {
         public static final TagKey<Item> ROUTERS = createTag("routers");
 
         private static TagKey<Item> createTag(String name) {
-            return ItemTags.create(MrCrayfishDeviceMod.res(name));
+            return ItemTags.create(DevicesMod.res(name));
         }
     }
 
@@ -28,7 +28,7 @@ public final class ModTags {
         public static final TagKey<Block> ROUTERS = createTag("routers");
 
         private static TagKey<Block> createTag(String name) {
-            return BlockTags.create(MrCrayfishDeviceMod.res(name));
+            return BlockTags.create(DevicesMod.res(name));
         }
     }
 }

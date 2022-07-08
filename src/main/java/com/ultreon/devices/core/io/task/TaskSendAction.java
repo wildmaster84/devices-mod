@@ -34,29 +34,29 @@ public class TaskSendAction extends Task {
     }
 
     @Override
-    public void prepareRequest(CompoundTag nbt) {
-        nbt.putString("uuid", uuid);
-        nbt.put("action", action.toTag());
-        nbt.putLong("pos", pos.asLong());
+    public void prepareRequest(CompoundTag tag) {
+        tag.putString("uuid", uuid);
+        tag.put("action", action.toTag());
+        tag.putLong("pos", pos.asLong());
     }
 
     @Override
-    public void processRequest(CompoundTag nbt, Level level, Player player) {
-        FileAction action = FileAction.fromTag(nbt.getCompound("action"));
-        BlockEntity tileEntity = level.getBlockEntity(BlockPos.of(nbt.getLong("pos")));
+    public void processRequest(CompoundTag tag, Level level, Player player) {
+        FileAction action = FileAction.fromTag(tag.getCompound("action"));
+        BlockEntity tileEntity = level.getBlockEntity(BlockPos.of(tag.getLong("pos")));
         if (tileEntity instanceof LaptopBlockEntity laptop) {
-            response = laptop.getFileSystem().readAction(nbt.getString("uuid"), action, level);
+            response = laptop.getFileSystem().readAction(tag.getString("uuid"), action, level);
             this.setSuccessful();
         }
     }
 
     @Override
-    public void prepareResponse(CompoundTag nbt) {
-        nbt.put("response", response.toTag());
+    public void prepareResponse(CompoundTag tag) {
+        tag.put("response", response.toTag());
     }
 
     @Override
-    public void processResponse(CompoundTag nbt) {
+    public void processResponse(CompoundTag tag) {
 
     }
 }

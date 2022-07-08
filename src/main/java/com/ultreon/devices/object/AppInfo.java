@@ -2,7 +2,7 @@ package com.ultreon.devices.object;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import com.ultreon.devices.MrCrayfishDeviceMod;
+import com.ultreon.devices.DevicesMod;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
 
@@ -108,7 +108,7 @@ public class AppInfo {
 
     public void reload() {
         resetInfo();
-        InputStream stream = MrCrayfishDeviceMod.class.getResourceAsStream("/assets/" + APP_ID.getNamespace() + "/apps/" + APP_ID.getPath() + ".json");
+        InputStream stream = DevicesMod.class.getResourceAsStream("/assets/" + APP_ID.getNamespace() + "/apps/" + APP_ID.getPath() + ".json");
 
         if (stream == null)
             throw new RuntimeException("Missing app info json for '" + APP_ID + "'");
@@ -185,7 +185,7 @@ public class AppInfo {
                     info.support = support;
                 }
             } catch (JsonParseException e) {
-                MrCrayfishDeviceMod.LOGGER.error("Malformed app info json for '" + info.getFormattedId() + "'");
+                DevicesMod.LOGGER.error("Malformed app info json for '" + info.getFormattedId() + "'");
             }
 
             return info;

@@ -244,18 +244,18 @@ public abstract class Application extends Wrappable {
      * method is called after {{@link Wrappable#init(CompoundTag)} so you can update any
      * Components with this data.
      *
-     * @param tagCompound the tag compound where you saved data is
+     * @param tag the tag compound where you saved data is
      */
-    public abstract void load(CompoundTag tagCompound);
+    public abstract void load(CompoundTag tag);
 
     /**
      * Allows you to save data from your application. This is only called if
      * {@link #isDirty()} returns true. You can mark your application as dirty
      * by calling {@link #markDirty()}.
      *
-     * @param tagCompound the tag compound to save your data to
+     * @param tag the tag compound to save your data to
      */
-    public abstract void save(CompoundTag tagCompound);
+    public abstract void save(CompoundTag tag);
 
     /**
      * Sets the defaults layout width. It should be noted that the width must be

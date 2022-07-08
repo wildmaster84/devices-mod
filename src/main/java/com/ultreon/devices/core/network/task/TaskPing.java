@@ -25,13 +25,13 @@ public class TaskPing extends Task {
     }
 
     @Override
-    public void prepareRequest(CompoundTag nbt) {
-        nbt.putLong("sourceDevicePos", sourceDevicePos.asLong());
+    public void prepareRequest(CompoundTag tag) {
+        tag.putLong("sourceDevicePos", sourceDevicePos.asLong());
     }
 
     @Override
-    public void processRequest(CompoundTag nbt, Level level, Player player) {
-        BlockEntity blockEntity = level.getBlockEntity(BlockPos.of(nbt.getLong("sourceDevicePos")));
+    public void processRequest(CompoundTag tag, Level level, Player player) {
+        BlockEntity blockEntity = level.getBlockEntity(BlockPos.of(tag.getLong("sourceDevicePos")));
         if (blockEntity instanceof NetworkDeviceBlockEntity networkDevice) {
             if (networkDevice.isConnected()) {
                 this.strength = networkDevice.getSignalStrength();
@@ -41,14 +41,14 @@ public class TaskPing extends Task {
     }
 
     @Override
-    public void prepareResponse(CompoundTag nbt) {
+    public void prepareResponse(CompoundTag tag) {
         if (this.isSucessful()) {
-            nbt.putInt("strength", strength);
+            tag.putInt("strength", strength);
         }
     }
 
     @Override
-    public void processResponse(CompoundTag nbt) {
+    public void processResponse(CompoundTag tag) {
 
     }
 }

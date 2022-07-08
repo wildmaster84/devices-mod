@@ -77,8 +77,8 @@ import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(Reference.MOD_ID)
-public class MrCrayfishDeviceMod implements PreparableReloadListener {
-    private static MrCrayfishDeviceMod instance;
+public class DevicesMod implements PreparableReloadListener {
+    private static DevicesMod instance;
 
     public static final CreativeModeTab TAB_DEVICE = new DeviceTab("cdm_tab_device");
 
@@ -88,7 +88,7 @@ public class MrCrayfishDeviceMod implements PreparableReloadListener {
 
     List<AppInfo> allowedApps;
 
-    public MrCrayfishDeviceMod() throws LaunchException {
+    public DevicesMod() throws LaunchException {
         if (DEVELOPER_MODE && FMLEnvironment.production) {
             throw new LaunchException();
         }
@@ -231,7 +231,7 @@ public class MrCrayfishDeviceMod implements PreparableReloadListener {
         Graphics g = atlas.createGraphics();
 
         try {
-            BufferedImage icon = ImageIO.read(Objects.requireNonNull(MrCrayfishDeviceMod.class.getResourceAsStream("/assets/" + Reference.MOD_ID + "/textures/app/icon/missing.png")));
+            BufferedImage icon = ImageIO.read(Objects.requireNonNull(DevicesMod.class.getResourceAsStream("/assets/" + Reference.MOD_ID + "/textures/app/icon/missing.png")));
             g.drawImage(icon, 0, 0, ICON_SIZE, ICON_SIZE, null);
         } catch (IOException e) {
             e.printStackTrace();
@@ -246,11 +246,11 @@ public class MrCrayfishDeviceMod implements PreparableReloadListener {
             ResourceLocation iconResource = new ResourceLocation(info.getIcon());
             String path = "/assets/" + iconResource.getNamespace() + "/" + iconResource.getPath();
             try {
-                InputStream input = MrCrayfishDeviceMod.class.getResourceAsStream(path);
+                InputStream input = DevicesMod.class.getResourceAsStream(path);
                 if (input != null) {
                     BufferedImage icon = ImageIO.read(input);
                     if (icon.getWidth() != ICON_SIZE || icon.getHeight() != ICON_SIZE) {
-                        MrCrayfishDeviceMod.LOGGER.error("Incorrect icon size for " + identifier.toString() + " (Must be 14 by 14 pixels)");
+                        DevicesMod.LOGGER.error("Incorrect icon size for " + identifier.toString() + " (Must be 14 by 14 pixels)");
                         continue;
                     }
                     int iconU = (index % 16) * ICON_SIZE;
@@ -259,10 +259,10 @@ public class MrCrayfishDeviceMod implements PreparableReloadListener {
                     updateIcon(info, iconU, iconV);
                     index++;
                 } else {
-                    MrCrayfishDeviceMod.LOGGER.error("Icon for application '" + identifier.toString() + "' could not be found at '" + path + "'");
+                    DevicesMod.LOGGER.error("Icon for application '" + identifier.toString() + "' could not be found at '" + path + "'");
                 }
             } catch (Exception e) {
-                MrCrayfishDeviceMod.LOGGER.error("Unable to load icon for " + identifier.toString());
+                DevicesMod.LOGGER.error("Unable to load icon for " + identifier.toString());
             }
         }
 
@@ -348,12 +348,12 @@ public class MrCrayfishDeviceMod implements PreparableReloadListener {
                 }
                 idToRenderer.put(identifier.toString(), renderer);
             } catch (InstantiationException e) {
-                MrCrayfishDeviceMod.LOGGER.error("The print renderer '" + classRenderer.getName() + "' is missing an empty constructor and could not be registered!");
+                DevicesMod.LOGGER.error("The print renderer '" + classRenderer.getName() + "' is missing an empty constructor and could not be registered!");
                 return false;
             }
             return true;
         } catch (Exception e) {
-            MrCrayfishDeviceMod.LOGGER.error("The print '" + classPrint.getName() + "' is missing an empty constructor and could not be registered!");
+            DevicesMod.LOGGER.error("The print '" + classPrint.getName() + "' is missing an empty constructor and could not be registered!");
         }
         return false;
     }
@@ -396,9 +396,9 @@ public class MrCrayfishDeviceMod implements PreparableReloadListener {
 
     @SubscribeEvent
     public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-        Level world = event.getWorld();
+        Level level = event.getWorld();
         if (!event.getItemStack().isEmpty() && event.getItemStack().getItem() == Items.PAPER) {
-            if (world.getBlockState(event.getPos()).getBlock() instanceof PrinterBlock) {
+            if (level.getBlockState(event.getPos()).getBlock() instanceof PrinterBlock) {
                 event.setUseBlock(Event.Result.ALLOW);
             }
         }
@@ -417,7 +417,7 @@ public class MrCrayfishDeviceMod implements PreparableReloadListener {
         }, gameExecutor);
     }
 
-    public static MrCrayfishDeviceMod getInstance() {
+    public static DevicesMod getInstance() {
         return instance;
     }
 

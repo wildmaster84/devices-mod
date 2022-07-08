@@ -217,8 +217,7 @@ public abstract class Dialog extends Wrappable {
 
             buttonPositive = new Button(getWidth() - 41, getHeight() - 20, "Close");
             buttonPositive.setSize(36, 16);
-            buttonPositive.setClickListener((mouseX, mouseY, mouseButton) ->
-            {
+            buttonPositive.setClickListener((mouseX, mouseY, mouseButton) -> {
                 if (positiveListener != null) {
                     positiveListener.onClick(mouseX, mouseY, mouseButton);
                 }
@@ -274,8 +273,7 @@ public abstract class Dialog extends Wrappable {
             int positiveWidth = Minecraft.getInstance().font.width(positiveText);
             buttonPositive = new Button(getWidth() - positiveWidth - DIVIDE_WIDTH, getHeight() - 20, positiveText);
             buttonPositive.setSize(positiveWidth + 10, 16);
-            buttonPositive.setClickListener((mouseX, mouseY, mouseButton) ->
-            {
+            buttonPositive.setClickListener((mouseX, mouseY, mouseButton) -> {
                 if (positiveListener != null) {
                     positiveListener.onClick(mouseX, mouseY, mouseButton);
                 }
@@ -286,8 +284,7 @@ public abstract class Dialog extends Wrappable {
             int negativeWidth = Math.max(20, Minecraft.getInstance().font.width(negativeText));
             buttonNegative = new Button(getWidth() - DIVIDE_WIDTH - positiveWidth - DIVIDE_WIDTH - negativeWidth + 1, getHeight() - 20, negativeText);
             buttonNegative.setSize(negativeWidth + 10, 16);
-            buttonNegative.setClickListener((mouseX, mouseY, mouseButton) ->
-            {
+            buttonNegative.setClickListener((mouseX, mouseY, mouseButton) -> {
                 if (negativeListener != null) {
                     negativeListener.onClick(mouseX, mouseY, mouseButton);
                 }
@@ -387,8 +384,7 @@ public abstract class Dialog extends Wrappable {
             int positiveWidth = Minecraft.getInstance().font.width(positiveText);
             buttonPositive = new Button(getWidth() - positiveWidth - DIVIDE_WIDTH, getHeight() - 20, positiveText);
             buttonPositive.setSize(positiveWidth + 10, 16);
-            buttonPositive.setClickListener((mouseX, mouseY, mouseButton) ->
-            {
+            buttonPositive.setClickListener((mouseX, mouseY, mouseButton) -> {
                 if (!textFieldInput.getText().isEmpty()) {
                     boolean close = true;
                     if (responseListener != null) {
@@ -496,8 +492,7 @@ public abstract class Dialog extends Wrappable {
             browser = new FileBrowser(0, 0, app, FileBrowser.Mode.BASIC);
             browser.openFolder(FileSystem.DIR_HOME);
             browser.setFilter(file -> filter == null || filter.test(file) || file.isFolder());
-            browser.setItemClickListener((file, index, mouseButton) ->
-            {
+            browser.setItemClickListener((file, index, mouseButton) -> {
                 if (mouseButton == 0) {
                     if (!file.isFolder()) {
                         buttonPositive.setEnabled(true);
@@ -510,8 +505,7 @@ public abstract class Dialog extends Wrappable {
             buttonPositive = new Button(172, 106, positiveText);
             buttonPositive.setSize(positiveWidth + 10, 16);
             buttonPositive.setEnabled(false);
-            buttonPositive.setClickListener((mouseX, mouseY, mouseButton) ->
-            {
+            buttonPositive.setClickListener((mouseX, mouseY, mouseButton) -> {
                 if (mouseButton == 0) {
                     File file = browser.getSelectedFile();
                     if (file != null) {
@@ -592,9 +586,9 @@ public abstract class Dialog extends Wrappable {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     public static class SaveFile extends Dialog {
         private final Application app;
+        private final CompoundTag data;
         public ResponseHandler<File> responseHandler;
         private String name;
-        private final CompoundTag data;
         private String positiveText = "Save";
         private String negativeText = "Cancel";
         private Layout main;
@@ -630,8 +624,7 @@ public abstract class Dialog extends Wrappable {
             main.addComponent(browser);
 
             buttonPositive = new Button(172, 125, positiveText);
-            buttonPositive.setClickListener((mouseX, mouseY, mouseButton) ->
-            {
+            buttonPositive.setClickListener((mouseX, mouseY, mouseButton) -> {
                 if (mouseButton == 0) {
                     if (!textFieldFileName.getText().isEmpty()) {
                         if (!FileSystem.PATTERN_FILE_NAME.matcher(textFieldFileName.getText()).matches()) {
@@ -647,23 +640,20 @@ public abstract class Dialog extends Wrappable {
                             file = new File(textFieldFileName.getText(), app, data.copy());
                         }
 
-                        browser.addFile(file, (response, success) ->
-                        {
+                        browser.addFile(file, (response, success) -> {
                             assert response != null;
                             if (response.getStatus() == FileSystem.Status.FILE_EXISTS) {
                                 Dialog.Confirmation dialog = new Dialog.Confirmation("A file with that name already exists. Are you sure you want to override it?");
                                 dialog.setPositiveText("Override");
-                                dialog.setPositiveListener((mouseX1, mouseY1, mouseButton1) ->
-                                        browser.addFile(file, true, (response1, success1) ->
-                                        {
-                                            dialog.close();
+                                dialog.setPositiveListener((mouseX1, mouseY1, mouseButton1) -> browser.addFile(file, true, (response1, success1) -> {
+                                    dialog.close();
 
-                                            //TODO Look into better handling. Get response from parent if should close. Maybe a response interface w/ generic
-                                            if (responseHandler != null) {
-                                                responseHandler.onResponse(success1, file);
-                                            }
-                                            SaveFile.this.close();
-                                        }));
+                                    //TODO Look into better handling. Get response from parent if should close. Maybe a response interface w/ generic
+                                    if (responseHandler != null) {
+                                        responseHandler.onResponse(success1, file);
+                                    }
+                                    SaveFile.this.close();
+                                }));
                                 app.openDialog(dialog);
                             } else {
                                 if (responseHandler != null) {
@@ -784,8 +774,7 @@ public abstract class Dialog extends Wrappable {
             buttonRefresh = new Button(131, 2, Icons.RELOAD);
             buttonRefresh.setPadding(2);
             buttonRefresh.setToolTip("Refresh", "Retrieve an updated list of printers");
-            buttonRefresh.setClickListener((mouseX, mouseY, mouseButton) ->
-            {
+            buttonRefresh.setClickListener((mouseX, mouseY, mouseButton) -> {
                 if (mouseButton == 0) {
                     itemListPrinters.setSelectedIndex(-1);
                     getPrinters(itemListPrinters);
@@ -803,15 +792,13 @@ public abstract class Dialog extends Wrappable {
                     RenderUtil.drawStringClipped(pose, networkDevice.getName(), x + 18, y + 4, 118, Laptop.getSystem().getSettings().getColorScheme().getTextColor(), true);
                 }
             });
-            itemListPrinters.setItemClickListener((blockPos, index, mouseButton) ->
-            {
+            itemListPrinters.setItemClickListener((blockPos, index, mouseButton) -> {
                 if (mouseButton == 0) {
                     buttonPrint.setEnabled(true);
                     buttonInfo.setEnabled(true);
                 }
             });
-            itemListPrinters.sortBy((o1, o2) ->
-            {
+            itemListPrinters.sortBy((o1, o2) -> {
                 BlockPos laptopPos = Laptop.getPos();
                 assert laptopPos != null;
 
@@ -830,14 +817,12 @@ public abstract class Dialog extends Wrappable {
             buttonPrint = new Button(98, 108, "Print", Icons.CHECK);
             buttonPrint.setPadding(5);
             buttonPrint.setEnabled(false);
-            buttonPrint.setClickListener((mouseX, mouseY, mouseButton) ->
-            {
+            buttonPrint.setClickListener((mouseX, mouseY, mouseButton) -> {
                 if (mouseButton == 0) {
                     NetworkDevice networkDevice = itemListPrinters.getSelectedItem();
                     if (networkDevice != null) {
                         TaskPrint task = new TaskPrint(Laptop.getPos(), networkDevice, print);
-                        task.setCallback((nbtTagCompound, success) ->
-                        {
+                        task.setCallback((tag, success) -> {
                             if (success) {
                                 close();
                             }
@@ -850,8 +835,7 @@ public abstract class Dialog extends Wrappable {
 
             buttonCancel = new Button(74, 108, Icons.CROSS);
             buttonCancel.setPadding(5);
-            buttonCancel.setClickListener((mouseX, mouseY, mouseButton) ->
-            {
+            buttonCancel.setClickListener((mouseX, mouseY, mouseButton) -> {
                 if (mouseButton == 0) {
                     close();
                 }
@@ -861,8 +845,7 @@ public abstract class Dialog extends Wrappable {
             buttonInfo = new Button(5, 108, Icons.HELP);
             buttonInfo.setEnabled(false);
             buttonInfo.setPadding(5);
-            buttonInfo.setClickListener((mouseX, mouseY, mouseButton) ->
-            {
+            buttonInfo.setClickListener((mouseX, mouseY, mouseButton) -> {
                 if (mouseButton == 0) {
                     NetworkDevice printerEntry = itemListPrinters.getSelectedItem();
                     if (printerEntry != null) {
@@ -882,13 +865,12 @@ public abstract class Dialog extends Wrappable {
             itemList.removeAll();
             itemList.setLoading(true);
             Task task = new TaskGetDevices(Laptop.getPos(), PrinterBlockEntity.class);
-            task.setCallback((tagCompound, success) ->
-            {
+            task.setCallback((tag, success) -> {
                 if (success) {
-                    assert tagCompound != null;
-                    ListTag tagList = tagCompound.getList("network_devices", Tag.TAG_COMPOUND);
-                    for (int i = 0; i < tagList.size(); i++) {
-                        itemList.addItem(NetworkDevice.fromTag(tagList.getCompound(i)));
+                    assert tag != null;
+                    ListTag list = tag.getList("network_devices", Tag.TAG_COMPOUND);
+                    for (int i = 0; i < list.size(); i++) {
+                        itemList.addItem(NetworkDevice.fromTag(list.getCompound(i)));
                     }
                     itemList.setLoading(false);
                 }
@@ -933,8 +915,7 @@ public abstract class Dialog extends Wrappable {
                 layoutMain.addComponent(labelPosition);
 
                 buttonClose = new Button(5, 49, "Close");
-                buttonClose.setClickListener((mouseX, mouseY, mouseButton) ->
-                {
+                buttonClose.setClickListener((mouseX, mouseY, mouseButton) -> {
                     if (mouseButton == 0) {
                         close();
                     }

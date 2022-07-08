@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.ultreon.devices.MrCrayfishDeviceMod;
+import com.ultreon.devices.DevicesMod;
 import com.ultreon.devices.Reference;
 import com.ultreon.devices.api.ApplicationManager;
 import com.ultreon.devices.api.app.Application;
@@ -139,9 +139,9 @@ public class Laptop extends Screen implements System {
         bar.init(posX + BORDER, posY + DEVICE_HEIGHT - 28);
 
         installedApps.clear();
-        ListTag tagList = systemData.getList("InstalledApps", Tag.TAG_STRING);
-        for (int i = 0; i < tagList.size(); i++) {
-            AppInfo info = ApplicationManager.getApplication(tagList.getString(i));
+        ListTag list = systemData.getList("InstalledApps", Tag.TAG_STRING);
+        for (int i = 0; i < list.size(); i++) {
+            AppInfo info = ApplicationManager.getApplication(list.getString(i));
             if (info != null) {
                 installedApps.add(info);
             }
@@ -240,7 +240,7 @@ public class Laptop extends Screen implements System {
         RenderSystem.setShaderTexture(0, WALLPAPERS.get(currentWallpaper));
         Gui.blit(pose, posX + 10, posY + 10, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 512, 288);
 
-        if (!MrCrayfishDeviceMod.DEVELOPER_MODE) {
+        if (!DevicesMod.DEVELOPER_MODE) {
             if (Reference.VERSION.contains("-dev")) {
                 drawString(pose, font, "Dev Test v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
             } else {
@@ -662,8 +662,8 @@ public class Laptop extends Screen implements System {
     }
 
     private boolean isValidApplication(AppInfo info) {
-        if (MrCrayfishDeviceMod.getInstance().hasAllowedApplications()) {
-            return MrCrayfishDeviceMod.getInstance().getAllowedApplications().contains(info);
+        if (DevicesMod.getInstance().hasAllowedApplications()) {
+            return DevicesMod.getInstance().getAllowedApplications().contains(info);
         }
         return true;
     }
@@ -673,7 +673,7 @@ public class Laptop extends Screen implements System {
             return;
 
         Task task = new TaskInstallApp(info, pos, true);
-        task.setCallback((tagCompound, success) ->
+        task.setCallback((tag, success) ->
         {
             if (success) {
                 installedApps.add(info);
@@ -691,7 +691,7 @@ public class Laptop extends Screen implements System {
             return;
 
         Task task = new TaskInstallApp(info, pos, false);
-        task.setCallback((tagCompound, success) ->
+        task.setCallback((tag, success) ->
         {
             if (success) {
                 installedApps.remove(info);

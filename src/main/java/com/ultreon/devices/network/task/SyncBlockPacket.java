@@ -32,8 +32,8 @@ public class SyncBlockPacket extends Packet<SyncBlockPacket> {
 
     @Override
     public boolean onMessage(Supplier<NetworkEvent.Context> ctx) {
-        Level world = Objects.requireNonNull(ctx.get().getSender()).level;
-        BlockEntity blockEntity = world.getBlockEntity(routerPos);
+        Level level = Objects.requireNonNull(ctx.get().getSender()).level;
+        BlockEntity blockEntity = level.getBlockEntity(routerPos);
         if (blockEntity instanceof RouterBlockEntity router) {
             router.syncDevicesToClient();
         }

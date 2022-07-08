@@ -35,17 +35,17 @@ public class TaskSetupFileBrowser extends Task {
     }
 
     @Override
-    public void prepareRequest(CompoundTag nbt) {
-        nbt.putLong("pos", pos.asLong());
-        nbt.putBoolean("include_main", includeMain);
+    public void prepareRequest(CompoundTag tag) {
+        tag.putLong("pos", pos.asLong());
+        tag.putBoolean("include_main", includeMain);
     }
 
     @Override
-    public void processRequest(CompoundTag nbt, Level level, Player player) {
-        BlockEntity tileEntity = level.getBlockEntity(BlockPos.of(nbt.getLong("pos")));
+    public void processRequest(CompoundTag tag, Level level, Player player) {
+        BlockEntity tileEntity = level.getBlockEntity(BlockPos.of(tag.getLong("pos")));
         if (tileEntity instanceof LaptopBlockEntity laptop) {
             FileSystem fileSystem = laptop.getFileSystem();
-            if (nbt.getBoolean("include_main")) {
+            if (tag.getBoolean("include_main")) {
                 mainDrive = fileSystem.getMainDrive();
             }
             availableDrives = fileSystem.getAvailableDrives(level, false);
@@ -54,15 +54,15 @@ public class TaskSetupFileBrowser extends Task {
     }
 
     @Override
-    public void prepareResponse(CompoundTag nbt) {
+    public void prepareResponse(CompoundTag tag) {
         if (this.isSucessful()) {
             if (mainDrive != null) {
                 CompoundTag mainDriveTag = new CompoundTag();
                 mainDriveTag.putString("name", mainDrive.getName());
                 mainDriveTag.putString("uuid", mainDrive.getUuid().toString());
                 mainDriveTag.putString("type", mainDrive.getType().toString());
-                nbt.put("main_drive", mainDriveTag);
-                nbt.put("structure", mainDrive.getDriveStructure().toTag());
+                tag.put("main_drive", mainDriveTag);
+                tag.put("structure", mainDrive.getDriveStructure().toTag());
             }
 
             ListTag driveList = new ListTag();
@@ -73,12 +73,12 @@ public class TaskSetupFileBrowser extends Task {
                 driveTag.putString("type", v.getType().toString());
                 driveList.add(driveTag);
             });
-            nbt.put("available_drives", driveList);
+            tag.put("available_drives", driveList);
         }
     }
 
     @Override
-    public void processResponse(CompoundTag nbt) {
+    public void processResponse(CompoundTag tag) {
 
     }
 }

@@ -32,15 +32,14 @@ public class TaskGetMainDrive extends Task {
     }
 
     @Override
-    public void prepareRequest(CompoundTag nbt) {
-        nbt.putLong("pos", pos.asLong());
+    public void prepareRequest(CompoundTag tag) {
+        tag.putLong("pos", pos.asLong());
     }
 
     @Override
-    public void processRequest(CompoundTag nbt, Level level, Player player) {
-        BlockEntity tileEntity = level.getBlockEntity(BlockPos.of(nbt.getLong("pos")));
-        if (tileEntity instanceof LaptopBlockEntity) {
-            LaptopBlockEntity laptop = (LaptopBlockEntity) tileEntity;
+    public void processRequest(CompoundTag tag, Level level, Player player) {
+        BlockEntity tileEntity = level.getBlockEntity(BlockPos.of(tag.getLong("pos")));
+        if (tileEntity instanceof LaptopBlockEntity laptop) {
             FileSystem fileSystem = laptop.getFileSystem();
             mainDrive = fileSystem.getMainDrive();
             this.setSuccessful();
@@ -48,23 +47,23 @@ public class TaskGetMainDrive extends Task {
     }
 
     @Override
-    public void prepareResponse(CompoundTag nbt) {
+    public void prepareResponse(CompoundTag tag) {
         if (this.isSucessful()) {
             CompoundTag mainDriveTag = new CompoundTag();
             mainDriveTag.putString("name", mainDrive.getName());
             mainDriveTag.putString("uuid", mainDrive.getUuid().toString());
             mainDriveTag.putString("type", mainDrive.getType().toString());
-            nbt.put("main_drive", mainDriveTag);
-            nbt.put("structure", mainDrive.getDriveStructure().toTag());
+            tag.put("main_drive", mainDriveTag);
+            tag.put("structure", mainDrive.getDriveStructure().toTag());
         }
     }
 
     @Override
-    public void processResponse(CompoundTag nbt) {
+    public void processResponse(CompoundTag tag) {
         if (this.isSucessful()) {
             if (Minecraft.getInstance().screen instanceof Laptop) {
-                CompoundTag structureTag = nbt.getCompound("structure");
-                Drive drive = new Drive(nbt.getCompound("main_drive"));
+                CompoundTag structureTag = tag.getCompound("structure");
+                Drive drive = new Drive(tag.getCompound("main_drive"));
                 drive.syncRoot(Folder.fromTag(FileSystem.LAPTOP_DRIVE_NAME, structureTag));
                 drive.getRoot().validate();
 

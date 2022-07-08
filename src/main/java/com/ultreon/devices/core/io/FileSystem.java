@@ -1,6 +1,6 @@
 package com.ultreon.devices.core.io;
 
-import com.ultreon.devices.MrCrayfishDeviceMod;
+import com.ultreon.devices.DevicesMod;
 import com.ultreon.devices.api.app.Application;
 import com.ultreon.devices.api.io.Drive;
 import com.ultreon.devices.api.io.Folder;
@@ -72,8 +72,8 @@ public class FileSystem {
     }
 
     public static void getApplicationFolder(Application app, Callback<Folder> callback) {
-        if (MrCrayfishDeviceMod.getInstance().hasAllowedApplications()) {
-            if (!MrCrayfishDeviceMod.getInstance().getAllowedApplications().contains(app.getInfo())) {
+        if (DevicesMod.getInstance().hasAllowedApplications()) {
+            if (!DevicesMod.getInstance().getAllowedApplications().contains(app.getInfo())) {
                 callback.execute(null, false);
                 return;
             }
@@ -106,10 +106,10 @@ public class FileSystem {
                     callback.execute(appFolder, true);
                 } else {
                     Task task = new TaskGetFiles(appFolder, Laptop.getPos());
-                    task.setCallback((nbt, success) -> {
-                        assert nbt != null;
-                        if (success && nbt.contains("files", Tag.TAG_LIST)) {
-                            ListTag files = nbt.getList("files", Tag.TAG_COMPOUND);
+                    task.setCallback((tag, success) -> {
+                        assert tag != null;
+                        if (success && tag.contains("files", Tag.TAG_LIST)) {
+                            ListTag files = tag.getList("files", Tag.TAG_COMPOUND);
                             appFolder.syncFiles(files);
                             callback.execute(appFolder, true);
                         } else {
@@ -145,9 +145,9 @@ public class FileSystem {
         if (tag.contains("mainDrive", Tag.TAG_COMPOUND))
             mainDrive = InternalDrive.fromTag(tag.getCompound("mainDrive"));
         if (tag.contains("drives", Tag.TAG_LIST)) {
-            ListTag tagList = tag.getList("drives", Tag.TAG_COMPOUND);
-            for (int i = 0; i < tagList.size(); i++) {
-                CompoundTag driveTag = tagList.getCompound(i);
+            ListTag list = tag.getList("drives", Tag.TAG_COMPOUND);
+            for (int i = 0; i < list.size(); i++) {
+                CompoundTag driveTag = list.getCompound(i);
                 AbstractDrive drive = InternalDrive.fromTag(driveTag.getCompound("drive"));
                 additionalDrives.put(drive.getUuid(), drive);
             }
@@ -271,9 +271,9 @@ public class FileSystem {
         if (mainDrive != null)
             fileSystemTag.put("main_drive", mainDrive.toTag());
 
-        ListTag tagList = new ListTag();
-        additionalDrives.forEach((k, v) -> tagList.add(v.toTag()));
-        fileSystemTag.put("drives", tagList);
+        ListTag list = new ListTag();
+        additionalDrives.forEach((k, v) -> list.add(v.toTag()));
+        fileSystemTag.put("drives", list);
 
         if (attachedDrive != null) {
             fileSystemTag.put("external_drive", attachedDrive.toTag());

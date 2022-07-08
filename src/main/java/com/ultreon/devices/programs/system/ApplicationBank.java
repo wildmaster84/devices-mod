@@ -199,10 +199,10 @@ public class ApplicationBank extends SystemApplication {
 
                 try {
                     final int amount = Integer.parseInt(amountField.getText());
-                    deposit(amount, (nbt, success) -> {
+                    deposit(amount, (tag, success) -> {
                         if (success) {
-                            assert nbt != null;
-                            int balance = nbt.getInt("balance");
+                            assert tag != null;
+                            int balance = tag.getInt("balance");
                             labelAmount.setText("$" + balance);
                             amountField.setText("0");
                         }
@@ -225,10 +225,10 @@ public class ApplicationBank extends SystemApplication {
 
                 try {
                     final int amount = Integer.parseInt(amountField.getText());
-                    withdraw(amount, (nbt, success) -> {
+                    withdraw(amount, (tag, success) -> {
                         if (success) {
-                            assert nbt != null;
-                            int balance = nbt.getInt("balance");
+                            assert tag != null;
+                            int balance = tag.getInt("balance");
                             labelAmount.setText("$" + balance);
                             amountField.setText("0");
                         }
@@ -248,10 +248,10 @@ public class ApplicationBank extends SystemApplication {
         labelInventory.setShadow(false);
         layoutMain.addComponent(labelInventory);
 
-        BankUtil.getBalance((nbt, success) -> {
+        BankUtil.getBalance((tag, success) -> {
             if (success) {
-                assert nbt != null;
-                int balance = nbt.getInt("balance");
+                assert tag != null;
+                int balance = tag.getInt("balance");
                 labelAmount.setText("$" + balance);
             }
         });
@@ -277,12 +277,12 @@ public class ApplicationBank extends SystemApplication {
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
+    public void load(CompoundTag tag) {
 
     }
 
     @Override
-    public void save(CompoundTag tagCompound) {
+    public void save(CompoundTag tag) {
 
     }
 }

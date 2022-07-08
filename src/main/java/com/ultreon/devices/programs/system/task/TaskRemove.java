@@ -20,13 +20,13 @@ public class TaskRemove extends Task {
     }
 
     @Override
-    public void prepareRequest(CompoundTag nbt) {
-        nbt.putInt("amount", this.amount);
+    public void prepareRequest(CompoundTag tag) {
+        tag.putInt("amount", this.amount);
     }
 
     @Override
-    public void processRequest(CompoundTag nbt, Level level, Player player) {
-        this.amount = nbt.getInt("amount");
+    public void processRequest(CompoundTag tag, Level level, Player player) {
+        this.amount = tag.getInt("amount");
         Account sender = BankUtil.INSTANCE.getAccount(player);
         if (sender.hasAmount(amount)) {
             sender.remove(amount);
@@ -35,13 +35,13 @@ public class TaskRemove extends Task {
     }
 
     @Override
-    public void prepareResponse(CompoundTag nbt) {
+    public void prepareResponse(CompoundTag tag) {
         if (isSucessful()) {
-            nbt.putInt("balance", this.amount);
+            tag.putInt("balance", this.amount);
         }
     }
 
     @Override
-    public void processResponse(CompoundTag nbt) {
+    public void processResponse(CompoundTag tag) {
     }
 }

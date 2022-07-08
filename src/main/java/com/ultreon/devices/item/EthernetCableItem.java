@@ -1,7 +1,7 @@
 package com.ultreon.devices.item;
 
 import com.ultreon.devices.DeviceConfig;
-import com.ultreon.devices.MrCrayfishDeviceMod;
+import com.ultreon.devices.DevicesMod;
 import com.ultreon.devices.block.entity.NetworkDeviceBlockEntity;
 import com.ultreon.devices.block.entity.RouterBlockEntity;
 import com.ultreon.devices.core.network.Router;
@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class EthernetCableItem extends Item {
     public EthernetCableItem() {
-        super(new Item.Properties().tab(MrCrayfishDeviceMod.TAB_DEVICE).stacksTo(1));
+        super(new Item.Properties().tab(DevicesMod.TAB_DEVICE).stacksTo(1));
     }
 
     private static double getDistance(BlockPos source, BlockPos target) {

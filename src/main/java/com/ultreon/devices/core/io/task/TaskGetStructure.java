@@ -34,17 +34,17 @@ public class TaskGetStructure extends Task {
     }
 
     @Override
-    public void prepareRequest(CompoundTag nbt) {
-        nbt.putString("uuid", uuid);
-        nbt.putLong("pos", pos.asLong());
+    public void prepareRequest(CompoundTag tag) {
+        tag.putString("uuid", uuid);
+        tag.putLong("pos", pos.asLong());
     }
 
     @Override
-    public void processRequest(CompoundTag nbt, Level level, Player player) {
-        BlockEntity tileEntity = level.getBlockEntity(BlockPos.of(nbt.getLong("pos")));
+    public void processRequest(CompoundTag tag, Level level, Player player) {
+        BlockEntity tileEntity = level.getBlockEntity(BlockPos.of(tag.getLong("pos")));
         if (tileEntity instanceof LaptopBlockEntity laptop) {
             FileSystem fileSystem = laptop.getFileSystem();
-            UUID uuid = UUID.fromString(nbt.getString("uuid"));
+            UUID uuid = UUID.fromString(tag.getString("uuid"));
             AbstractDrive serverDrive = fileSystem.getAvailableDrives(level, true).get(uuid);
             if (serverDrive != null) {
                 folder = serverDrive.getDriveStructure();
@@ -54,15 +54,15 @@ public class TaskGetStructure extends Task {
     }
 
     @Override
-    public void prepareResponse(CompoundTag nbt) {
+    public void prepareResponse(CompoundTag tag) {
         if (folder != null) {
-            nbt.putString("file_name", folder.getName());
-            nbt.put("structure", folder.toTag());
+            tag.putString("file_name", folder.getName());
+            tag.put("structure", folder.toTag());
         }
     }
 
     @Override
-    public void processResponse(CompoundTag nbt) {
+    public void processResponse(CompoundTag tag) {
 
     }
 }

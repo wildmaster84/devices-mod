@@ -26,13 +26,13 @@ public class TaskWithdraw extends Task {
     }
 
     @Override
-    public void prepareRequest(CompoundTag nbt) {
-        nbt.putInt("amount", this.amount);
+    public void prepareRequest(CompoundTag tag) {
+        tag.putInt("amount", this.amount);
     }
 
     @Override
-    public void processRequest(CompoundTag nbt, Level level, Player player) {
-        int amount = nbt.getInt("amount");
+    public void processRequest(CompoundTag tag, Level level, Player player) {
+        int amount = tag.getInt("amount");
         Account account = BankUtil.INSTANCE.getAccount(player);
         if (account.withdraw(amount)) {
             int stacks = amount / 64;
@@ -51,11 +51,11 @@ public class TaskWithdraw extends Task {
     }
 
     @Override
-    public void prepareResponse(CompoundTag nbt) {
-        nbt.putInt("balance", this.amount);
+    public void prepareResponse(CompoundTag tag) {
+        tag.putInt("balance", this.amount);
     }
 
     @Override
-    public void processResponse(CompoundTag nbt) {
+    public void processResponse(CompoundTag tag) {
     }
 }

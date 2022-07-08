@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 public class ResponsePacket extends Packet<ResponsePacket> {
     private final int id;
     private final Task request;
-    private CompoundTag nbt;
+    private CompoundTag tag;
 
     public ResponsePacket(FriendlyByteBuf buf) {
         this.id = buf.readInt();
@@ -20,7 +20,7 @@ public class ResponsePacket extends Packet<ResponsePacket> {
         this.request = TaskManager.getTaskAndRemove(this.id);
         if (successful) this.request.setSuccessful();
         String name = buf.readUtf();
-        this.nbt = buf.readNbt();
+        this.tag = buf.readNbt();
     }
 
     public ResponsePacket(int id, Task request) {
@@ -33,16 +33,16 @@ public class ResponsePacket extends Packet<ResponsePacket> {
         buf.writeInt(this.id);
         buf.writeBoolean(this.request.isSucessful());
         buf.writeUtf(this.request.getName());
-        CompoundTag nbt = new CompoundTag();
-        this.request.prepareResponse(nbt);
-        buf.writeNbt(nbt);
+        CompoundTag tag = new CompoundTag();
+        this.request.prepareResponse(tag);
+        buf.writeNbt(tag);
         this.request.complete();
     }
 
     @Override
     public boolean onMessage(Supplier<NetworkEvent.Context> ctx) {
-        request.processResponse(nbt);
-        request.callback(nbt);
+        request.processResponse(tag);
+        request.callback(tag);
         return false;
     }
 }

@@ -94,12 +94,12 @@ public class ApplicationIcons extends Application {
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
+    public void load(CompoundTag tag) {
 
     }
 
     @Override
-    public void save(CompoundTag tagCompound) {
+    public void save(CompoundTag tag) {
 
     }
 

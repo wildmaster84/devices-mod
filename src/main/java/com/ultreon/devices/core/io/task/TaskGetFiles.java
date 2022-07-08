@@ -55,21 +55,21 @@ public class TaskGetFiles extends Task {
     }
 
     @Override
-    public void prepareRequest(CompoundTag nbt) {
-        nbt.putString("uuid", uuid);
-        nbt.putString("path", path);
-        nbt.putLong("pos", pos.asLong());
+    public void prepareRequest(CompoundTag tag) {
+        tag.putString("uuid", uuid);
+        tag.putString("path", path);
+        tag.putLong("pos", pos.asLong());
     }
 
     @Override
-    public void processRequest(CompoundTag nbt, Level level, Player player) {
-        BlockEntity tileEntity = level.getBlockEntity(BlockPos.of(nbt.getLong("pos")));
+    public void processRequest(CompoundTag tag, Level level, Player player) {
+        BlockEntity tileEntity = level.getBlockEntity(BlockPos.of(tag.getLong("pos")));
         if (tileEntity instanceof LaptopBlockEntity laptop) {
             FileSystem fileSystem = laptop.getFileSystem();
-            UUID uuid = UUID.fromString(nbt.getString("uuid"));
+            UUID uuid = UUID.fromString(tag.getString("uuid"));
             AbstractDrive serverDrive = fileSystem.getAvailableDrives(level, true).get(uuid);
             if (serverDrive != null) {
-                ServerFolder found = serverDrive.getFolder(nbt.getString("path"));
+                ServerFolder found = serverDrive.getFolder(tag.getString("path"));
                 if (found != null) {
                     this.files = found.getFiles().stream().filter(f -> !f.isFolder()).collect(Collectors.toList());
                     this.setSuccessful();
@@ -79,7 +79,7 @@ public class TaskGetFiles extends Task {
     }
 
     @Override
-    public void prepareResponse(CompoundTag nbt) {
+    public void prepareResponse(CompoundTag tag) {
         if (this.files != null) {
             ListTag list = new ListTag();
             this.files.forEach(f -> {
@@ -88,12 +88,12 @@ public class TaskGetFiles extends Task {
                 fileTag.put("data", f.toTag());
                 list.add(fileTag);
             });
-            nbt.put("files", list);
+            tag.put("files", list);
         }
     }
 
     @Override
-    public void processResponse(CompoundTag nbt) {
+    public void processResponse(CompoundTag tag) {
 
     }
 }

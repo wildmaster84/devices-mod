@@ -315,19 +315,19 @@ public class FileBrowser extends Component {
         if (!loadedStructure) {
             setLoading(true);
             Task task = new TaskSetupFileBrowser(Laptop.getPos(), Laptop.getMainDrive() == null);
-            task.setCallback((nbt, success) -> {
+            task.setCallback((tag, success) -> {
                 if (success) {
                     if (Laptop.getMainDrive() == null) {
-                        assert nbt != null;
-                        CompoundTag structureTag = nbt.getCompound("structure");
-                        Drive drive = new Drive(nbt.getCompound("main_drive"));
+                        assert tag != null;
+                        CompoundTag structureTag = tag.getCompound("structure");
+                        Drive drive = new Drive(tag.getCompound("main_drive"));
                         drive.syncRoot(Folder.fromTag(FileSystem.LAPTOP_DRIVE_NAME, structureTag));
                         drive.getRoot().validate();
                         Laptop.setMainDrive(drive);
                     }
 
-                    assert nbt != null;
-                    ListTag driveList = nbt.getList("available_drives", Tag.TAG_COMPOUND);
+                    assert tag != null;
+                    ListTag driveList = tag.getList("available_drives", Tag.TAG_COMPOUND);
                     Drive[] drives = new Drive[driveList.size() + 1];
                     drives[0] = currentDrive = Laptop.getMainDrive();
                     for (int i = 0; i < driveList.size(); i++) {
@@ -387,11 +387,11 @@ public class FileBrowser extends Component {
         } else {
             setLoading(true);
             TaskGetStructure task = new TaskGetStructure(drive, Laptop.getPos());
-            task.setCallback((nbt, success) -> {
+            task.setCallback((tag, success) -> {
                 setLoading(false);
                 if (success) {
-                    assert nbt != null;
-                    Folder folder = Folder.fromTag(nbt.getString("file_name"), nbt.getCompound("structure"));
+                    assert tag != null;
+                    Folder folder = Folder.fromTag(tag.getString("file_name"), tag.getCompound("structure"));
                     drive.syncRoot(folder);
                     openFolder(drive.getRoot(), false, (folder1, success1) -> {
                         if (!success1) {
@@ -418,11 +418,11 @@ public class FileBrowser extends Component {
 
             setLoading(true);
             Task task = new TaskGetFiles(folder, pos); //TODO convert to file system
-            task.setCallback((nbt, success) -> {
+            task.setCallback((tag, success) -> {
                 if (success) {
-                    assert nbt != null;
-                    if (nbt.contains("files", Tag.TAG_LIST)) {
-                        ListTag files = nbt.getList("files", Tag.TAG_COMPOUND);
+                    assert tag != null;
+                    if (tag.contains("files", Tag.TAG_LIST)) {
+                        ListTag files = tag.getList("files", Tag.TAG_COMPOUND);
                         folder.syncFiles(files);
                         setCurrentFolder(folder, push);
                     }

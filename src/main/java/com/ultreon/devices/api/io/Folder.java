@@ -420,12 +420,12 @@ public class Folder extends File {
     /**
      * Do not use! Syncs files from the file system
      *
-     * @param tagList the tag list to read from
+     * @param list the tag list to read from
      */
-    public void syncFiles(ListTag tagList) {
+    public void syncFiles(ListTag list) {
         files.removeIf(f -> !f.isFolder());
-        for (int i = 0; i < tagList.size(); i++) {
-            CompoundTag fileTag = tagList.getCompound(i);
+        for (int i = 0; i < list.size(); i++) {
+            CompoundTag fileTag = list.getCompound(i);
             File file = File.fromTag(fileTag.getString("file_name"), fileTag.getCompound("data"));
             file.drive = drive;
             file.valid = true;
@@ -448,9 +448,9 @@ public class Folder extends File {
             }
 
             Task task = new TaskGetFiles(this, pos);
-            task.setCallback((nbt, success) -> {
-                if (success && Objects.requireNonNull(nbt).contains("files", Tag.TAG_LIST)) {
-                    ListTag files = nbt.getList("files", Tag.TAG_COMPOUND);
+            task.setCallback((tag, success) -> {
+                if (success && Objects.requireNonNull(tag).contains("files", Tag.TAG_LIST)) {
+                    ListTag files = tag.getList("files", Tag.TAG_COMPOUND);
                     syncFiles(files);
                     if (callback != null) {
                         callback.execute(this, true);

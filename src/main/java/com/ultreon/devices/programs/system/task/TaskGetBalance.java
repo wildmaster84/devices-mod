@@ -15,22 +15,22 @@ public class TaskGetBalance extends Task {
     }
 
     @Override
-    public void prepareRequest(CompoundTag nbt) {
+    public void prepareRequest(CompoundTag tag) {
     }
 
     @Override
-    public void processRequest(CompoundTag nbt, Level level, Player player) {
+    public void processRequest(CompoundTag tag, Level level, Player player) {
         Account account = BankUtil.INSTANCE.getAccount(player);
         this.balance = account.getBalance();
         this.setSuccessful();
     }
 
     @Override
-    public void prepareResponse(CompoundTag nbt) {
-        nbt.putInt("balance", this.balance);
+    public void prepareResponse(CompoundTag tag) {
+        tag.putInt("balance", this.balance);
     }
 
     @Override
-    public void processResponse(CompoundTag nbt) {
+    public void processResponse(CompoundTag tag) {
     }
 }
