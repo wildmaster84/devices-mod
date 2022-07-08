@@ -80,7 +80,7 @@ import java.util.stream.Collectors;
 public class DevicesMod implements PreparableReloadListener {
     private static DevicesMod instance;
 
-    public static final CreativeModeTab TAB_DEVICE = new DeviceTab("cdm_tab_device");
+    public static final CreativeModeTab TAB_DEVICE = new DeviceTab("devices_tab_device");
 
     public static final Logger LOGGER = LogUtils.getLogger();
 

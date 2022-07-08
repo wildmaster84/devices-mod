@@ -12,6 +12,7 @@ import com.ultreon.devices.core.Laptop;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.resources.ResourceLocation;
@@ -362,13 +363,12 @@ public class Image extends Component {
                     ByteArrayInputStream imageIn = new ByteArrayInputStream(bytes);
                     BufferedImage img = ImageIO.read(imageIn);
 
+                    NativeImage nativeImage = NativeImage.read(in);
+
                     Laptop.runLater(() -> {
-                        try {
-                            texture = new DynamicLoadedTexture(in, img);
-                            setup = true;
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        System.out.println("Loaded image: " + url);
+                        texture = new DynamicTexture(nativeImage);
+                        setup = true;
                     });
                 } catch (IOException e) {
                     e.printStackTrace();

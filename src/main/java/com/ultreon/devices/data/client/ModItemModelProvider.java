@@ -1,6 +1,9 @@
 package com.ultreon.devices.data.client;
 
 import com.ultreon.devices.Reference;
+import com.ultreon.devices.block.LaptopBlock;
+import com.ultreon.devices.block.PrinterBlock;
+import com.ultreon.devices.block.RouterBlock;
 import com.ultreon.devices.init.DeviceBlocks;
 import com.ultreon.devices.init.DeviceItems;
 import com.ultreon.devices.item.FlashDriveItem;
@@ -36,6 +39,15 @@ public class ModItemModelProvider extends ItemModelProvider {
 
         for (FlashDriveItem flashDrive : DeviceItems.getAllFlashDrives()) {
             flashDrive(flashDrive);
+        }
+        for (LaptopBlock laptopBlock : DeviceBlocks.getAllLaptops()) {
+            blockBuilder(laptopBlock);
+        }
+        for (PrinterBlock printerBlock : DeviceBlocks.getAllPrinters()) {
+            blockBuilder(printerBlock);
+        }
+        for (RouterBlock routerBlock : DeviceBlocks.getAllRouters()) {
+            blockBuilder(routerBlock);
         }
     }
 

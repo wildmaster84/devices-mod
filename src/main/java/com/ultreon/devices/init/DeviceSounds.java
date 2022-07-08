@@ -18,8 +18,8 @@ public class DeviceSounds {
     public static final RegistryObject<SoundEvent> PRINTER_LOADING_PAPER = REGISTER.register("printer_loading_paper", () -> new SoundEvent(new ResourceLocation(Reference.MOD_ID, "printer_loading_paper")));
 
 //    static {
-//        PRINTER_PRINTING = registerSound("cdm:printing_ink");
-//        PRINTER_LOADING_PAPER = registerSound("cdm:printing_paper");
+//        PRINTER_PRINTING = registerSound("devices:printing_ink");
+//        PRINTER_LOADING_PAPER = registerSound("devices:printing_paper");
 //    }
 //
 //    private static SoundEvent registerSound(String soundNameIn) {

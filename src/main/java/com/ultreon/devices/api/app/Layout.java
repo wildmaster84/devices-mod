@@ -172,7 +172,7 @@ public class Layout extends com.ultreon.devices.api.app.Component {
         }
 
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        for (com.ultreon.devices.api.app.Component c : components) {
+        for (com.ultreon.devices.api.app.Component c : new ArrayList<>(components)) {
             RenderSystem.disableDepthTest();
             GLHelper.pushScissor(x, y, width, height);
             c.render(pose, laptop, mc, x + c.left, y + c.top, mouseX, mouseY, windowActive, partialTicks);
