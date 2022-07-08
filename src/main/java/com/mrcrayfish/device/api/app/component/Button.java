@@ -12,6 +12,7 @@ import com.mrcrayfish.device.util.StringUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.TextComponent;
@@ -214,19 +215,19 @@ public class Button extends Component {
             RenderSystem.blendFunc(770, 771);
 
             /* Corners */
-            RenderUtil.drawRectWithTexture(x, y, 96 + i * 5, 12, 2, 2, 2, 2);
-            RenderUtil.drawRectWithTexture(x + width - 2, y, 99 + i * 5, 12, 2, 2, 2, 2);
-            RenderUtil.drawRectWithTexture(x + width - 2, y + height - 2, 99 + i * 5, 15, 2, 2, 2, 2);
-            RenderUtil.drawRectWithTexture(x, y + height - 2, 96 + i * 5, 15, 2, 2, 2, 2);
+            GuiComponent.blit(pose, x, y, 2, 2, 96 + i * 5, 12, 2, 2, 256, 256);
+            GuiComponent.blit(pose, x + width - 2, y, 2, 2, 99 + i * 5, 12, 2, 2, 256, 256);
+            GuiComponent.blit(pose, x + width - 2, y + height - 2, 2, 2, 99 + i * 5, 15, 2, 2, 256, 256);
+            GuiComponent.blit(pose, x, y + height - 2, 2, 2, 96 + i * 5, 15, 2, 2, 256, 256);
 
             /* Middles */
-            RenderUtil.drawRectWithTexture(x + 2, y, 98 + i * 5, 12, width - 4, 2, 1, 2);
-            RenderUtil.drawRectWithTexture(x + width - 2, y + 2, 99 + i * 5, 14, 2, height - 4, 2, 1);
-            RenderUtil.drawRectWithTexture(x + 2, y + height - 2, 98 + i * 5, 15, width - 4, 2, 1, 2);
-            RenderUtil.drawRectWithTexture(x, y + 2, 96 + i * 5, 14, 2, height - 4, 2, 1);
+            GuiComponent.blit(pose, x + 2, y, width - 4, 2, 98 + i * 5, 12, 1, 2, 256, 256);
+            GuiComponent.blit(pose, x + width - 2, y + 2, 2, height - 4, 99 + i * 5, 14, 2, 1, 256, 256);
+            GuiComponent.blit(pose, x + 2, y + height - 2, width - 4, 2, 98 + i * 5, 15, 1, 2, 256, 256);
+            GuiComponent.blit(pose, x, y + 2, 2, height - 4, 96 + i * 5, 14, 2, 1, 256, 256);
 
             /* Center */
-            RenderUtil.drawRectWithTexture(x + 2, y + 2, 98 + i * 5, 14, width - 4, height - 4, 1, 1);
+            GuiComponent.blit(pose, x + 2, y + 2, width - 4, height - 4, 98 + i * 5, 14, 1, 1, 256, 256);
 
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
@@ -238,7 +239,7 @@ public class Button extends Component {
             if (iconResource != null) {
                 int iconY = (height - iconHeight) / 2;
                 RenderSystem.setShaderTexture(0, iconResource);
-                RenderUtil.drawRectWithTexture(x + contentX, y + iconY, iconU, iconV, iconWidth, iconHeight, iconWidth, iconHeight, iconSourceWidth, iconSourceHeight);
+                GuiComponent.blit(pose, x + contentX, y + iconY, iconWidth, iconHeight, iconU, iconV, iconWidth, iconHeight, iconSourceWidth, iconSourceHeight);
             }
 
             if (!StringUtils.isNullOrEmpty(text)) {

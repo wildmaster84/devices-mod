@@ -800,7 +800,7 @@ public abstract class Dialog extends Wrappable {
                 public void render(PoseStack pose, NetworkDevice networkDevice, GuiComponent gui, Minecraft mc, int x, int y, int width, int height, boolean selected) {
                     ColorScheme colorScheme = Laptop.getSystem().getSettings().getColorScheme();
                     Gui.fill(pose, x, y, x + width, y + height, selected ? colorScheme.getItemHighlightColor() : colorScheme.getItemBackgroundColor());
-                    Icons.PRINTER.draw(mc, x + 3, y + 3);
+                    Icons.PRINTER.draw(pose, mc, x + 3, y + 3);
                     RenderUtil.drawStringClipped(pose, networkDevice.getName(), x + 18, y + 4, 118, Laptop.getSystem().getSettings().getColorScheme().getTextColor(), true);
                 }
             });

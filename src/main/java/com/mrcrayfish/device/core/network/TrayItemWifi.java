@@ -54,11 +54,11 @@ public class TrayItemWifi extends TrayItem {
                 assert laptopPos != null;
                 double distance = Math.sqrt(device.getPos().distToCenterSqr(laptopPos.getX() + 0.5, laptopPos.getY() + 0.5, laptopPos.getZ() + 0.5));
                 if (distance > 20) {
-                    Icons.WIFI_LOW.draw(mc, x + 3, y + 3);
+                    Icons.WIFI_LOW.draw(pose, mc, x + 3, y + 3);
                 } else if (distance > 10) {
-                    Icons.WIFI_MED.draw(mc, x + 3, y + 3);
+                    Icons.WIFI_MED.draw(pose, mc, x + 3, y + 3);
                 } else {
-                    Icons.WIFI_HIGH.draw(mc, x + 3, y + 3);
+                    Icons.WIFI_HIGH.draw(pose, mc, x + 3, y + 3);
                 }
             }
         });

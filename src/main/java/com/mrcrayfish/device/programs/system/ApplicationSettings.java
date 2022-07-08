@@ -101,7 +101,7 @@ public class ApplicationSettings extends SystemApplication
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             List<ResourceLocation> wallpapers = getLaptop().getWallapapers();
             RenderSystem.setShaderTexture(0, wallpapers.get(getLaptop().getCurrentWallpaper()));
-            RenderUtil.drawRectWithFullTexture(x + wallpaperX, y + wallpaperY, 0, 0, 120, 68);
+            RenderUtil.drawRectWithFullTexture(pose, x + wallpaperX, y + wallpaperY, 0, 0, 120, 68);
             mc.font.drawShadow(pose, "Wallpaper", x + wallpaperX + 3, y + wallpaperY + 3, getLaptop().getSettings().getColorScheme().getTextColor());
         });
 

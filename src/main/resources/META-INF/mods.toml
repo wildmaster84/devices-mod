@@ -31,7 +31,7 @@ displayURL = "https://mrcrayfish.com/mods?id=cdm" #optional
 # A text field displayed in the mod UI
 credits = "Thank you to MinecraftDoodler for helping with textures. Cheers to these people for donating during the development: Mastef Chief, Haunted Corpse, Jake Crowley, fabbe50, PlayDashGaming, jack jook, Hunstagamez, Techyy YT, MinecraftDoodler, Norge100YT, Cyberman2208, CreepergamingsMC" #optional
 # A text field displayed in the mod UI
-authors = "MrCrayfish (original code), Qboi123 (new code)" #optional
+authors = "MrCrayfish (original code and textures), Qboi123 (new code)" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description = '''
 Adds working electronic devices into Minecraft!

@@ -42,7 +42,7 @@ public class Inventory extends Component {
         if (this.visible) {
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             RenderSystem.setShaderTexture(0, CHEST_GUI_TEXTURE);
-            RenderUtil.drawRectWithTexture(xPosition, yPosition, 7, 139, 162, 54, 162, 54);
+            RenderUtil.drawRectWithTexture(pose, xPosition, yPosition, 7, 139, 162, 54, 162, 54);
 
             net.minecraft.world.entity.player.Inventory inventory = mc.player.getInventory();
             for (int i = 9; i < inventory.getContainerSize() - 4; i++) {

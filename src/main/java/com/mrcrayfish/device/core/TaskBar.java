@@ -14,6 +14,7 @@ import com.mrcrayfish.device.programs.system.ApplicationSettings;
 import com.mrcrayfish.device.programs.system.SystemApplication;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 
@@ -81,16 +82,16 @@ public class TaskBar {
         RenderSystem.setShaderColor(bgColor.getRed() / 255f, bgColor.getGreen() / 255f, bgColor.getBlue() / 255f, 1f);
 
         int trayItemsWidth = trayItems.size() * 14;
-        RenderUtil.drawRectWithTexture(x, y, 0, 0, 1, 18, 1, 18);
-        RenderUtil.drawRectWithTexture(x + 1, y, 1, 0, Laptop.SCREEN_WIDTH - 36 - trayItemsWidth, 18, 1, 18);
-        RenderUtil.drawRectWithTexture(x + Laptop.SCREEN_WIDTH - 35 - trayItemsWidth, y, 2, 0, 35 + trayItemsWidth, 18, 1, 18);
+        GuiComponent.blit(pose, x, y, 1, 18, 0, 0, 1, 18, 256, 256);
+        GuiComponent.blit(pose, x + 1, y, Laptop.SCREEN_WIDTH - 36 - trayItemsWidth, 18, 1, 0, 1, 18, 256, 256);
+        GuiComponent.blit(pose, x + Laptop.SCREEN_WIDTH - 35 - trayItemsWidth, y, 35 + trayItemsWidth, 18, 2, 0, 1, 18, 256, 256);
 
         RenderSystem.disableBlend();
 
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         for (int i = 0; i < APPS_DISPLAYED && i < laptop.installedApps.size(); i++) {
             AppInfo info = laptop.installedApps.get(i + offset);
-            RenderUtil.drawApplicationIcon(info, x + 2 + i * 16, y + 2);
+            RenderUtil.drawApplicationIcon(pose, info, x + 2 + i * 16, y + 2);
             if (laptop.isApplicationRunning(info)) {
                 RenderSystem.setShaderTexture(0, APP_BAR_GUI);
                 laptop.blit(pose, x + 1 + i * 16, y + 1, 35, 0, 16, 16);
@@ -108,7 +109,7 @@ public class TaskBar {
             if (isMouseInside(mouseX, mouseY, posX, y + 2, posX + 13, y + 15)) {
                 Gui.fill(pose, posX, y + 2, posX + 14, y + 16, new Color(1f, 1f, 1f, 0.1f).getRGB());
             }
-            trayItems.get(i).getIcon().draw(mc, posX + 2, y + 4);
+            trayItems.get(i).getIcon().draw(pose, mc, posX + 2, y + 4);
         }
 
         RenderSystem.setShaderTexture(0, APP_BAR_GUI);

@@ -10,6 +10,7 @@ import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.SimpleTexture;
@@ -190,15 +191,15 @@ public class Image extends Component {
 
                 if (hasBorder) {
                     if (drawFull) {
-                        RenderUtil.drawRectWithFullTexture(x + borderThickness, y + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2);
+                        GuiComponent.blit(pose, x + borderThickness, y + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, 256, 256);
                     } else {
-                        RenderUtil.drawRectWithTexture(x + borderThickness, y + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, imageWidth, imageHeight, sourceWidth, sourceHeight);
+                        GuiComponent.blit(pose, x + borderThickness, y + borderThickness, componentWidth - borderThickness * 2, imageU, imageV, componentHeight - borderThickness * 2, sourceWidth, sourceHeight, imageWidth, imageHeight);
                     }
                 } else {
                     if (drawFull) {
-                        RenderUtil.drawRectWithFullTexture(x, y, imageU, imageV, componentWidth, componentHeight);
+                        GuiComponent.blit(pose, x, y, componentWidth, componentHeight, imageU, imageV, 256, 256);
                     } else {
-                        RenderUtil.drawRectWithTexture(x, y, imageU, imageV, componentWidth, componentHeight, imageWidth, imageHeight, sourceWidth, sourceHeight);
+                        GuiComponent.blit(pose, x, y, componentWidth, componentHeight, imageU, imageV, sourceWidth, sourceHeight, imageWidth, imageHeight);
                     }
                 }
             } else {
@@ -330,8 +331,8 @@ public class Image extends Component {
     }
 
     private static class DynamicLoader extends ImageLoader {
-        private AbstractTexture texture;
         private final String url;
+        private AbstractTexture texture;
 
         public DynamicLoader(String url) {
             this.url = url;
@@ -343,17 +344,18 @@ public class Image extends Component {
                 setup = true;
                 return;
             }
-            Runnable r = () ->
-            {
-                try {
-                    URL url = new URL(this.url);
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestProperty("User-Agent", "Mozilla/5.0");
-                    texture = new DynamicTexture(conn.getInputStream());
-                    setup = true;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            Runnable r = () -> {
+                Laptop.runLater(() -> {
+                    try {
+                        URL url = new URL(this.url);
+                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+                        texture = new DynamicTexture(conn.getInputStream());
+                        setup = true;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
             };
             Thread thread = new Thread(r, "Image Loader");
             thread.start();

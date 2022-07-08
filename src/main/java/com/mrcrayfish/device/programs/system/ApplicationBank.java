@@ -108,7 +108,7 @@ public class ApplicationBank extends SystemApplication {
             pose.popPose();
 
             RenderSystem.setShaderTexture(0, BANK_ASSETS);
-            RenderUtil.drawRectWithTexture(x + 46, y + 19, 0, 0, 146, 52, 146, 52);
+            RenderUtil.drawRectWithTexture(pose, x + 46, y + 19, 0, 0, 146, 52, 146, 52);
         });
 
         labelTeller = new Label(ChatFormatting.YELLOW + "Casey The Teller", 60, 7);

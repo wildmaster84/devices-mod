@@ -71,24 +71,24 @@ public abstract class ComboBox<T> extends Component {
             int xOffset = width - height;
 
             /* Corners */
-            RenderUtil.drawRectWithTexture(xPosition + xOffset, yPosition, 96 + i * 5, 12, 2, 2, 2, 2);
-            RenderUtil.drawRectWithTexture(xPosition + height - 2 + xOffset, yPosition, 99 + i * 5, 12, 2, 2, 2, 2);
-            RenderUtil.drawRectWithTexture(xPosition + height - 2 + xOffset, yPosition + height - 2, 99 + i * 5, 15, 2, 2, 2, 2);
-            RenderUtil.drawRectWithTexture(xPosition + xOffset, yPosition + height - 2, 96 + i * 5, 15, 2, 2, 2, 2);
+            RenderUtil.drawRectWithTexture(pose, xPosition + xOffset, yPosition, 96 + i * 5, 12, 2, 2, 2, 2);
+            RenderUtil.drawRectWithTexture(pose, xPosition + height - 2 + xOffset, yPosition, 99 + i * 5, 12, 2, 2, 2, 2);
+            RenderUtil.drawRectWithTexture(pose, xPosition + height - 2 + xOffset, yPosition + height - 2, 99 + i * 5, 15, 2, 2, 2, 2);
+            RenderUtil.drawRectWithTexture(pose, xPosition + xOffset, yPosition + height - 2, 96 + i * 5, 15, 2, 2, 2, 2);
 
             /* Middles */
-            RenderUtil.drawRectWithTexture(xPosition + 2 + xOffset, yPosition, 98 + i * 5, 12, height - 4, 2, 1, 2);
-            RenderUtil.drawRectWithTexture(xPosition + height - 2 + xOffset, yPosition + 2, 99 + i * 5, 14, 2, height - 4, 2, 1);
-            RenderUtil.drawRectWithTexture(xPosition + 2 + xOffset, yPosition + height - 2, 98 + i * 5, 15, height - 4, 2, 1, 2);
-            RenderUtil.drawRectWithTexture(xPosition + xOffset, yPosition + 2, 96 + i * 5, 14, 2, height - 4, 2, 1);
+            RenderUtil.drawRectWithTexture(pose, xPosition + 2 + xOffset, yPosition, 98 + i * 5, 12, height - 4, 2, 1, 2);
+            RenderUtil.drawRectWithTexture(pose, xPosition + height - 2 + xOffset, yPosition + 2, 99 + i * 5, 14, 2, height - 4, 2, 1);
+            RenderUtil.drawRectWithTexture(pose, xPosition + 2 + xOffset, yPosition + height - 2, 98 + i * 5, 15, height - 4, 2, 1, 2);
+            RenderUtil.drawRectWithTexture(pose, xPosition + xOffset, yPosition + 2, 96 + i * 5, 14, 2, height - 4, 2, 1);
 
             /* Center */
-            RenderUtil.drawRectWithTexture(xPosition + 2 + xOffset, yPosition + 2, 98 + i * 5, 14, height - 4, height - 4, 1, 1);
+            RenderUtil.drawRectWithTexture(pose, xPosition + 2 + xOffset, yPosition + 2, 98 + i * 5, 14, height - 4, height - 4, 1, 1);
 
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
             /* Icons */
-            RenderUtil.drawRectWithTexture(xPosition + xOffset + 3, yPosition + 5, 111, 12, 8, 5, 8, 5);
+            RenderUtil.drawRectWithTexture(pose, xPosition + xOffset + 3, yPosition + 5, 111, 12, 8, 5, 8, 5);
 
             Color boxColor = new Color(getColorScheme().getBackgroundColor());
             Color borderColor = boxColor.darker().darker();

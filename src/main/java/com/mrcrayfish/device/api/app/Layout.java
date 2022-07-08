@@ -69,7 +69,7 @@ public class Layout extends Component {
         if (height < 1)
             throw new IllegalArgumentException("Height can not be less than 1 tall");
 
-        this.components = new ArrayList<Component>();
+        this.components = new ArrayList<>();
         this.width = width;
         this.height = height;
     }

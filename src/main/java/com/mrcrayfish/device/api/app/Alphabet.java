@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.api.app;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
@@ -68,12 +69,12 @@ public enum Alphabet implements IIcon {
         return ordinal();
     }
 
-    public void draw(Minecraft mc, int x, int y, int color) {
+    public void draw(PoseStack pose, Minecraft mc, int x, int y, int color) {
         Color temp = new Color(color);
         float[] hsb = Color.RGBtoHSB(temp.getRed(), temp.getGreen(), temp.getBlue(), null);
         Color iconColor = new Color(Color.HSBtoRGB(hsb[0], hsb[1], 1f));
         RenderSystem.setShaderColor(iconColor.getRed() / 255f, iconColor.getGreen() / 255f, iconColor.getBlue() / 255f, 1f);
-        this.draw(mc, x, y);
+        this.draw(pose, mc, x, y);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
     }
 }

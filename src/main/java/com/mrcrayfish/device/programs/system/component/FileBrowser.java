@@ -67,11 +67,11 @@ public class FileBrowser extends Component {
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             RenderSystem.setShaderTexture(0, ASSETS);
             if (file.isFolder()) {
-                RenderUtil.drawRectWithTexture(x + 3, y + 2, 0, 0, 14, 14, 14, 14);
+                RenderUtil.drawRectWithTexture(pose, x + 3, y + 2, 0, 0, 14, 14, 14, 14);
             } else {
                 assert file.getOpeningApp() != null;
                 AppInfo info = ApplicationManager.getApplication(file.getOpeningApp());
-                RenderUtil.drawApplicationIcon(info, x + 3, y + 2);
+                RenderUtil.drawApplicationIcon(pose, info, x + 3, y + 2);
             }
             drawString(pose, Minecraft.getInstance().font, file.getName(), x + 22, y + 5, file.isProtected() ? PROTECTED_FILE.getRGB() : Laptop.getSystem().getSettings().getColorScheme().getTextColor());
         }
@@ -284,7 +284,7 @@ public class FileBrowser extends Component {
                 fill(pose, x, y, x + width, y + height, selected ? bgColor.brighter().brighter().getRGB() : bgColor.brighter().getRGB());
                 RenderSystem.setShaderTexture(0, ASSETS);
                 RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-                RenderUtil.drawRectWithTexture(x + 2, y + 2, drive.getType().ordinal() * 8, 30, 8, 8, 8, 8);
+                RenderUtil.drawRectWithTexture(pose, x + 2, y + 2, drive.getType().ordinal() * 8, 30, 8, 8, 8, 8);
 
                 String text = drive.getName();
                 if (mc.font.width(text) > 87) {

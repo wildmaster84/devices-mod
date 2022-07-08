@@ -15,6 +15,7 @@ import com.mrcrayfish.device.core.network.task.TaskConnect;
 import com.mrcrayfish.device.core.network.task.TaskGetDevices;
 import com.mrcrayfish.device.core.network.task.TaskPing;
 import com.mrcrayfish.device.core.print.task.TaskPrint;
+import com.mrcrayfish.device.core.task.TaskInstallApp;
 import com.mrcrayfish.device.init.RegistrationHandler;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.network.task.SyncApplicationPacket;
@@ -83,7 +84,7 @@ public class MrCrayfishDeviceMod implements PreparableReloadListener {
 
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public static final boolean DEVELOPER_MODE = true;
+    public static final boolean DEVELOPER_MODE = false;
 
     List<AppInfo> allowedApps;
 
@@ -187,6 +188,9 @@ public class MrCrayfishDeviceMod implements PreparableReloadListener {
         TaskManager.registerTask(TaskGetFiles.class);
         TaskManager.registerTask(TaskGetStructure.class);
         TaskManager.registerTask(TaskGetMainDrive.class);
+
+        // App Store
+        TaskManager.registerTask(TaskInstallApp.class);
 
         // Todo implement ender mail
 //        //Ender Mail

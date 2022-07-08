@@ -52,7 +52,7 @@ public class LayoutSearchApps extends StandardLayout {
                 Gui.fill(pose, x, y, x + width, y + height, selected ? ITEM_SELECTED.getRGB() : ITEM_BACKGROUND.getRGB());
 
                 RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-                RenderUtil.drawApplicationIcon(info, x + 2, y + 2);
+                RenderUtil.drawApplicationIcon(pose, info, x + 2, y + 2);
                 RenderUtil.drawStringClipped(pose, info.getName() + ChatFormatting.GRAY + " - " + ChatFormatting.DARK_GRAY + info.getDescription(), x + 20, y + 5, itemListResults.getWidth() - 22, Color.WHITE.getRGB(), false);
             }
         });

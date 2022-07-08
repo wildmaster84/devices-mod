@@ -27,6 +27,7 @@ import com.mrcrayfish.device.programs.system.task.TaskUpdateApplicationData;
 import com.mrcrayfish.device.programs.system.task.TaskUpdateSystemData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
@@ -68,6 +69,7 @@ public class Laptop extends Screen implements System {
     private static System system;
     private static BlockPos pos;
     private static Drive mainDrive;
+    private static List<Runnable> tasks = new ArrayList<>();
     protected List<AppInfo> installedApps = new ArrayList<>();
     private final Settings settings;
     private final TaskBar bar;
@@ -124,6 +126,10 @@ public class Laptop extends Screen implements System {
         if (Laptop.mainDrive == null) {
             Laptop.mainDrive = mainDrive;
         }
+    }
+
+    public static void runLater(Runnable task) {
+        tasks.add(task);
     }
 
     @Override
@@ -199,6 +205,11 @@ public class Laptop extends Screen implements System {
 
     @Override
     public void render(@NotNull PoseStack pose, int mouseX, int mouseY, float partialTicks) {
+        for (Runnable task : tasks) {
+            task.run();
+        }
+        tasks.clear();
+
         //Fixes the strange partialTicks that Forge decided to give us
         partialTicks = Minecraft.getInstance().getFrameTime();
 
@@ -218,20 +229,24 @@ public class Laptop extends Screen implements System {
         blit(pose, posX, posY + DEVICE_HEIGHT - BORDER, 0, 11, BORDER, BORDER); // BOTTOM-LEFT
 
         /* Edges */
-        RenderUtil.drawRectWithTexture(posX + BORDER, posY, 10, 0, SCREEN_WIDTH, BORDER, 1, BORDER); // TOP
-        RenderUtil.drawRectWithTexture(posX + DEVICE_WIDTH - BORDER, posY + BORDER, 11, 10, BORDER, SCREEN_HEIGHT, BORDER, 1); // RIGHT
-        RenderUtil.drawRectWithTexture(posX + BORDER, posY + DEVICE_HEIGHT - BORDER, 10, 11, SCREEN_WIDTH, BORDER, 1, BORDER); // BOTTOM
-        RenderUtil.drawRectWithTexture(posX, posY + BORDER, 0, 11, BORDER, SCREEN_HEIGHT, BORDER, 1); // LEFT
+        Gui.blit(pose, posX + BORDER, posY, SCREEN_WIDTH, BORDER, 10, 0, 1, BORDER, 256, 256); // TOP
+        Gui.blit(pose, posX + DEVICE_WIDTH - BORDER, posY + BORDER, BORDER, SCREEN_HEIGHT, 11, 10, BORDER, 1, 256, 256); // RIGHT
+        Gui.blit(pose, posX + BORDER, posY + DEVICE_HEIGHT - BORDER, SCREEN_WIDTH, BORDER, 10, 11, 1, BORDER, 256, 256); // BOTTOM
+        Gui.blit(pose, posX, posY + BORDER, BORDER, SCREEN_HEIGHT, 0, 11, BORDER, 1, 256, 256); // LEFT
 
         /* Center */
-        RenderUtil.drawRectWithTexture(posX + BORDER, posY + BORDER, 10, 10, SCREEN_WIDTH, SCREEN_HEIGHT, 1, 1);
+        Gui.blit(pose, posX + BORDER, posY + BORDER, SCREEN_WIDTH, SCREEN_HEIGHT, 10, 10, 1, 1, 256, 256);
 
         /* Wallpaper */
         RenderSystem.setShaderTexture(0, WALLPAPERS.get(currentWallpaper));
-        RenderUtil.drawRectWithFullTexture(posX + 10, posY + 10, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        Gui.blit(pose, posX + 10, posY + 10, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 512, 288);
 
         if (!MrCrayfishDeviceMod.DEVELOPER_MODE) {
-            drawString(pose, font, "Alpha v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
+            if (Reference.VERSION.contains("-dev")) {
+                drawString(pose, font, "Dev Test v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
+            } else {
+                drawString(pose, font, "Alpha v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
+            }
         } else {
             drawString(pose, font, "Developer Version - " + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
         }

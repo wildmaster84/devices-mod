@@ -50,7 +50,7 @@ public class StandardLayout extends Layout {
         Gui.fill(pose, x, y + 20, x + width, y + 21, color.darker().getRGB());
 
         if (previous == null && icon != null) {
-            icon.draw(mc, x + 5, y + 5);
+            icon.draw(pose, mc, x + 5, y + 5);
         }
         mc.font.drawShadow(pose, title, x + 5 + (previous != null || icon != null ? 16 : 0), y + 7, Color.WHITE.getRGB());
 
