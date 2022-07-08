@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.platform.TextureUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.ultreon.devices.DevicesMod;
 import com.ultreon.devices.api.app.Component;
 import com.ultreon.devices.api.app.IIcon;
 import com.ultreon.devices.api.app.Layout;
@@ -103,7 +104,7 @@ public class Image extends Component {
     }
 
     /**
-     * Creates a new Image from a url. This allows a resource to be downloaded from the internet
+     * Creates a new Image from an url. This allows a resource to be downloaded from the internet
      * and be used as the Image. In the case that the resource could not be downloaded or the player
      * is playing the game in an offline state, the Image will default to a missing texture.
      * <p>
@@ -186,7 +187,7 @@ public class Image extends Component {
 
                 RenderSystem.setShaderColor(1f, 1f, 1f, alpha);
                 RenderSystem.enableBlend();
-                RenderSystem.bindTexture(image.textureId);
+                RenderSystem.setShaderTexture(0, image.textureId);
 
                 if (hasBorder) {
                     if (drawFull) {
@@ -327,6 +328,10 @@ public class Image extends Component {
                 return new CachedImage(texture.getId(), 0, 0, false);
             }
         }
+
+        public AbstractTexture getTexture() {
+            return texture;
+        }
     }
 
     private static class DynamicLoader extends ImageLoader {
@@ -344,17 +349,30 @@ public class Image extends Component {
                 return;
             }
             Runnable r = () -> {
-                Laptop.runLater(() -> {
-                    try {
-                        URL url = new URL(this.url);
-                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                        conn.setRequestProperty("User-Agent", "Mozilla/5.0");
-                        texture = new DynamicTexture(conn.getInputStream());
-                        setup = true;
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
+                try {
+                    URL url = new URL(this.url);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+                    InputStream connIn = conn.getInputStream();
+                    byte[] bytes = connIn.readAllBytes();
+                    connIn.close();
+                    conn.disconnect();
+
+                    ByteArrayInputStream in = new ByteArrayInputStream(bytes);
+                    ByteArrayInputStream imageIn = new ByteArrayInputStream(bytes);
+                    BufferedImage img = ImageIO.read(imageIn);
+
+                    Laptop.runLater(() -> {
+                        try {
+                            texture = new DynamicLoadedTexture(in, img);
+                            setup = true;
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             };
             Thread thread = new Thread(r, "Image Loader");
             thread.start();
@@ -380,23 +398,21 @@ public class Image extends Component {
         }
     }
 
-    private static class DynamicTexture extends AbstractTexture {
+    private static class DynamicLoadedTexture extends AbstractTexture {
         private final InputStream in;
-        private final BufferedImage bufferedImage;
+        private final BufferedImage image;
 
-        private DynamicTexture(InputStream in) throws IOException {
-            byte[] bytes = in.readAllBytes();
-            this.in = new ByteArrayInputStream(bytes);
+        private DynamicLoadedTexture(InputStream in, BufferedImage image) throws IOException {
+            this.in = in;
 
-            ByteArrayInputStream imageIn = new ByteArrayInputStream(bytes);
-
-            this.bufferedImage = ImageIO.read(imageIn);
-            TextureUtil.prepareImage(getId(), bufferedImage.getWidth(), bufferedImage.getHeight());
+            this.image = image;
+            TextureUtil.prepareImage(getId(), this.image.getWidth(), this.image.getHeight());
         }
 
         @Override
         public void load(@NotNull ResourceManager resourceManager) throws IOException {
             NativeImage nativeImage = NativeImage.read(in);
+            Minecraft.getInstance().getTextureManager().register(DevicesMod.res("dynamic_loaded/" + getId()), this);
             this.upload(nativeImage);
         }
 
@@ -404,8 +420,8 @@ public class Image extends Component {
             nativeImage.upload(0, 0, 0, mipmap);
         }
 
-        public BufferedImage getBufferedImage() {
-            return bufferedImage;
+        public BufferedImage getImage() {
+            return image;
         }
     }
 
