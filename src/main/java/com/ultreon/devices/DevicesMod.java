@@ -34,6 +34,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -41,15 +42,14 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.loading.DatagenModLoader;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -79,7 +79,6 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(Reference.MOD_ID)
@@ -94,7 +93,8 @@ public class DevicesMod implements PreparableReloadListener {
     public static final List<SiteRegistration> SITE_REGISTRATIONS = new ArrayList<>();
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public static final boolean DEVELOPER_MODE = true;
+    public static final boolean DEVELOPER_MODE = false;
+    private static MinecraftServer server;
 
     List<AppInfo> allowedApps;
 
@@ -146,6 +146,10 @@ public class DevicesMod implements PreparableReloadListener {
 
     public static boolean isDevelopmentPreview() {
         return IS_DEV_PREVIEW;
+    }
+
+    public static MinecraftServer getServer() {
+        return server;
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
@@ -290,7 +294,13 @@ public class DevicesMod implements PreparableReloadListener {
             ImageIO.write(atlas, "png", output);
             byte[] bytes = output.toByteArray();
             ByteArrayInputStream input = new ByteArrayInputStream(bytes);
-            Minecraft.getInstance().getTextureManager().register(Laptop.ICON_TEXTURES, new DynamicTexture(NativeImage.read(input)));
+            Minecraft.getInstance().submit(() -> {
+                try {
+                    Minecraft.getInstance().getTextureManager().register(Laptop.ICON_TEXTURES, new DynamicTexture(NativeImage.read(input)));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -318,7 +328,7 @@ public class DevicesMod implements PreparableReloadListener {
 
         try {
             Application application = clazz.getConstructor().newInstance();
-            java.util.List<Application> apps = ObfuscationReflectionHelper.getPrivateValue(Laptop.class, null, "APPLICATIONS");
+            List<Application> apps = ObfuscationReflectionHelper.getPrivateValue(Laptop.class, null, "APPLICATIONS");
             assert apps != null;
             apps.add(application);
 
@@ -443,49 +453,47 @@ public class DevicesMod implements PreparableReloadListener {
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
-        // Some example code to dispatch IMC to another mod
-        InterModComms.sendTo("device-mod", "helloworld", () -> {
-            LOGGER.info("Hello world from the MDK");
+        // Check for self availability.
+        InterModComms.sendTo(Reference.MOD_ID, "availability", () -> {
+            LOGGER.info("IMC is working correctly");
             return "Hello world";
         });
     }
 
     private void processIMC(final InterModProcessEvent event) {
-        // Some example code to receive and process InterModComms from other mods
-        LOGGER.info("Got IMC {}", event.getIMCStream().
-                map(m -> m.messageSupplier().get()).
-                collect(Collectors.toList()));
+        event.getIMCStream().forEachOrdered(imcMessage -> {
+            // Availability IMC handling.
+            if (imcMessage.method().equals("availability")) {
+                LOGGER.info("Received message from " + imcMessage.senderModId() + ": " + imcMessage.messageSupplier().get());
+            }
+        });
     }
 
-    // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
-        // Do something when the server starts
-        LOGGER.info("HELLO from server starting");
+        LOGGER.info("A world or server is starting, setting server reference");
+
+        server = event.getServer();
     }
 
-    // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
-    // Event bus for receiving Registry Events)
-    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistryEvents {
-        @SubscribeEvent
-        public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
-            // Register a new block here
-            LOGGER.info("HELLO from Register Block");
-        }
+    @SubscribeEvent
+    public void onServerStopped(ServerStoppedEvent event) {
+        LOGGER.info("Server has stopped, nullifying server reference.");
+
+        server = null;
     }
 
-    private static final void setupSiteRegistrations() {
+    private static void setupSiteRegistrations() {
         OnlineRequest.getInstance().make("https://raw.githubusercontent.com/Jab125/gitweb-sites/main/site_registrations.json", (success, response) -> {
             if (success) {
                 //Minecraft.getInstance().doRunTask(() -> {
-                    JsonArray array = JsonParser.parseString(response).getAsJsonArray();
-                    array.forEach((element) -> {
-                        var registrant = element.getAsJsonObject().get("registrant") != null ? element.getAsJsonObject().get("registrant").getAsString() : null;
-                        var site = element.getAsJsonObject().get("site").getAsString();
-                        for (JsonElement jsonElement : element.getAsJsonObject().get("registrations").getAsJsonArray()) {
-                            var a = jsonElement.getAsJsonObject().keySet();
-                            var d = jsonElement.getAsJsonObject();
+                JsonArray array = JsonParser.parseString(response).getAsJsonArray();
+                array.forEach((element) -> {
+                    var registrant = element.getAsJsonObject().get("registrant") != null ? element.getAsJsonObject().get("registrant").getAsString() : null;
+                    var site = element.getAsJsonObject().get("site").getAsString();
+                    for (JsonElement jsonElement : element.getAsJsonObject().get("registrations").getAsJsonArray()) {
+                        var a = jsonElement.getAsJsonObject().keySet();
+                        var d = jsonElement.getAsJsonObject();
                             for (String s : a) {
                                 var type = d.get(s).getAsString();
                                 var string = s;
