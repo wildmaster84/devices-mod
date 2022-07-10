@@ -16,7 +16,7 @@
             "item": "minecraft:redstone"
         },
         "B": {
-            "item": "minecraft:silver_shulker_box"
+            "item": "minecraft:light_gray_shulker_box"
         }
     }
 }
