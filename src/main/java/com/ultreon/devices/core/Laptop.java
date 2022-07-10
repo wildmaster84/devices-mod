@@ -17,6 +17,7 @@ import com.ultreon.devices.api.io.File;
 import com.ultreon.devices.api.task.Callback;
 import com.ultreon.devices.api.task.Task;
 import com.ultreon.devices.api.task.TaskManager;
+import com.ultreon.devices.api.utils.RenderUtil;
 import com.ultreon.devices.block.entity.LaptopBlockEntity;
 import com.ultreon.devices.core.task.TaskInstallApp;
 import com.ultreon.devices.object.AppInfo;
@@ -238,7 +239,7 @@ public class Laptop extends Screen implements System {
 
         /* Wallpaper */
         RenderSystem.setShaderTexture(0, WALLPAPERS.get(currentWallpaper));
-        Gui.blit(pose, posX + 10, posY + 10, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 512, 288);
+        RenderUtil.drawRectWithTexture(pose, posX + 10, posY + 10, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 512, 288);
 
         if (!DevicesMod.DEVELOPER_MODE) {
             if (Reference.VERSION.contains("-dev")) {

@@ -66,6 +66,8 @@ public class LayoutAppPage extends Layout {
 
         imageBanner = new com.ultreon.devices.api.app.component.Image(0, 0, 250, 40);
         imageBanner.setDrawFull(true);
+        imageBanner.setBorderVisible(true);
+        imageBanner.setBorderThickness(0);
         if (entry instanceof LocalEntry) {
             imageBanner.setImage(new ResourceLocation(resource.getNamespace(), "textures/app/banner/" + resource.getPath() + ".png"));
         } else if (entry instanceof RemoteEntry) {

@@ -49,7 +49,7 @@ public class Image extends Component {
 
     private boolean hasBorder = false;
     private int borderColor = Color.BLACK.getRGB();
-    private int borderThickness = 1;
+    private int borderThickness = 0;
 
     public Image(int left, int top, int width, int height) {
         super(left, top);
@@ -191,12 +191,12 @@ public class Image extends Component {
                 RenderSystem.enableBlend();
                 RenderSystem.setShaderTexture(0, image.textureId);
 
-                if (hasBorder) {
+                if (/*hasBorder*/true) {
                     if (drawFull) {
-                        RenderUtil.drawRectWithTexture(pose, x + borderThickness, y + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, 256, 256);
+                        RenderUtil.drawRectWithTexture(pose, x + borderThickness, y + borderThickness, 0, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, 256, 256);
                         //GuiComponent.blit(pose, x + borderThickness, y + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, 256, 256);
                     } else {
-                        RenderUtil.drawRectWithTexture(pose, x + borderThickness, y + borderThickness, componentWidth - borderThickness * 2, imageU, imageV, componentHeight - borderThickness * 2, sourceWidth, sourceHeight, imageWidth, imageHeight);
+                        RenderUtil.drawRectWithTexture(pose, x + borderThickness, y + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, sourceWidth, sourceHeight, imageWidth, imageHeight);
                         //GuiComponent.blit(pose, x + borderThickness, y + borderThickness, componentWidth - borderThickness * 2, imageU, imageV, componentHeight - borderThickness * 2, sourceWidth, sourceHeight, imageWidth, imageHeight);
                     }
                 } else {
@@ -209,7 +209,7 @@ public class Image extends Component {
                     }
                 }
             } else {
-                if (hasBorder) {
+                if (/*hasBorder*/true) {
                     fill(pose, x + borderThickness, y + borderThickness, x + componentWidth - borderThickness, y + componentHeight - borderThickness, Color.LIGHT_GRAY.getRGB());
                 } else {
                     fill(pose, x, y, x + componentWidth, y + componentHeight, Color.LIGHT_GRAY.getRGB());
@@ -260,6 +260,7 @@ public class Image extends Component {
         this.alpha = alpha;
     }
 
+    private int _pBorderThickness = 1;
     /**
      * Makes it so the border shows
      *
@@ -267,6 +268,7 @@ public class Image extends Component {
      */
     public void setBorderVisible(boolean show) {
         this.hasBorder = show;
+        this.borderThickness = show ? _pBorderThickness : 0;
     }
 
     /**
@@ -284,6 +286,7 @@ public class Image extends Component {
      * @param thickness how thick in pixels
      */
     public void setBorderThickness(int thickness) {
+        this._pBorderThickness = thickness;
         this.borderThickness = thickness;
     }
 
