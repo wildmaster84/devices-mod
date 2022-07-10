@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal"})
 public class AppInfo {
     public static final Comparator<AppInfo> SORT_NAME = Comparator.comparing(AppInfo::getName);
 
@@ -101,8 +102,7 @@ public class AppInfo {
     @Override
     public boolean equals(Object obj) {
         if (obj == null) return false;
-        if (!(obj instanceof AppInfo)) return false;
-        AppInfo info = (AppInfo) obj;
+        if (!(obj instanceof AppInfo info)) return false;
         return this == info || getFormattedId().equals(info.getFormattedId());
     }
 
@@ -114,8 +114,7 @@ public class AppInfo {
             throw new RuntimeException("Missing app info json for '" + APP_ID + "'");
 
         Reader reader = new InputStreamReader(stream);
-        JsonParser parser = new JsonParser();
-        JsonElement obj = parser.parse(reader);
+        JsonElement obj = JsonParser.parseReader(reader);
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(AppInfo.class, new AppInfo.Deserializer(this));
         Gson gson = builder.create();

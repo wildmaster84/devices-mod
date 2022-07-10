@@ -4,7 +4,6 @@ import com.ultreon.devices.api.app.Layout;
 import com.ultreon.devices.programs.gitweb.component.GitWebFrame;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +28,6 @@ public class RedirectModule extends Module {
     @Override
     public void generate(GitWebFrame frame, Layout layout, int width, Map<String, String> data) {
         if (data.containsKey("url"))
-        frame.loadWebsite(data.get("url"));
+            frame.loadWebsite(data.get("url"));
     }
 }

@@ -260,6 +260,7 @@ public class Image extends Component {
     }
 
     private int _pBorderThickness = 1;
+
     /**
      * Makes it so the border shows
      *

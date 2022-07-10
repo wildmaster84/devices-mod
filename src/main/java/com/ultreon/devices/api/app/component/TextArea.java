@@ -275,7 +275,7 @@ public class TextArea extends Component {
                     moveCursorDown();
                     break;
                 default:
-                    if (character == '\\'){performBackspace();}
+                    if (character == '\\') performBackspace();
                     else if (Character.isDefined(character)) writeText(character);
             }
 

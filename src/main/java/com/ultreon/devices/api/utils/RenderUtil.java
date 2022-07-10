@@ -1,6 +1,5 @@
 package com.ultreon.devices.api.utils;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -9,7 +8,6 @@ import com.ultreon.devices.object.AppInfo;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.item.ItemStack;
 
@@ -35,7 +33,7 @@ public class RenderUtil {
     @Deprecated
     public static void drawRectWithTexture(PoseStack pose, double x, double y, float u, float v, int width, int height, float textureWidth, float textureHeight) {
         drawRectWithTexture(pose, x, y, 0, u, v, width, height, textureWidth, textureHeight);
-       // Gui.blit(pose, (int) x, (int) y, width, height, u, v, width, height, (int) textureWidth, (int) textureHeight);
+        // Gui.blit(pose, (int) x, (int) y, width, height, u, v, width, height, (int) textureWidth, (int) textureHeight);
     }
 
     /**
@@ -74,7 +72,7 @@ public class RenderUtil {
 
     @Deprecated
     public static void drawRectWithFullTexture(PoseStack pose, double x, double y, float u, float v, int width, int height) {
-       // Gui.blit(pose, (int) x, (int) y, width, height, u, v, width, height, 256, 256);
+        // Gui.blit(pose, (int) x, (int) y, width, height, u, v, width, height, 256, 256);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         BufferBuilder buffer = Tesselator.getInstance().getBuilder();
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);

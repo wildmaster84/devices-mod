@@ -148,7 +148,7 @@ public class LayoutAppPage extends Layout {
             this.addComponent(btnInstall);
 
             //TODO implement support button
-            if(info.getSupport() != null) {
+            if (info.getSupport() != null) {
                 Button btnDonate = new Button(234, 44, Icons.COIN);
                 btnDonate.setToolTip("Donate", "Opens a link to donate to author of the application");
                 btnDonate.setSize(14, 14);

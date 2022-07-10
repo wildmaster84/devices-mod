@@ -44,8 +44,9 @@ public record SiteRegistration(String registrant, String string, Type type, Stri
         return url;
     }
 
-    public static enum Type {
-        ALL,EXTENSION,DOMAIN,DIRECTORY;
+    public enum Type {
+        ALL, EXTENSION, DOMAIN, DIRECTORY;
+
         public static Type of(String type) {
             if (type.equals("*")) {
                 return ALL;
@@ -53,6 +54,7 @@ public record SiteRegistration(String registrant, String string, Type type, Stri
                 return Type.valueOf(type.toUpperCase(Locale.ROOT));
             }
         }
+
         public static Type compare(Type a, Type b) {
             return a.ordinal() > b.ordinal() ? b : a;
         }
