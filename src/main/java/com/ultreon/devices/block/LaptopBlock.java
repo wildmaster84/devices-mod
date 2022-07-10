@@ -50,7 +50,7 @@ public class LaptopBlock extends DeviceBlock.Colored {
     private static final VoxelShape SHAPE_CLOSED_WEST = Shapes.or(Block.box(-1, 0, 1, 3.5, 11.4, 15), Block.box(3.5, 0, 1, 15, 1.3, 15));
 
     public LaptopBlock(DyeColor color) {
-        super(BlockBehaviour.Properties.of(Material.HEAVY_METAL, color).strength(6.0f).sound(SoundType.METAL), color, DeviceType.LAPTOP);
+        super(BlockBehaviour.Properties.of(Material.HEAVY_METAL, color).strength(6f).sound(SoundType.METAL), color, DeviceType.LAPTOP);
         registerDefaultState(this.getStateDefinition().any().setValue(TYPE, Type.BASE));
     }
 

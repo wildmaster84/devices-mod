@@ -46,11 +46,11 @@ public class LaptopBlockEntity extends NetworkDeviceBlockEntity.Colored {
             prevRotation = rotation;
             if (!open) {
                 if (rotation > 0) {
-                    rotation -= 10F;
+                    rotation -= d + f;
                 }
             } else {
                 if (rotation < OPENED_ANGLE) {
-                    rotation += 10F;
+                    rotation += d + f;
                 }
             }
         }

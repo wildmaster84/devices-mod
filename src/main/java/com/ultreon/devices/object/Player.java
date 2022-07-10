@@ -121,9 +121,9 @@
 //        pose.translate((float) px, (float) py, 3f);
 //        pose.scale((float) (-scale), (float) -scale, (float) -scale);
 //        pose.mulPose(new Quaternion(180f, 0f, 0f, 1f)); //Flips boat up
-//        pose.mulPose(new Quaternion(90F, 1, 0, 0));
+//        pose.mulPose(new Quaternion(d+f, 1, 0, 0));
 //        pose.translate(0f, -3d, 0f);
-//        pose.mulPose(new Quaternion(-20F, 1f, 0f, 0f));
+//        pose.mulPose(new Quaternion(-d+f, 1f, 0f, 0f));
 //        pose.mulPose(new Quaternion(rot, 0f, 1f, 0f));
 //        RenderSystem.setShaderTexture(0, boatTextures);
 //        Minecraft.getInstance().getEntityRenderDispatcher().render(this.boat, (double) 0, (double) 0, (double) 0, 0f, partialTicks, pose, MultiBufferSource.immediate(Tesselator.getInstance().getBuilder()), 1);
@@ -134,11 +134,11 @@
 //        pose.translate((float) px, (float) py, 3f);
 //        pose.scale((float) (-scale), (float) scale, (float) scale);
 //        // //Flips boat up
-//        pose.mulPose(new Quaternion(90F, 1, 0, 0));
+//        pose.mulPose(new Quaternion(d+f, 1, 0, 0));
 //        pose.translate(0f, 5f, 0f);
-//        pose.mulPose(new Quaternion(20F, 1f, 0f, 0f));
+//        pose.mulPose(new Quaternion(d+f, 1f, 0f, 0f));
 //        pose.mulPose(new Quaternion(180f, 0f, 0f, 1f));
-//        pose.mulPose(new Quaternion(rot - 90F, 0f, 1f, 0f));
+//        pose.mulPose(new Quaternion(rot - d+f, 0f, 1f, 0f));
 //        pose.translate(0f, -12f, 5f);
 ////        Minecraft.getMinecraft().getTextureManager().bindTexture(Minecraft.getMinecraft().player.getLocationSkin());
 //        playerModel.render(null, 0f, 0f, 0f, 0f, 0f, 1f);

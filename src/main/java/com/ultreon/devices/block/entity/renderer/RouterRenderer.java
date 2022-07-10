@@ -56,16 +56,16 @@ public record RouterRenderer(
                 DEVICES.forEach(networkDevice -> {
                     BlockPos devicePos = networkDevice.getPos();
 
-                    RenderSystem.lineWidth(14F);
+                    RenderSystem.lineWidth(d + f);
                     buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-                    buffer.vertex(startLineX, startLineY, startLineZ).color(0.0F, 0.0F, 0.0F, 0.5F).endVertex();
-                    buffer.vertex((devicePos.getX() - routerPos.getX()) + 0.5F, (devicePos.getY() - routerPos.getY()), (devicePos.getZ() - routerPos.getZ()) + 0.5F).color(1.0F, 1.0F, 1.0F, 0.35F).endVertex();
+                    buffer.vertex(startLineX, startLineY, startLineZ).color(0f, 0f, 0f, 0.5f).endVertex();
+                    buffer.vertex((devicePos.getX() - routerPos.getX()) + 0.5f, (devicePos.getY() - routerPos.getY()), (devicePos.getZ() - routerPos.getZ()) + 0.5f).color(1f, 1f, 1f, 0.35f).endVertex();
                     tessellator.end();
 
-                    RenderSystem.lineWidth(4F);
+                    RenderSystem.lineWidth(d + f);
                     buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
-                    buffer.vertex(startLineX, startLineY, startLineZ).color(0.0F, 0.0F, 0.0F, 0.5F).endVertex();
-                    buffer.vertex((devicePos.getX() - routerPos.getX()) + 0.5F, (devicePos.getY() - routerPos.getY()), (devicePos.getZ() - routerPos.getZ()) + 0.5F).color(0.0F, 1.0F, 0.0F, 0.5F).endVertex();
+                    buffer.vertex(startLineX, startLineY, startLineZ).color(0f, 0f, 0f, 0.5f).endVertex();
+                    buffer.vertex((devicePos.getX() - routerPos.getX()) + 0.5f, (devicePos.getY() - routerPos.getY()), (devicePos.getZ() - routerPos.getZ()) + 0.5f).color(0f, 1f, 0f, 0.5f).endVertex();
                     tessellator.end();
                 });
             }
@@ -78,16 +78,16 @@ public record RouterRenderer(
     }
 
     private Vec3 getLineStartPosition(BlockState state) {
-        float lineX = 0.5F;
-        float lineY = 0.1F;
-        float lineZ = 0.5F;
+        float lineX = 0.5f;
+        float lineY = 0.1f;
+        float lineZ = 0.5f;
 
         if (state.getValue(RouterBlock.VERTICAL)) {
             Quaternion rotation = state.getValue(PrinterBlock.FACING).getRotation();
-            rotation.mul(new Quaternion((float) (14 * 0.0625), 0.5F, (float) (14 * 0.0625), 0.5F));
+            rotation.mul(new Quaternion((float) (14 * 0.0625), 0.5f, (float) (14 * 0.0625), 0.5f));
             Vector3f fixedPosition = rotation.toXYZ();
             lineX = fixedPosition.x();
-            lineY = 0.35F;
+            lineY = 0.35f;
             lineZ = fixedPosition.z();
         }
 

@@ -30,7 +30,6 @@ public class RenderUtil {
         //Lighting.setupForFlatItems();
     }
 
-    @Deprecated
     public static void drawRectWithTexture(PoseStack pose, double x, double y, float u, float v, int width, int height, float textureWidth, float textureHeight) {
         drawRectWithTexture(pose, x, y, 0, u, v, width, height, textureWidth, textureHeight);
         // Gui.blit(pose, (int) x, (int) y, width, height, u, v, width, height, (int) textureWidth, (int) textureHeight);
@@ -50,7 +49,6 @@ public class RenderUtil {
      * @param textureWidth  the width of the texture
      * @param textureHeight the height of the texture
      */
-    @Deprecated
     public static void drawRectWithTexture(PoseStack pose, double x, double y, double z, float u, float v, int width, int height, float textureWidth, float textureHeight) {
         //Gui.blit(pose, (int) x, (int) y, width, height, u, v, width, height, (int) textureWidth, (int) textureHeight);
         float scale = 0.00390625f;
@@ -70,7 +68,6 @@ public class RenderUtil {
         BufferUploader.end(buffer);
     }
 
-    @Deprecated
     public static void drawRectWithFullTexture(PoseStack pose, double x, double y, float u, float v, int width, int height) {
         // Gui.blit(pose, (int) x, (int) y, width, height, u, v, width, height, 256, 256);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -84,7 +81,6 @@ public class RenderUtil {
         BufferUploader.end(buffer);
     }
 
-    @Deprecated
     public static void drawRectWithTexture(PoseStack pose, double x, double y, float u, float v, int width, int height, float textureWidth, float textureHeight, int sourceWidth, int sourceHeight) {
         //Gui.blit(pose, (int) x, (int) y, width, height, u, v, sourceWidth, sourceHeight, (int) textureWidth, (int) textureHeight);
         float scaleWidth = 1f / sourceWidth;

@@ -26,6 +26,8 @@ import com.ultreon.devices.network.task.SyncApplicationPacket;
 import com.ultreon.devices.network.task.SyncConfigPacket;
 import com.ultreon.devices.object.AppInfo;
 import com.ultreon.devices.programs.ApplicationIcons;
+import com.ultreon.devices.programs.email.ApplicationEmail;
+import com.ultreon.devices.programs.email.task.*;
 import com.ultreon.devices.programs.gitweb.ApplicationGitWeb;
 import com.ultreon.devices.programs.system.*;
 import com.ultreon.devices.programs.system.task.*;
@@ -184,7 +186,7 @@ public class DevicesMod implements PreparableReloadListener {
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "gitweb"), ApplicationGitWeb.class);
 //        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "note_stash"), ApplicationNoteStash.class);
 //        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "pixel_painter"), ApplicationPixelPainter.class);
-//        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "ender_mail"), ApplicationEmail.class);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "ender_mail"), ApplicationEmail.class);
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "app_store"), ApplicationAppStore.class);
 
         // Core
@@ -213,14 +215,13 @@ public class DevicesMod implements PreparableReloadListener {
         // App Store
         TaskManager.registerTask(TaskInstallApp.class);
 
-        // Todo implement ender mail
-//        //Ender Mail
-//        TaskManager.registerTask(TaskUpdateInbox.class);
-//        TaskManager.registerTask(TaskSendEmail.class);
-//        TaskManager.registerTask(TaskCheckEmailAccount.class);
-//        TaskManager.registerTask(TaskRegisterEmailAccount.class);
-//        TaskManager.registerTask(TaskDeleteEmail.class);
-//        TaskManager.registerTask(TaskViewEmail.class);
+        //Ender Mail
+        TaskManager.registerTask(TaskUpdateInbox.class);
+        TaskManager.registerTask(TaskSendEmail.class);
+        TaskManager.registerTask(TaskCheckEmailAccount.class);
+        TaskManager.registerTask(TaskRegisterEmailAccount.class);
+        TaskManager.registerTask(TaskDeleteEmail.class);
+        TaskManager.registerTask(TaskViewEmail.class);
 
         if (!DEVELOPER_MODE) {
             // Applications (Normal)

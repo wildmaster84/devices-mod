@@ -59,7 +59,7 @@ public class RouterBlock extends DeviceBlock.Colored {
     };
 
     public RouterBlock(DyeColor color) {
-        super(Properties.of(Material.HEAVY_METAL).strength(6.0f).sound(SoundType.METAL), color, DeviceType.ROUTER);
+        super(Properties.of(Material.HEAVY_METAL).strength(6f).sound(SoundType.METAL), color, DeviceType.ROUTER);
         this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(VERTICAL, false));
     }
 

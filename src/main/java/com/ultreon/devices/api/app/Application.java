@@ -24,7 +24,7 @@ import java.util.Objects;
 @SuppressWarnings("SpellCheckingInspection")
 public abstract class Application extends Wrappable {
     @SuppressWarnings("FieldMayBeFinal")
-    private AppInfo info = null;
+    protected AppInfo info = null;
     private final Layout defaultLayout = new Layout();
     private BlockPos laptopPositon;
     private int width, height;

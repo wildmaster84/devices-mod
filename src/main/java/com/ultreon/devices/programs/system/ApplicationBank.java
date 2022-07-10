@@ -92,9 +92,9 @@ public class ApplicationBank extends Application {//The bank is not a system app
 //                pose.translate(x + 25, y + 33, 15);
 //                pose.scale((float) -2.5, (float) -2.5, (float) -2.5);
 //                // Todo: do rotations
-//                pose.mulPose(new Quaternion(1, 0, 0, -10F));
-//                pose.mulPose(new Quaternion(0, 0, 1, 180F));
-//                pose.mulPose(new Quaternion(0, 1, 0, -20F));
+//                pose.mulPose(new Quaternion(1, 0, 0, -d+f));
+//                pose.mulPose(new Quaternion(0, 0, 1, d+f));
+//                pose.mulPose(new Quaternion(0, 1, 0, -d+f));
 //                float scaleX = (mouseX - x - 25) / (float) width;
 //                float scaleY = (mouseY - y - 20) / (float) height;
 ////                RenderSystem.setShaderTexture(villagerTextures);
