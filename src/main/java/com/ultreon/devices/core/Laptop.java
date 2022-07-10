@@ -243,8 +243,8 @@ public class Laptop extends Screen implements System {
         RenderUtil.drawRectWithTexture(pose, posX + 10, posY + 10, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 512, 288);
 
         if (!DevicesMod.DEVELOPER_MODE) {
-            if (Reference.VERSION.contains("-dev")) {
-                drawString(pose, font, "Dev Test v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
+            if (DevicesMod.isDevelopmentPreview()) {
+                drawString(pose, font, "Development Preview v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
             } else {
                 drawString(pose, font, "Alpha v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
             }

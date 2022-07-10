@@ -73,11 +73,15 @@ import java.util.List;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(Reference.MOD_ID)
 public class DevicesMod implements PreparableReloadListener {
+    private static final Pattern DEV_PREVIEW_PATTERN = Pattern.compile("\\d+\\.\\d+\\.\\d+-dev\\d+");
+    private static final boolean IS_DEV_PREVIEW = DEV_PREVIEW_PATTERN.matcher(Reference.VERSION).matches();
+
     private static DevicesMod instance;
 
     public static final CreativeModeTab TAB_DEVICE = new DeviceTab("devices_tab_device");
@@ -132,6 +136,10 @@ public class DevicesMod implements PreparableReloadListener {
         // Register ourselves for server and other game events we are interested in
         LOGGER.info("Registering mod class to forge events.");
         forgeEventBus.register(this);
+    }
+
+    public static boolean isDevelopmentPreview() {
+        return IS_DEV_PREVIEW;
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
