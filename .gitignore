@@ -55,6 +55,7 @@ hs_err_pid*
 
 # Icon must end with two \r
 Icon
+!src/main/resources/assets/devices/textures/app/icon
 
 # Thumbnails
 ._*
