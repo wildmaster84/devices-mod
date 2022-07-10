@@ -1,5 +1,8 @@
 package com.ultreon.devices;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.logging.LogUtils;
 import com.ultreon.devices.api.ApplicationManager;
@@ -7,6 +10,7 @@ import com.ultreon.devices.api.app.Application;
 import com.ultreon.devices.api.print.IPrint;
 import com.ultreon.devices.api.print.PrintingManager;
 import com.ultreon.devices.api.task.TaskManager;
+import com.ultreon.devices.api.utils.OnlineRequest;
 import com.ultreon.devices.block.PrinterBlock;
 import com.ultreon.devices.core.Laptop;
 import com.ultreon.devices.core.client.ClientNotification;
@@ -24,7 +28,9 @@ import com.ultreon.devices.object.AppInfo;
 import com.ultreon.devices.programs.ApplicationIcons;
 import com.ultreon.devices.programs.gitweb.ApplicationGitWeb;
 import com.ultreon.devices.programs.system.*;
+import com.ultreon.devices.programs.system.component.AppGrid;
 import com.ultreon.devices.programs.system.task.*;
+import com.ultreon.devices.util.SiteRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.nbt.CompoundTag;
@@ -39,6 +45,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.loading.DatagenModLoader;
 import net.minecraftforge.event.RegistryEvent;
@@ -49,11 +56,14 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
+import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fml.loading.moddiscovery.ModsFolderLocator;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -62,10 +72,7 @@ import org.slf4j.Logger;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -82,6 +89,7 @@ public class DevicesMod implements PreparableReloadListener {
 
     public static final CreativeModeTab TAB_DEVICE = new DeviceTab("devices_tab_device");
 
+    public static final List<SiteRegistration> SITE_REGISTRATIONS = new ArrayList<>();
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public static final boolean DEVELOPER_MODE = true;
@@ -143,6 +151,9 @@ public class DevicesMod implements PreparableReloadListener {
         PacketHandler.init();
 
         registerApplications();
+
+        setupSiteRegistrations();
+
     }
 
     private void serverSetup(FMLDedicatedServerSetupEvent event) {
@@ -456,5 +467,33 @@ public class DevicesMod implements PreparableReloadListener {
             // Register a new block here
             LOGGER.info("HELLO from Register Block");
         }
+    }
+
+    private static final void setupSiteRegistrations() {
+        OnlineRequest.getInstance().make("https://raw.githubusercontent.com/Jab125/gitweb-sites/main/site_registrations.json", (success, response) -> {
+            if (success) {
+                //Minecraft.getInstance().doRunTask(() -> {
+                    JsonArray array = JsonParser.parseString(response).getAsJsonArray();
+                    array.forEach((element) -> {
+                        var registrant = element.getAsJsonObject().get("registrant") != null ? element.getAsJsonObject().get("registrant").getAsString() : null;
+                        var site = element.getAsJsonObject().get("site").getAsString();
+                        for (JsonElement jsonElement : element.getAsJsonObject().get("registrations").getAsJsonArray()) {
+                            var a = jsonElement.getAsJsonObject().keySet();
+                            var d = jsonElement.getAsJsonObject();
+                            for (String s : a) {
+                                var type = d.get(s).getAsString();
+                                var string = s;
+                                var _registrant = registrant;
+                                SITE_REGISTRATIONS.add(new SiteRegistration(registrant, string, type, site));
+                            }
+                        }
+                    //});
+                });
+//                System.out.println(SITE_REGISTRATIONS);
+//                System.exit(0);
+            } else {
+                // TODO error handling
+            }
+        });
     }
 }

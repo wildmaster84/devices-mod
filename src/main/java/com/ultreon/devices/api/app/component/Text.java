@@ -6,8 +6,13 @@ import com.ultreon.devices.core.Laptop;
 import com.ultreon.devices.util.GuiHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.Style;
+import net.minecraft.util.FormattedCharSequence;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -38,6 +43,7 @@ public class Text extends Component {
 
     @Override
     public void render(PoseStack pose, Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks) {
+        System.out.println(lines.size() + ", " + rawText + ", " + lines);
         if (this.visible) {
             for (int i = 0; i < lines.size(); i++) {
                 String text = lines.get(i);
@@ -59,7 +65,10 @@ public class Text extends Component {
     public void setText(String text) {
         rawText = text;
         text = text.replace("\\n", "\n");
-        this.lines = Laptop.font.plainSubstrByWidth(text, width - padding * 2).lines().toList();
+        System.out.println(Laptop.font.plainSubstrByWidth(text, width - padding * 2));
+        var a = new ArrayList<String>();
+        Laptop.font.getSplitter().splitLines(FormattedText.of(text), width - padding * 2, Style.EMPTY).forEach(b -> a.add(b.getString()));
+        this.lines = a;
     }
 
     /**
