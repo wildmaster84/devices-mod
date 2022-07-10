@@ -61,7 +61,6 @@ public class SlideShow extends Component {
     @Override
     protected void render(PoseStack pose, Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks) {
         if (!this.visible) return;
-
         image.render(pose, laptop, mc, x, y, mouseX, mouseY, windowActive, partialTicks);
 
         if (currentImage > 0) {

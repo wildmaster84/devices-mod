@@ -8,6 +8,7 @@ import com.ultreon.devices.DevicesMod;
 import com.ultreon.devices.api.app.Component;
 import com.ultreon.devices.api.app.IIcon;
 import com.ultreon.devices.api.app.Layout;
+import com.ultreon.devices.api.utils.RenderUtil;
 import com.ultreon.devices.core.Laptop;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
@@ -192,15 +193,19 @@ public class Image extends Component {
 
                 if (hasBorder) {
                     if (drawFull) {
-                        GuiComponent.blit(pose, x + borderThickness, y + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, 256, 256);
+                        RenderUtil.drawRectWithTexture(pose, x + borderThickness, y + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, 256, 256);
+                        //GuiComponent.blit(pose, x + borderThickness, y + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, 256, 256);
                     } else {
-                        GuiComponent.blit(pose, x + borderThickness, y + borderThickness, componentWidth - borderThickness * 2, imageU, imageV, componentHeight - borderThickness * 2, sourceWidth, sourceHeight, imageWidth, imageHeight);
+                        RenderUtil.drawRectWithTexture(pose, x + borderThickness, y + borderThickness, componentWidth - borderThickness * 2, imageU, imageV, componentHeight - borderThickness * 2, sourceWidth, sourceHeight, imageWidth, imageHeight);
+                        //GuiComponent.blit(pose, x + borderThickness, y + borderThickness, componentWidth - borderThickness * 2, imageU, imageV, componentHeight - borderThickness * 2, sourceWidth, sourceHeight, imageWidth, imageHeight);
                     }
                 } else {
                     if (drawFull) {
-                        GuiComponent.blit(pose, x, y, componentWidth, componentHeight, imageU, imageV, 256, 256);
+                        RenderUtil.drawRectWithTexture(pose, x, y, componentWidth, componentHeight, imageU, imageV, 256, 256);
+//                        GuiComponent.blit(pose, x, y, componentWidth, componentHeight, imageU, imageV, 256, 256);
                     } else {
-                        GuiComponent.blit(pose, x, y, componentWidth, componentHeight, imageU, imageV, sourceWidth, sourceHeight, imageWidth, imageHeight);
+                        RenderUtil.drawRectWithTexture(pose, x, y, componentWidth, componentHeight, imageU, imageV, sourceWidth, sourceHeight, imageWidth, imageHeight);
+                        //GuiComponent.blit(pose, x, y, componentWidth, componentHeight, imageU, imageV, sourceWidth, sourceHeight, imageWidth, imageHeight);
                     }
                 }
             } else {
