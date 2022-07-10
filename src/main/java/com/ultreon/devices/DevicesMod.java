@@ -84,7 +84,7 @@ public class DevicesMod implements PreparableReloadListener {
 
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public static final boolean DEVELOPER_MODE = false;
+    public static final boolean DEVELOPER_MODE = true;
 
     List<AppInfo> allowedApps;
 

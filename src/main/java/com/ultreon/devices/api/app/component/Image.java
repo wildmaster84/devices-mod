@@ -11,7 +11,6 @@ import com.ultreon.devices.api.app.Layout;
 import com.ultreon.devices.api.utils.RenderUtil;
 import com.ultreon.devices.core.Laptop;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
@@ -410,7 +409,7 @@ public class Image extends Component {
         private final InputStream in;
         private final BufferedImage image;
 
-        private DynamicLoadedTexture(InputStream in, BufferedImage image) throws IOException {
+        private DynamicLoadedTexture(InputStream in, BufferedImage image) {
             this.in = in;
 
             this.image = image;

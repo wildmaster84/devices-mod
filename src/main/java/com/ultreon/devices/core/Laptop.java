@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 //TODO Intro message (created by mrcrayfish, donate here)
 
@@ -69,7 +70,7 @@ public class Laptop extends Screen implements System {
     private static System system;
     private static BlockPos pos;
     private static Drive mainDrive;
-    private static final List<Runnable> tasks = new ArrayList<>();
+    private static final List<Runnable> tasks = new CopyOnWriteArrayList<>();
     protected List<AppInfo> installedApps = new ArrayList<>();
     private final Settings settings;
     private final TaskBar bar;
