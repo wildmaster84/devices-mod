@@ -20,7 +20,7 @@ plugins {
 apply plugin: 'org.spongepowered.mixin'
 
 group = 'com.ultreon.mods'
-version = '0.5.0-dev3'
+version = '0.5.0-dev4'
 
 java {
     archivesBaseName = 'devices-mod'
