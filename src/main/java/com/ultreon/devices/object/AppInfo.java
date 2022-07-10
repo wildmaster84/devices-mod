@@ -18,8 +18,8 @@ public class AppInfo {
     public static final Comparator<AppInfo> SORT_NAME = Comparator.comparing(AppInfo::getName);
 
     private transient final ResourceLocation APP_ID;
-    private final transient int iconU = 0;
-    private final transient int iconV = 0;
+    private transient int iconU = 0; // you do not just set a value that reflection needs to modify as "final"
+    private transient int iconV = 0;
     private final transient boolean systemApp;
 
     private String name;

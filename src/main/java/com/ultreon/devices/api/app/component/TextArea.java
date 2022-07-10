@@ -243,6 +243,7 @@ public class TextArea extends Component {
     @Override
     public void handleKeyTyped(char character, int code) {
         if (!this.visible || !this.enabled || !this.isFocused || !this.editable) return;
+        System.out.println(character + ", " + code);
 
         if (Screen.isPaste(code)) {
             String[] lines = Minecraft.getInstance().keyboardHandler.getClipboard().split("\n");
@@ -252,7 +253,7 @@ public class TextArea extends Component {
             writeText(lines[lines.length - 1]);
         } else {
             switch (code) {
-                case InputConstants.KEY_BACKSPACE:
+                case InputConstants.KEY_BACKSPACE: //TODO: Make delete actually work
                     performBackspace();
                     break;
                 case InputConstants.KEY_RETURN:
@@ -274,7 +275,8 @@ public class TextArea extends Component {
                     moveCursorDown();
                     break;
                 default:
-                    if (Character.isDefined(character)) writeText(character);
+                    if (character == '\\'){performBackspace();}
+                    else if (Character.isDefined(character)) writeText(character);
             }
 
             if (keyListener != null) {

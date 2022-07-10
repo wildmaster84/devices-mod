@@ -3,6 +3,7 @@ package com.ultreon.devices.programs.system;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.math.Quaternion;
+import com.ultreon.devices.api.app.Application;
 import com.ultreon.devices.api.app.Dialog;
 import com.ultreon.devices.api.app.Layout;
 import com.ultreon.devices.api.app.component.Button;
@@ -32,7 +33,7 @@ import javax.annotation.Nullable;
 import java.awt.*;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class ApplicationBank extends SystemApplication {
+public class ApplicationBank extends Application {//The bank is not a system application
     private static final ItemStack EMERALD = new ItemStack(Items.EMERALD);
     private static final ResourceLocation BANK_ASSETS = new ResourceLocation("devices:textures/gui/bank.png");
     //    private static final ResourceLocation villagerTextures = new ResourceLocation("textures/entity/villager/villager.png");
@@ -87,24 +88,24 @@ public class ApplicationBank extends SystemApplication {
         layoutStart.setBackground((pose, gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> {
             assert Minecraft.getInstance().level != null;
             villager = new Villager(EntityType.VILLAGER, Minecraft.getInstance().level, VillagerType.PLAINS);
-
-            pose.pushPose();
-            {
-                RenderSystem.enableDepthTest();
-                pose.translate(x + 25, y + 33, 15);
-                pose.scale((float) -2.5, (float) -2.5, (float) -2.5);
-                // Todo: do rotations
-                pose.mulPose(new Quaternion(1, 0, 0, -10F));
-                pose.mulPose(new Quaternion(0, 0, 1, 180F));
-                pose.mulPose(new Quaternion(0, 1, 0, -20F));
-                float scaleX = (mouseX - x - 25) / (float) width;
-                float scaleY = (mouseY - y - 20) / (float) height;
-//                RenderSystem.setShaderTexture(villagerTextures);
-                MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-                Minecraft.getInstance().getEntityRenderDispatcher().render(villager, 0f, 0f, 0f, 0f, 0f, pose, buffer, 1);
-                RenderSystem.disableDepthTest();
-            }
-            pose.popPose();
+            // TODO: get villager to render without instant game crash
+//            pose.pushPose();
+//            {
+//                RenderSystem.enableDepthTest();
+//                pose.translate(x + 25, y + 33, 15);
+//                pose.scale((float) -2.5, (float) -2.5, (float) -2.5);
+//                // Todo: do rotations
+//                pose.mulPose(new Quaternion(1, 0, 0, -10F));
+//                pose.mulPose(new Quaternion(0, 0, 1, 180F));
+//                pose.mulPose(new Quaternion(0, 1, 0, -20F));
+//                float scaleX = (mouseX - x - 25) / (float) width;
+//                float scaleY = (mouseY - y - 20) / (float) height;
+////                RenderSystem.setShaderTexture(villagerTextures);
+//                MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+//                Minecraft.getInstance().getEntityRenderDispatcher().render(villager, 0f, 0f, 0f, 0f, 0f, pose, buffer, 1);
+//                RenderSystem.disableDepthTest();
+//            }
+//            pose.popPose();
 
             RenderSystem.setShaderTexture(0, BANK_ASSETS);
             RenderUtil.drawRectWithTexture(pose, x + 46, y + 19, 0, 0, 146, 52, 146, 52);

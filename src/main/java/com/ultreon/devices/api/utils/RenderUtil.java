@@ -58,7 +58,12 @@ public class RenderUtil {
         float scale = 0.00390625f;
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         BufferBuilder buffer = Tesselator.getInstance().getBuilder();
-        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        try {
+            buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        } catch (IllegalStateException e) {
+            buffer.end();
+            buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        }
         buffer.vertex(x, y + height, z).uv(u * scale, (v + textureHeight) * scale).endVertex();
         buffer.vertex(x + width, y + height, z).uv((u + textureWidth) * scale, (v + textureHeight) * scale).endVertex();
         buffer.vertex(x + width, y, z).uv((u + textureWidth) * scale, v * scale).endVertex();

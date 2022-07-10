@@ -41,7 +41,8 @@ public abstract class ContainerBox extends Component {
     @Override
     protected void render(PoseStack pose, Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks) {
         RenderSystem.setShaderTexture(0, CONTAINER_BOXES_TEXTURE);
-        Gui.blit(pose, x, y + 12, WIDTH, height, boxU, boxV, 256, 256, WIDTH, height);
+        RenderUtil.drawRectWithTexture(pose, x, y + 12, boxU, boxV, WIDTH, height, WIDTH, height, 256, 256);
+        //Gui.blit(pose, x, y + 12, WIDTH, height, boxU, boxV, 256, 256, WIDTH, height);
 
         int contentOffset = (WIDTH - (Laptop.font.width(title) + 8 + 4)) / 2;
         pose.pushPose();

@@ -9,6 +9,7 @@ import com.ultreon.devices.api.task.Callback;
 import com.ultreon.devices.api.utils.OnlineRequest;
 import com.ultreon.devices.programs.gitweb.module.Module;
 import com.ultreon.devices.programs.gitweb.module.*;
+import com.ultreon.devices.util.SiteRegistration;
 import net.minecraft.client.Minecraft;
 
 import java.io.BufferedWriter;
@@ -43,6 +44,7 @@ public class GitWebFrame extends Component {
         MODULES.put("brewing", new BrewingModule());
         MODULES.put("anvil", new AnvilModule());
         MODULES.put("download", new DownloadModule());
+        MODULES.put("redirect", new RedirectModule());
     }
 
     private final Application app;
@@ -246,13 +248,14 @@ public class GitWebFrame extends Component {
         String directory = matcher.group("directory");
         String url;
 
+        String site = SiteRegistration.getURL(website);
         if (directory == null) {
-            url = "https://raw.githubusercontent.com/Ultreon/gitweb-sites/master/" + extension + "/" + domain + "/index";
+            url = site + extension + "/" + domain + "/index";
         } else {
             if (directory.endsWith("/")) {
                 directory = directory.substring(0, directory.length() - 1);
             }
-            url = "https://raw.githubusercontent.com/Ultreon/gitweb-sites/master/" + extension + "/" + domain + directory + "/index";
+            url = site + extension + "/" + domain + directory + "/index";
         }
 
         if (loadingCallback != null) {
