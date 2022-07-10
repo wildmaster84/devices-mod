@@ -56,13 +56,15 @@ public record RouterRenderer(
                 DEVICES.forEach(networkDevice -> {
                     BlockPos devicePos = networkDevice.getPos();
 
-                    RenderSystem.lineWidth(d + f);
+                    Objects.requireNonNull(devicePos, "Connection device has no position, weird.");
+
+                    RenderSystem.lineWidth(14F);
                     buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
                     buffer.vertex(startLineX, startLineY, startLineZ).color(0f, 0f, 0f, 0.5f).endVertex();
                     buffer.vertex((devicePos.getX() - routerPos.getX()) + 0.5f, (devicePos.getY() - routerPos.getY()), (devicePos.getZ() - routerPos.getZ()) + 0.5f).color(1f, 1f, 1f, 0.35f).endVertex();
                     tessellator.end();
 
-                    RenderSystem.lineWidth(d + f);
+                    RenderSystem.lineWidth(4F);
                     buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
                     buffer.vertex(startLineX, startLineY, startLineZ).color(0f, 0f, 0f, 0.5f).endVertex();
                     buffer.vertex((devicePos.getX() - routerPos.getX()) + 0.5f, (devicePos.getY() - routerPos.getY()), (devicePos.getZ() - routerPos.getZ()) + 0.5f).color(0f, 1f, 0f, 0.5f).endVertex();
