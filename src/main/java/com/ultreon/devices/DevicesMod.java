@@ -28,8 +28,15 @@ import com.ultreon.devices.network.task.SyncConfigPacket;
 import com.ultreon.devices.object.AppInfo;
 import com.ultreon.devices.programs.ApplicationBoatRacers;
 import com.ultreon.devices.programs.ApplicationIcons;
+import com.ultreon.devices.programs.ApplicationTest;
+import com.ultreon.devices.programs.auction.ApplicationMineBay;
+import com.ultreon.devices.programs.auction.task.TaskAddAuction;
+import com.ultreon.devices.programs.auction.task.TaskBuyItem;
+import com.ultreon.devices.programs.auction.task.TaskGetAuctions;
+import com.ultreon.devices.programs.debug.ApplicationTextArea;
 import com.ultreon.devices.programs.email.ApplicationEmail;
 import com.ultreon.devices.programs.email.task.*;
+import com.ultreon.devices.programs.example.ApplicationExample;
 import com.ultreon.devices.programs.gitweb.ApplicationGitWeb;
 import com.ultreon.devices.programs.system.*;
 import com.ultreon.devices.programs.system.task.*;
@@ -195,6 +202,7 @@ public class DevicesMod implements PreparableReloadListener {
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "app_store"), ApplicationAppStore.class);
 
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "boat_racers"), ApplicationBoatRacers.class);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "mine_bay"), ApplicationMineBay.class);
 
         // Core
         TaskManager.registerTask(TaskUpdateApplicationData.class);
@@ -204,7 +212,7 @@ public class DevicesMod implements PreparableReloadListener {
         TaskManager.registerTask(TaskPing.class);
         TaskManager.registerTask(TaskGetDevices.class);
 
-        //Bank
+        // Bank
         TaskManager.registerTask(TaskDeposit.class);
         TaskManager.registerTask(TaskWithdraw.class);
         TaskManager.registerTask(TaskGetBalance.class);
@@ -212,7 +220,7 @@ public class DevicesMod implements PreparableReloadListener {
         TaskManager.registerTask(TaskAdd.class);
         TaskManager.registerTask(TaskRemove.class);
 
-        //File browser
+        // File browser
         TaskManager.registerTask(TaskSendAction.class);
         TaskManager.registerTask(TaskSetupFileBrowser.class);
         TaskManager.registerTask(TaskGetFiles.class);
@@ -222,7 +230,7 @@ public class DevicesMod implements PreparableReloadListener {
         // App Store
         TaskManager.registerTask(TaskInstallApp.class);
 
-        //Ender Mail
+        // Ender Mail
         TaskManager.registerTask(TaskUpdateInbox.class);
         TaskManager.registerTask(TaskSendEmail.class);
         TaskManager.registerTask(TaskCheckEmailAccount.class);
@@ -230,21 +238,19 @@ public class DevicesMod implements PreparableReloadListener {
         TaskManager.registerTask(TaskDeleteEmail.class);
         TaskManager.registerTask(TaskViewEmail.class);
 
-        if (!DEVELOPER_MODE) {
-            // Applications (Normal)
-            //ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "boat_racers"), ApplicationBoatRacers.class);
-            //ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "mine_bay"), ApplicationMineBay.class);
+        // Auction
+        TaskManager.registerTask(TaskAddAuction.class);
+        TaskManager.registerTask(TaskGetAuctions.class);
+        TaskManager.registerTask(TaskBuyItem.class);
 
+        if (!DEVELOPER_MODE) {
             // Tasks (Normal)
-            //TaskManager.registerTask(TaskAddAuction.class);
-            //TaskManager.registerTask(TaskGetAuctions.class);
-            //TaskManager.registerTask(TaskBuyItem.class);
         } else {
             // Applications (Developers)
-//            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "example"), ApplicationExample.class);
+            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "example"), ApplicationExample.class);
             ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "icons"), ApplicationIcons.class);
-//            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "text_area"), ApplicationTextArea.class);
-//            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "test"), ApplicationTest.class);
+            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "text_area"), ApplicationTextArea.class);
+            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "test"), ApplicationTest.class);
 
 //            TaskManager.registerTask(TaskNotificationTest.class);
         }
@@ -367,6 +373,7 @@ public class DevicesMod implements PreparableReloadListener {
         return info;
     }
 
+    @SuppressWarnings("ConstantConditions")
     public boolean registerPrint(ResourceLocation identifier, Class<? extends IPrint> classPrint) {
         LOGGER.debug("Registering print: " + identifier.toString());
 
@@ -509,8 +516,8 @@ public class DevicesMod implements PreparableReloadListener {
                         var d = jsonElement.getAsJsonObject();
                         for (String s : a) {
                             var type = d.get(s).getAsString();
-                            var string = s;
-                            var _registrant = registrant;
+                            @SuppressWarnings("UnnecessaryLocalVariable") var string = s;
+                            @SuppressWarnings("UnnecessaryLocalVariable") var _registrant = registrant;
                             SITE_REGISTRATIONS.add(new SiteRegistration(registrant, string, type, site));
                         }
                     }
