@@ -1,5 +1,6 @@
 package com.ultreon.devices.block.entity;
 
+import com.ultreon.devices.block.LaptopBlock;
 import com.ultreon.devices.core.io.FileSystem;
 import com.ultreon.devices.init.DeviceBlockEntities;
 import com.ultreon.devices.util.BlockEntityUtil;
@@ -7,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -123,9 +125,16 @@ public class LaptopBlockEntity extends NetworkDeviceBlockEntity.Colored {
 //    }
 
     public void openClose() {
-        open = !open;
-        pipeline.putBoolean("open", open);
-        sync();
+        Level level = this.level;
+        if (level != null) {
+            BlockEntityUtil.sendUpdate(level, this.worldPosition, this.getBlockState());
+        }
+        boolean oldOpen = open;
+        open = getBlockState().getValue(LaptopBlock.OPEN);
+        if (oldOpen != open) {
+            pipeline.putBoolean("open", open);
+            sync();
+        }
     }
 
     public boolean isOpen() {

@@ -26,9 +26,7 @@ import com.ultreon.devices.network.PacketHandler;
 import com.ultreon.devices.network.task.SyncApplicationPacket;
 import com.ultreon.devices.network.task.SyncConfigPacket;
 import com.ultreon.devices.object.AppInfo;
-import com.ultreon.devices.programs.ApplicationBoatRacers;
-import com.ultreon.devices.programs.ApplicationIcons;
-import com.ultreon.devices.programs.ApplicationTest;
+import com.ultreon.devices.programs.*;
 import com.ultreon.devices.programs.auction.ApplicationMineBay;
 import com.ultreon.devices.programs.auction.task.TaskAddAuction;
 import com.ultreon.devices.programs.auction.task.TaskBuyItem;
@@ -37,6 +35,7 @@ import com.ultreon.devices.programs.debug.ApplicationTextArea;
 import com.ultreon.devices.programs.email.ApplicationEmail;
 import com.ultreon.devices.programs.email.task.*;
 import com.ultreon.devices.programs.example.ApplicationExample;
+import com.ultreon.devices.programs.example.task.TaskNotificationTest;
 import com.ultreon.devices.programs.gitweb.ApplicationGitWeb;
 import com.ultreon.devices.programs.system.*;
 import com.ultreon.devices.programs.system.task.*;
@@ -196,8 +195,8 @@ public class DevicesMod implements PreparableReloadListener {
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "bank"), ApplicationBank.class);
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "file_browser"), ApplicationFileBrowser.class);
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "gitweb"), ApplicationGitWeb.class);
-//        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "note_stash"), ApplicationNoteStash.class);
-//        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "pixel_painter"), ApplicationPixelPainter.class);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "note_stash"), ApplicationNoteStash.class);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "pixel_painter"), ApplicationPixelPainter.class);
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "ender_mail"), ApplicationEmail.class);
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "app_store"), ApplicationAppStore.class);
 
@@ -243,19 +242,17 @@ public class DevicesMod implements PreparableReloadListener {
         TaskManager.registerTask(TaskGetAuctions.class);
         TaskManager.registerTask(TaskBuyItem.class);
 
-        if (!DEVELOPER_MODE) {
-            // Tasks (Normal)
-        } else {
+        if (DEVELOPER_MODE) {
             // Applications (Developers)
             ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "example"), ApplicationExample.class);
             ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "icons"), ApplicationIcons.class);
             ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "text_area"), ApplicationTextArea.class);
             ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "test"), ApplicationTest.class);
 
-//            TaskManager.registerTask(TaskNotificationTest.class);
+            TaskManager.registerTask(TaskNotificationTest.class);
         }
 
-//        PrintingManager.registerPrint(new ResourceLocation(Reference.MOD_ID, "picture"), ApplicationPixelPainter.PicturePrint.class);
+        PrintingManager.registerPrint(new ResourceLocation(Reference.MOD_ID, "picture"), ApplicationPixelPainter.PicturePrint.class);
     }
 
     private void generateIconAtlas() {

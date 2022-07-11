@@ -116,7 +116,7 @@ public record PrinterRenderer(
                     IPrint print = blockEntity.getPrint();
                     if (print != null) {
                         IPrint.Renderer renderer = PrintingManager.getRenderer(print);
-                        renderer.render(print.toTag());
+                        renderer.render(pose, print.toTag());
                     }
                 }
             }

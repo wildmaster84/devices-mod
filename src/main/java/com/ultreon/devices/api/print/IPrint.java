@@ -1,5 +1,6 @@
 package com.ultreon.devices.api.print;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.ultreon.devices.init.DeviceBlocks;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextComponent;
@@ -77,6 +78,6 @@ public interface IPrint {
     Class<? extends Renderer> getRenderer();
 
     interface Renderer {
-        boolean render(CompoundTag data);
+        boolean render(PoseStack pose, CompoundTag data);
     }
 }

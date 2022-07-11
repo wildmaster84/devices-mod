@@ -17,6 +17,8 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -33,6 +35,7 @@ public class TaskBar {
     private final int pingTimer = 0;
 
     private final List<TrayItem> trayItems = new ArrayList<>();
+    private static final Marker MARKER = MarkerFactory.getMarker("TaskBar");
 
     public TaskBar(Laptop laptop) {
         this.laptop = laptop;
@@ -129,7 +132,7 @@ public class TaskBar {
 
     public void handleClick(Laptop laptop, int x, int y, int mouseX, int mouseY, int mouseButton) {
         if (isMouseInside(mouseX, mouseY, x + 1, y + 1, x + 236, y + 16)) {
-            System.out.println("Clicked on task bar");
+            DevicesMod.LOGGER.debug(MARKER, "Clicked on task bar");
             int appIndex = (mouseX - x - 1) / 16;
             if (appIndex >= 0 && appIndex <= offset + APPS_DISPLAYED && appIndex < laptop.installedApps.size()) {
                 laptop.openApplication(laptop.installedApps.get(appIndex));
@@ -140,14 +143,10 @@ public class TaskBar {
         int startX = x + 317;
         for (int i = 0; i < trayItems.size(); i++) {
             int posX = startX - (trayItems.size() - 1 - i) * 14;
-            System.out.println("posX = " + posX);
-            System.out.println("startX = " + startX);
-            System.out.println("i = " + i);
-            System.out.println("trayItems.size() = " + trayItems.size());
             if (isMouseInside(mouseX, mouseY, posX, y + 2, posX + 13, y + 15)) {
                 TrayItem trayItem = trayItems.get(i);
                 trayItem.handleClick(mouseX, mouseY, mouseButton);
-                System.out.println("Clicked on tray item (" + i + ") " + trayItem.getClass().getSimpleName());
+                DevicesMod.LOGGER.debug(MARKER, "Clicked on tray item (%d): %s".formatted(i, trayItem.getClass().getSimpleName()));
                 break;
             }
         }

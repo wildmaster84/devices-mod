@@ -127,7 +127,7 @@ public record PaperRenderer(
                     pose.pushPose();
                     {
                         IPrint.Renderer renderer = PrintingManager.getRenderer(print);
-                        renderer.render(data);
+                        renderer.render(pose, data);
                     }
                     pose.popPose();
 
