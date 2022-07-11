@@ -3,6 +3,7 @@ package com.ultreon.devices.api.app;
 import com.ultreon.devices.api.io.File;
 import com.ultreon.devices.core.Settings;
 import com.ultreon.devices.object.AppInfo;
+import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.Collection;
@@ -40,7 +41,7 @@ public interface System {
      *
      * @param info the app info instance of the application to be opened
      */
-    void openApplication(AppInfo info);
+    Application openApplication(AppInfo info);
 
     /**
      * Opens the specified application with an intent tag
@@ -48,7 +49,7 @@ public interface System {
      * @param info      the app info instance of the application to be opened
      * @param intentTag the tag to pass data to the initialization of an application
      */
-    void openApplication(AppInfo info, CompoundTag intentTag);
+    Application openApplication(AppInfo info, CompoundTag intentTag);
 
     /**
      * Opens the specified application with a file
@@ -56,7 +57,7 @@ public interface System {
      * @param info the app info instance of the application to be opened
      * @param file the file for the application to load
      */
-    boolean openApplication(AppInfo info, File file);
+    Pair<Application, Boolean> openApplication(AppInfo info, File file);
 
     /**
      * Closes the specified application

@@ -3,12 +3,12 @@ package com.ultreon.devices.core;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.datafixers.kinds.App;
 import com.ultreon.devices.DevicesMod;
 import com.ultreon.devices.Reference;
 import com.ultreon.devices.api.ApplicationManager;
-import com.ultreon.devices.api.app.Application;
+import com.ultreon.devices.api.app.*;
 import com.ultreon.devices.api.app.Dialog;
-import com.ultreon.devices.api.app.Layout;
 import com.ultreon.devices.api.app.System;
 import com.ultreon.devices.api.app.component.Image;
 import com.ultreon.devices.api.io.Drive;
@@ -24,6 +24,7 @@ import com.ultreon.devices.programs.system.SystemApplication;
 import com.ultreon.devices.programs.system.component.FileBrowser;
 import com.ultreon.devices.programs.system.task.TaskUpdateApplicationData;
 import com.ultreon.devices.programs.system.task.TaskUpdateSystemData;
+import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -525,39 +526,42 @@ public class Laptop extends Screen implements System {
         super.renderComponentTooltip(pose, tooltips, x, y);
     }
 
-    public boolean sendApplicationToFront(AppInfo info) {
+    public Pair<Application, Boolean> sendApplicationToFront(AppInfo info) {
         for (int i = 0; i < windows.length; i++) {
             Window<?> window = windows[i];
             if (window != null && window.content instanceof Application && ((Application) window.content).getInfo() == info) {
                 windows[i] = null;
                 updateWindowStack();
                 windows[0] = window;
-                return true;
+                return Pair.of((Application) window.content, true);
             }
         }
-        return false;
+        return Pair.of(null, false);
     }
 
     @Override
-    public void openApplication(AppInfo info) {
-        openApplication(info, (CompoundTag) null);
+    public Application openApplication(AppInfo info) {
+        return openApplication(info, (CompoundTag) null);
     }
 
     @Override
-    public void openApplication(AppInfo info, CompoundTag intentTag) {
+    public Application openApplication(AppInfo info, CompoundTag intentTag) {
         Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
-        optional.ifPresent(application -> openApplication(application, intentTag));
+        Application[] a = new Application[]{null};
+        optional.ifPresent(application -> a[0] = openApplication(application, intentTag));
+        return a[0];
     }
 
-    private void openApplication(Application app, CompoundTag intent) {
+    private Application openApplication(Application app, CompoundTag intent) {
         if (isApplicationNotInstalled(app.getInfo()))
-            return;
+            return null;
 
         if (isInvalidApplication(app.getInfo()))
-            return;
+            return null;
 
-        if (sendApplicationToFront(app.getInfo()))
-            return;
+        var q = sendApplicationToFront(app.getInfo());
+        if (q.right())
+                return q.left();
 
         Window<Application> window = new Window<>(app, this);
         window.init((width - SCREEN_WIDTH) / 2, (height - SCREEN_HEIGHT) / 2, intent);
@@ -570,6 +574,10 @@ public class Laptop extends Screen implements System {
             ((SystemApplication) app).setLaptop(this);
         }
 
+        if (app instanceof SystemAccessor) {
+            ((SystemAccessor) app).sendSystem(this);
+        }
+
         if (app.getCurrentLayout() == null) {
             app.restoreDefaultLayout();
         }
@@ -577,15 +585,16 @@ public class Laptop extends Screen implements System {
         addWindow(window);
 
         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1f));
+        return app;
     }
 
     @Override
-    public boolean openApplication(AppInfo info, File file) {
+    public Pair<Application, Boolean> openApplication(AppInfo info, File file) {
         if (isApplicationNotInstalled(info))
-            return false;
+            return Pair.of(null, false);
 
         if (isInvalidApplication(info))
-            return false;
+            return Pair.of(null, false);
 
         Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
         if (optional.isPresent()) {
@@ -597,12 +606,12 @@ public class Laptop extends Screen implements System {
                     if (!alreadyRunning) {
                         closeApplication(application);
                     }
-                    return false;
+                    return Pair.of(application, false);
                 }
-                return true;
+                return Pair.of(application, true);
             }
         }
-        return false;
+        return Pair.of(null, true);
     }
 
     @Override

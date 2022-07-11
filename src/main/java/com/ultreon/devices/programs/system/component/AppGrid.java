@@ -93,12 +93,16 @@ public class AppGrid extends Component {
         }
     }
 
-    public void addEntry(AppInfo info) {
-        this.entries.add(new LocalEntry(info));
+    public AppEntry addEntry(AppInfo info) {
+        var a = new LocalEntry(info);
+        this.entries.add(a);
+        return a;
     }
 
-    public void addEntry(AppEntry entry) {
-        this.entries.add(adjustEntry(entry));
+    public AppEntry addEntry(AppEntry entry) {
+        var a = adjustEntry(entry);
+        this.entries.add(a);
+        return a;
     }
 
     private AppEntry adjustEntry(AppEntry entry) {

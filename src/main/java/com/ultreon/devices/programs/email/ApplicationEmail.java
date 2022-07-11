@@ -173,7 +173,7 @@ public class ApplicationEmail extends Application {
         fieldEmail = new TextField(20, 50, 80);
         layoutRegisterAccount.addComponent(fieldEmail);
 
-        labelDomain = new Label("@endermail.com", 105, 54);
+        labelDomain = new Label("@endermail.official", 105, 54);
         layoutRegisterAccount.addComponent(labelDomain);
 
         btnRegister = new Button(70, 80, "Register");
@@ -224,7 +224,7 @@ public class ApplicationEmail extends Application {
                 Gui.fill(pose, x + 130, y + 34, x + width - 5, y + 35, color.darker().getRGB());
                 Gui.fill(pose, x + 130, y + 35, x + width - 5, y + height - 5, new Color(1f, 1f, 1f, 0.25f).getRGB());
                 RenderUtil.drawStringClipped(pose, e.getSubject(), x + 135, y + 10, 120, Color.WHITE.getRGB(), true);
-                RenderUtil.drawStringClipped(pose, e.getAuthor() + "@endermail.com", x + 135, y + 22, 120, Color.LIGHT_GRAY.getRGB(), false);
+                RenderUtil.drawStringClipped(pose, e.getAuthor() + "@endermail.official", x + 135, y + 22, 120, Color.LIGHT_GRAY.getRGB(), false);
                 Laptop.font.drawWordWrap(FormattedText.of(e.getMessage()), x + 135, y + 40, 115, Color.WHITE.getRGB());
             }
         });
@@ -247,7 +247,7 @@ public class ApplicationEmail extends Application {
                     RenderUtil.drawRectWithTexture(pose, posX, y + 16, 20, 10, 7, 10, 13, 20);
                 }
                 RenderUtil.drawStringClipped(pose, e.getSubject(), x + 5, y + 5, width - 20, Color.WHITE.getRGB(), false);
-                RenderUtil.drawStringClipped(pose, e.getAuthor() + "@endermail.com", x + 5, y + 17, width - 20, Color.LIGHT_GRAY.getRGB(), false);
+                RenderUtil.drawStringClipped(pose, e.getAuthor() + "@endermail.official", x + 5, y + 17, width - 20, Color.LIGHT_GRAY.getRGB(), false);
             }
         });
         layoutInbox.addComponent(listEmails);
@@ -263,7 +263,7 @@ public class ApplicationEmail extends Application {
                 email.setRead(true);
                 textMessage.setText(email.getMessage());
                 labelViewSubject.setText(email.getSubject());
-                labelFrom.setText(email.getAuthor() + "@endermail.com");
+                labelFrom.setText(email.getAuthor() + "@endermail.official");
                 attachedFile = email.getAttachment();
                 if (attachedFile != null) {
                     btnSaveAttachment.setVisible(true);
@@ -286,7 +286,7 @@ public class ApplicationEmail extends Application {
             Email email = listEmails.getSelectedItem();
             if (email != null) {
                 setCurrentLayout(layoutNewEmail);
-                fieldRecipient.setText(email.getAuthor() + "@endermail.com");
+                fieldRecipient.setText(email.getAuthor() + "@endermail.official");
                 fieldSubject.setText("RE: " + email.getSubject());
             }
         });
@@ -533,7 +533,7 @@ public class ApplicationEmail extends Application {
     @Override
     public String getWindowTitle() {
         if (getCurrentLayout() == layoutInbox) {
-            return "Inbox: " + currentName + "@endermail.com";
+            return "Inbox: " + currentName + "@endermail.official";
         }
         if (getCurrentLayout() == layoutContacts) {
             return "Contacts";

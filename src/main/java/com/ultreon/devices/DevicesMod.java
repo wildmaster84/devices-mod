@@ -26,6 +26,7 @@ import com.ultreon.devices.network.PacketHandler;
 import com.ultreon.devices.network.task.SyncApplicationPacket;
 import com.ultreon.devices.network.task.SyncConfigPacket;
 import com.ultreon.devices.object.AppInfo;
+import com.ultreon.devices.programs.ApplicationBoatRacers;
 import com.ultreon.devices.programs.ApplicationIcons;
 import com.ultreon.devices.programs.email.ApplicationEmail;
 import com.ultreon.devices.programs.email.task.*;
@@ -81,6 +82,7 @@ import java.util.List;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -93,7 +95,8 @@ public class DevicesMod implements PreparableReloadListener {
 
     public static final CreativeModeTab TAB_DEVICE = new DeviceTab("devices_tab_device");
 
-    public static final List<SiteRegistration> SITE_REGISTRATIONS = new ArrayList<>();
+    public static final List<SiteRegistration> SITE_REGISTRATIONS = new FreezableArrayList<>();
+
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public static final boolean DEVELOPER_MODE = false;
@@ -190,6 +193,8 @@ public class DevicesMod implements PreparableReloadListener {
 //        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "pixel_painter"), ApplicationPixelPainter.class);
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "ender_mail"), ApplicationEmail.class);
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "app_store"), ApplicationAppStore.class);
+
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "boat_racers"), ApplicationBoatRacers.class);
 
         // Core
         TaskManager.registerTask(TaskUpdateApplicationData.class);
@@ -491,26 +496,90 @@ public class DevicesMod implements PreparableReloadListener {
             if (success) {
                 //Minecraft.getInstance().doRunTask(() -> {
                 JsonArray array = JsonParser.parseString(response).getAsJsonArray();
-                array.forEach((element) -> {
+                for (JsonElement element : array) {
                     var registrant = element.getAsJsonObject().get("registrant") != null ? element.getAsJsonObject().get("registrant").getAsString() : null;
+                    @SuppressWarnings("all") //no
+                    var dev = element.getAsJsonObject().get("dev") != null ? element.getAsJsonObject().get("dev").getAsBoolean() : false;
                     var site = element.getAsJsonObject().get("site").getAsString();
+                    if (dev && !IS_DEV_PREVIEW) {
+                        continue;
+                    }
                     for (JsonElement jsonElement : element.getAsJsonObject().get("registrations").getAsJsonArray()) {
                         var a = jsonElement.getAsJsonObject().keySet();
                         var d = jsonElement.getAsJsonObject();
-                            for (String s : a) {
-                                var type = d.get(s).getAsString();
-                                var string = s;
-                                var _registrant = registrant;
-                                SITE_REGISTRATIONS.add(new SiteRegistration(registrant, string, type, site));
-                            }
+                        for (String s : a) {
+                            var type = d.get(s).getAsString();
+                            var string = s;
+                            var _registrant = registrant;
+                            SITE_REGISTRATIONS.add(new SiteRegistration(registrant, string, type, site));
                         }
-                    //});
-                });
+                    }
+                }
 //                System.out.println(SITE_REGISTRATIONS);
 //                System.exit(0);
             } else {
                 // TODO error handling
             }
+            ((FreezableArrayList<SiteRegistration>)SITE_REGISTRATIONS).freeze();
         });
+    }
+
+    private static class FreezableArrayList<T> extends ArrayList<T> {
+        private boolean frozen = false;
+        private void freeze() {
+            frozen = true;
+        }
+
+        private void freezeCheck() {
+            if (frozen) throw new IllegalStateException("Already frozen!");
+        }
+
+        @Override
+        public boolean add(T t) {
+            freezeCheck();
+            return super.add(t);
+        }
+
+        @Override
+        public boolean addAll(Collection<? extends T> c) {
+            freezeCheck();
+            return super.addAll(c);
+        }
+
+        @Override
+        public void add(int index, T element) {
+            freezeCheck();
+            super.add(index, element);
+        }
+
+        @Override
+        protected void removeRange(int fromIndex, int toIndex) {
+            freezeCheck();
+            super.removeRange(fromIndex, toIndex);
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            freezeCheck();
+            return super.remove(o);
+        }
+
+        @Override
+        public boolean removeAll(Collection<?> c) {
+            freezeCheck();
+            return super.removeAll(c);
+        }
+
+        @Override
+        public boolean removeIf(Predicate<? super T> filter) {
+            freezeCheck();
+            return super.removeIf(filter);
+        }
+
+        @Override
+        public T remove(int index) {
+            freezeCheck();
+            return super.remove(index);
+        }
     }
 }
