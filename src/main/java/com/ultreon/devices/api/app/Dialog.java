@@ -93,7 +93,7 @@ public abstract class Dialog extends Wrappable {
 
         customLayout.renderOverlay(pose, laptop, mc, mouseX, mouseY, active);
 
-//        GL11.glColor4f(1f, 1f, 1f, 1f);
+//        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         // TODO - Port this to 1.18.2
 //        RenderHelper.disableStandardItemLighting();
     }

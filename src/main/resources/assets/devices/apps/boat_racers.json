@@ -1,0 +1,10 @@
+{
+    "name": "Boat Racers",
+    "author": "MrCrayfish, MinecraftDoodler",
+    "description": "VERY VERY WIP",
+    "version": "0.0.1",
+    "icon": "devices:textures/app/icon/boat_racers.png",
+    "screenshots": [
+        "devices:textures/app/screenshot/gitweb_screenshot_1.png"
+    ]
+}

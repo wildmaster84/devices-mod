@@ -185,7 +185,7 @@ public class Layout extends com.ultreon.devices.api.app.Component {
         if (!visible)
             return;
 
-        for (var c : components) {
+        for (var c : components.stream().toList()) {
             c.renderOverlay(pose, laptop, mc, mouseX, mouseY, windowActive);
         }
     }
