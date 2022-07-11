@@ -43,7 +43,7 @@ public class ApplicationEmail extends Application {
     private static final ResourceLocation ENDER_MAIL_ICONS = Resources.ENDER_MAIL_ICONS;
     private static final ResourceLocation ENDER_MAIL_BACKGROUND = Resources.ENDER_MAIL_BACKGROUND;
 
-    private static final Pattern EMAIL = Pattern.compile("^([a-zA-Z\\d]{1,10})@endermail\\.com$");
+    private static final Pattern EMAIL = Pattern.compile("^([a-zA-Z\\d]{1,10})@endermail\\.official$");
     private final Color COLOR_EMAIL_CONTENT_BACKGROUND = new Color(160, 160, 160);
 
     /* Loading Layout */
