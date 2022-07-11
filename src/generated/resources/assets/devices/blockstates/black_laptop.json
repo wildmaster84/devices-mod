@@ -1,32 +1,62 @@
 {
     "variants": {
-        "facing=north,type=base": {
+        "facing=north,open=false,type=base": {
+            "model": "devices:block/black_laptop_closed",
+            "y": 180
+        },
+        "facing=south,open=false,type=base": {
+            "model": "devices:block/black_laptop_closed"
+        },
+        "facing=west,open=false,type=base": {
+            "model": "devices:block/black_laptop_closed",
+            "y": 90
+        },
+        "facing=east,open=false,type=base": {
+            "model": "devices:block/black_laptop_closed",
+            "y": 270
+        },
+        "facing=north,open=true,type=base": {
             "model": "devices:block/black_laptop",
             "y": 180
         },
-        "facing=south,type=base": {
+        "facing=south,open=true,type=base": {
             "model": "devices:block/black_laptop"
         },
-        "facing=west,type=base": {
+        "facing=west,open=true,type=base": {
             "model": "devices:block/black_laptop",
             "y": 90
         },
-        "facing=east,type=base": {
+        "facing=east,open=true,type=base": {
             "model": "devices:block/black_laptop",
             "y": 270
         },
-        "facing=north,type=screen": {
+        "facing=north,open=false,type=screen": {
+            "model": "devices:block/black_laptop_closed",
+            "y": 180
+        },
+        "facing=south,open=false,type=screen": {
+            "model": "devices:block/black_laptop_closed"
+        },
+        "facing=west,open=false,type=screen": {
+            "model": "devices:block/black_laptop_closed",
+            "y": 90
+        },
+        "facing=east,open=false,type=screen": {
+            "model": "devices:block/black_laptop_closed",
+            "y": 270
+        },
+        "facing=north,open=true,type=screen": {
             "model": "devices:block/black_laptop",
             "y": 180
         },
-        "facing=south,type=screen": {
+        "facing=south,open=true,type=screen": {
             "model": "devices:block/black_laptop"
         },
-        "facing=west,type=screen": {
+        "facing=west,open=true,type=screen": {
             "model": "devices:block/black_laptop",
             "y": 90
         },
-        "facing=east,type=screen": {
+        "facing=east,open=true,type=screen": {
             "model": "devices:block/black_laptop",
             "y": 270
         }

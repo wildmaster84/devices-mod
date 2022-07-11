@@ -127,7 +127,7 @@ public class LaptopBlockEntity extends NetworkDeviceBlockEntity.Colored {
     public void openClose() {
         Level level = this.level;
         if (level != null) {
-            BlockEntityUtil.sendUpdate(level, this.worldPosition, this.getBlockState());
+            BlockEntityUtil.sendUpdate(level, this.worldPosition, this.getBlockState().setValue(LaptopBlock.OPEN, !open));
         }
         boolean oldOpen = open;
         open = getBlockState().getValue(LaptopBlock.OPEN);

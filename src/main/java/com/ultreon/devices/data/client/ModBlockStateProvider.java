@@ -56,7 +56,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
             boolean opened = state.getValue(LaptopBlock.OPEN);
             return ConfiguredModel.builder()
                     .modelFile(models()
-                            .withExistingParent(name, modLoc(opened ? "block/laptop_full" : "block/laptop_closed"))
+                            .withExistingParent(opened ? name : name + "_closed", modLoc(opened ? "block/laptop_full" : "block/laptop_closed"))
                             .texture("2", mcLoc("block/" + block.getColor().getName() + "_wool")))
                     .rotationY((int) state.getValue(LaptopBlock.FACING).toYRot())
                     .build();
