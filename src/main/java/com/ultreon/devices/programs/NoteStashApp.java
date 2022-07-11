@@ -17,7 +17,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class NoteStachApp extends Application {
+public class NoteStashApp extends Application {
     @SuppressWarnings("ConstantConditions")
     private static final Predicate<File> PREDICATE_FILE_NOTE = file -> !file.isFolder()
             && file.getData().contains("title", Tag.TAG_STRING)
@@ -44,7 +44,7 @@ public class NoteStachApp extends Application {
     private Text noteContent;
     private Button btnBack;
 
-    public NoteStachApp() {
+    public NoteStashApp() {
         //super("note_stash", "Note Stash");
     }
 
@@ -55,6 +55,7 @@ public class NoteStachApp extends Application {
         layoutMain = new Layout(180, 80);
         layoutMain.setInitListener(() -> {
             notes.getItems().clear();
+            DevicesMod.LOGGER.debug(MARKER, "Loading notes...");
             FileSystem.getApplicationFolder(this, (folder, success) -> {
                 if (success) {
                     assert folder != null;
@@ -139,7 +140,7 @@ public class NoteStachApp extends Application {
             data.putString("title", title.getText());
             data.putString("content", textArea.getText());
 
-            Dialog.SaveFile dialog = new Dialog.SaveFile(NoteStachApp.this, data);
+            Dialog.SaveFile dialog = new Dialog.SaveFile(NoteStashApp.this, data);
             dialog.setFolder(getApplicationFolderPath());
             dialog.setResponseHandler((success, file) -> {
                 title.clear();

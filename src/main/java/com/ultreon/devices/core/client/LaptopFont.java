@@ -21,7 +21,7 @@ public class LaptopFont extends Font {
         });
     }
 
-    // Todo - Port to 1.18.2 where possible.
+    // Todo: Port to 1.18.2 where possible.
 //    @Override
 //    public int getCharWidth(char c)
 //    {

@@ -195,7 +195,7 @@ public class DevicesMod implements PreparableReloadListener {
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "bank"), BankApp.class);
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "file_browser"), FileBrowserApp.class);
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "gitweb"), GitWebApp.class);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "note_stash"), NoteStachApp.class);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "note_stash"), NoteStashApp.class);
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "pixel_painter"), PixelPainterApp.class);
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "ender_mail"), EmailApp.class);
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "app_store"), AppStore.class);
@@ -325,7 +325,7 @@ public class DevicesMod implements PreparableReloadListener {
     @Nullable
     public Application registerApplication(ResourceLocation identifier, Class<? extends Application> clazz) {
         if ("minecraft".equals(identifier.getNamespace())) {
-            throw new IllegalArgumentException("Invalid identifier domain");
+            throw new IllegalArgumentException("Invalid identifier namespace");
         }
 
         if (allowedApps == null) {

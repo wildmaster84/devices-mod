@@ -44,10 +44,10 @@ public class LaptopBlock extends DeviceBlock.Colored {
     private static final VoxelShape SHAPE_OPEN_EAST = Shapes.or(Block.box(-1, 0, 1, 3.5, 11.4, 15), Block.box(3.5, 0, 1, 15, 1.3, 15));
     private static final VoxelShape SHAPE_OPEN_SOUTH = Shapes.or(Block.box(1, 0, -1, 15, 11.4, 3.5), Block.box(1, 0, 3.5, 15, 1.3, 15));
     private static final VoxelShape SHAPE_OPEN_WEST = Shapes.or(Block.box(12.5, 0, 1, 17, 11.4, 15), Block.box(1, 0, 1, 12.5, 1.3, 15));
-    private static final VoxelShape SHAPE_CLOSED_NORTH = Block.box(1, 0, 1, 15, 2, 12.5);
-    private static final VoxelShape SHAPE_CLOSED_EAST = Block.box(3.5, 0, 1, 15, 2, 15);
-    private static final VoxelShape SHAPE_CLOSED_SOUTH = Block.box(1, 0, 3.5, 15, 2, 15);
-    private static final VoxelShape SHAPE_CLOSED_WEST = Block.box(1, 0, 1, 12.5, 2, 15);
+    private static final VoxelShape SHAPE_CLOSED_NORTH = Block.box(1, 0, 1, 15, 2, 13);
+    private static final VoxelShape SHAPE_CLOSED_EAST = Block.box(3, 0, 1, 15, 2, 15);
+    private static final VoxelShape SHAPE_CLOSED_SOUTH = Block.box(1, 0, 3, 15, 2, 15);
+    private static final VoxelShape SHAPE_CLOSED_WEST = Block.box(1, 0, 1, 13, 2, 15);
 
     public LaptopBlock(DyeColor color) {
         super(BlockBehaviour.Properties.of(Material.HEAVY_METAL, color).strength(6f).sound(SoundType.METAL), color, DeviceType.LAPTOP);
