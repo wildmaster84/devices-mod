@@ -256,7 +256,7 @@ public class FileBrowser extends Component {
                             Application targetApp = laptop.getApplication(file.getOpeningApp());
                             if (targetApp != null) {
                                 if (laptop.isApplicationInstalled(targetApp.getInfo())) {
-                                    if (!laptop.openApplication(targetApp.getInfo(), file)) {
+                                    if (!laptop.openApplication(targetApp.getInfo(), file).right()) {
                                         laptop.sendApplicationToFront(systemApp.getInfo());
                                         createErrorDialog(targetApp.getInfo().getName() + " was unable to open the file.");
                                     }

@@ -41,7 +41,9 @@ public class ApplicationAppStore extends SystemApplication {
     public static final int LAYOUT_WIDTH = 250;
     public static final int LAYOUT_HEIGHT = 150;
     public List<AppEntry> certifiedApps = new ArrayList<>();
+    public List<AppEntry> localAppList = new ArrayList<>();
     private Layout layoutMain;
+    private AppInfo queuedApp;
 
     @Override
     public void init(@Nullable CompoundTag intent) {
@@ -125,12 +127,26 @@ public class ApplicationAppStore extends SystemApplication {
         homePageLayout.addComponent(labelOtherDesc);
 
         AppGrid other = new AppGrid(0, 192, 3, 2, this);
-        shuffleAndShrink(ApplicationManager.getAvailableApplications(), 6).forEach(other::addEntry);
+        shuffleAndShrink(ApplicationManager.getAvailableApplications(), 6).forEach(a -> localAppList.add(other.addEntry(a)));
         homePageLayout.addComponent(other);
 
         layoutMain.addComponent(homePageLayout);
 
         this.setCurrentLayout(layoutMain);
+    }
+
+    @Override
+    public void onTick() {
+        super.onTick();
+        if (this.queuedApp != null) {
+            for (AppEntry appEntry : localAppList) {
+                if (appEntry.id().equals(this.queuedApp.getId().toString())) {
+                    this.openApplication(appEntry);
+                    this.queuedApp = null;
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -141,6 +157,10 @@ public class ApplicationAppStore extends SystemApplication {
     @Override
     public void save(CompoundTag tag) {
 
+    }
+
+    public void queueOpen(AppInfo info) {
+        this.queuedApp = info;
     }
 
     public List<RemoteEntry> parseJson(String json) {
