@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ApplicationAppStore extends SystemApplication {
+public class AppStore extends SystemApp {
     public static final String CERTIFICATES_BASE_URL = "https://raw.githubusercontent.com/Ultreon/device-mod-certificates/master";
 
     public static final int LAYOUT_WIDTH = 250;

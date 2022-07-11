@@ -4,7 +4,7 @@ import com.ultreon.devices.DeviceType;
 import com.ultreon.devices.IDeviceType;
 import com.ultreon.devices.block.entity.DeviceBlockEntity;
 import com.ultreon.devices.util.BlockEntityUtil;
-import com.ultreon.devices.util.IColored;
+import com.ultreon.devices.util.Colorable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextComponent;
@@ -82,7 +82,7 @@ public abstract class DeviceBlock extends HorizontalDirectionalBlock implements 
                 tag.put("BlockEntityTag", blockEntityTag);
 
                 ItemStack drop;
-                if (blockEntity instanceof IColored) {
+                if (blockEntity instanceof Colorable) {
                     drop = new ItemStack(this, 1);
                 } else {
                     drop = new ItemStack(this);
@@ -142,7 +142,7 @@ public abstract class DeviceBlock extends HorizontalDirectionalBlock implements 
         public void setPlacedBy(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable LivingEntity placer, @NotNull ItemStack stack) {
             super.setPlacedBy(level, pos, state, placer, stack);
             BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof IColored colored) {
+            if (blockEntity instanceof Colorable colored) {
                 colored.setColor(color);
             }
         }

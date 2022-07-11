@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Stack;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class ApplicationSettings extends SystemApplication {
+public class SettingsApp extends SystemApp {
     private Button buttonPrevious;
 
     private Layout layoutMain;

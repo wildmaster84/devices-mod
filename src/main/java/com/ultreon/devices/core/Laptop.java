@@ -3,13 +3,12 @@ package com.ultreon.devices.core;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.datafixers.kinds.App;
 import com.ultreon.devices.DevicesMod;
 import com.ultreon.devices.Reference;
 import com.ultreon.devices.api.ApplicationManager;
-import com.ultreon.devices.api.app.*;
 import com.ultreon.devices.api.app.Dialog;
 import com.ultreon.devices.api.app.System;
+import com.ultreon.devices.api.app.*;
 import com.ultreon.devices.api.app.component.Image;
 import com.ultreon.devices.api.io.Drive;
 import com.ultreon.devices.api.io.File;
@@ -20,7 +19,7 @@ import com.ultreon.devices.api.utils.RenderUtil;
 import com.ultreon.devices.block.entity.LaptopBlockEntity;
 import com.ultreon.devices.core.task.TaskInstallApp;
 import com.ultreon.devices.object.AppInfo;
-import com.ultreon.devices.programs.system.SystemApplication;
+import com.ultreon.devices.programs.system.SystemApp;
 import com.ultreon.devices.programs.system.component.FileBrowser;
 import com.ultreon.devices.programs.system.task.TaskUpdateApplicationData;
 import com.ultreon.devices.programs.system.task.TaskUpdateSystemData;
@@ -570,8 +569,8 @@ public class Laptop extends Screen implements System {
             app.load(appData.getCompound(app.getInfo().getFormattedId()));
         }
 
-        if (app instanceof SystemApplication) {
-            ((SystemApplication) app).setLaptop(this);
+        if (app instanceof SystemApp) {
+            ((SystemApp) app).setLaptop(this);
         }
 
         if (app instanceof SystemAccessor) {
@@ -634,8 +633,8 @@ public class Laptop extends Screen implements System {
                         TaskManager.sendTask(new TaskUpdateApplicationData(pos.getX(), pos.getY(), pos.getZ(), app.getInfo().getFormattedId(), container));
                     }
 
-                    if (app instanceof SystemApplication) {
-                        ((SystemApplication) app).setLaptop(null);
+                    if (app instanceof SystemApp) {
+                        ((SystemApp) app).setLaptop(null);
                     }
 
                     window.handleClose();

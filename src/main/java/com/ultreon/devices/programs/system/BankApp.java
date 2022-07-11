@@ -30,7 +30,7 @@ import javax.annotation.Nullable;
 import java.awt.*;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class ApplicationBank extends Application {//The bank is not a system application
+public class BankApp extends Application {//The bank is not a system application
     private static final ItemStack EMERALD = new ItemStack(Items.EMERALD);
     private static final ResourceLocation BANK_ASSETS = new ResourceLocation("devices:textures/gui/bank.png");
     //    private static final ResourceLocation villagerTextures = new ResourceLocation("textures/entity/villager/villager.png");
@@ -66,7 +66,7 @@ public class ApplicationBank extends Application {//The bank is not a system app
     {
     }
 
-    public ApplicationBank() {
+    public BankApp() {
         //super(Reference.MOD_ID + "Bank", "The Emerald Bank");
     }
 

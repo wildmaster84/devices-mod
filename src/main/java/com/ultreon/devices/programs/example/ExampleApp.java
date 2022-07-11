@@ -10,7 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import javax.annotation.Nullable;
 
 @SuppressWarnings({"FieldCanBeLocal", "SpellCheckingInspection"})
-public class ApplicationExample extends Application {
+public class ExampleApp extends Application {
     private Label label;
     private Button button;
     private Button leftButton;
@@ -28,7 +28,7 @@ public class ApplicationExample extends Application {
     private Text text;
     private Image image;
 
-    public ApplicationExample() {
+    public ExampleApp() {
         //super("example", "UI Components");
         this.setDefaultWidth(270);
         this.setDefaultHeight(140);

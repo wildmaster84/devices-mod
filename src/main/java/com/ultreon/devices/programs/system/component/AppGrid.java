@@ -9,7 +9,7 @@ import com.ultreon.devices.api.app.component.Image;
 import com.ultreon.devices.api.utils.RenderUtil;
 import com.ultreon.devices.core.Laptop;
 import com.ultreon.devices.object.AppInfo;
-import com.ultreon.devices.programs.system.ApplicationAppStore;
+import com.ultreon.devices.programs.system.AppStore;
 import com.ultreon.devices.programs.system.object.AppEntry;
 import com.ultreon.devices.programs.system.object.LocalEntry;
 import com.ultreon.devices.programs.system.object.RemoteEntry;
@@ -30,7 +30,7 @@ public class AppGrid extends Component {
     private final int horizontalItems;
     private final int verticalItems;
     private final List<AppEntry> entries = new ArrayList<>();
-    private final ApplicationAppStore store;
+    private final AppStore store;
 
     private final int itemWidth;
     private final int itemHeight;
@@ -40,18 +40,18 @@ public class AppGrid extends Component {
 
     private Layout container;
 
-    public AppGrid(int left, int top, int horizontalItems, int verticalItems, ApplicationAppStore store) {
+    public AppGrid(int left, int top, int horizontalItems, int verticalItems, AppStore store) {
         super(left, top);
         this.horizontalItems = horizontalItems;
         this.verticalItems = verticalItems;
         this.store = store;
-        this.itemWidth = (ApplicationAppStore.LAYOUT_WIDTH - padding * 2 - padding * (horizontalItems - 1)) / horizontalItems;
+        this.itemWidth = (AppStore.LAYOUT_WIDTH - padding * 2 - padding * (horizontalItems - 1)) / horizontalItems;
         this.itemHeight = 80;
     }
 
     @Override
     protected void init(Layout layout) {
-        container = new Layout(0, 0, ApplicationAppStore.LAYOUT_WIDTH, horizontalItems * itemHeight + (horizontalItems + 1) * padding);
+        container = new Layout(0, 0, AppStore.LAYOUT_WIDTH, horizontalItems * itemHeight + (horizontalItems + 1) * padding);
         int size = Math.min(entries.size(), verticalItems * horizontalItems);
         for (int i = 0; i < size; i++) {
             AppEntry entry = entries.get(i);
@@ -122,7 +122,7 @@ public class AppGrid extends Component {
             layout.addComponent(image);
         } else if (entry instanceof RemoteEntry remoteEntry) {
             ResourceLocation resource = new ResourceLocation(remoteEntry.id);
-            Image image = new Image(iconOffset, padding, 14 * 3, 14 * 3, ApplicationAppStore.CERTIFICATES_BASE_URL + "/assets/" + resource.getNamespace() + "/" + resource.getPath() + "/icon.png");
+            Image image = new Image(iconOffset, padding, 14 * 3, 14 * 3, AppStore.CERTIFICATES_BASE_URL + "/assets/" + resource.getNamespace() + "/" + resource.getPath() + "/icon.png");
             layout.addComponent(image);
         }
 

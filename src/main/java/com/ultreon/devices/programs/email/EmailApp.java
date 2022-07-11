@@ -39,7 +39,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SuppressWarnings({"FieldCanBeLocal", "unused"})
-public class ApplicationEmail extends Application {
+public class EmailApp extends Application {
     private static final ResourceLocation ENDER_MAIL_ICONS = Resources.ENDER_MAIL_ICONS;
     private static final ResourceLocation ENDER_MAIL_BACKGROUND = Resources.ENDER_MAIL_BACKGROUND;
 

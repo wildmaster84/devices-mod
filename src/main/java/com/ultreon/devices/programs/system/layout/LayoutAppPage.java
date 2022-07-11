@@ -10,7 +10,7 @@ import com.ultreon.devices.api.app.component.Button;
 import com.ultreon.devices.core.Laptop;
 import com.ultreon.devices.object.AppInfo;
 import com.ultreon.devices.programs.gitweb.component.GitWebFrame;
-import com.ultreon.devices.programs.system.ApplicationAppStore;
+import com.ultreon.devices.programs.system.AppStore;
 import com.ultreon.devices.programs.system.component.SlideShow;
 import com.ultreon.devices.programs.system.object.AppEntry;
 import com.ultreon.devices.programs.system.object.LocalEntry;
@@ -32,7 +32,7 @@ import java.net.URL;
 public class LayoutAppPage extends Layout {
     private final Laptop laptop;
     private final AppEntry entry;
-    private final ApplicationAppStore store;
+    private final AppStore store;
 
     private com.ultreon.devices.api.app.component.Image imageBanner;
     private com.ultreon.devices.api.app.component.Image imageIcon;
@@ -41,7 +41,7 @@ public class LayoutAppPage extends Layout {
 
     private boolean installed;
 
-    public LayoutAppPage(Laptop laptop, AppEntry entry, ApplicationAppStore store) {
+    public LayoutAppPage(Laptop laptop, AppEntry entry, AppStore store) {
         super(250, 150);
         this.laptop = laptop;
         this.entry = entry;
@@ -71,7 +71,7 @@ public class LayoutAppPage extends Layout {
         if (entry instanceof LocalEntry) {
             imageBanner.setImage(new ResourceLocation(resource.getNamespace(), "textures/app/banner/" + resource.getPath() + ".png"));
         } else if (entry instanceof RemoteEntry) {
-            imageBanner.setImage(ApplicationAppStore.CERTIFICATES_BASE_URL + "/assets/" + resource.getNamespace() + "/" + resource.getPath() + "/banner.png");
+            imageBanner.setImage(AppStore.CERTIFICATES_BASE_URL + "/assets/" + resource.getNamespace() + "/" + resource.getPath() + "/banner.png");
         }
         this.addComponent(imageBanner);
 
@@ -80,7 +80,7 @@ public class LayoutAppPage extends Layout {
             AppInfo info = localEntry.info();
             imageIcon = new com.ultreon.devices.api.app.component.Image(5, 26, 28, 28, info.getIconU(), info.getIconV(), 14, 14, 224, 224, Laptop.ICON_TEXTURES);
         } else if (entry instanceof RemoteEntry) {
-            imageIcon = new com.ultreon.devices.api.app.component.Image(5, 26, 28, 28, ApplicationAppStore.CERTIFICATES_BASE_URL + "/assets/" + resource.getNamespace() + "/" + resource.getPath() + "/icon.png");
+            imageIcon = new com.ultreon.devices.api.app.component.Image(5, 26, 28, 28, AppStore.CERTIFICATES_BASE_URL + "/assets/" + resource.getNamespace() + "/" + resource.getPath() + "/icon.png");
         }
         this.addComponent(imageIcon);
 
@@ -114,7 +114,7 @@ public class LayoutAppPage extends Layout {
             }
         } else if (entry instanceof RemoteEntry) {
             RemoteEntry remoteEntry = (RemoteEntry) entry;
-            String screenshotUrl = ApplicationAppStore.CERTIFICATES_BASE_URL + "/assets/" + resource.getNamespace() + "/" + resource.getPath() + "/screenshots/screenshot_%d.png";
+            String screenshotUrl = AppStore.CERTIFICATES_BASE_URL + "/assets/" + resource.getNamespace() + "/" + resource.getPath() + "/screenshots/screenshot_%d.png";
             for (int i = 0; i < remoteEntry.screenshots; i++) {
                 slideShow.addImage(String.format(screenshotUrl, i));
             }

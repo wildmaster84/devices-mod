@@ -8,6 +8,7 @@ import com.ultreon.devices.core.Window;
 import com.ultreon.devices.core.Wrappable;
 import com.ultreon.devices.core.io.FileSystem;
 import com.ultreon.devices.object.AppInfo;
+import com.ultreon.devices.util.DataHandler;
 import com.ultreon.devices.util.GLHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -22,7 +23,7 @@ import java.util.Objects;
  * @author MrCrayfish
  */
 @SuppressWarnings("SpellCheckingInspection")
-public abstract class Application extends Wrappable {
+public abstract class Application extends Wrappable implements DataHandler {
     @SuppressWarnings("FieldMayBeFinal")
     protected AppInfo info = null;
     private final Layout defaultLayout = new Layout();
@@ -222,7 +223,7 @@ public abstract class Application extends Wrappable {
      * sure you call this super method.
      *
      * @param character the typed character
-     * @param code      the typed character code
+     * @param modifiers the typed character modifiers
      */
     @Override
     public void handleCharTyped(char character, int modifiers) {

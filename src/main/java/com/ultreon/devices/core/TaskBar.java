@@ -8,10 +8,10 @@ import com.ultreon.devices.api.utils.RenderUtil;
 import com.ultreon.devices.core.network.TrayItemWifi;
 import com.ultreon.devices.object.AppInfo;
 import com.ultreon.devices.object.TrayItem;
-import com.ultreon.devices.programs.system.ApplicationAppStore;
-import com.ultreon.devices.programs.system.ApplicationFileBrowser;
-import com.ultreon.devices.programs.system.ApplicationSettings;
-import com.ultreon.devices.programs.system.SystemApplication;
+import com.ultreon.devices.programs.system.AppStore;
+import com.ultreon.devices.programs.system.FileBrowserApp;
+import com.ultreon.devices.programs.system.SettingsApp;
+import com.ultreon.devices.programs.system.SystemApp;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
@@ -39,9 +39,9 @@ public class TaskBar {
 
     public TaskBar(Laptop laptop) {
         this.laptop = laptop;
-        trayItems.add(new ApplicationFileBrowser.FileBrowserTrayItem());
-        trayItems.add(new ApplicationSettings.SettingsTrayItem());
-        trayItems.add(new ApplicationAppStore.StoreTrayItem());
+        trayItems.add(new FileBrowserApp.FileBrowserTrayItem());
+        trayItems.add(new SettingsApp.SettingsTrayItem());
+        trayItems.add(new AppStore.StoreTrayItem());
         trayItems.add(new TrayItemWifi());
     }
 
@@ -51,7 +51,7 @@ public class TaskBar {
 
     public void setupApplications(List<Application> applications) {
         final Predicate<Application> VALID_APPS = app -> {
-            if (app instanceof SystemApplication) {
+            if (app instanceof SystemApp) {
                 return true;
             }
             if (DevicesMod.getInstance().hasAllowedApplications()) {

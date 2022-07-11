@@ -7,7 +7,7 @@ import net.minecraft.nbt.Tag;
 import javax.annotation.Nullable;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class Email {
     private final String subject;

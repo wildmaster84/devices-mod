@@ -1,5 +1,6 @@
 package com.ultreon.devices.programs;
 
+import com.ultreon.devices.DevicesMod;
 import com.ultreon.devices.api.app.Application;
 import com.ultreon.devices.api.app.Dialog;
 import com.ultreon.devices.api.app.Layout;
@@ -8,17 +9,20 @@ import com.ultreon.devices.api.io.File;
 import com.ultreon.devices.core.io.FileSystem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.function.Predicate;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class ApplicationNoteStash extends Application {
+public class NoteStachApp extends Application {
     @SuppressWarnings("ConstantConditions")
     private static final Predicate<File> PREDICATE_FILE_NOTE = file -> !file.isFolder()
             && file.getData().contains("title", Tag.TAG_STRING)
             && file.getData().contains("content", Tag.TAG_STRING);
+    private static final Marker MARKER = MarkerFactory.getMarker("Note Stash App");
 
     /* Main */
     private Layout layoutMain;
@@ -40,7 +44,7 @@ public class ApplicationNoteStash extends Application {
     private Text noteContent;
     private Button btnBack;
 
-    public ApplicationNoteStash() {
+    public NoteStachApp() {
         //super("note_stash", "Note Stash");
     }
 
@@ -56,6 +60,7 @@ public class ApplicationNoteStash extends Application {
                     assert folder != null;
                     folder.search(file -> file.isForApplication(this)).forEach(file -> notes.addItem(Note.fromFile(file)));
                 } else {
+                    DevicesMod.LOGGER.error(MARKER, "Failed to get application folder");
                     //TODO error dialog
                 }
             });
@@ -134,7 +139,7 @@ public class ApplicationNoteStash extends Application {
             data.putString("title", title.getText());
             data.putString("content", textArea.getText());
 
-            Dialog.SaveFile dialog = new Dialog.SaveFile(ApplicationNoteStash.this, data);
+            Dialog.SaveFile dialog = new Dialog.SaveFile(NoteStachApp.this, data);
             dialog.setFolder(getApplicationFolderPath());
             dialog.setResponseHandler((success, file) -> {
                 title.clear();

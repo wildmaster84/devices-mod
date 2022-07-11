@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class EthernetCableItem extends Item {
     public EthernetCableItem() {

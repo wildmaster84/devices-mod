@@ -2,7 +2,7 @@ package com.ultreon.devices.block;
 
 import com.ultreon.devices.DeviceType;
 import com.ultreon.devices.block.entity.PrinterBlockEntity;
-import com.ultreon.devices.util.IHasColor;
+import com.ultreon.devices.util.Colored;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * @author MrCrayfish
  */
-public class PrinterBlock extends DeviceBlock.Colored implements IHasColor {
+public class PrinterBlock extends DeviceBlock.Colored implements Colored {
     private static final VoxelShape SHAPE_NORTH = Shapes.or(
             box(2, 0, 7, 14, 5, 12),
             box(3.5, 0.1, 1, 12.5, 1.1, 7),

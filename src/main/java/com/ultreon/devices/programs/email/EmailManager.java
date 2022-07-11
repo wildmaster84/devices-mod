@@ -17,7 +17,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.*;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class EmailManager implements WorldSavedData {
     public static final EmailManager INSTANCE = new EmailManager();

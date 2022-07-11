@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * The notification class for the notification system.
  * <p>
- * This class is intended to be used only on the server (logical and physical) side only. Typically
+ * This class is intended to be used only on the server (logical and physical) side only. Typically,
  * you'd want to be able to send a notification to anyone on the server. There is two options to
  * perform this, either create a background task on the server (a tick event) or send a
  * {@link Task} from the client to the server. It is not possible to
@@ -37,11 +37,11 @@ public class Notification {
     }
 
     /**
-     * The alternate constructor for a notification. This includes a sub title.
+     * The alternate constructor for a notification. This includes a subtitle.
      *
      * @param icon     the icon to display
      * @param title    the title of the notification
-     * @param subTitle the sub title of the notification
+     * @param subTitle the subtitle of the notification
      */
     public Notification(IIcon icon, String title, String subTitle) {
         this(icon, title);

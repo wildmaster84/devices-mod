@@ -4,7 +4,7 @@ import com.ultreon.devices.DeviceType;
 import com.ultreon.devices.DevicesMod;
 import com.ultreon.devices.IDeviceType;
 import com.ultreon.devices.Reference;
-import com.ultreon.devices.util.IHasColor;
+import com.ultreon.devices.util.Colored;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Objects;
 
-public class FlashDriveItem extends Item implements IHasColor, SubItems, IDeviceType {
+public class FlashDriveItem extends Item implements Colored, SubItems, IDeviceType {
 
     private final DyeColor color;
 

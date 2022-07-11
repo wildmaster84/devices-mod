@@ -27,7 +27,7 @@ import com.ultreon.devices.core.io.task.TaskGetFiles;
 import com.ultreon.devices.core.io.task.TaskGetStructure;
 import com.ultreon.devices.core.io.task.TaskSetupFileBrowser;
 import com.ultreon.devices.object.AppInfo;
-import com.ultreon.devices.programs.system.SystemApplication;
+import com.ultreon.devices.programs.system.SystemApp;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -249,7 +249,7 @@ public class FileBrowser extends Component {
                                 btnDelete.setEnabled(false);
                             }
                         });
-                    } else if (mode == Mode.FULL && wrappable instanceof SystemApplication systemApp) {
+                    } else if (mode == Mode.FULL && wrappable instanceof SystemApp systemApp) {
                         Laptop laptop = systemApp.getLaptop();
                         if (laptop != null) {
                             //TODO change to check if application is installed

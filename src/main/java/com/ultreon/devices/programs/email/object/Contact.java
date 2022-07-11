@@ -3,7 +3,7 @@ package com.ultreon.devices.programs.email.object;
 import net.minecraft.nbt.CompoundTag;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class Contact {
     private final String nickname;

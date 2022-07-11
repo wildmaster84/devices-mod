@@ -9,7 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
 public class TaskNotificationTest extends Task {
     public TaskNotificationTest() {

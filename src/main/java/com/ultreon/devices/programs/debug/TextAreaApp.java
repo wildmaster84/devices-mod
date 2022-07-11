@@ -12,9 +12,9 @@ import net.minecraft.nbt.CompoundTag;
 import javax.annotation.Nullable;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
-public class ApplicationTextArea extends Application {
+public class TextAreaApp extends Application {
     public static final IHighlight JAVA_HIGHLIGHT = text -> {
         if (text.startsWith("@")) return asArray(ChatFormatting.YELLOW);
 

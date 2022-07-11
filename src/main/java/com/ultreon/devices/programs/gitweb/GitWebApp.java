@@ -1,18 +1,15 @@
 package com.ultreon.devices.programs.gitweb;
 
-import com.ultreon.devices.api.app.Application;
-import com.ultreon.devices.api.app.Icons;
-import com.ultreon.devices.api.app.Layout;
 import com.ultreon.devices.api.app.System;
-import com.ultreon.devices.api.app.SystemAccessor;
+import com.ultreon.devices.api.app.*;
 import com.ultreon.devices.api.app.component.Button;
 import com.ultreon.devices.api.app.component.Spinner;
 import com.ultreon.devices.api.app.component.TextField;
 import com.ultreon.devices.core.Laptop;
 import com.ultreon.devices.programs.gitweb.component.GitWebFrame;
 import com.ultreon.devices.programs.gitweb.layout.TextLayout;
-import com.ultreon.devices.programs.gitweb.module.AppLinkModule;
 import com.ultreon.devices.programs.system.layout.StandardLayout;
+import com.ultreon.devices.util.DataHandler;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.nbt.CompoundTag;
 
@@ -24,7 +21,7 @@ import java.util.Optional;
  * The Device Mod implementations of an internet browser. Originally created by MinecraftDoodler.
  * Licensed under GPL 3d
  */
-public class ApplicationGitWeb extends Application implements SystemAccessor {
+public class GitWebApp extends Application implements SystemAccessor, DataHandler {
     private Layout layoutBrowser;
     private Layout layoutPref;
 

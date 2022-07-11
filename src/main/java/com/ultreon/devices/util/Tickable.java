@@ -1,5 +1,5 @@
 package com.ultreon.devices.util;
 
-public interface ITickable {
+public interface Tickable {
     void tick();
 }

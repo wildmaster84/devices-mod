@@ -9,9 +9,9 @@ import net.minecraft.nbt.CompoundTag;
 import javax.annotation.Nullable;
 
 /**
- * Author: MrCrayfish
+ * @author MrCrayfish
  */
-public class ApplicationTest extends Application {
+public class TestApp extends Application {
     @Override
     public void init(@Nullable CompoundTag intent) {
         Button button = new Button(5, 5, Icons.PRINTER);

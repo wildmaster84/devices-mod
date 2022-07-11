@@ -15,8 +15,8 @@ public class BlockEntityUtil {
 
     public static <T extends BlockEntity> BlockEntityTicker<T> getTicker() {
         return (pLevel, pPos, pState, pBlockEntity) -> {
-            if (pBlockEntity instanceof ITickable) {
-                ((ITickable) pBlockEntity).tick();
+            if (pBlockEntity instanceof Tickable) {
+                ((Tickable) pBlockEntity).tick();
             }
         };
     }

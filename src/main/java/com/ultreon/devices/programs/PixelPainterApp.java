@@ -35,7 +35,7 @@ import java.awt.*;
 import java.util.Objects;
 
 @SuppressWarnings({"unused", "FieldCanBeLocal"})
-public class ApplicationPixelPainter extends Application {
+public class PixelPainterApp extends Application {
     private static final ResourceLocation PIXEL_PAINTER_ICONS = new ResourceLocation("cdm:textures/gui/pixel_painter.png");
 
     private static final Color ITEM_BACKGROUND = new Color(170, 176, 194);
@@ -83,7 +83,7 @@ public class ApplicationPixelPainter extends Application {
     private ColorGrid colorGrid;
     private CheckBox displayGrid;
 
-    public ApplicationPixelPainter() {
+    public PixelPainterApp() {
         //super("pixel_painter", "Pixel Painter");
     }
 
@@ -348,7 +348,7 @@ public class ApplicationPixelPainter extends Application {
                     });
                 }
             } else {
-                Dialog.SaveFile dialog = new Dialog.SaveFile(ApplicationPixelPainter.this, pictureTag);
+                Dialog.SaveFile dialog = new Dialog.SaveFile(PixelPainterApp.this, pictureTag);
                 dialog.setResponseHandler((success, file) ->
                 {
                     if (success) {

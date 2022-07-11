@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings({"unused", "FieldCanBeLocal"})
-public class ApplicationMineBay extends Application {
+public class MineBayApp extends Application {
     private static final ResourceLocation CHEST_GUI_TEXTURE = new ResourceLocation("textures/gui/container/generic_54.png");
     private static final ResourceLocation MINEBAY_ASSETS = new ResourceLocation("cdm:textures/gui/minebay.png");
 
@@ -71,7 +71,7 @@ public class ApplicationMineBay extends Application {
     private Button buttonDurationCancel;
     private Button buttonDurationAdd;
 
-    public ApplicationMineBay() {
+    public MineBayApp() {
         //super(Reference.MOD_ID + "MineBay", "MineBay");
     }
 
@@ -189,7 +189,7 @@ public class ApplicationMineBay extends Application {
             });
             dialog.setNegativeText("Cancel");
             dialog.setNegativeListener((mouseX1, mouseY1, mouseButton1) -> dialog.close());
-            ApplicationMineBay.this.openDialog(dialog);
+            MineBayApp.this.openDialog(dialog);
         });
         super.addComponent(btnBuy);
 

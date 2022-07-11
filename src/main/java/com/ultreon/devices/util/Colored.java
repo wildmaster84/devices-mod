@@ -2,7 +2,7 @@ package com.ultreon.devices.util;
 
 import net.minecraft.world.item.DyeColor;
 
-public interface IHasColor {
+public interface Colored {
 
     DyeColor getColor();
 }

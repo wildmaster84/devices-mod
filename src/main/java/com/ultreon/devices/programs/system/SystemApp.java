@@ -8,10 +8,10 @@ import javax.annotation.Nullable;
 /**
  * Created by Casey on 03-Aug-17.
  */
-public abstract class SystemApplication extends Application {
+public abstract class SystemApp extends Application {
     private Laptop laptop;
 
-    SystemApplication() {
+    SystemApp() {
     }
 
     public void setLaptop(@Nullable Laptop laptop) {

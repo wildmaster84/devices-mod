@@ -11,7 +11,7 @@ import com.ultreon.devices.api.app.component.TextField;
 import com.ultreon.devices.api.app.renderer.ListItemRenderer;
 import com.ultreon.devices.api.utils.RenderUtil;
 import com.ultreon.devices.object.AppInfo;
-import com.ultreon.devices.programs.system.ApplicationAppStore;
+import com.ultreon.devices.programs.system.AppStore;
 import com.ultreon.devices.programs.system.object.LocalEntry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -31,11 +31,11 @@ import java.util.stream.Collectors;
 public class LayoutSearchApps extends StandardLayout {
     private static final Color ITEM_BACKGROUND = Color.decode("0x9E9E9E");
     private static final Color ITEM_SELECTED = Color.decode("0x757575");
-    private final ApplicationAppStore appStore;
+    private final AppStore appStore;
     private long lastClick = 0;
 
-    public LayoutSearchApps(ApplicationAppStore appStore, Layout previous) {
-        super("Search", ApplicationAppStore.LAYOUT_WIDTH, ApplicationAppStore.LAYOUT_HEIGHT, appStore, previous);
+    public LayoutSearchApps(AppStore appStore, Layout previous) {
+        super("Search", AppStore.LAYOUT_WIDTH, AppStore.LAYOUT_HEIGHT, appStore, previous);
         this.appStore = appStore;
     }
 
@@ -43,7 +43,7 @@ public class LayoutSearchApps extends StandardLayout {
     public void init() {
         super.init();
 
-        ItemList<AppInfo> itemListResults = new ItemList<>(5, 48, ApplicationAppStore.LAYOUT_WIDTH - 10, 5, true);
+        ItemList<AppInfo> itemListResults = new ItemList<>(5, 48, AppStore.LAYOUT_WIDTH - 10, 5, true);
         itemListResults.setItems(ApplicationManager.getAvailableApplications());
         itemListResults.sortBy(Comparator.comparing(AppInfo::getName));
         itemListResults.setListItemRenderer(new ListItemRenderer<>(18) {
@@ -67,7 +67,7 @@ public class LayoutSearchApps extends StandardLayout {
         });
         this.addComponent(itemListResults);
 
-        TextField textFieldSearch = new TextField(5, 26, ApplicationAppStore.LAYOUT_WIDTH - 10);
+        TextField textFieldSearch = new TextField(5, 26, AppStore.LAYOUT_WIDTH - 10);
         textFieldSearch.setIcon(Icons.SEARCH);
         textFieldSearch.setPlaceholder("...");
         textFieldSearch.setKeyListener(c -> {

@@ -3,8 +3,8 @@ package com.ultreon.devices.block.entity;
 import com.ultreon.devices.DeviceConfig;
 import com.ultreon.devices.core.network.Connection;
 import com.ultreon.devices.core.network.Router;
-import com.ultreon.devices.util.IColored;
-import com.ultreon.devices.util.ITickable;
+import com.ultreon.devices.util.Colorable;
+import com.ultreon.devices.util.Tickable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
-public abstract class NetworkDeviceBlockEntity extends DeviceBlockEntity implements ITickable {
+public abstract class NetworkDeviceBlockEntity extends DeviceBlockEntity implements Tickable {
     private int counter;
     private Connection connection;
 
@@ -116,7 +116,7 @@ public abstract class NetworkDeviceBlockEntity extends DeviceBlockEntity impleme
         }
     }
 
-    public static abstract class Colored extends NetworkDeviceBlockEntity implements IColored {
+    public static abstract class Colored extends NetworkDeviceBlockEntity implements Colorable {
         private DyeColor color = DyeColor.RED;
 
         public Colored(BlockEntityType<?> pType, BlockPos pWorldPosition, BlockState pBlockState) {

@@ -12,14 +12,14 @@ import javax.annotation.Nullable;
 /**
  * @author MrCrayfish
  */
-public class ApplicationIcons extends Application {
+public class IconsApp extends Application {
     private int offset;
 
     private StandardLayout layoutMain;
     private Layout layoutContainer;
     private ComboBox.List<IconSet> iconSetComboBox;
 
-    public ApplicationIcons() {
+    public IconsApp() {
         this.setDefaultWidth(332);
         this.setDefaultHeight(150);
     }

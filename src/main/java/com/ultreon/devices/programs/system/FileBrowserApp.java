@@ -12,10 +12,10 @@ import net.minecraft.nbt.CompoundTag;
 
 import javax.annotation.Nullable;
 
-public class ApplicationFileBrowser extends SystemApplication {
+public class FileBrowserApp extends SystemApp {
     private FileBrowser browser;
 
-    public ApplicationFileBrowser() {
+    public FileBrowserApp() {
         this.setDefaultWidth(211);
         this.setDefaultHeight(145);
     }

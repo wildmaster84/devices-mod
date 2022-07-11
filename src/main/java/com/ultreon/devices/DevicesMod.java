@@ -27,16 +27,16 @@ import com.ultreon.devices.network.task.SyncApplicationPacket;
 import com.ultreon.devices.network.task.SyncConfigPacket;
 import com.ultreon.devices.object.AppInfo;
 import com.ultreon.devices.programs.*;
-import com.ultreon.devices.programs.auction.ApplicationMineBay;
+import com.ultreon.devices.programs.auction.MineBayApp;
 import com.ultreon.devices.programs.auction.task.TaskAddAuction;
 import com.ultreon.devices.programs.auction.task.TaskBuyItem;
 import com.ultreon.devices.programs.auction.task.TaskGetAuctions;
-import com.ultreon.devices.programs.debug.ApplicationTextArea;
-import com.ultreon.devices.programs.email.ApplicationEmail;
+import com.ultreon.devices.programs.debug.TextAreaApp;
+import com.ultreon.devices.programs.email.EmailApp;
 import com.ultreon.devices.programs.email.task.*;
-import com.ultreon.devices.programs.example.ApplicationExample;
+import com.ultreon.devices.programs.example.ExampleApp;
 import com.ultreon.devices.programs.example.task.TaskNotificationTest;
-import com.ultreon.devices.programs.gitweb.ApplicationGitWeb;
+import com.ultreon.devices.programs.gitweb.GitWebApp;
 import com.ultreon.devices.programs.system.*;
 import com.ultreon.devices.programs.system.task.*;
 import com.ultreon.devices.util.SiteRegistration;
@@ -191,17 +191,17 @@ public class DevicesMod implements PreparableReloadListener {
 
     private void registerApplications() {
         // Applications (Both)
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "settings"), ApplicationSettings.class);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "bank"), ApplicationBank.class);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "file_browser"), ApplicationFileBrowser.class);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "gitweb"), ApplicationGitWeb.class);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "note_stash"), ApplicationNoteStash.class);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "pixel_painter"), ApplicationPixelPainter.class);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "ender_mail"), ApplicationEmail.class);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "app_store"), ApplicationAppStore.class);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "settings"), SettingsApp.class);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "bank"), BankApp.class);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "file_browser"), FileBrowserApp.class);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "gitweb"), GitWebApp.class);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "note_stash"), NoteStachApp.class);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "pixel_painter"), PixelPainterApp.class);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "ender_mail"), EmailApp.class);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "app_store"), AppStore.class);
 
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "boat_racers"), ApplicationBoatRacers.class);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "mine_bay"), ApplicationMineBay.class);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "boat_racers"), BoatRacersApp.class);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "mine_bay"), MineBayApp.class);
 
         // Core
         TaskManager.registerTask(TaskUpdateApplicationData.class);
@@ -244,15 +244,15 @@ public class DevicesMod implements PreparableReloadListener {
 
         if (DEVELOPER_MODE) {
             // Applications (Developers)
-            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "example"), ApplicationExample.class);
-            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "icons"), ApplicationIcons.class);
-            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "text_area"), ApplicationTextArea.class);
-            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "test"), ApplicationTest.class);
+            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "example"), ExampleApp.class);
+            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "icons"), IconsApp.class);
+            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "text_area"), TextAreaApp.class);
+            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "test"), TestApp.class);
 
             TaskManager.registerTask(TaskNotificationTest.class);
         }
 
-        PrintingManager.registerPrint(new ResourceLocation(Reference.MOD_ID, "picture"), ApplicationPixelPainter.PicturePrint.class);
+        PrintingManager.registerPrint(new ResourceLocation(Reference.MOD_ID, "picture"), PixelPainterApp.PicturePrint.class);
     }
 
     private void generateIconAtlas() {
@@ -331,7 +331,7 @@ public class DevicesMod implements PreparableReloadListener {
         if (allowedApps == null) {
             allowedApps = new ArrayList<>();
         }
-        if (SystemApplication.class.isAssignableFrom(clazz)) {
+        if (SystemApp.class.isAssignableFrom(clazz)) {
             allowedApps.add(new AppInfo(identifier, true));
         } else {
             allowedApps.add(new AppInfo(identifier, false));
@@ -365,7 +365,7 @@ public class DevicesMod implements PreparableReloadListener {
     private AppInfo generateAppInfo(ResourceLocation identifier, Class<? extends Application> clazz) {
         LOGGER.debug("Generating app info for " + identifier.toString());
 
-        AppInfo info = new AppInfo(identifier, SystemApplication.class.isAssignableFrom(clazz));
+        AppInfo info = new AppInfo(identifier, SystemApp.class.isAssignableFrom(clazz));
         info.reload();
         return info;
     }

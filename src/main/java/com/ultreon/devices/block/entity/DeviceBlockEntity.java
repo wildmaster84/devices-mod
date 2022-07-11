@@ -1,8 +1,8 @@
 package com.ultreon.devices.block.entity;
 
 import com.ultreon.devices.block.DeviceBlock;
-import com.ultreon.devices.util.IColored;
-import com.ultreon.devices.util.ITickable;
+import com.ultreon.devices.util.Colorable;
+import com.ultreon.devices.util.Tickable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public abstract class DeviceBlockEntity extends SyncBlockEntity implements ITickable {
+public abstract class DeviceBlockEntity extends SyncBlockEntity implements Tickable {
     private DyeColor color = DyeColor.RED;
     private UUID deviceId;
     private String name;
@@ -103,7 +103,7 @@ public abstract class DeviceBlockEntity extends SyncBlockEntity implements ITick
         return null;
     }
 
-    public static abstract class Colored extends DeviceBlockEntity implements IColored {
+    public static abstract class Colored extends DeviceBlockEntity implements Colorable {
         private DyeColor color = DyeColor.RED;
 
         public Colored(BlockEntityType<?> pType, BlockPos pWorldPosition, BlockState pBlockState) {
