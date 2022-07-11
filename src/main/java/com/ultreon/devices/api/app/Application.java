@@ -205,14 +205,38 @@ public abstract class Application extends Wrappable {
      * @param character the typed character
      * @param code      the typed character code
      */
+    @Deprecated
     @Override
     public void handleKeyTyped(char character, int code) {
         currentLayout.handleKeyTyped(character, code);
     }
 
+    @Deprecated
     @Override
     public void handleKeyReleased(char character, int code) {
         currentLayout.handleKeyReleased(character, code);
+    }
+
+    /**
+     * Called when a key is typed from your keyboard. Note if you override, make
+     * sure you call this super method.
+     *
+     * @param character the typed character
+     * @param code      the typed character code
+     */
+    @Override
+    public void handleCharTyped(char character, int modifiers) {
+        currentLayout.handleCharTyped(character, modifiers);
+    }
+
+    @Override
+    public void handleKeyPressed(int keyCode, int scanCode, int modifiers) {
+        currentLayout.handleKeyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public void handleKeyReleased(int keyCode, int scanCode, int modifiers) {
+        currentLayout.handleKeyReleased(keyCode, scanCode, modifiers);
     }
 
     // TODO: Remove from here and put into core

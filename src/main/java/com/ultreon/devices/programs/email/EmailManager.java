@@ -2,6 +2,7 @@ package com.ultreon.devices.programs.email;
 
 import com.google.common.collect.HashBiMap;
 import com.ultreon.devices.DevicesMod;
+import com.ultreon.devices.api.WorldSavedData;
 import com.ultreon.devices.api.app.Icons;
 import com.ultreon.devices.api.app.Notification;
 import com.ultreon.devices.programs.email.object.Email;
@@ -18,7 +19,7 @@ import java.util.*;
 /**
  * Author: MrCrayfish
  */
-public class EmailManager {
+public class EmailManager implements WorldSavedData {
     public static final EmailManager INSTANCE = new EmailManager();
     private final HashBiMap<UUID, String> uuidToName = HashBiMap.create();
     private final Map<String, List<Email>> nameToInbox = new HashMap<>();
@@ -68,7 +69,7 @@ public class EmailManager {
         return uuidToName.get(player.getUUID());
     }
 
-    public void readFromNBT(CompoundTag nbt) {
+    public void load(CompoundTag nbt) {
         nameToInbox.clear();
 
         ListTag inboxes = (ListTag) nbt.get("Inboxes");
@@ -97,7 +98,7 @@ public class EmailManager {
         }
     }
 
-    public void writeToNBT(CompoundTag nbt) {
+    public void save(CompoundTag nbt) {
         ListTag inboxes = new ListTag();
         for (String key : nameToInbox.keySet()) {
             CompoundTag inbox = new CompoundTag();
@@ -107,7 +108,7 @@ public class EmailManager {
             List<Email> emails = nameToInbox.get(key);
             for (Email email : emails) {
                 CompoundTag emailTag = new CompoundTag();
-                email.writeToNBT(emailTag);
+                email.save(emailTag);
                 emailTagList.add(emailTag);
             }
             inbox.put("Emails", emailTagList);

@@ -23,7 +23,7 @@ public class TaskSendEmail extends Task {
 
     @Override
     public void prepareRequest(CompoundTag nbt) {
-        this.email.writeToNBT(nbt);
+        this.email.save(nbt);
         nbt.putString("to", this.to);
     }
 

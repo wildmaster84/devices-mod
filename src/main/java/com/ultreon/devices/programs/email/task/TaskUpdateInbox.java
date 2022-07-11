@@ -32,7 +32,7 @@ public class TaskUpdateInbox extends Task {
         if (emails != null) {
             for (Email email : emails) {
                 CompoundTag emailTag = new CompoundTag();
-                email.writeToNBT(emailTag);
+                email.save(emailTag);
                 tagList.add(emailTag);
             }
         }

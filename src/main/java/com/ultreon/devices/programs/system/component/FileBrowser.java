@@ -255,11 +255,13 @@ public class FileBrowser extends Component {
                             //TODO change to check if application is installed
                             Application targetApp = laptop.getApplication(file.getOpeningApp());
                             if (targetApp != null) {
-                                if (!laptop.isApplicationInstalled(targetApp.getInfo())) {
+                                if (laptop.isApplicationInstalled(targetApp.getInfo())) {
+                                    if (!laptop.openApplication(targetApp.getInfo(), file)) {
+                                        laptop.sendApplicationToFront(systemApp.getInfo());
+                                        createErrorDialog(targetApp.getInfo().getName() + " was unable to open the file.");
+                                    }
+                                } else {
                                     createErrorDialog("This file could not be open because the application '" + ChatFormatting.YELLOW + targetApp.getInfo().getName() + ChatFormatting.RESET + "' is not installed.");
-                                } else if (!laptop.openApplication(targetApp.getInfo(), file)) {
-                                    laptop.sendApplicationToFront(systemApp.getInfo());
-                                    createErrorDialog(targetApp.getInfo().getName() + " was unable to open the file.");
                                 }
                             } else {
                                 createErrorDialog("The application designed for this file does not exist.");

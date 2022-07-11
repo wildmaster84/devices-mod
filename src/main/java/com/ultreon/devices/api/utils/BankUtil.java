@@ -1,5 +1,6 @@
 package com.ultreon.devices.api.utils;
 
+import com.ultreon.devices.api.WorldSavedData;
 import com.ultreon.devices.api.task.Callback;
 import com.ultreon.devices.api.task.TaskManager;
 import com.ultreon.devices.programs.system.object.Account;
@@ -26,7 +27,7 @@ import java.util.UUID;
  *
  * @author MrCrayfish
  */
-public class BankUtil {
+public class BankUtil implements WorldSavedData {
     public static final BankUtil INSTANCE = new BankUtil();
 
     private final Map<UUID, Account> uuidToAccount = new HashMap<UUID, Account>();

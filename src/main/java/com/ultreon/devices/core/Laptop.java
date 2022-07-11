@@ -1,7 +1,6 @@
 package com.ultreon.devices.core;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.ultreon.devices.DevicesMod;
@@ -25,6 +24,7 @@ import com.ultreon.devices.programs.system.SystemApplication;
 import com.ultreon.devices.programs.system.component.FileBrowser;
 import com.ultreon.devices.programs.system.task.TaskUpdateApplicationData;
 import com.ultreon.devices.programs.system.task.TaskUpdateSystemData;
+import it.unimi.dsi.fastutil.ints.IntArraySet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
@@ -43,14 +43,17 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 //TODO Intro message (created by mrcrayfish, donate here)
 
+/**
+ * Laptop GUI class.
+ *
+ * @author MrCrayfish, Qboi123
+ */
 public class Laptop extends Screen implements System {
     public static final int ID = 1;
     public static final ResourceLocation ICON_TEXTURES = new ResourceLocation(Reference.MOD_ID, "textures/atlas/app_icons.png");
@@ -66,27 +69,33 @@ public class Laptop extends Screen implements System {
     static final int SCREEN_WIDTH = DEVICE_WIDTH - BORDER * 2;
     private static final int DEVICE_HEIGHT = 216;
     static final int SCREEN_HEIGHT = DEVICE_HEIGHT - BORDER * 2;
-
+    private static final List<Runnable> tasks = new CopyOnWriteArrayList<>();
     private static System system;
     private static BlockPos pos;
     private static Drive mainDrive;
-    private static final List<Runnable> tasks = new CopyOnWriteArrayList<>();
-    protected List<AppInfo> installedApps = new ArrayList<>();
     private final Settings settings;
     private final TaskBar bar;
-    private final com.ultreon.devices.core.Window<?>[] windows;
-    private Layout context = null;
+    private final Window<?>[] windows; // Todo: make this a list
     private final CompoundTag appData;
     private final CompoundTag systemData;
+    protected List<AppInfo> installedApps = new ArrayList<>();
+    private Layout context = null;
     private int currentWallpaper;
     private int lastMouseX, lastMouseY;
     private boolean dragging = false;
+    private final IntArraySet pressed = new IntArraySet();
 
+    /**
+     * Creates a new laptop GUI.
+     *
+     * @param laptop the block entity of the laptop in-game.
+     */
     public Laptop(LaptopBlockEntity laptop) {
         super(new TextComponent("Laptop"));
+
         this.appData = laptop.getApplicationData();
         this.systemData = laptop.getSystemData();
-        this.windows = new com.ultreon.devices.core.Window[5];
+        this.windows = new Window[5];
         this.settings = Settings.fromTag(systemData.getCompound("Settings"));
         this.bar = new TaskBar(this);
         this.currentWallpaper = systemData.getInt("CurrentWallpaper");
@@ -108,6 +117,11 @@ public class Laptop extends Screen implements System {
         return pos;
     }
 
+    /**
+     * Add a wallpaper to the list of available wallpapers.
+     *
+     * @param wallpaper location to the wallpaper texture, if null the wallpaper will not be added.
+     */
     public static void addWallpaper(ResourceLocation wallpaper) {
         if (wallpaper != null) {
             WALLPAPERS.add(wallpaper);
@@ -129,10 +143,18 @@ public class Laptop extends Screen implements System {
         }
     }
 
+    /**
+     * Run a task later in render thread.
+     *
+     * @param task the task to run.
+     */
     public static void runLater(Runnable task) {
         tasks.add(task);
     }
 
+    /**
+     * Initialize the Laptop GUI.
+     */
     @Override
     public void init() {
         Minecraft.getInstance().keyboardHandler.setSendRepeatsToGui(true);
@@ -156,7 +178,7 @@ public class Laptop extends Screen implements System {
         Minecraft.getInstance().keyboardHandler.setSendRepeatsToGui(false);
 
         /* Close all windows and sendTask application data */
-        for (com.ultreon.devices.core.Window<?> window : windows) {
+        for (Window<?> window : windows) {
             if (window != null) {
                 window.close();
             }
@@ -181,21 +203,31 @@ public class Laptop extends Screen implements System {
         TaskManager.sendTask(new TaskUpdateSystemData(pos, systemData));
     }
 
+    /**
+     * Handles Minecraft GUI resizing.
+     *
+     * @param minecraft the Minecraft instance
+     * @param width     the new width
+     * @param height    the new height
+     */
     @Override
     public void resize(@NotNull Minecraft minecraft, int width, int height) {
         super.resize(minecraft, width, height);
-        for (com.ultreon.devices.core.Window<?> window : windows) {
+        for (var window : windows) {
             if (window != null) {
                 window.content.markForLayoutUpdate();
             }
         }
     }
 
+    /**
+     * Ticking the laptop.
+     */
     @Override
     public void tick() {
         bar.onTick();
 
-        for (com.ultreon.devices.core.Window<?> window : windows) {
+        for (var window : windows) {
             if (window != null) {
                 window.onTick();
             }
@@ -204,49 +236,64 @@ public class Laptop extends Screen implements System {
         FileBrowser.refreshList = false;
     }
 
+    /**
+     * Render the laptop screen.
+     *
+     * @param pose         the pose stack.
+     * @param mouseX       the current mouse X position.
+     * @param mouseY       the current mouse Y position.
+     * @param partialTicks the rendering partial ticks that forge give use (which is useless here).
+     */
     @Override
-    public void render(@NotNull PoseStack pose, int mouseX, int mouseY, float partialTicks) {
+    public void render(final @NotNull PoseStack pose, final int mouseX, final int mouseY, float partialTicks) {
         for (Runnable task : tasks) {
             task.run();
         }
         tasks.clear();
 
-        //Fixes the strange partialTicks that Forge decided to give us
-        partialTicks = Minecraft.getInstance().getFrameTime();
+        // Fixes the strange partialTicks that Forge decided to give us
+        final float frameTime = Minecraft.getInstance().getFrameTime();
 
         this.renderBackground(pose);
 
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.setShaderTexture(0, LAPTOP_GUI);
 
-        /* Physical Screen */
+        //*************************//
+        //     Physical Screen     //
+        //*************************//
         int posX = (width - DEVICE_WIDTH) / 2;
         int posY = (height - DEVICE_HEIGHT) / 2;
 
-        /* Corners */
+        // Corners
         blit(pose, posX, posY, 0, 0, BORDER, BORDER); // TOP-LEFT
         blit(pose, posX + DEVICE_WIDTH - BORDER, posY, 11, 0, BORDER, BORDER); // TOP-RIGHT
         blit(pose, posX + DEVICE_WIDTH - BORDER, posY + DEVICE_HEIGHT - BORDER, 11, 11, BORDER, BORDER); // BOTTOM-RIGHT
         blit(pose, posX, posY + DEVICE_HEIGHT - BORDER, 0, 11, BORDER, BORDER); // BOTTOM-LEFT
 
-        /* Edges */
+        // Edges
         Gui.blit(pose, posX + BORDER, posY, SCREEN_WIDTH, BORDER, 10, 0, 1, BORDER, 256, 256); // TOP
         Gui.blit(pose, posX + DEVICE_WIDTH - BORDER, posY + BORDER, BORDER, SCREEN_HEIGHT, 11, 10, BORDER, 1, 256, 256); // RIGHT
         Gui.blit(pose, posX + BORDER, posY + DEVICE_HEIGHT - BORDER, SCREEN_WIDTH, BORDER, 10, 11, 1, BORDER, 256, 256); // BOTTOM
         Gui.blit(pose, posX, posY + BORDER, BORDER, SCREEN_HEIGHT, 0, 11, BORDER, 1, 256, 256); // LEFT
 
-        /* Center */
+        // Center
         Gui.blit(pose, posX + BORDER, posY + BORDER, SCREEN_WIDTH, SCREEN_HEIGHT, 10, 10, 1, 1, 256, 256);
 
-        /* Wallpaper */
+        //*******************//
+        //     Wallpaper     //
+        //*******************//
         RenderSystem.setShaderTexture(0, WALLPAPERS.get(currentWallpaper));
         RenderUtil.drawRectWithTexture(pose, posX + 10, posY + 10, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 512, 288);
 
+        //************************************//
+        // Draw the watermark on the desktop. //
+        //************************************//
         if (!DevicesMod.DEVELOPER_MODE) {
             if (DevicesMod.isDevelopmentPreview()) {
-                drawString(pose, font, "Development Preview v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
+                drawString(pose, font, "Development Preview - " + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
             } else {
-                drawString(pose, font, "Alpha v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
+                drawString(pose, font, "Alpha " + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
             }
         } else {
             drawString(pose, font, "Developer Version - " + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
@@ -259,23 +306,36 @@ public class Laptop extends Screen implements System {
 
         Image.CACHE.forEach((s, cachedImage) -> cachedImage.delete());
 
-        /* Window */
-        for (int i = windows.length - 1; i >= 0; i--) {
-            com.ultreon.devices.core.Window<?> window = windows[i];
-            if (window != null) {
-                window.render(pose, this, minecraft, posX + BORDER, posY + BORDER, mouseX, mouseY, i == 0 && !insideContext, partialTicks);
+        //****************//
+        //     Window     //
+        //****************//
+        pose.pushPose();
+        {
+            Window<?>[] windows1 = Arrays.stream(windows).filter(Objects::nonNull).toArray(Window<?>[]::new);
+            for (int i = windows1.length - 1; i >= 0; i--) {
+                var window = windows1[i];
+                if (window != null) {
+                    if (i == 0) {
+                        window.render(pose, this, minecraft, posX + BORDER, posY + BORDER, mouseX, mouseY, !insideContext, partialTicks);
+                    } else {
+                        window.render(pose, this, minecraft, posX + BORDER, posY + BORDER, Integer.MAX_VALUE, Integer.MAX_VALUE, false, partialTicks);
+                    }
+                    pose.translate(0, 0, 100);
+                }
             }
         }
+        pose.popPose();
 
-        /* Application Bar */
-        bar.render(pose, this, minecraft, posX + 10, posY + DEVICE_HEIGHT - 28, mouseX, mouseY, partialTicks);
+        //****************************//
+        // Render the Application Bar //
+        //****************************//
+        bar.render(pose, this, minecraft, posX + 10, posY + DEVICE_HEIGHT - 28, mouseX, mouseY, frameTime);
 
         if (context != null) {
-            context.render(pose, this, minecraft, context.xPosition, context.yPosition, mouseX, mouseY, true, partialTicks);
+            context.render(pose, this, minecraft, context.xPosition, context.yPosition, mouseX, mouseY, true, frameTime);
         }
 
-        Image.CACHE.entrySet().removeIf(entry ->
-        {
+        Image.CACHE.entrySet().removeIf(entry -> {
             Image.CachedImage cachedImage = entry.getValue();
             if (cachedImage.isDynamic() && cachedImage.isPendingDeletion()) {
                 int texture = cachedImage.getTextureId();
@@ -287,7 +347,7 @@ public class Laptop extends Screen implements System {
             return false;
         });
 
-        super.render(pose, mouseX, mouseY, partialTicks);
+        super.render(pose, mouseX, mouseY, frameTime);
     }
 
     private boolean isMouseInside(int mouseX, int mouseY, int startX, int startY, int endX, int endY) {
@@ -317,9 +377,9 @@ public class Laptop extends Screen implements System {
         this.bar.handleClick(this, posX, posY + SCREEN_HEIGHT - TaskBar.BAR_HEIGHT, (int) mouseX, (int) mouseY, mouseButton);
 
         for (int i = 0; i < windows.length; i++) {
-            com.ultreon.devices.core.Window<Application> window = (com.ultreon.devices.core.Window<Application>) windows[i];
+            Window<Application> window = (Window<Application>) windows[i];
             if (window != null) {
-                com.ultreon.devices.core.Window<Dialog> dialogWindow = window.getContent().getActiveDialog();
+                Window<Dialog> dialogWindow = window.getContent().getActiveDialog();
                 if (isMouseWithinWindow((int) mouseX, (int) mouseY, window) || isMouseWithinWindow((int) mouseX, (int) mouseY, dialogWindow)) {
                     windows[i] = null;
                     updateWindowStack();
@@ -382,16 +442,29 @@ public class Laptop extends Screen implements System {
     public boolean charTyped(char codePoint, int modifiers) {
         boolean override = super.charTyped(codePoint, modifiers);
         if (!override && windows[0] != null)
-            windows[0].handleKeyTyped(codePoint, modifiers);
+            windows[0].handleCharTyped(codePoint, modifiers);
         return override;
     }
 
     @Override
+    public boolean keyPressed(final int keyCode, final int scanCode, final int modifiers) {
+        final boolean override = super.keyPressed(keyCode, scanCode, modifiers);
+
+        if (!pressed.contains(keyCode) && !override && windows[0] != null) {
+            windows[0].handleKeyPressed(keyCode, scanCode, modifiers);
+        }
+        pressed.add(keyCode);
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
     public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        pressed.remove(keyCode);
+
         boolean b = super.keyReleased(keyCode, scanCode, modifiers);
 
         if (keyCode >= 32 && keyCode < 256 && windows[0] != null) {
-            windows[0].handleKeyReleased((char) InputConstants.getKey(keyCode, scanCode).getValue(), keyCode);
+            windows[0].handleKeyReleased(keyCode, scanCode, modifiers);
             return true;
         }
         return b;
@@ -413,8 +486,8 @@ public class Laptop extends Screen implements System {
         }
 
         if (windows[0] != null) {
-            com.ultreon.devices.core.Window<Application> window = (com.ultreon.devices.core.Window<Application>) windows[0];
-            com.ultreon.devices.core.Window<Dialog> dialogWindow = window.getContent().getActiveDialog();
+            Window<Application> window = (Window<Application>) windows[0];
+            Window<Dialog> dialogWindow = window.getContent().getActiveDialog();
             if (dragging) {
                 if (isMouseOnScreen((int) mouseX, (int) mouseY)) {
                     Objects.requireNonNullElse(dialogWindow, window).handleWindowMove(posX, posY, (int) -(lastMouseX - mouseX), (int) -(lastMouseY - mouseY));
@@ -454,7 +527,7 @@ public class Laptop extends Screen implements System {
 
     public boolean sendApplicationToFront(AppInfo info) {
         for (int i = 0; i < windows.length; i++) {
-            com.ultreon.devices.core.Window<?> window = windows[i];
+            Window<?> window = windows[i];
             if (window != null && window.content instanceof Application && ((Application) window.content).getInfo() == info) {
                 windows[i] = null;
                 updateWindowStack();
@@ -477,16 +550,16 @@ public class Laptop extends Screen implements System {
     }
 
     private void openApplication(Application app, CompoundTag intent) {
-        if (!isApplicationInstalled(app.getInfo()))
+        if (isApplicationNotInstalled(app.getInfo()))
             return;
 
-        if (!isValidApplication(app.getInfo()))
+        if (isInvalidApplication(app.getInfo()))
             return;
 
         if (sendApplicationToFront(app.getInfo()))
             return;
 
-        com.ultreon.devices.core.Window<Application> window = new com.ultreon.devices.core.Window<>(app, this);
+        Window<Application> window = new Window<>(app, this);
         window.init((width - SCREEN_WIDTH) / 2, (height - SCREEN_HEIGHT) / 2, intent);
 
         if (appData.contains(app.getInfo().getFormattedId())) {
@@ -508,10 +581,10 @@ public class Laptop extends Screen implements System {
 
     @Override
     public boolean openApplication(AppInfo info, File file) {
-        if (!isApplicationInstalled(info))
+        if (isApplicationNotInstalled(info))
             return false;
 
-        if (!isValidApplication(info))
+        if (isInvalidApplication(info))
             return false;
 
         Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
@@ -541,7 +614,7 @@ public class Laptop extends Screen implements System {
     @SuppressWarnings("unchecked")
     private void closeApplication(Application app) {
         for (int i = 0; i < windows.length; i++) {
-            com.ultreon.devices.core.Window<Application> window = (com.ultreon.devices.core.Window<Application>) windows[i];
+            Window<Application> window = (Window<Application>) windows[i];
             if (window != null) {
                 if (window.content.getInfo().equals(app.getInfo())) {
                     if (app.isDirty()) {
@@ -564,7 +637,7 @@ public class Laptop extends Screen implements System {
         }
     }
 
-    private void addWindow(com.ultreon.devices.core.Window<Application> window) {
+    private void addWindow(Window<Application> window) {
         if (hasReachedWindowLimit())
             return;
 
@@ -588,7 +661,7 @@ public class Laptop extends Screen implements System {
     }
 
     private boolean hasReachedWindowLimit() {
-        for (com.ultreon.devices.core.Window<?> window : windows) {
+        for (Window<?> window : windows) {
             if (window == null) return false;
         }
         return true;
@@ -600,21 +673,21 @@ public class Laptop extends Screen implements System {
         return isMouseInside(mouseX, mouseY, posX, posY, posX + SCREEN_WIDTH, posY + SCREEN_HEIGHT);
     }
 
-    private boolean isMouseWithinWindowBar(int mouseX, int mouseY, com.ultreon.devices.core.Window<?> window) {
+    private boolean isMouseWithinWindowBar(int mouseX, int mouseY, Window<?> window) {
         if (window == null) return false;
         int posX = (width - SCREEN_WIDTH) / 2;
         int posY = (height - SCREEN_HEIGHT) / 2;
         return isMouseInside(mouseX, mouseY, posX + window.offsetX + 1, posY + window.offsetY + 1, posX + window.offsetX + window.width - 13, posY + window.offsetY + 11);
     }
 
-    private boolean isMouseWithinWindow(int mouseX, int mouseY, com.ultreon.devices.core.Window<?> window) {
+    private boolean isMouseWithinWindow(int mouseX, int mouseY, Window<?> window) {
         if (window == null) return false;
         int posX = (width - SCREEN_WIDTH) / 2;
         int posY = (height - SCREEN_HEIGHT) / 2;
         return isMouseInside(mouseX, mouseY, posX + window.offsetX, posY + window.offsetY, posX + window.offsetX + window.width, posY + window.offsetY + window.height);
     }
 
-    public boolean isMouseWithinApp(int mouseX, int mouseY, com.ultreon.devices.core.Window<?> window) {
+    public boolean isMouseWithinApp(int mouseX, int mouseY, Window<?> window) {
         int posX = (width - SCREEN_WIDTH) / 2;
         int posY = (height - SCREEN_HEIGHT) / 2;
         return isMouseInside(mouseX, mouseY, posX + window.offsetX + 1, posY + window.offsetY + 13, posX + window.offsetX + window.width - 1, posY + window.offsetY + window.height - 1);
@@ -663,6 +736,10 @@ public class Laptop extends Screen implements System {
         return info.isSystemApp() || installedApps.contains(info);
     }
 
+    public boolean isApplicationNotInstalled(AppInfo info) {
+        return !isApplicationInstalled(info);
+    }
+
     private boolean isValidApplication(AppInfo info) {
         if (DevicesMod.getInstance().hasAllowedApplications()) {
             return DevicesMod.getInstance().getAllowedApplications().contains(info);
@@ -670,22 +747,25 @@ public class Laptop extends Screen implements System {
         return true;
     }
 
-    public void installApplication(AppInfo info, @Nullable Callback<Object> callback) {
-        if (!isValidApplication(info))
-            return;
+    private boolean isInvalidApplication(AppInfo info) {
+        return !isValidApplication(info);
+    }
 
-        Task task = new TaskInstallApp(info, pos, true);
-        task.setCallback((tag, success) ->
-        {
-            if (success) {
-                installedApps.add(info);
-                installedApps.sort(AppInfo.SORT_NAME);
-            }
-            if (callback != null) {
-                callback.execute(null, success);
-            }
-        });
-        TaskManager.sendTask(task);
+    public void installApplication(AppInfo info, @Nullable Callback<Object> callback) {
+        if (isValidApplication(info)) {
+            Task task = new TaskInstallApp(info, pos, true);
+            task.setCallback((tag, success) ->
+            {
+                if (success) {
+                    installedApps.add(info);
+                    installedApps.sort(AppInfo.SORT_NAME);
+                }
+                if (callback != null) {
+                    callback.execute(null, success);
+                }
+            });
+            TaskManager.sendTask(task);
+        }
     }
 
     public void removeApplication(AppInfo info, @Nullable Callback<Object> callback) {

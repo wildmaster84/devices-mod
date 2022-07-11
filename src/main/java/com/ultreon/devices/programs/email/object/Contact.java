@@ -1,5 +1,7 @@
 package com.ultreon.devices.programs.email.object;
 
+import net.minecraft.nbt.CompoundTag;
+
 /**
  * Author: MrCrayfish
  */
@@ -23,5 +25,10 @@ public class Contact {
     @Override
     public String toString() {
         return nickname;
+    }
+
+    public void save(CompoundTag contactTag) {
+        contactTag.putString("nickname", nickname);
+        contactTag.putString("email", email);
     }
 }

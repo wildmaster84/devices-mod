@@ -68,6 +68,8 @@ public class Window<T extends Wrappable> {
             content.clearPendingLayout();
         }
 
+        pose.pushPose();
+
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.enableBlend();
         RenderSystem.setShaderTexture(0, WINDOW_GUI);
@@ -106,8 +108,10 @@ public class Window<T extends Wrappable> {
             Gui.fill(pose, x + offsetX, y + offsetY, x + offsetX + width, y + offsetY + height, Color_WINDOW_DARK);
             dialogWindow.render(pose, gui, mc, x, y, mouseX, mouseY, active, partialTicks);
         }
+        pose.popPose();
     }
 
+    @Deprecated
     public void handleKeyTyped(char character, int code) {
         if (dialogWindow != null) {
             dialogWindow.handleKeyTyped(character, code);
@@ -116,12 +120,37 @@ public class Window<T extends Wrappable> {
         content.handleKeyTyped(character, code);
     }
 
+    @Deprecated
     public void handleKeyReleased(char character, int code) {
         if (dialogWindow != null) {
             dialogWindow.handleKeyReleased(character, code);
             return;
         }
         content.handleKeyReleased(character, code);
+    }
+
+    public void handleCharTyped(char codePoint, int modifiers) {
+        if (dialogWindow != null) {
+            dialogWindow.handleCharTyped(codePoint, modifiers);
+            return;
+        }
+        content.handleCharTyped(codePoint, modifiers);
+    }
+
+    public void handleKeyPressed(int keyCode, int scanCode, int modifiers) {
+        if (dialogWindow != null) {
+            dialogWindow.handleKeyPressed(keyCode, scanCode, modifiers);
+            return;
+        }
+        content.handleKeyPressed(keyCode, scanCode, modifiers);
+    }
+
+    public void handleKeyReleased(int keyCode, int scanCode, int modifiers) {
+        if (dialogWindow != null) {
+            dialogWindow.handleKeyReleased(keyCode, scanCode, modifiers);
+            return;
+        }
+        content.handleKeyReleased(keyCode, scanCode, modifiers);
     }
 
     public void handleWindowMove(int screenStartX, int screenStartY, int mouseDX, int mouseDY) {

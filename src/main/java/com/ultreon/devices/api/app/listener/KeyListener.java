@@ -5,5 +5,5 @@ package com.ultreon.devices.api.app.listener;
  */
 @SuppressWarnings("UnusedReturnValue")
 public interface KeyListener {
-    boolean onCharTypes(char c);
+    boolean onCharTyped(char c);
 }

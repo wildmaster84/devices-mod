@@ -93,6 +93,7 @@ public class ApplicationGitWeb extends Application {
     }
 
     @Override
+    @Deprecated
     public void handleKeyTyped(char character, int code) {
         super.handleKeyTyped(character, code);
     }

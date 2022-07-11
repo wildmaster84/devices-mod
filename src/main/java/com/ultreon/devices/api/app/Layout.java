@@ -133,21 +133,21 @@ public class Layout extends com.ultreon.devices.api.app.Component {
             initListener.onInit();
         }
 
-        for (com.ultreon.devices.api.app.Component c : components) {
+        for (var c : components) {
             c.handleLoad();
         }
     }
 
     @Override
     protected void handleUnload() {
-        for (com.ultreon.devices.api.app.Component c : components) {
+        for (var c : components) {
             c.handleUnload();
         }
     }
 
     @Override
     public void handleTick() {
-        for (com.ultreon.devices.api.app.Component c : components) {
+        for (var c : components) {
             c.handleTick();
         }
     }
@@ -172,7 +172,7 @@ public class Layout extends com.ultreon.devices.api.app.Component {
         }
 
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        for (com.ultreon.devices.api.app.Component c : new ArrayList<>(components)) {
+        for (var c : new ArrayList<>(components)) {
             RenderSystem.disableDepthTest();
             GLHelper.pushScissor(x, y, width, height);
             c.render(pose, laptop, mc, x + c.left, y + c.top, mouseX, mouseY, windowActive, partialTicks);
@@ -185,28 +185,60 @@ public class Layout extends com.ultreon.devices.api.app.Component {
         if (!visible)
             return;
 
-        for (com.ultreon.devices.api.app.Component c : components) {
+        for (var c : components) {
             c.renderOverlay(pose, laptop, mc, mouseX, mouseY, windowActive);
         }
     }
 
+    @Deprecated
     @Override
     public void handleKeyTyped(char character, int code) {
         if (!visible || !enabled)
             return;
 
-        for (com.ultreon.devices.api.app.Component c : components) {
+        for (var c : components) {
             c.handleKeyTyped(character, code);
         }
     }
 
+    @Deprecated
     @Override
     public void handleKeyReleased(char character, int code) {
         if (!visible || !enabled)
             return;
 
-        for (com.ultreon.devices.api.app.Component c : components) {
+        for (var c : components) {
             c.handleKeyReleased(character, code);
+        }
+    }
+
+    @Override
+    public void handleCharTyped(char codePoint, int modifiers) {
+        if (!visible || !enabled)
+            return;
+
+        for (var c : components) {
+            c.handleCharTyped(codePoint, modifiers);
+        }
+    }
+
+    @Override
+    public void handleKeyPressed(int keyCode, int scanCode, int modifiers) {
+        if (!visible || !enabled)
+            return;
+
+        for (var c : components) {
+            c.handleKeyPressed(keyCode, scanCode, modifiers);
+        }
+    }
+
+    @Override
+    public void handleKeyReleased(int keyCode, int scanCode, int modifiers) {
+        if (!visible || !enabled)
+            return;
+
+        for (var c : components) {
+            c.handleKeyReleased(keyCode, scanCode, modifiers);
         }
     }
 
@@ -215,7 +247,7 @@ public class Layout extends com.ultreon.devices.api.app.Component {
         if (!visible || !enabled)
             return;
 
-        for (com.ultreon.devices.api.app.Component c : components) {
+        for (var c : components) {
             c.handleMouseClick(mouseX, mouseY, mouseButton);
         }
     }
@@ -225,7 +257,7 @@ public class Layout extends com.ultreon.devices.api.app.Component {
         if (!visible || !enabled)
             return;
 
-        for (com.ultreon.devices.api.app.Component c : components) {
+        for (var c : components) {
             c.handleMouseDrag(mouseX, mouseY, mouseButton);
         }
     }
@@ -235,7 +267,7 @@ public class Layout extends com.ultreon.devices.api.app.Component {
         if (!visible || !enabled)
             return;
 
-        for (com.ultreon.devices.api.app.Component c : components) {
+        for (var c : components) {
             c.handleMouseRelease(mouseX, mouseY, mouseButton);
         }
     }
@@ -245,7 +277,7 @@ public class Layout extends com.ultreon.devices.api.app.Component {
         if (!visible || !enabled)
             return;
 
-        for (com.ultreon.devices.api.app.Component c : components) {
+        for (var c : components) {
             c.handleMouseScroll(mouseX, mouseY, direction);
         }
     }
@@ -253,7 +285,7 @@ public class Layout extends com.ultreon.devices.api.app.Component {
     @Override
     public void updateComponents(int x, int y) {
         super.updateComponents(x, y);
-        for (com.ultreon.devices.api.app.Component c : components) {
+        for (var c : components) {
             c.updateComponents(x + left, y + top);
         }
     }
@@ -261,7 +293,7 @@ public class Layout extends com.ultreon.devices.api.app.Component {
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        for (com.ultreon.devices.api.app.Component c : components) {
+        for (var c : components) {
             c.setEnabled(enabled);
         }
     }
@@ -269,7 +301,7 @@ public class Layout extends com.ultreon.devices.api.app.Component {
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-        for (Component c : components) {
+        for (var c : components) {
             c.setVisible(visible);
         }
     }

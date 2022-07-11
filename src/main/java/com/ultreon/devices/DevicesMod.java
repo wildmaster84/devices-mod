@@ -20,6 +20,7 @@ import com.ultreon.devices.core.network.task.TaskGetDevices;
 import com.ultreon.devices.core.network.task.TaskPing;
 import com.ultreon.devices.core.print.task.TaskPrint;
 import com.ultreon.devices.core.task.TaskInstallApp;
+import com.ultreon.devices.event.WorldDataHandler;
 import com.ultreon.devices.init.RegistrationHandler;
 import com.ultreon.devices.network.PacketHandler;
 import com.ultreon.devices.network.task.SyncApplicationPacket;
@@ -116,6 +117,7 @@ public class DevicesMod implements PreparableReloadListener {
 
         // Common side stuff
         forgeEventBus.register(this);
+        forgeEventBus.register(new WorldDataHandler());
 
         LOGGER.info("Registering common setup handler, and load complete handler.");
 

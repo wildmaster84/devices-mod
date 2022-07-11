@@ -67,7 +67,7 @@ public class Email {
         this.read = read;
     }
 
-    public void writeToNBT(CompoundTag nbt) {
+    public void save(CompoundTag nbt) {
         nbt.putString("subject", this.subject);
         if (author != null) nbt.putString("author", this.author);
         nbt.putString("message", this.message);

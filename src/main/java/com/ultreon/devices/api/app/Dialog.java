@@ -118,14 +118,31 @@ public abstract class Dialog extends Wrappable {
         customLayout.handleMouseScroll(mouseX, mouseY, direction);
     }
 
+    @Deprecated
     @Override
     public void handleKeyTyped(char character, int code) {
         customLayout.handleKeyTyped(character, code);
     }
 
+    @Deprecated
     @Override
     public void handleKeyReleased(char character, int code) {
         customLayout.handleKeyReleased(character, code);
+    }
+
+    @Override
+    public void handleKeyPressed(int keyCode, int scanCode, int modifiers) {
+        customLayout.handleKeyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public void handleKeyReleased(int keyCode, int scanCode, int modifiers) {
+        customLayout.handleKeyReleased(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public void handleCharTyped(char character, int modifiers) {
+        customLayout.handleCharTyped(character, modifiers);
     }
 
     public void setTitle(String title) {

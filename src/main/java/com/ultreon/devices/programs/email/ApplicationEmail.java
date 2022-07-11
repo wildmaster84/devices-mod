@@ -2,6 +2,7 @@ package com.ultreon.devices.programs.email;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.ultreon.devices.Resources;
 import com.ultreon.devices.api.ApplicationManager;
 import com.ultreon.devices.api.app.Component;
 import com.ultreon.devices.api.app.Dialog;
@@ -26,6 +27,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
 
@@ -38,8 +40,8 @@ import java.util.regex.Pattern;
 
 @SuppressWarnings({"FieldCanBeLocal", "unused"})
 public class ApplicationEmail extends Application {
-    private static final ResourceLocation ENDER_MAIL_ICONS = new ResourceLocation("cdm:textures/gui/ender_mail.png");
-    private static final ResourceLocation ENDER_MAIL_BACKGROUND = new ResourceLocation("cdm:textures/gui/ender_mail_background.png");
+    private static final ResourceLocation ENDER_MAIL_ICONS = Resources.ENDER_MAIL_ICONS;
+    private static final ResourceLocation ENDER_MAIL_BACKGROUND = Resources.ENDER_MAIL_BACKGROUND;
 
     private static final Pattern EMAIL = Pattern.compile("^([a-zA-Z\\d]{1,10})@endermail\\.com$");
     private final Color COLOR_EMAIL_CONTENT_BACKGROUND = new Color(160, 160, 160);
@@ -509,7 +511,23 @@ public class ApplicationEmail extends Application {
 
     @Override
     public void save(CompoundTag tagCompound) {
+        // Save emails
+        ListTag emailsTag = new ListTag();
+        for (Email email : listEmails) {
+            CompoundTag emailTag = new CompoundTag();
+            email.save(emailTag);
+            emailsTag.add(emailTag);
+        }
+        tagCompound.put("emails", emailsTag);
 
+        // Save contacts
+        ListTag contactsTag = new ListTag();
+        for (Contact contact : listContacts) {
+            CompoundTag contactTag = new CompoundTag();
+            contact.save(contactTag);
+            contactsTag.add(contactTag);
+        }
+        tagCompound.put("contacts", contactsTag);
     }
 
     @Override

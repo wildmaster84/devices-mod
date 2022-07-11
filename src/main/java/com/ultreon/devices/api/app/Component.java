@@ -126,6 +126,7 @@ public abstract class Component extends GuiComponent {
      * @param mouseButton the clicked mouse button
      */
     protected void handleMouseClick(int mouseX, int mouseY, int mouseButton) {
+
     }
 
     /**
@@ -134,7 +135,9 @@ public abstract class Component extends GuiComponent {
      * @param character the typed character
      * @param code      the typed character code
      */
+    @Deprecated
     protected void handleKeyTyped(char character, int code) {
+
     }
 
     /**
@@ -143,7 +146,41 @@ public abstract class Component extends GuiComponent {
      * @param character the released character
      * @param code      the released character code
      */
+    @Deprecated
     protected void handleKeyReleased(char character, int code) {
+
+    }
+
+    /**
+     * Called when a character is typed from your keyboard.
+     *
+     * @param codePoint the typed character
+     * @param modifiers the typed character modifiers
+     */
+    public void handleCharTyped(char codePoint, int modifiers) {
+
+    }
+
+    /**
+     * Called when a key is pressed from your keyboard.
+     *
+     * @param keyCode   the pressed key code
+     * @param scanCode  the pressed key scan code
+     * @param modifiers the pressed key modifiers
+     */
+    public void handleKeyPressed(int keyCode, int scanCode, int modifiers) {
+
+    }
+
+    /**
+     * Called when a key is released from your keyboard.
+     *
+     * @param keyCode   the released key code
+     * @param scanCode  the released key scan code
+     * @param modifiers the released key modifiers
+     */
+    public void handleKeyReleased(int keyCode, int scanCode, int modifiers) {
+
     }
 
     /**
@@ -154,6 +191,7 @@ public abstract class Component extends GuiComponent {
      * @param mouseButton the pressed mouse button
      */
     protected void handleMouseDrag(int mouseX, int mouseY, int mouseButton) {
+
     }
 
     /**

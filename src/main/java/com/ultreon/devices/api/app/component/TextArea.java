@@ -241,46 +241,42 @@ public class TextArea extends Component {
     }
 
     @Override
-    public void handleKeyTyped(char character, int code) {
+    public void handleCharTyped(char codePoint, int modifiers) {
         if (!this.visible || !this.enabled || !this.isFocused || !this.editable) return;
-        System.out.println(character + ", " + code);
 
-        if (Screen.isPaste(code)) {
+        System.out.println("TextArea.handleCharTyped: codePoint = " + codePoint + ", modifiers = " + modifiers);
+
+        if (codePoint == '\\') performBackspace();
+        else if (Character.isDefined(codePoint)) writeText(codePoint);
+
+        if (keyListener != null) {
+            keyListener.onCharTyped(codePoint);
+        }
+        updateScroll();
+    }
+
+    @Override
+    public void handleKeyPressed(int keyCode, int scanCode, int modifiers) {
+        if (!this.visible || !this.enabled || !this.isFocused || !this.editable) return;
+
+        System.out.println("TextArea.handleKeyPressed: keyCode = " + keyCode + ", scanCode = " + scanCode + ", modifiers = " + modifiers);
+
+        if (Screen.isPaste(keyCode)) {
             String[] lines = Minecraft.getInstance().keyboardHandler.getClipboard().split("\n");
             for (int i = 0; i < lines.length - 1; i++) {
                 writeText(lines[i] + "\n");
             }
             writeText(lines[lines.length - 1]);
         } else {
-            switch (code) {
-                case InputConstants.KEY_BACKSPACE: //TODO: Make delete actually work
-                    performBackspace();
-                    break;
-                case InputConstants.KEY_RETURN:
-                    performReturn();
-                    break;
-                case InputConstants.KEY_TAB:
-                    writeText('\t');
-                    break;
-                case InputConstants.KEY_LEFT:
-                    moveCursorLeft(1);
-                    break;
-                case InputConstants.KEY_RIGHT:
-                    moveCursorRight(1);
-                    break;
-                case InputConstants.KEY_UP:
-                    moveCursorUp();
-                    break;
-                case InputConstants.KEY_DOWN:
-                    moveCursorDown();
-                    break;
-                default:
-                    if (character == '\\') performBackspace();
-                    else if (Character.isDefined(character)) writeText(character);
-            }
-
-            if (keyListener != null) {
-                keyListener.onCharTypes(character);
+            System.out.println("TextArea.handleKeyTypes: keyCode = " + keyCode);
+            switch (keyCode) {
+                case InputConstants.KEY_BACKSPACE -> performBackspace(); // TODO: Make delete actually work
+                case InputConstants.KEY_RETURN -> performReturn();
+                case InputConstants.KEY_TAB -> writeText('\t');
+                case InputConstants.KEY_LEFT -> moveCursorLeft(1);
+                case InputConstants.KEY_RIGHT -> moveCursorRight(1);
+                case InputConstants.KEY_UP -> moveCursorUp();
+                case InputConstants.KEY_DOWN -> moveCursorDown();
             }
         }
         updateScroll();
