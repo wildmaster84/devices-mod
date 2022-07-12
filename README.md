@@ -1,7 +1,7 @@
 # Ultreon Devices Mod
 **Language:** Java  
 **Minecraft Version:** `1.18.2`  
-**Mod Loader:** [Forge](https://files.minecraftforge.net/)
+**Mod Loader:** [Forge](https://files.minecraftforge.net/) & [Fabric](https://fabricmc.net/)
 
 *Fork of [MrCrayfish's Device Mod](https://github.com/MrCrayfish/MrCrayfishDeviceMod)*
 
