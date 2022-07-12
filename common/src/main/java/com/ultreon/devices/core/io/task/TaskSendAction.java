@@ -11,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
 
 /**
  * @author MrCrayfish
@@ -43,7 +44,7 @@ public class TaskSendAction extends Task {
     @Override
     public void processRequest(CompoundTag tag, Level level, Player player) {
         FileAction action = FileAction.fromTag(tag.getCompound("action"));
-        BlockEntity tileEntity = level.getBlockEntity(BlockPos.of(tag.getLong("pos")));
+        BlockEntity tileEntity = level.getChunkAt(BlockPos.of(tag.getLong("pos"))).getBlockEntity(BlockPos.of(tag.getLong("pos")), LevelChunk.EntityCreationType.IMMEDIATE);
         if (tileEntity instanceof LaptopBlockEntity laptop) {
             response = laptop.getFileSystem().readAction(tag.getString("uuid"), action, level);
             this.setSuccessful();
