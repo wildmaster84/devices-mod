@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "devices",
+  "version": "${version}",
+  "name": "Devices",
+  "description": "ARCH",
+  "authors": [
+    "Testing"
+  ],
+  "contact": {
+    "website": "non",
+    "repo": "no",
+    "issues": "no"
+  },
+  "license": "GPL-3.0",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.ultreon.devices.fabric.DevicesFabric"
+    ]
+  },
+  "mixins": [
+    "devices.mixins.json",
+    "devices-common.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.8",
+    "minecraft": ">=1.18.2"
+  }
+}
