@@ -8,7 +8,7 @@ import com.ultreon.devices.api.app.component.Text;
  */
 public class TextLayout extends ScrollableLayout {
     public TextLayout(int left, int top, int visibleHeight, Text text) {
-        super(left, top, text.getWidth(), text.getHeight(), visibleHeight);
+        super(left, top, Math.max(13, text.getWidth()), Math.max(text.getHeight(), 1), visibleHeight);
         this.setText(text);
     }
 

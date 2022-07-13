@@ -36,7 +36,7 @@ public class ScrollableLayout extends Layout {
      * @param top  how many pixels from the top
      */
     public ScrollableLayout(int left, int top, int width, int height, int visibleHeight) {
-        super(left, top, width, height);
+        super(left,  top, Math.max(13, width), Math.max(1, height));
         this.visibleHeight = visibleHeight;
     }
 
