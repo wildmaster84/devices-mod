@@ -126,8 +126,10 @@ public class AppStore extends SystemApp {
         labelOtherDesc.setShadow(false);
         homePageLayout.addComponent(labelOtherDesc);
 
-        AppGrid other = new AppGrid(0, 192, 3, 2, this);
-        shuffleAndShrink(ApplicationManager.getAvailableApplications(), 6).forEach(a -> localAppList.add(other.addEntry(a)));
+        var q = ApplicationManager.getAvailableApplications().size();
+        var rows = (int)Math.round(Math.ceil(q/3D));
+        AppGrid other = new AppGrid(0, 192, 3, rows, this);
+        shuffleAndShrink(ApplicationManager.getAvailableApplications(), q).forEach(a -> localAppList.add(other.addEntry(a)));
         homePageLayout.addComponent(other);
 
         layoutMain.addComponent(homePageLayout);
