@@ -7,6 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
 
 public class TaskUpdateSystemData extends Task {
     private BlockPos pos;
@@ -31,7 +32,7 @@ public class TaskUpdateSystemData extends Task {
     @Override
     public void processRequest(CompoundTag tag, Level level, Player player) {
         BlockPos pos = BlockPos.of(tag.getLong("pos"));
-        BlockEntity tileEntity = level.getBlockEntity(pos);
+        BlockEntity tileEntity = level.getChunkAt(pos).getBlockEntity(pos, LevelChunk.EntityCreationType.IMMEDIATE);
         if (tileEntity instanceof LaptopBlockEntity laptop)
             laptop.setSystemData(tag.getCompound("data"));
         this.setSuccessful();

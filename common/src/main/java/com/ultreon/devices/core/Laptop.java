@@ -184,6 +184,9 @@ public class Laptop extends Screen implements System {
             }
         }
         installedApps.sort(AppInfo.SORT_NAME);
+        if (Minecraft.getInstance().getConnection() == null) {
+            installedApps.addAll(ApplicationManager.getAvailableApplications());
+        }
     }
 
     @Override

@@ -13,7 +13,7 @@ import net.minecraft.world.item.Items;
 public class BrewingBox extends ContainerBox {
     public static final int HEIGHT = 73;
     //Copied from GuiBrewingStand. Why do they store the length in an array?
-    private static final int[] BUBBLELENGTHS = new int[]{29, 24, 20, 16, 11, 6, 0};
+    private static final int[] BUBBLELENGTHS = new int[]{28, 24, 20, 16, 11, 6, 0}; // i kinda screwed the container texture file =|
     private int brewTimer;
 
     public BrewingBox(ItemStack fuel, ItemStack input, ItemStack[] output) {

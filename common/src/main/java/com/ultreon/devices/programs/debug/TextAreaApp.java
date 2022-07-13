@@ -26,7 +26,7 @@ public class TextAreaApp extends Application {
                     "byte", "else", "import", "public", "throws", "case", "enum", "instanceof", "return", "transient",
                     "catch", "extends", "int", "short", "try", "char", "final", "interface", "static", "void", "class",
                     "finally", "long", "strictfp", "volatile", "const", "float", "native", "super", "while", "null",
-                    "record" -> asArray(ChatFormatting.BLUE);
+                    "record", "sealed" -> asArray(ChatFormatting.BLUE);
             default -> asArray(ChatFormatting.WHITE);
         };
     };

@@ -3,6 +3,7 @@ package com.ultreon.devices.api.task;
 import com.ultreon.devices.Devices;
 import com.ultreon.devices.network.PacketHandler;
 import com.ultreon.devices.network.task.RequestPacket;
+import net.minecraft.client.Minecraft;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -47,6 +48,7 @@ public final class TaskManager {
 
         int requestId = manager.currentId++;
         manager.requests.put(requestId, task);
+        if(Minecraft.getInstance().getConnection() != null)
         PacketHandler.INSTANCE.sendToServer(new RequestPacket(requestId, task));
     }
 

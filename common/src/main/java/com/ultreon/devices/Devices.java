@@ -17,6 +17,7 @@ import com.ultreon.devices.api.utils.OnlineRequest;
 import com.ultreon.devices.block.PrinterBlock;
 import com.ultreon.devices.core.Laptop;
 import com.ultreon.devices.core.client.ClientNotification;
+import com.ultreon.devices.core.client.debug.ClientAppDebug;
 import com.ultreon.devices.core.io.task.*;
 import com.ultreon.devices.core.network.task.TaskConnect;
 import com.ultreon.devices.core.network.task.TaskGetDevices;
@@ -111,6 +112,7 @@ public class Devices {
             preInit();
             serverSetup();
         }
+        ClientAppDebug.register();
         ClientModEvents.clientSetup(); //todo
         LOGGER.info("HELLO FROM PREINIT");
         //LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
