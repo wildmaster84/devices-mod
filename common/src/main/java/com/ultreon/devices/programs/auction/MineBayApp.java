@@ -16,7 +16,9 @@ import com.ultreon.devices.programs.auction.object.AuctionItem;
 import com.ultreon.devices.programs.auction.task.TaskAddAuction;
 import com.ultreon.devices.programs.auction.task.TaskBuyItem;
 import com.ultreon.devices.programs.auction.task.TaskGetAuctions;
+import com.ultreon.devices.programs.system.layout.StandardLayout;
 import com.ultreon.devices.util.TimeUtil;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
@@ -83,6 +85,8 @@ public class MineBayApp extends Application {
 
     @Override
     public void init(@Nullable CompoundTag intent) {
+        var layoutMain = new StandardLayout(ChatFormatting.BOLD + "Icons", 330, 153, this, null);
+        setCurrentLayout(layoutMain);
         getCurrentLayout().setBackground((pose, gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> {
             Gui.fill(pose, x, y, x + width, y + 25, Color.GRAY.getRGB());
             Gui.fill(pose, x, y + 24, x + width, y + 25, Color.DARK_GRAY.getRGB());
@@ -97,7 +101,7 @@ public class MineBayApp extends Application {
         Button btnAddItem = new Button(70, 5, "Add Item");
         btnAddItem.setSize(60, 15);
         btnAddItem.setClickListener((mouseX, mouseY, mouseButton) -> setCurrentLayout(layoutSelectItem));
-        super.addComponent(btnAddItem);
+        layoutMain.addComponent(btnAddItem);
 
         Button btnViewItem = new Button(135, 5, "Your Auctions");
         btnViewItem.setSize(80, 15);
@@ -112,31 +116,31 @@ public class MineBayApp extends Application {
             });
             TaskManager.sendTask(task);
         });
-        super.addComponent(btnViewItem);
+        layoutMain.addComponent(btnViewItem);
 
         Label labelBalance = new Label("Balance", 295, 3);
         labelBalance.setAlignment(Label.ALIGN_RIGHT);
-        super.addComponent(labelBalance);
+        layoutMain.addComponent(labelBalance);
 
         final Label labelMoney = new Label("$0", 295, 13);
         labelMoney.setAlignment(Label.ALIGN_RIGHT);
         labelMoney.setScale(1);
         labelMoney.setShadow(false);
-        super.addComponent(labelMoney);
+        layoutMain.addComponent(labelMoney);
 
         Label labelCategories = new Label("Categories", 5, 29);
         labelCategories.setShadow(false);
-        super.addComponent(labelCategories);
+        layoutMain.addComponent(labelCategories);
 
         ItemList<String> categories = new ItemList<>(5, 40, 70, 7);
         for (String category : this.categories) {
             categories.addItem(category);
         }
-        super.addComponent(categories);
+        layoutMain.addComponent(categories);
 
         Label labelItems = new Label("Items", 100, 29);
         labelItems.setShadow(false);
-        super.addComponent(labelItems);
+        layoutMain.addComponent(labelItems);
 
         items = new ItemList<>(100, 40, 180, 4);
         items.setListItemRenderer(new ListItemRenderer<>(20) {
@@ -163,7 +167,7 @@ public class MineBayApp extends Application {
                 mc.font.draw(pose, price, x - mc.font.width(price) + width - 5, y + 6, Color.YELLOW.getRGB());
             }
         });
-        super.addComponent(items);
+        layoutMain.addComponent(items);
 
         Button btnBuy = new Button(100, 127, "Buy");
         btnBuy.setSize(50, 15);
@@ -191,7 +195,7 @@ public class MineBayApp extends Application {
             dialog.setNegativeListener((mouseX1, mouseY1, mouseButton1) -> dialog.close());
             MineBayApp.this.openDialog(dialog);
         });
-        super.addComponent(btnBuy);
+        layoutMain.addComponent(btnBuy);
 
         /* Select Item Layout */
 
@@ -319,7 +323,7 @@ public class MineBayApp extends Application {
         layoutDuration.addComponent(buttonDurationBack);
 
         buttonDurationCancel = new Button(138, 4, MINEBAY_ASSETS, 0, 12, 8, 8);
-        buttonDurationCancel.setClickListener((mouseX, mouseY, mouseButton) -> restoreDefaultLayout());
+        buttonDurationCancel.setClickListener((mouseX, mouseY, mouseButton) -> this.setCurrentLayout(layoutMain));
         layoutDuration.addComponent(buttonDurationCancel);
 
         buttonDurationAdd = new Button(154, 4, MINEBAY_ASSETS, 24, 12, 8, 8);
