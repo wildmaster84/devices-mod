@@ -244,7 +244,7 @@ public class Button extends Component {
             if (!StringUtils.isNullOrEmpty(text)) {
                 int textY = (height - mc.font.lineHeight) / 2 + 1;
                 int textOffsetX = iconResource != null ? iconWidth + 3 : 0;
-                int textColor = !Button.this.enabled ? 10526880 : (Button.this.hovered ? 16777120 : 14737632);
+                int textColor = !Button.this.enabled ? 0xa0a0a0 : 0xe0e0e0;
                 drawString(pose, mc.font, text, x + contentX + textOffsetX, y + textY, textColor);
             }
         }
