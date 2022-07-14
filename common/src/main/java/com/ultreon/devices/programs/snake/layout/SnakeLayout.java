@@ -30,8 +30,8 @@ public class SnakeLayout extends Layout {
         this.setBackground((pose, gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> {
             Gui.fill(pose, x,y,x+width,x+height, new Color(0x0, 0x0, 0x0).getRGB());
         });
-        this.addComponent(new Grid(0, 0));
         this.addComponent(button);
+        this.addComponent(new Grid(0, 0));
     }
 
     @Override
@@ -105,15 +105,15 @@ public class SnakeLayout extends Layout {
             super.render(pose, laptop, mc, x, y, mouseX, mouseY, windowActive, partialTicks);
             var black = new Color(0, 0, 0, 0.5f);
             var intBlack = black.getRGB();
-            for (var i = 0;i<15;i++) {
-                for (var j=0;j<15;j++) {
-                    //System.out.println(i +", " + (i+j)/2 + ", " + j);
-                    intBlack = new Color(i*10, (i+j)/2*10, j*10, 127).getRGB();
-                    //0, 0 -> 10, 10
-                    // 10,10 -> 20, 20
-                    Gui.fill(pose, x+i*10, y+j*10, x+i*10+10, y+j*10+10, intBlack);
-                }
-            }
+//            for (var i = 0;i<15;i++) {
+//                for (var j=0;j<15;j++) {
+//                    //System.out.println(i +", " + (i+j)/2 + ", " + j);
+//                    intBlack = new Color(i*10, (i+j)/2*10, j*10, 127).getRGB();
+//                    //0, 0 -> 10, 10
+//                    // 10,10 -> 20, 20
+//                    Gui.fill(pose, x+i*10, y+j*10, x+i*10+10, y+j*10+10, intBlack);
+//                }
+//            }
 
             var white = new Color(255, 255, 255).getRGB();
             var red = new Color(255, 0, 0).getRGB();
