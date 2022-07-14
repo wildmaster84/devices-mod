@@ -41,6 +41,7 @@ import com.ultreon.devices.programs.email.task.*;
 import com.ultreon.devices.programs.example.ExampleApp;
 import com.ultreon.devices.programs.example.task.TaskNotificationTest;
 import com.ultreon.devices.programs.gitweb.GitWebApp;
+import com.ultreon.devices.programs.snake.SnakeApp;
 import com.ultreon.devices.programs.system.*;
 import com.ultreon.devices.programs.system.task.*;
 import com.ultreon.devices.util.ArchUtils;
@@ -173,6 +174,8 @@ public class Devices {
 
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "boat_racers"), BoatRacersApp.class);
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "mine_bay"), MineBayApp.class);
+
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "snake"), SnakeApp.class);
 
         // Core
         TaskManager.registerTask(TaskUpdateApplicationData.class);
@@ -307,7 +310,7 @@ public class Devices {
     @Nullable
     public static Application registerApplication(ResourceLocation identifier, Class<? extends Application> clazz) {
         if ("minecraft".equals(identifier.getNamespace())) {
-            throw new IllegalArgumentException("Invalid identifier namespace");
+            throw new IllegalArgumentException("Identifier cannot be \"minecraft\"!");
         }
 
         if (allowedApps == null) {

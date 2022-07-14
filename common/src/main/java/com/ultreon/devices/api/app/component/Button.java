@@ -184,7 +184,7 @@ public class Button extends Component {
         this.setIcon(iconResource, iconU, iconV, iconWidth, iconHeight);
     }
 
-    private static int getTextWidth(String text) {
+    public static int getTextWidth(String text) {
         boolean flag = Minecraft.getInstance().options.forceUnicodeFont;
         Minecraft.getInstance().options.forceUnicodeFont = false;
         Font fontRenderer = Minecraft.getInstance().font;
