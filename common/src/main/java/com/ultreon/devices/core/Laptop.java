@@ -299,8 +299,11 @@ public class Laptop extends Screen implements System {
         //*******************//
         //     Wallpaper     //
         //*******************//
-        RenderSystem.setShaderTexture(0, WALLPAPERS.get(currentWallpaper));
-        RenderUtil.drawRectWithTexture(pose, posX + 10, posY + 10, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 512, 288);
+        //RenderSystem.setShaderTexture(0, WALLPAPERS.get(currentWallpaper));
+        //RenderUtil.drawRectWithTexture(pose, posX + 10, posY + 10, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 512, 288);
+        var rr = new Image(posX+10, posY+10, SCREEN_WIDTH, SCREEN_HEIGHT);
+        rr.setImage(WALLPAPERS.get(currentWallpaper));
+        rr.render(pose, this, this.minecraft, 0, 0, mouseX, mouseY, false, partialTicks);
 
         //************************************//
         // Draw the watermark on the desktop. //
