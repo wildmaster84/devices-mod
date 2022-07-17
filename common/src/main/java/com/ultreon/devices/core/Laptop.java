@@ -10,6 +10,7 @@ import com.ultreon.devices.api.app.Dialog;
 import com.ultreon.devices.api.app.System;
 import com.ultreon.devices.api.app.*;
 import com.ultreon.devices.api.app.component.Image;
+import com.ultreon.devices.api.app.component.Text;
 import com.ultreon.devices.api.io.Drive;
 import com.ultreon.devices.api.io.File;
 import com.ultreon.devices.api.task.Callback;
@@ -37,6 +38,8 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -44,6 +47,11 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.awt.*;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -86,10 +94,13 @@ public class Laptop extends Screen implements System {
     private final CompoundTag systemData;
     protected List<AppInfo> installedApps = new ArrayList<>();
     private Layout context = null;
-    private int currentWallpaper;
+    private Wallpaper currentWallpaper;
     private int lastMouseX, lastMouseY;
     private boolean dragging = false;
     private final IntArraySet pressed = new IntArraySet();
+    private final Image wallpaper;
+    private final Layout wallpaperLayout;
+    private BSOD bsod;
 
     public static Font getFont() {
         if (font == null) {
@@ -111,12 +122,21 @@ public class Laptop extends Screen implements System {
         this.windows = new Window[5];
         this.settings = Settings.fromTag(systemData.getCompound("Settings"));
         this.bar = new TaskBar(this);
-        this.currentWallpaper = systemData.getInt("CurrentWallpaper");
-        if (currentWallpaper < 0 || currentWallpaper >= WALLPAPERS.size()) {
-            this.currentWallpaper = 0;
-        }
+        this.currentWallpaper = systemData.contains("CurrentWallpaper", 10) ? new Wallpaper(systemData.getCompound("CurrentWallpaper")) : null;
+        if (this.currentWallpaper == null) this.currentWallpaper = new Wallpaper(0);
         Laptop.system = this;
         Laptop.pos = laptop.getBlockPos();
+        var posX = (width - DEVICE_WIDTH) / 2;
+        var posY = (height - DEVICE_HEIGHT) / 2;
+        this.wallpaperLayout = new Layout(SCREEN_WIDTH, SCREEN_HEIGHT);
+        this.wallpaper = new Image(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        if (currentWallpaper.isBuiltIn()) {
+            wallpaper.setImage(WALLPAPERS.get(currentWallpaper.location));
+        } else {
+            wallpaper.setImage(currentWallpaper.url);
+        }
+        this.wallpaperLayout.addComponent(this.wallpaper);
+        this.wallpaperLayout.handleLoad();
     }
 
     /**
@@ -209,7 +229,7 @@ public class Laptop extends Screen implements System {
     }
 
     private void updateSystemData() {
-        systemData.putInt("CurrentWallpaper", currentWallpaper);
+        systemData.put("CurrentWallpaper", currentWallpaper.serialize());
         systemData.put("Settings", settings.toTag());
 
         ListTag tagListApps = new ListTag();
@@ -252,23 +272,59 @@ public class Laptop extends Screen implements System {
         FileBrowser.refreshList = false;
     }
 
-    /**
-     * Render the laptop screen.
-     *
-     * @param pose         the pose stack.
-     * @param mouseX       the current mouse X position.
-     * @param mouseY       the current mouse Y position.
-     * @param partialTicks the rendering partial ticks that forge give use (which is useless here).
-     */
     @Override
     public void render(final @NotNull PoseStack pose, final int mouseX, final int mouseY, float partialTicks) {
-        for (Runnable task : tasks) {
-            task.run();
+        if (bsod != null) {
+            renderBsod(pose, mouseX, mouseY, partialTicks);
+            return;
         }
-        tasks.clear();
+        try {
+            renderLaptop(pose, mouseX, mouseY, partialTicks);
+        } catch (NullPointerException e) {
+            bsod(e);// null
+        } catch (Exception e) {
+            bsod(e);
+        }
+    }
 
-        // Fixes the strange partialTicks that Forge decided to give us
-        final float frameTime = Minecraft.getInstance().getFrameTime();
+    public void renderBsod(final @NotNull PoseStack pose, final int mouseX, final int mouseY, float partialTicks) {
+        renderBezels(pose, mouseX, mouseY, partialTicks);
+        int posX = (width - DEVICE_WIDTH) / 2;
+        int posY = (height - DEVICE_HEIGHT) / 2;
+        Gui.fill(pose, posX+10, posY+10, posX + DEVICE_WIDTH-10, posY + DEVICE_HEIGHT-10, new Color(0, 0, 255).getRGB());
+        var bo = new ByteArrayOutputStream();
+        var b = new PrintStream(bo);
+        bsod.throwable.printStackTrace(b);
+        var str = bo.toString();
+        drawLines(pose, Laptop.getFont(), str, posX+10, posY+10+getFont().lineHeight*2, DEVICE_WIDTH-25, new Color(255, 255, 255).getRGB());
+        pose.pushPose();
+        pose.scale(2, 2, 0);
+        pose.translate((posX+10)/2f,(posY+10)/2f,0);
+        drawString(pose, getFont(), "System has crashed!", 0, 0, new Color(255, 255, 255).getRGB());
+        pose.popPose();
+    }
+
+    public static void drawLines(PoseStack poseStack, Font font, String text, int x, int y, int width, int color) {
+        java.lang.System.out.println(text);
+        var a = text.split("\n");
+        var i = 0;
+        var d = new ArrayList<String>();
+        font.getSplitter().splitLines(FormattedText.of(text), width, Style.EMPTY).forEach(b -> d.add(b.getString()));
+        var vvv = font.lineHeight*d.size();
+        var pl = (DEVICE_HEIGHT-20-(getFont().lineHeight*2))/(float)vvv;
+        poseStack.pushPose();
+        poseStack.scale(1, pl, 1);
+        poseStack.translate(x/1f, (y+3)/pl, 0);
+        //poseStack.translate();
+        for (String s : d) {
+            font.draw(poseStack, s.replaceAll("\t", "    "), (float)0, (float)0+(i*font.lineHeight), color);
+            i++;
+        }
+        poseStack.popPose();
+    }
+
+    public void renderBezels(final @NotNull PoseStack pose, final int mouseX, final int mouseY, float partialTicks) {
+        tasks.clear();
 
         this.renderBackground(pose);
 
@@ -296,14 +352,32 @@ public class Laptop extends Screen implements System {
         // Center
         Gui.blit(pose, posX + BORDER, posY + BORDER, SCREEN_WIDTH, SCREEN_HEIGHT, 10, 10, 1, 1, 256, 256);
 
+    }
+
+    /**
+     * Render the laptop screen.
+     *
+     * @param pose         the pose stack.
+     * @param mouseX       the current mouse X position.
+     * @param mouseY       the current mouse Y position.
+     * @param partialTicks the rendering partial ticks that forge give use (which is useless here).
+     */
+    public void renderLaptop(final @NotNull PoseStack pose, final int mouseX, final int mouseY, float partialTicks) {
+        int posX = (width - DEVICE_WIDTH) / 2;
+        int posY = (height - DEVICE_HEIGHT) / 2;
+        // Fixes the strange partialTicks that Forge decided to give us
+        final float frameTime = Minecraft.getInstance().getFrameTime();
+        for (Runnable task : tasks) {
+            task.run();
+        }
+        renderBezels(pose, mouseX, mouseY, partialTicks);
         //*******************//
         //     Wallpaper     //
         //*******************//
         //RenderSystem.setShaderTexture(0, WALLPAPERS.get(currentWallpaper));
         //RenderUtil.drawRectWithTexture(pose, posX + 10, posY + 10, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 512, 288);
-        var rr = new Image(posX+10, posY+10, SCREEN_WIDTH, SCREEN_HEIGHT);
-        rr.setImage(WALLPAPERS.get(currentWallpaper));
-        rr.render(pose, this, this.minecraft, 0, 0, mouseX, mouseY, false, partialTicks);
+        Image.CACHE.forEach((s, cachedImage) -> cachedImage.delete());
+        this.wallpaperLayout.render(pose, this, this.minecraft, posX+10, posY+10, mouseX, mouseY, true, partialTicks);
 
         //************************************//
         // Draw the watermark on the desktop. //
@@ -322,8 +396,6 @@ public class Laptop extends Screen implements System {
         if (context != null) {
             insideContext = isMouseInside(mouseX, mouseY, context.xPosition, context.yPosition, context.xPosition + context.width, context.yPosition + context.height);
         }
-
-        Image.CACHE.forEach((s, cachedImage) -> cachedImage.delete());
 
         //****************//
         //     Window     //
@@ -373,9 +445,28 @@ public class Laptop extends Screen implements System {
         return mouseX >= startX && mouseX <= endX && mouseY >= startY && mouseY <= endY;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+        try {
+            return mouseClickedInternal(mouseX, mouseY, mouseButton);
+        } catch (NullPointerException e) {
+            bsod(e);// null
+        } catch (Exception e) {
+            bsod(e);
+        }
+        return super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+    private void bsod(Throwable e) {
+        this.bsod = new BSOD(e);
+    }
+    private static final class BSOD {
+        private final Throwable throwable;
+        public BSOD(Throwable e) {
+            this.throwable = e;
+        }
+    }
+    @SuppressWarnings("unchecked")
+    public boolean mouseClickedInternal(double mouseX, double mouseY, int mouseButton) {
         this.lastMouseX = (int) mouseX;
         this.lastMouseY = (int) mouseY;
 
@@ -730,18 +821,34 @@ public class Laptop extends Screen implements System {
     }
 
     public void nextWallpaper() {
-        if (currentWallpaper + 1 < WALLPAPERS.size()) {
-            currentWallpaper++;
+        if (!currentWallpaper.isBuiltIn()) return;
+        if (currentWallpaper.location + 1 < WALLPAPERS.size()) {
+            this.currentWallpaper = new Wallpaper(currentWallpaper.location+1);
         }
+        wallpaperUpdated();
     }
 
     public void prevWallpaper() {
-        if (currentWallpaper - 1 >= 0) {
-            currentWallpaper--;
+        if (currentWallpaper.location - 1 >= 0) {
+            this.currentWallpaper = new Wallpaper(currentWallpaper.location-1);
+        }
+        wallpaperUpdated();
+    }
+
+    private void wallpaperUpdated() {
+        if (currentWallpaper.isBuiltIn()) {
+            wallpaper.setImage(WALLPAPERS.get(currentWallpaper.location));
+        } else {
+            wallpaper.setImage(currentWallpaper.url);
         }
     }
 
-    public int getCurrentWallpaper() {
+    public void setWallpaper(String url) {
+        currentWallpaper = new Wallpaper(url);
+        wallpaperUpdated();
+    }
+
+    public Wallpaper getCurrentWallpaper() {
         return currentWallpaper;
     }
 
@@ -845,5 +952,45 @@ public class Laptop extends Screen implements System {
     public void closeContext() {
         context = null;
         dragging = false;
+    }
+
+    private static final class Wallpaper {
+        private final String url;
+        private final int location;
+
+        public Wallpaper(CompoundTag tag) {
+            var a = tag.getString("url");
+            var b = tag.getInt("location");
+            if (tag.contains("url", 8)) {
+                this.url = a;
+                this.location = -87;
+            } else {
+                this.url = null;
+                this.location = b;
+            }
+        }
+        public Wallpaper(String url) {
+            this.url = url;
+            this.location = -87;
+        }
+
+        public Wallpaper(int location) {
+            this.location = location;
+            this.url = null;
+        }
+
+        public boolean isBuiltIn() {
+            return this.location != -87;
+        }
+
+        public Tag serialize() {
+            var a = new CompoundTag();
+            if (isBuiltIn()) {
+                a.putInt("location", location);
+            } else {
+                a.putString("url", this.url);
+            }
+            return a;
+        }
     }
 }

@@ -99,8 +99,8 @@ public class SettingsApp extends SystemApp {
             Gui.fill(pose, x + wallpaperX - 1, y + wallpaperY - 1, x + wallpaperX - 1 + 122, y + wallpaperY - 1 + 70, getLaptop().getSettings().getColorScheme().getHeaderColor());
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             List<ResourceLocation> wallpapers = getLaptop().getWallapapers();
-            RenderSystem.setShaderTexture(0, wallpapers.get(getLaptop().getCurrentWallpaper()));
-            RenderUtil.drawRectWithFullTexture(pose, x + wallpaperX, y + wallpaperY, 0, 0, 120, 68);
+//            RenderSystem.setShaderTexture(0, wallpapers.get(getLaptop().getCurrentWallpaper()));
+//            RenderUtil.drawRectWithFullTexture(pose, x + wallpaperX, y + wallpaperY, 0, 0, 120, 68);
             mc.font.drawShadow(pose, "Wallpaper", x + wallpaperX + 3, y + wallpaperY + 3, getLaptop().getSettings().getColorScheme().getTextColor());
         });
 
@@ -139,7 +139,13 @@ public class SettingsApp extends SystemApp {
             if (mouseButton != 0)
                 return;
 
-            Dialog dialog = new Dialog.Message("This feature has not be added yet!");
+            Dialog.Input dialog = new Dialog.Input("Enter the URL of the image");
+            dialog.setResponseHandler((success, string) -> {
+                if (getLaptop() != null) {
+                    getLaptop().setWallpaper(string);
+                }
+                return success;
+            });
             openDialog(dialog);
         });
         layoutPersonalise.addComponent(buttonWallpaperUrl);
