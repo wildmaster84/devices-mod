@@ -91,47 +91,59 @@ public class SettingsApp extends SystemApp {
 
         layoutPersonalise = new Menu("Personalise");
         layoutPersonalise.addComponent(buttonPrevious);
-        layoutPersonalise.setBackground((pose, gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
-        {
-            int wallpaperX = 7;
-            int wallpaperY = 28;
-            assert getLaptop() != null;
-            Gui.fill(pose, x + wallpaperX - 1, y + wallpaperY - 1, x + wallpaperX - 1 + 122, y + wallpaperY - 1 + 70, getLaptop().getSettings().getColorScheme().getHeaderColor());
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-            List<ResourceLocation> wallpapers = getLaptop().getWallapapers();
-//            RenderSystem.setShaderTexture(0, wallpapers.get(getLaptop().getCurrentWallpaper()));
-//            RenderUtil.drawRectWithFullTexture(pose, x + wallpaperX, y + wallpaperY, 0, 0, 120, 68);
-            mc.font.drawShadow(pose, "Wallpaper", x + wallpaperX + 3, y + wallpaperY + 3, getLaptop().getSettings().getColorScheme().getTextColor());
-        });
+//        layoutPersonalise.setBackground((pose, gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
+//        {
+//            int wallpaperX = 7;
+//            int wallpaperY = 28;
+//            assert getLaptop() != null;
+//            Gui.fill(pose, x + wallpaperX - 1, y + wallpaperY - 1, x + wallpaperX - 1 + 122, y + wallpaperY - 1 + 70, getLaptop().getSettings().getColorScheme().getHeaderColor());
+//            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+//            List<ResourceLocation> wallpapers = getLaptop().getWallapapers();
+////            RenderSystem.setShaderTexture(0, wallpapers.get(getLaptop().getCurrentWallpaper()));
+////            RenderUtil.drawRectWithFullTexture(pose, x + wallpaperX, y + wallpaperY, 0, 0, 120, 68);
+//            mc.font.drawShadow(pose, "Wallpaper", x + wallpaperX + 3, y + wallpaperY + 3, getLaptop().getSettings().getColorScheme().getTextColor());
+//        });
 
-        buttonWallpaperLeft = new Button(135, 27, Icons.ARROW_LEFT);
-        buttonWallpaperLeft.setSize(25, 20);
-        buttonWallpaperLeft.setClickListener((mouseX, mouseY, mouseButton) ->
-        {
-            if (mouseButton != 0)
-                return;
-
-            Laptop laptop = getLaptop();
-            if (laptop != null) {
-                laptop.prevWallpaper();
-            }
-        });
-        layoutPersonalise.addComponent(buttonWallpaperLeft);
-
-        buttonWallpaperRight = new Button(165, 27, Icons.ARROW_RIGHT);
-        buttonWallpaperRight.setSize(25, 20);
-        buttonWallpaperRight.setClickListener((mouseX, mouseY, mouseButton) ->
-        {
-            if (mouseButton != 0)
-                return;
-
-            Laptop laptop = getLaptop();
-            if (laptop != null) {
-                laptop.nextWallpaper();
-            }
-        });
-        layoutPersonalise.addComponent(buttonWallpaperRight);
-
+//        buttonWallpaperLeft = new Button(135, 27, Icons.ARROW_LEFT);
+//        buttonWallpaperLeft.setSize(25, 20);
+//        buttonWallpaperLeft.setClickListener((mouseX, mouseY, mouseButton) ->
+//        {
+//            if (mouseButton != 0)
+//                return;
+//
+//            Laptop laptop = getLaptop();
+//            if (laptop != null) {
+//                laptop.prevWallpaper();
+//            }
+//        });
+//        layoutPersonalise.addComponent(buttonWallpaperLeft);
+//
+//        buttonWallpaperRight = new Button(165, 27, Icons.ARROW_RIGHT);
+//        buttonWallpaperRight.setSize(25, 20);
+//        buttonWallpaperRight.setClickListener((mouseX, mouseY, mouseButton) ->
+//        {
+//            if (mouseButton != 0)
+//                return;
+//
+//            Laptop laptop = getLaptop();
+//            if (laptop != null) {
+//                laptop.nextWallpaper();
+//            }
+//        });
+//        layoutPersonalise.addComponent(buttonWallpaperRight);
+        var i = 0;
+        for (var wallpaper : Laptop.getWALLPAPERS()) {
+            var a = new Button(i%2==0?0:75, 20+(i/2)*30, 75, 30, wallpaper, 0, 0, 75, 30);
+            int finalI = i;
+            a.setClickListener(((mouseX, mouseY, mouseButton) -> {
+                assert getLaptop() != null;
+                getLaptop().setWallpaper(finalI);
+            }));
+            a.setIconU(512, 288);
+            a.setIconSource(512, 288);
+            layoutPersonalise.addComponent(a);
+            i++;
+        }
         buttonWallpaperUrl = new Button(135, 52, "Load", Icons.EARTH);
         buttonWallpaperUrl.setSize(55, 20);
         buttonWallpaperUrl.setClickListener((mouseX, mouseY, mouseButton) ->
@@ -157,6 +169,7 @@ public class SettingsApp extends SystemApp {
                 Laptop.getSystem().getSettings().getColorScheme().resetDefault();
             }
         });
+        buttonReset.top = layoutPersonalise.height - buttonReset.getHeight() - 5;
         layoutPersonalise.addComponent(buttonReset);
 
         layoutColorScheme = new Menu("UI Colors");

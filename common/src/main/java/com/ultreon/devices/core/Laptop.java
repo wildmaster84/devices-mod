@@ -78,6 +78,10 @@ public class Laptop extends Screen implements System {
 
     private static final List<ResourceLocation> WALLPAPERS = new ArrayList<>();
 
+    public static List<ResourceLocation> getWALLPAPERS() {
+        return ImmutableList.copyOf(WALLPAPERS);
+    }
+
     private static final int BORDER = 10;
     private static final int DEVICE_WIDTH = 384;
     static final int SCREEN_WIDTH = DEVICE_WIDTH - BORDER * 2;
@@ -845,6 +849,11 @@ public class Laptop extends Screen implements System {
 
     public void setWallpaper(String url) {
         currentWallpaper = new Wallpaper(url);
+        wallpaperUpdated();
+    }
+
+    public void setWallpaper(int wall) {
+        currentWallpaper = new Wallpaper(wall);
         wallpaperUpdated();
     }
 
