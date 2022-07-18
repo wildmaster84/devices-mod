@@ -9,6 +9,7 @@ import com.ultreon.devices.api.app.Layout;
 import com.ultreon.devices.api.app.component.Button;
 import com.ultreon.devices.api.app.component.CheckBox;
 import com.ultreon.devices.api.app.component.ComboBox;
+import com.ultreon.devices.api.app.component.Image;
 import com.ultreon.devices.api.app.renderer.ItemRenderer;
 import com.ultreon.devices.api.utils.RenderUtil;
 import com.ultreon.devices.core.Laptop;
@@ -37,6 +38,7 @@ public class SettingsApp extends SystemApp {
     private CheckBox checkBoxShowApps;
 
     private Layout layoutPersonalise;
+    private Layout layoutWallpaper;
     private Button buttonWallpaperLeft;
     private Button buttonWallpaperRight;
     private Button buttonWallpaperUrl;
@@ -91,6 +93,26 @@ public class SettingsApp extends SystemApp {
 
         layoutPersonalise = new Menu("Personalise");
         layoutPersonalise.addComponent(buttonPrevious);
+        layoutWallpaper = new Menu("Wallpaper");
+
+        Button buttonWallpaper = new Button(5, 26, "Wallpaper", Icons.EDIT);
+        buttonWallpaper.setSize(90, 20);
+        //buttonWallpaper.top = this.getHeight()-buttonWallpaper.getHeight()-5;
+        buttonWallpaper.setToolTip("Wallpaper", "Manage the wallpaper.");
+        buttonWallpaper.setClickListener((mouseX, mouseY, mouseButton) ->
+        {
+            if (mouseButton == 0) {
+                showMenu(layoutWallpaper);
+            }
+        });
+        layoutPersonalise.addComponent(buttonWallpaper);
+        var image = new Image(6, 29, 6+122, 29+70);
+        image.setBorderThickness(1);
+        image.setBorderVisible(true);
+        image.setImage(getLaptop().getCurrentWallpaper());
+        layoutWallpaper.addComponent(image);
+
+
 //        layoutPersonalise.setBackground((pose, gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
 //        {
 //            int wallpaperX = 7;
@@ -104,46 +126,64 @@ public class SettingsApp extends SystemApp {
 //            mc.font.drawShadow(pose, "Wallpaper", x + wallpaperX + 3, y + wallpaperY + 3, getLaptop().getSettings().getColorScheme().getTextColor());
 //        });
 
-//        buttonWallpaperLeft = new Button(135, 27, Icons.ARROW_LEFT);
-//        buttonWallpaperLeft.setSize(25, 20);
-//        buttonWallpaperLeft.setClickListener((mouseX, mouseY, mouseButton) ->
-//        {
-//            if (mouseButton != 0)
-//                return;
-//
-//            Laptop laptop = getLaptop();
-//            if (laptop != null) {
-//                laptop.prevWallpaper();
-//            }
-//        });
-//        layoutPersonalise.addComponent(buttonWallpaperLeft);
-//
-//        buttonWallpaperRight = new Button(165, 27, Icons.ARROW_RIGHT);
-//        buttonWallpaperRight.setSize(25, 20);
-//        buttonWallpaperRight.setClickListener((mouseX, mouseY, mouseButton) ->
-//        {
-//            if (mouseButton != 0)
-//                return;
-//
-//            Laptop laptop = getLaptop();
-//            if (laptop != null) {
-//                laptop.nextWallpaper();
-//            }
-//        });
-//        layoutPersonalise.addComponent(buttonWallpaperRight);
-        var i = 0;
-        for (var wallpaper : Laptop.getWALLPAPERS()) {
-            var a = new Button(i%2==0?0:75, 20+(i/2)*30, 75, 30, wallpaper, 0, 0, 75, 30);
-            int finalI = i;
-            a.setClickListener(((mouseX, mouseY, mouseButton) -> {
-                assert getLaptop() != null;
-                getLaptop().setWallpaper(finalI);
-            }));
-            a.setIconU(512, 288);
-            a.setIconSource(512, 288);
-            layoutPersonalise.addComponent(a);
-            i++;
-        }
+        buttonWallpaperLeft = new Button(135, 27, Icons.ARROW_LEFT);
+        buttonWallpaperLeft.setSize(25, 20);
+        buttonWallpaperLeft.setClickListener((mouseX, mouseY, mouseButton) ->
+        {
+            if (mouseButton != 0)
+                return;
+
+            Laptop laptop = getLaptop();
+            if (laptop != null) {
+                laptop.prevWallpaper();
+                image.setImage(getLaptop().getCurrentWallpaper());
+            }
+        });
+        buttonWallpaperLeft.setEnabled(getLaptop().getCurrentWallpaper().isBuiltIn());
+        layoutWallpaper.addComponent(buttonWallpaperLeft);
+
+        buttonWallpaperRight = new Button(165, 27, Icons.ARROW_RIGHT);
+        buttonWallpaperRight.setSize(25, 20);
+        buttonWallpaperRight.setClickListener((mouseX, mouseY, mouseButton) ->
+        {
+            if (mouseButton != 0)
+                return;
+
+            Laptop laptop = getLaptop();
+            if (laptop != null) {
+                laptop.nextWallpaper();
+                image.setImage(getLaptop().getCurrentWallpaper());
+            }
+        });
+        buttonWallpaperRight.setEnabled(getLaptop().getCurrentWallpaper().isBuiltIn());
+        layoutWallpaper.addComponent(buttonWallpaperRight);
+
+        Button resetWallpaper = new Button(6, 100, "Reset Wallpaper");
+        resetWallpaper.setClickListener((mouseX, mouseY, mouseButton) ->
+        {
+            if (mouseButton == 0) {
+                getLaptop().setWallpaper(0);
+                image.setImage(getLaptop().getCurrentWallpaper());
+                buttonWallpaperLeft.setEnabled(getLaptop().getCurrentWallpaper().isBuiltIn());
+                buttonWallpaperRight.setEnabled(getLaptop().getCurrentWallpaper().isBuiltIn());
+            }
+        });
+        resetWallpaper.top = layoutWallpaper.height - resetWallpaper.getHeight() - 5;
+        layoutWallpaper.addComponent(resetWallpaper);
+        layoutWallpaper.addComponent(buttonPrevious);
+//        var i = 0;
+//        for (var wallpaper : Laptop.getWALLPAPERS()) {
+//            var a = new Button(i%2==0?0:75, 20+(i/2)*30, 75, 30, wallpaper, 0, 0, 75, 30);
+//            int finalI = i;
+//            a.setClickListener(((mouseX, mouseY, mouseButton) -> {
+//                assert getLaptop() != null;
+//                getLaptop().setWallpaper(finalI);
+//            }));
+//            a.setIconU(512, 288);
+//            a.setIconSource(512, 288);
+//            layoutWallpaper.addComponent(a);
+//            i++;
+//        }
         buttonWallpaperUrl = new Button(135, 52, "Load", Icons.EARTH);
         buttonWallpaperUrl.setSize(55, 20);
         buttonWallpaperUrl.setClickListener((mouseX, mouseY, mouseButton) ->
@@ -155,12 +195,15 @@ public class SettingsApp extends SystemApp {
             dialog.setResponseHandler((success, string) -> {
                 if (getLaptop() != null) {
                     getLaptop().setWallpaper(string);
+                    image.setImage(getLaptop().getCurrentWallpaper());
+                    buttonWallpaperLeft.setEnabled(getLaptop().getCurrentWallpaper().isBuiltIn());
+                    buttonWallpaperRight.setEnabled(getLaptop().getCurrentWallpaper().isBuiltIn());
                 }
                 return success;
             });
             openDialog(dialog);
         });
-        layoutPersonalise.addComponent(buttonWallpaperUrl);
+        layoutWallpaper.addComponent(buttonWallpaperUrl);
 
         Button buttonReset = new Button(6, 100, "Reset Color Scheme");
         buttonReset.setClickListener((mouseX, mouseY, mouseButton) ->

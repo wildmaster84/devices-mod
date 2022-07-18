@@ -676,19 +676,19 @@ public class Laptop extends Screen implements System {
         if (q.right())
                 return q.left();
 
-        Window<Application> window = new Window<>(app, this);
-        window.init((width - SCREEN_WIDTH) / 2, (height - SCREEN_HEIGHT) / 2, intent);
-
-        if (appData.contains(app.getInfo().getFormattedId())) {
-            app.load(appData.getCompound(app.getInfo().getFormattedId()));
-        }
-
         if (app instanceof SystemApp) {
             ((SystemApp) app).setLaptop(this);
         }
 
         if (app instanceof SystemAccessor) {
             ((SystemAccessor) app).sendSystem(this);
+        }
+
+        Window<Application> window = new Window<>(app, this);
+        window.init((width - SCREEN_WIDTH) / 2, (height - SCREEN_HEIGHT) / 2, intent);
+
+        if (appData.contains(app.getInfo().getFormattedId())) {
+            app.load(appData.getCompound(app.getInfo().getFormattedId()));
         }
 
         if (app.getCurrentLayout() == null) {
@@ -963,11 +963,19 @@ public class Laptop extends Screen implements System {
         dragging = false;
     }
 
-    private static final class Wallpaper {
+    public static final class Wallpaper {
         private final String url;
         private final int location;
 
-        public Wallpaper(CompoundTag tag) {
+        public String getUrl() {
+            return url;
+        }
+
+        public int getLocation() {
+            return location;
+        }
+
+        private Wallpaper(CompoundTag tag) {
             var a = tag.getString("url");
             var b = tag.getInt("location");
             if (tag.contains("url", 8)) {
@@ -978,12 +986,12 @@ public class Laptop extends Screen implements System {
                 this.location = b;
             }
         }
-        public Wallpaper(String url) {
+        private Wallpaper(String url) {
             this.url = url;
             this.location = -87;
         }
 
-        public Wallpaper(int location) {
+        private Wallpaper(int location) {
             this.location = location;
             this.url = null;
         }

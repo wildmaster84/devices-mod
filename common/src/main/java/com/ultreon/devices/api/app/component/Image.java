@@ -234,6 +234,14 @@ public class Image extends Component {
         this.drawFull = true;
     }
 
+    public void setImage(Laptop.Wallpaper wallpaper) {
+        if (wallpaper.isBuiltIn()) {
+            setImage(Laptop.getWALLPAPERS().get(wallpaper.getLocation()));
+        } else {
+            setImage(wallpaper.getUrl());
+        }
+    }
+
     public void setImage(String url) {
         setLoader(new DynamicLoader(url));
         this.drawFull = true;
