@@ -236,7 +236,7 @@ public class Image extends Component {
 
     public void setImage(Laptop.Wallpaper wallpaper) {
         if (wallpaper.isBuiltIn()) {
-            setImage(Laptop.getWALLPAPERS().get(wallpaper.getLocation()));
+            setImage(Laptop.getWallpapers().get(wallpaper.getLocation()));
         } else {
             setImage(wallpaper.getUrl());
         }

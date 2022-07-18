@@ -10,13 +10,11 @@ import com.ultreon.devices.api.app.Dialog;
 import com.ultreon.devices.api.app.System;
 import com.ultreon.devices.api.app.*;
 import com.ultreon.devices.api.app.component.Image;
-import com.ultreon.devices.api.app.component.Text;
 import com.ultreon.devices.api.io.Drive;
 import com.ultreon.devices.api.io.File;
 import com.ultreon.devices.api.task.Callback;
 import com.ultreon.devices.api.task.Task;
 import com.ultreon.devices.api.task.TaskManager;
-import com.ultreon.devices.api.utils.RenderUtil;
 import com.ultreon.devices.block.entity.LaptopBlockEntity;
 import com.ultreon.devices.core.task.TaskInstallApp;
 import com.ultreon.devices.object.AppInfo;
@@ -48,10 +46,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
 import java.io.PrintStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -78,7 +73,7 @@ public class Laptop extends Screen implements System {
 
     private static final List<ResourceLocation> WALLPAPERS = new ArrayList<>();
 
-    public static List<ResourceLocation> getWALLPAPERS() {
+    public static List<ResourceLocation> getWallpapers() {
         return ImmutableList.copyOf(WALLPAPERS);
     }
 
