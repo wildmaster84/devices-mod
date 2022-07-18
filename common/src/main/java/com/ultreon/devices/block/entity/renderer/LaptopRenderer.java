@@ -1,5 +1,6 @@
 package com.ultreon.devices.block.entity.renderer;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.math.Quaternion;
@@ -11,8 +12,11 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
+import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +44,7 @@ public class LaptopRenderer implements BlockEntityRenderer<LaptopBlockEntity> {
         ItemEntity itemEntity = new ItemEntity(Objects.requireNonNull(blockEntity.getLevel()), 0D, 0D, 0D, ItemStack.EMPTY);
 
         Tesselator tesselator = Tesselator.getInstance();
-//		RenderSystem.setShaderTexture(0, TextureMapping.LOCATION_BLOCKS_TEXTURE);
+		RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         pose.pushPose();
         {
             pose.translate(pos.getX(), pos.getY(), pos.getZ());

@@ -17,8 +17,10 @@ import com.ultreon.devices.programs.system.object.LocalEntry;
 import com.ultreon.devices.programs.system.object.RemoteEntry;
 import com.ultreon.devices.util.GuiHelper;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 
@@ -175,14 +177,15 @@ public class LayoutAppPage extends Layout {
     }
 
     private void openWebLink(String url) {
-        try {
-            URI uri = new URL(url).toURI();
-            Class<?> class_ = Class.forName("java.awt.Desktop");
-            Object object = class_.getMethod("getDesktop").invoke(null);
-            class_.getMethod("browse", URI.class).invoke(object, uri);
-        } catch (Throwable throwable1) {
-            Throwable throwable = throwable1.getCause();
-            Devices.LOGGER.error("Couldn't open link: {}", throwable == null ? "<UNKNOWN>" : throwable.getMessage());
-        }
+        Util.getPlatform().openUri(url);
+//        try {
+//            URI uri = new URL(url).toURI();
+//            Class<?> class_ = Class.forName("java.awt.Desktop");
+//            Object object = class_.getMethod("getDesktop").invoke(null);
+//            class_.getMethod("browse", URI.class).invoke(object, uri);
+//        } catch (Throwable throwable1) {
+//            Throwable throwable = throwable1.getCause();
+//            Devices.LOGGER.error("Couldn't open link: {}", throwable == null ? "<UNKNOWN>" : throwable.getMessage());
+//        }
     }
 }

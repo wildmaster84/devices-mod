@@ -155,8 +155,10 @@ public class Image extends Component {
 
     @Override
     public void init(Layout layout) {
-        spinner = new Spinner(left + (componentWidth / 2) - 6, top + (componentHeight / 2) - 6);
-        layout.addComponent(spinner);
+        if (layout != null) {
+            spinner = new Spinner(left + (componentWidth / 2) - 6, top + (componentHeight / 2) - 6);
+            layout.addComponent(spinner);
+        }
         initialized = true;
     }
 
@@ -192,17 +194,21 @@ public class Image extends Component {
 
                 if (/*hasBorder*/true) {
                     if (drawFull) {
+                        //System.out.println("Rendering image");
                         RenderUtil.drawRectWithTexture(pose, x + borderThickness, y + borderThickness, 0, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, 256, 256);
                         //GuiComponent.blit(pose, x + borderThickness, y + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, 256, 256);
                     } else {
+                        //System.out.println("Rendering image");
                         RenderUtil.drawRectWithTexture(pose, x + borderThickness, y + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, imageWidth, imageHeight, sourceWidth, sourceHeight);
                         //GuiComponent.blit(pose, x + borderThickness, y + borderThickness, componentWidth - borderThickness * 2, imageU, imageV, componentHeight - borderThickness * 2, sourceWidth, sourceHeight, imageWidth, imageHeight);
                     }
                 } else {
                     if (drawFull) {
+                        //System.out.println("Rendering image");
                         RenderUtil.drawRectWithTexture(pose, x, y, componentWidth, componentHeight, imageU, imageV, 256, 256);
 //                        GuiComponent.blit(pose, x, y, componentWidth, componentHeight, imageU, imageV, 256, 256);
                     } else {
+                        //System.out.println("Rendering image");
                         RenderUtil.drawRectWithTexture(pose, x, y, componentWidth, componentHeight, imageU, imageV, imageWidth, imageHeight, sourceWidth, sourceHeight);
                         //GuiComponent.blit(pose, x, y, componentWidth, componentHeight, imageU, imageV, sourceWidth, sourceHeight, imageWidth, imageHeight);
                     }
@@ -226,6 +232,14 @@ public class Image extends Component {
     public void setImage(ResourceLocation resource) {
         setLoader(new StandardLoader(resource));
         this.drawFull = true;
+    }
+
+    public void setImage(Laptop.Wallpaper wallpaper) {
+        if (wallpaper.isBuiltIn()) {
+            setImage(Laptop.getWallpapers().get(wallpaper.getLocation()));
+        } else {
+            setImage(wallpaper.getUrl());
+        }
     }
 
     public void setImage(String url) {
