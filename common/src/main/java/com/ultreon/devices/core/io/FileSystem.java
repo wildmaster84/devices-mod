@@ -220,7 +220,7 @@ public class FileSystem {
         return mainDrive;
     }
 
-    public Map<UUID, AbstractDrive> getAvailableDrives(Level level, boolean includeMain) {
+    public Map<UUID, AbstractDrive> getAvailableDrives(@Nullable Level level, boolean includeMain) {
         Map<UUID, AbstractDrive> drives = new LinkedHashMap<>();
 
         if (includeMain) {
