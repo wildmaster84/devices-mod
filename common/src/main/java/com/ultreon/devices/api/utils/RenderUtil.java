@@ -107,12 +107,12 @@ public class RenderUtil {
     }
 
     public static void drawStringClipped(PoseStack pose, String text, int x, int y, int width, int color, boolean shadow) {
-        if (shadow) Laptop.font.drawShadow(pose, clipStringToWidth(text, width) + ChatFormatting.RESET, x, y, color);
-        else Laptop.font.draw(pose, Laptop.font.plainSubstrByWidth(text, width) + ChatFormatting.RESET, x, y, color);
+        if (shadow) Laptop.getFont().drawShadow(pose, clipStringToWidth(text, width) + ChatFormatting.RESET, x, y, color);
+        else Laptop.getFont().draw(pose, Laptop.getFont().plainSubstrByWidth(text, width) + ChatFormatting.RESET, x, y, color);
     }
 
     public static String clipStringToWidth(String text, int width) {
-        Font fontRenderer = Laptop.font;
+        Font fontRenderer = Laptop.getFont();
         String clipped = text;
         if (fontRenderer.width(clipped) > width) {
             clipped = fontRenderer.plainSubstrByWidth(clipped, width - 8) + "...";

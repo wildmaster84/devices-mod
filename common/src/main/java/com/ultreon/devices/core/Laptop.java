@@ -62,8 +62,9 @@ public class Laptop extends Screen implements System {
     public static final int ID = 1;
     public static final ResourceLocation ICON_TEXTURES = new ResourceLocation(Reference.MOD_ID, "textures/atlas/app_icons.png");
     public static final int ICON_SIZE = 14;
+    private static final ResourceLocation LAPTOP_FONT = Devices.res("laptop");
     //    public static final Font font = new LaptopFont(Minecraft.getInstance());
-    public static Font font = Minecraft.getInstance().font;
+    private static Font font;
     private static final ResourceLocation LAPTOP_GUI = new ResourceLocation(Reference.MOD_ID, "textures/gui/laptop.png");
     private static final List<Application> APPLICATIONS = new ArrayList<>();
     @PlatformOnly("fabric")
@@ -292,10 +293,13 @@ public class Laptop extends Screen implements System {
         int posY = (height - DEVICE_HEIGHT) / 2;
         Gui.fill(pose, posX+10, posY+10, posX + DEVICE_WIDTH-10, posY + DEVICE_HEIGHT-10, new Color(0, 0, 255).getRGB());
         var bo = new ByteArrayOutputStream();
+
+        double scale = Minecraft.getInstance().getWindow().getGuiScale();
+
         var b = new PrintStream(bo);
         bsod.throwable.printStackTrace(b);
         var str = bo.toString();
-        drawLines(pose, Laptop.getFont(), str, posX+10, posY+10+getFont().lineHeight*2, DEVICE_WIDTH-25, new Color(255, 255, 255).getRGB());
+        drawLines(pose, Laptop.getFont(), str, posX+10, posY+10+getFont().lineHeight*2, (int) ((DEVICE_WIDTH - 10) * scale), new Color(255, 255, 255).getRGB());
         pose.pushPose();
         pose.scale(2, 2, 0);
         pose.translate((posX+10)/2f,(posY+10)/2f,0);
@@ -304,20 +308,20 @@ public class Laptop extends Screen implements System {
     }
 
     public static void drawLines(PoseStack poseStack, Font font, String text, int x, int y, int width, int color) {
-        java.lang.System.out.println(text);
-        var a = text.split("\n");
-        var i = 0;
-        var d = new ArrayList<String>();
-        font.getSplitter().splitLines(FormattedText.of(text), width, Style.EMPTY).forEach(b -> d.add(b.getString()));
-        var vvv = font.lineHeight*d.size();
-        var pl = (DEVICE_HEIGHT-20-(getFont().lineHeight*2))/(float)vvv;
+        var lines = new ArrayList<String>();
+        font.getSplitter().splitLines(FormattedText.of(text.replaceAll("\r\n", "\n").replaceAll("\r", "\n")), width, Style.EMPTY).forEach(b -> lines.add(b.getString()));
+        var totalTextHeight = font.lineHeight*lines.size();
+        var textScale = (DEVICE_HEIGHT-20-(getFont().lineHeight*2))/(float)totalTextHeight;
+        textScale = (float) (1f / Minecraft.getInstance().getWindow().getGuiScale());
+        textScale = Math.max(0.5f, textScale);
         poseStack.pushPose();
-        poseStack.scale(1, pl, 1);
-        poseStack.translate(x/1f, (y+3)/pl, 0);
+        poseStack.scale(textScale, textScale, 1);
+        poseStack.translate(x / textScale, (y+3)/textScale, 0);
         //poseStack.translate();
-        for (String s : d) {
-            font.draw(poseStack, s.replaceAll("\t", "    "), (float)0, (float)0+(i*font.lineHeight), color);
-            i++;
+        var lineNr = 0;
+        for (String s : lines) {
+            font.draw(poseStack, s.replaceAll("\t", "    "), (float)0, (float)0+(lineNr*font.lineHeight), color);
+            lineNr++;
         }
         poseStack.popPose();
     }

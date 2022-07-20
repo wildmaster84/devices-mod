@@ -1,0 +1,5 @@
+accessWidener   v2  named
+accessible method net/minecraft/client/gui/font/FontSet getGlyphInfoForSpace (I)Lcom/mojang/blaze3d/font/GlyphInfo;
+extendable method net/minecraft/client/gui/font/FontSet getGlyphInfoForSpace (I)Lcom/mojang/blaze3d/font/GlyphInfo;
+accessible method net/minecraft/client/gui/Font getFontSet (Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/client/gui/font/FontSet;
+accessible field net/minecraft/client/Minecraft fontManager Lnet/minecraft/client/gui/font/FontManager;

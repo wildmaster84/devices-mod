@@ -1,10 +1,8 @@
 package com.ultreon.devices.core.client;
 
+import com.ultreon.devices.Devices;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.resources.ResourceLocation;
-
-import java.util.Objects;
 
 /**
  * @author MrCrayfish
@@ -13,12 +11,7 @@ public class LaptopFont extends Font {
     private boolean debug = false;
 
     public LaptopFont(Minecraft mc) {
-        super(res -> {
-            if (Objects.equals(res, new ResourceLocation("textures/font/ascii.png"))) {
-                return new LaptopFontSet(mc.getTextureManager(), res);
-            }
-            return null;
-        });
+        super(res -> new LaptopFontSet(mc.getTextureManager(), Devices.res("laptop")));
     }
 
     // Todo: Port to 1.18.2 where possible.

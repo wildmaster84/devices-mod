@@ -43,7 +43,7 @@ public abstract class ContainerBox extends Component {
         RenderUtil.drawRectWithTexture(pose, x, y + 12, boxU, boxV, WIDTH, height, WIDTH, height, 256, 256);
         //Gui.blit(pose, x, y + 12, WIDTH, height, boxU, boxV, 256, 256, WIDTH, height);
 
-        int contentOffset = (WIDTH - (Laptop.font.width(title) + 8 + 4)) / 2;
+        int contentOffset = (WIDTH - (Laptop.getFont().width(title) + 8 + 4)) / 2;
         pose.pushPose();
         {
             pose.translate(x + contentOffset, y, 0);

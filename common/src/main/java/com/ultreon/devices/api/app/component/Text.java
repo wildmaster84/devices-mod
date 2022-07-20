@@ -49,8 +49,8 @@ public class Text extends Component {
                     text = text.substring(0, text.length() - 1);
                 }
                 assert text != null;
-                if (shadow) Laptop.font.drawShadow(pose, text, x + padding, y + (i * 10) + padding, textColor);
-                else Laptop.font.draw(pose, text, x + padding, y + (i * 10) + padding, textColor);
+                if (shadow) Laptop.getFont().drawShadow(pose, text, x + padding, y + (i * 10) + padding, textColor);
+                else Laptop.getFont().draw(pose, text, x + padding, y + (i * 10) + padding, textColor);
             }
         }
     }
@@ -63,9 +63,9 @@ public class Text extends Component {
     public void setText(String text) {
         rawText = text;
         text = text.replace("\\n", "\n");
-        System.out.println(Laptop.font.plainSubstrByWidth(text, width - padding * 2));
+        System.out.println(Laptop.getFont().plainSubstrByWidth(text, width - padding * 2));
         var a = new ArrayList<String>();
-        Laptop.font.getSplitter().splitLines(FormattedText.of(text), width - padding * 2, Style.EMPTY).forEach(b -> a.add(b.getString()));
+        Laptop.getFont().getSplitter().splitLines(FormattedText.of(text), width - padding * 2, Style.EMPTY).forEach(b -> a.add(b.getString()));
         this.lines = a;
     }
 
@@ -107,7 +107,7 @@ public class Text extends Component {
                 if (lineIndex < lines.size()) {
                     int cursorX = mouseX - (xPosition + padding);
                     String line = lines.get(lineIndex);
-                    int index = Laptop.font.plainSubstrByWidth(line, cursorX).length();
+                    int index = Laptop.getFont().plainSubstrByWidth(line, cursorX).length();
                     String clickedWord = getWord(line, index);
                     if (clickedWord != null) {
                         this.wordListener.onWordClicked(clickedWord, mouseButton);

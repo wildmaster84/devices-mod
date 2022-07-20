@@ -25,9 +25,9 @@ public class HeaderModule extends Module {
     @Override
     public int calculateHeight(Map<String, String> data, int width) {
         if (data.containsKey("scale")) {
-            return Integer.parseInt(data.get("scale")) * Laptop.font.lineHeight + 10;
+            return Integer.parseInt(data.get("scale")) * Laptop.getFont().lineHeight + 10;
         }
-        return Laptop.font.lineHeight + (data.containsKey("padding") ? Integer.parseInt(data.get("padding")) : 5) * 2;
+        return Laptop.getFont().lineHeight + (data.containsKey("padding") ? Integer.parseInt(data.get("padding")) : 5) * 2;
     }
 
     @Override

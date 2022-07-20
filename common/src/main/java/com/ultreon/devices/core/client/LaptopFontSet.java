@@ -1,19 +1,21 @@
 package com.ultreon.devices.core.client;
 
-import com.mojang.blaze3d.font.GlyphProvider;
+import com.mojang.blaze3d.font.GlyphInfo;
 import net.minecraft.client.gui.font.FontSet;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
-
-import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
 public class LaptopFontSet extends FontSet {
+    private static final GlyphInfo TAB_INFO = () -> 16.0f;
+
     public LaptopFontSet(TextureManager pTextureManager, ResourceLocation pName) {
         super(pTextureManager, pName);
     }
 
+    @Nullable
     @Override
-    public void reload(List<GlyphProvider> pGlyphProviders) {
-
+    public GlyphInfo getGlyphInfoForSpace(int i) {
+        return i == 9 ? TAB_INFO : super.getGlyphInfoForSpace(i);
     }
 }

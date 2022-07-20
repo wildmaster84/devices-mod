@@ -2,7 +2,6 @@ package com.ultreon.devices;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -25,7 +24,6 @@ import com.ultreon.devices.core.network.task.TaskPing;
 import com.ultreon.devices.core.print.task.TaskPrint;
 import com.ultreon.devices.core.task.TaskInstallApp;
 import com.ultreon.devices.init.DeviceItems;
-import com.ultreon.devices.item.DeviceItem;
 import com.ultreon.devices.network.PacketHandler;
 import com.ultreon.devices.network.task.SyncApplicationPacket;
 import com.ultreon.devices.network.task.SyncConfigPacket;
@@ -63,14 +61,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import org.apache.logging.slf4j.Log4jLogger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -83,10 +78,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Predicate;
@@ -401,6 +395,10 @@ public class Devices {
             return Collections.emptyList();
         }
         return Collections.unmodifiableList(allowedApps);
+    }
+
+    public static ResourceLocation res(String path) {
+        return new ResourceLocation(Devices.MOD_ID, path);
     }
 
     public static class ReloaderListener implements PreparableReloadListener {

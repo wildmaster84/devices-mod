@@ -1,3 +1,12 @@
+//file:noinspection GradlePackageUpdate
+architectury {
+    common()
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/devices.accesswidener")
+}
+
 repositories {
     maven { url = "https://cursemaven.com" }
 }
@@ -8,7 +17,12 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     // Remove the next line if you don't want to depend on the API
     modApi "dev.architectury:architectury:${rootProject.architectury_version}"
+
+    modCompileOnly "curse.maven:forgeapiportfabric-547434:3671141"
+    modCompileOnly 'com.electronwill.night-config:core:3.6.3'
+    modCompileOnly 'com.electronwill.night-config:toml:3.6.3'
 }
+
 sourceSets {
     main {
         resources {
@@ -18,15 +32,6 @@ sourceSets {
             System.out.println(srcDirs)
         }
     }
-}
-dependencies {
-    modCompileOnly "curse.maven:forgeapiportfabric-547434:3671141"
-    modCompileOnly 'com.electronwill.night-config:core:3.6.3'
-    modCompileOnly 'com.electronwill.night-config:toml:3.6.3'
-}
-
-architectury {
-    common()
 }
 
 publishing {

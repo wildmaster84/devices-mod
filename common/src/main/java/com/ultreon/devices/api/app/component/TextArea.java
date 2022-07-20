@@ -81,7 +81,7 @@ public class TextArea extends Component {
      */
     public TextArea(int left, int top, int width, int height) {
         super(left, top);
-        this.font = Laptop.font;
+        this.font = Laptop.getFont();
         this.width = width;
         this.height = height;
         this.visibleLines = (int) Math.floor((float) ((height - padding * 2 + 1) / font.lineHeight));

@@ -2,7 +2,6 @@ package com.ultreon.devices.programs.system.layout;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.ultreon.devices.Devices;
 import com.ultreon.devices.api.app.Icons;
 import com.ultreon.devices.api.app.Layout;
 import com.ultreon.devices.api.app.ScrollableLayout;
@@ -20,13 +19,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import java.awt.*;
-import java.net.URI;
-import java.net.URL;
 
 /**
  * @author MrCrayfish
@@ -87,7 +83,7 @@ public class LayoutAppPage extends Layout {
         this.addComponent(imageIcon);
 
         if (store.certifiedApps.contains(entry)) {
-            int width = Laptop.font.width(entry.name()) * 2;
+            int width = Laptop.getFont().width(entry.name()) * 2;
             com.ultreon.devices.api.app.component.Image certifiedIcon = new com.ultreon.devices.api.app.component.Image(38 + width + 3, 29, 20, 20, Icons.VERIFIED);
             this.addComponent(certifiedIcon);
         }
@@ -169,7 +165,7 @@ public class LayoutAppPage extends Layout {
     public void renderOverlay(PoseStack pose, Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive) {
         super.renderOverlay(pose, laptop, mc, mouseX, mouseY, windowActive);
         if (store.certifiedApps.contains(entry)) {
-            int width = Laptop.font.width(entry.name()) * 2;
+            int width = Laptop.getFont().width(entry.name()) * 2;
             if (GuiHelper.isMouseWithin(mouseX, mouseY, xPosition + 38 + width + 3, yPosition + 29, 20, 20)) {
                 laptop.renderComponentTooltip(pose, Lists.newArrayList(new TextComponent("Certified App").withStyle(ChatFormatting.GREEN)), mouseX, mouseY);
             }

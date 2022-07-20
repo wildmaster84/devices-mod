@@ -225,7 +225,7 @@ public class EmailApp extends Application {
                 Gui.fill(pose, x + 130, y + 35, x + width - 5, y + height - 5, new Color(1f, 1f, 1f, 0.25f).getRGB());
                 RenderUtil.drawStringClipped(pose, e.getSubject(), x + 135, y + 10, 120, Color.WHITE.getRGB(), true);
                 RenderUtil.drawStringClipped(pose, e.getAuthor() + "@endermail.official", x + 135, y + 22, 120, Color.LIGHT_GRAY.getRGB(), false);
-                Laptop.font.drawWordWrap(FormattedText.of(e.getMessage()), x + 135, y + 40, 115, Color.WHITE.getRGB());
+                Laptop.getFont().drawWordWrap(FormattedText.of(e.getMessage()), x + 135, y + 40, 115, Color.WHITE.getRGB());
             }
         });
 
