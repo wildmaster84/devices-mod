@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 /**
  * @author MrCrayfish
  */
-public class ServerFolder extends ServerFile {
+public final class ServerFolder extends ServerFile {
     private List<ServerFile> files = new ArrayList<>();
     private final Object interrupt = new Object();
 
@@ -27,8 +27,16 @@ public class ServerFolder extends ServerFile {
         this.protect = protect;
     }
 
+    private ServerFolder(String name, boolean protect, CompoundTag tag) {
+        this.name = name;
+        this.protect = protect;
+        this.creationTime = tag.getLong("creationTime");
+        this.lastModified = tag.getLong("lastModified");
+        this.lastAccessed = tag.getLong("lastAccessed");
+    }
+
     public static ServerFolder fromTag(String name, CompoundTag folderTag) {
-        ServerFolder folder = new ServerFolder(name);
+        ServerFolder folder = new ServerFolder(name, false, folderTag);
 
         if (folderTag.contains("protected", Tag.TAG_BYTE)) folder.protect = folderTag.getBoolean("protected");
 
@@ -145,6 +153,10 @@ public class ServerFolder extends ServerFile {
         folderTag.put("files", fileList);
 
         if (protect) folderTag.putBoolean("protected", true);
+
+        folderTag.putLong("creationTime", creationTime);
+        folderTag.putLong("lastModified", lastModified);
+        folderTag.putLong("lastAccessed", lastAccessed);
 
         return folderTag;
     }

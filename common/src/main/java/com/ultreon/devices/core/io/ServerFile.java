@@ -9,7 +9,7 @@ import java.util.Comparator;
 /**
  * @author MrCrayfish
  */
-public class ServerFile {
+public sealed class ServerFile permits ServerFolder {
     public static final Comparator<ServerFile> SORT_BY_NAME = (f1, f2) -> {
         if (f1.isFolder() && !f2.isFolder()) return -1;
         if (!f1.isFolder() && f2.isFolder()) return 1;
@@ -21,9 +21,9 @@ public class ServerFile {
     protected String openingApp;
     protected CompoundTag data;
     protected boolean protect = false;
-    private long lastModified;
-    private long lastAccessed;
-    private long creationTime;
+    protected long lastModified;
+    protected long lastAccessed;
+    protected long creationTime;
 
     protected ServerFile() {
     }
