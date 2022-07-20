@@ -261,15 +261,19 @@ public class Laptop extends Screen implements System {
      */
     @Override
     public void tick() {
-        bar.onTick();
+        try {
+            bar.onTick();
 
-        for (var window : windows) {
-            if (window != null) {
-                window.onTick();
+            for (var window : windows) {
+                if (window != null) {
+                    window.onTick();
+                }
             }
-        }
 
-        FileBrowser.refreshList = false;
+            FileBrowser.refreshList = false;
+        } catch (Exception e) {
+            bsod(e);
+        }
     }
 
     @Override
