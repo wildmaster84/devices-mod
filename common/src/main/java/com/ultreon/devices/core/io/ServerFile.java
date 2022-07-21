@@ -1,6 +1,7 @@
 package com.ultreon.devices.core.io;
 
 import com.ultreon.devices.api.app.Application;
+import com.ultreon.devices.api.io.MimeType;
 import net.minecraft.nbt.CompoundTag;
 
 import javax.annotation.Nullable;
@@ -15,6 +16,7 @@ public sealed class ServerFile permits ServerFolder {
         if (!f1.isFolder() && f2.isFolder()) return 1;
         return f1.name.compareTo(f2.name);
     };
+    private MimeType mimeType = MimeType.APPLICATION_OCTET_STREAM;
 
     protected ServerFolder parent;
     protected String name;
@@ -26,6 +28,7 @@ public sealed class ServerFile permits ServerFolder {
     protected long creationTime;
 
     protected ServerFile() {
+
     }
 
     public ServerFile(String name, Application app, CompoundTag data) {
@@ -36,10 +39,19 @@ public sealed class ServerFile permits ServerFolder {
         this(name, openingAppId, data, false);
     }
 
-    private ServerFile(String name, String openingAppId, CompoundTag data, boolean protect) {
+    public ServerFile(String name, String openingAppId, MimeType mimeType, CompoundTag data) {
+        this(name, openingAppId, data, mimeType, false);
+    }
+
+    private ServerFile(String name, String openingAppId, CompoundTag data,  boolean protect) {
+        this(name, openingAppId, data, MimeType.APPLICATION_OCTET_STREAM, protect);
+    }
+
+    private ServerFile(String name, String openingAppId, CompoundTag data, MimeType mimeType, boolean protect) {
         this.name = name;
         this.openingApp = openingAppId;
         this.data = data;
+        this.mimeType = mimeType;
         this.protect = protect;
         this.creationTime = System.currentTimeMillis();
         this.lastModified = this.creationTime;
@@ -54,6 +66,7 @@ public sealed class ServerFile permits ServerFolder {
         this.lastModified = tag.getLong("lastModified");
         this.lastAccessed = tag.getLong("lastAccessed");
         this.protect = protect;
+        this.mimeType = MimeType.of(tag.getCompound("mimeType"));
     }
 
     public String getName() {
