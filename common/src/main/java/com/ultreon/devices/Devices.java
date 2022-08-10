@@ -45,10 +45,12 @@ import com.ultreon.devices.util.ArchUtils;
 import com.ultreon.devices.util.SiteRegistration;
 import com.ultreon.ultranlang.*;
 import com.ultreon.ultranlang.ast.Program;
-import com.ultreon.ultranlang.error.LexerException;
-import com.ultreon.ultranlang.error.ParserException;
-import com.ultreon.ultranlang.error.SemanticException;
+import com.ultreon.ultranlang.exception.LexerException;
+import com.ultreon.ultranlang.exception.ParserException;
+import com.ultreon.ultranlang.exception.SemanticException;
 import com.ultreon.ultranlang.func.NativeCalls;
+import com.ultreon.ultranlang.func.ParamBuilder;
+import com.ultreon.ultranlang.symbol.BuiltinTypeSymbol;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.common.InteractionEvent;
@@ -58,13 +60,11 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.injectables.targets.ArchitecturyTarget;
 import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.registry.registries.Registries;
-import kotlin.io.FilesKt;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -84,6 +84,7 @@ import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -137,14 +138,21 @@ public class Devices {
             if (!inputFile.exists()) {
                 LOGGER.error("File not found: {}", inputFile.getAbsolutePath());
             } else {
-                SpiKt.setShouldLogInternalErrors(false);
-                SpiKt.setShouldLogScope(false);
-                SpiKt.setShouldLogStack(false);
-                SpiKt.setShouldLogTokens(false);
+                Spi.SHOULD_LOG_INTERNAL_ERRORS = false;
+                Spi.SHOULD_LOG_SCOPE = false;
+                Spi.SHOULD_LOG_STACK = false;
+                Spi.SHOULD_LOG_TOKENS = false;
 
-                String text = FilesKt.readText(inputFile, Charset.defaultCharset());
+                String text;
+                try {
+                    text = Files.readString(inputFile.toPath(), Charset.defaultCharset());
+                } catch (IOException e) {
+                    LOGGER.error("Failed to read file: {}", inputFile.getAbsolutePath(), e);
+                    break ultranLang;
+                }
 
-                NativeCalls.INSTANCE.load();
+                registerNativeFunctions();
+                NativeCalls.load();
 
                 var lexer = new Lexer(text);
                 Program tree;
@@ -152,7 +160,7 @@ public class Devices {
                     var parser = new Parser(lexer);
                     tree = parser.parse();
                 } catch (LexerException | ParserException e) {
-                    if (SpiKt.getShouldLogInternalErrors()) e.printStackTrace();
+                    if (Spi.SHOULD_LOG_INTERNAL_ERRORS) e.printStackTrace();
                     LOGGER.error("Error parsing file: {}", e.getMessage());
                     break ultranLang;
                 } catch (RuntimeException e) {
@@ -161,10 +169,10 @@ public class Devices {
                         cause = cause.getCause();
                     }
                     if (cause instanceof LexerException) {
-                        if (SpiKt.getShouldLogInternalErrors()) cause.printStackTrace();
+                        if (Spi.SHOULD_LOG_INTERNAL_ERRORS) cause.printStackTrace();
                         LOGGER.error("Error parsing file: {}", cause.getMessage());
                     } else if (cause instanceof ParserException) {
-                        if (SpiKt.getShouldLogInternalErrors()) cause.printStackTrace();
+                        if (Spi.SHOULD_LOG_INTERNAL_ERRORS) cause.printStackTrace();
                         LOGGER.error("Error parsing file: {}", cause.getMessage());
                     } else {
                         throw e;
@@ -177,7 +185,7 @@ public class Devices {
                 try {
                     semanticAnalyzer.visit(tree);
                 } catch (SemanticException e) {
-                    if (SpiKt.getShouldLogInternalErrors()) e.printStackTrace();
+                    if (Spi.SHOULD_LOG_INTERNAL_ERRORS) e.printStackTrace();
                     LOGGER.error("Error analyzing file: {}", e.getMessage());
                     break ultranLang;
                 } catch (RuntimeException e) {
@@ -186,7 +194,7 @@ public class Devices {
                         cause = cause.getCause();
                     }
                     if (cause instanceof SemanticException) {
-                        if (SpiKt.getShouldLogInternalErrors()) cause.printStackTrace();
+                        if (Spi.SHOULD_LOG_INTERNAL_ERRORS) cause.printStackTrace();
                         LOGGER.error("Error analyzing file: {}", cause.getMessage());
                     } else {
                         throw e;
@@ -194,10 +202,39 @@ public class Devices {
                     break ultranLang;
                 }
 
-                var interpreter = new Interpreter(tree);
-                interpreter.interpret();
+                try {
+                    var interpreter = new Interpreter(tree);
+                    interpreter.interpret();
+                } catch (Exception e) {
+                    if (Spi.SHOULD_LOG_INTERNAL_ERRORS) e.printStackTrace();
+                    LOGGER.error("Error interpreting file: {}", e.getMessage());
+                    break ultranLang;
+                }
             }
         }
+    }
+
+    private static void registerNativeFunctions() {
+        NativeCalls.register("log", ParamBuilder.create()
+                .add("level", BuiltinTypeSymbol.STRING)
+                .add("message", BuiltinTypeSymbol.STRING), ar -> {
+            Object level = ar.get("level");
+            if (level instanceof String levelName) {
+                Object message = ar.get("message");
+                if (message == null) message = "null";
+
+                switch (levelName.toLowerCase(Locale.ROOT)) {
+                    case "warn" -> LOGGER.warn(message.toString());
+                    case "error" -> LOGGER.error(message.toString());
+                    case "debug" -> LOGGER.debug(message.toString());
+                    case "trace" -> LOGGER.trace(message.toString());
+                    default -> LOGGER.info(message.toString());
+                }
+            } else {
+                throw new IllegalArgumentException("Invalid level of type " + (level == null ? "null" : level.getClass().getName()));
+            }
+            return null;
+        });
     }
 
     public static void preInit() {
@@ -424,7 +461,6 @@ public class Devices {
         throw new AssertionError();
     }
 
-    @SuppressWarnings("ConstantConditions")
     public static boolean registerPrint(ResourceLocation identifier, Class<? extends IPrint> classPrint) {
         LOGGER.debug("Registering print: " + identifier.toString());
 
@@ -516,12 +552,8 @@ public class Devices {
     }
 
     private static void setupEvents() {
-        LifecycleEvent.SERVER_STARTING.register((instance -> {
-            server = instance;
-        }));
-        LifecycleEvent.SERVER_STOPPED.register(instance -> {
-            server = null;
-        });
+        LifecycleEvent.SERVER_STARTING.register((instance -> server = instance));
+        LifecycleEvent.SERVER_STOPPED.register(instance -> server = null);
         InteractionEvent.RIGHT_CLICK_BLOCK.register(((player, hand, pos, face) -> {
             Level level = player.getLevel();
             if (!player.getItemInHand(hand).isEmpty() && player.getItemInHand(hand).getItem() == Items.PAPER) {
@@ -537,9 +569,9 @@ public class Devices {
             LOGGER.info("Player logged in: " + player.getName());
 
             if (allowedApps != null) {
-                PacketHandler.sendToClient(new SyncApplicationPacket(allowedApps), (ServerPlayer) player);
+                PacketHandler.sendToClient(new SyncApplicationPacket(allowedApps), player);
             }
-            PacketHandler.sendToClient(new SyncConfigPacket(), (ServerPlayer) player);
+            PacketHandler.sendToClient(new SyncConfigPacket(), player);
         }));
     }
 

@@ -19,9 +19,9 @@ startX = 10;
 startY = 20;
 
 function PrintHelloWorld() {
-    print("Hello World");
+    log("info", "Hello World");
 };
 
 PrintHelloWorld();
 
-print("Hello World! Number: " + randInt(startX, startY));
+log("info", "Hello World! Number: " + randInt(startX, startY));
