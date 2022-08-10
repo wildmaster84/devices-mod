@@ -3,9 +3,15 @@ package com.ultreon.devices.api.utils;
 import com.ultreon.devices.util.StreamUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.ssl.TrustStrategy;
 
+import javax.net.ssl.SSLContext;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -94,7 +100,7 @@ public class OnlineRequest {
 
                 while (!requests.isEmpty()) {
                     RequestWrapper wrapper = requests.poll();
-                    try (CloseableHttpClient client = HttpClients.createDefault()) {
+                    try (CloseableHttpClient client = HttpClients.custom().setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).setSSLContext(new SSLContextBuilder().loadTrustMaterial(null, (chain, authType) -> true).build()).build()) {
                         HttpGet get = new HttpGet(wrapper.url);
                         try (CloseableHttpResponse response = client.execute(get)) {
                             String raw = StreamUtils.convertToString(response.getEntity().getContent());
