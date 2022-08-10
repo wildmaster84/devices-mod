@@ -6,6 +6,7 @@ import com.ultreon.devices.api.app.Icons;
 import com.ultreon.devices.api.app.Layout;
 import com.ultreon.devices.api.app.ScrollableLayout;
 import com.ultreon.devices.api.app.component.Button;
+import com.ultreon.devices.api.app.component.Label;
 import com.ultreon.devices.core.Laptop;
 import com.ultreon.devices.object.AppInfo;
 import com.ultreon.devices.programs.gitweb.component.GitWebFrame;
@@ -34,8 +35,8 @@ public class LayoutAppPage extends Layout {
 
     private com.ultreon.devices.api.app.component.Image imageBanner;
     private com.ultreon.devices.api.app.component.Image imageIcon;
-    private com.ultreon.devices.api.app.component.Label labelTitle;
-    private com.ultreon.devices.api.app.component.Label labelVersion;
+    private Label labelTitle;
+    private Label labelVersion;
 
     private boolean installed;
 
@@ -87,12 +88,12 @@ public class LayoutAppPage extends Layout {
             com.ultreon.devices.api.app.component.Image certifiedIcon = new com.ultreon.devices.api.app.component.Image(38 + width + 3, 29, 20, 20, Icons.VERIFIED);
             this.addComponent(certifiedIcon);
         }
-        labelTitle = new com.ultreon.devices.api.app.component.Label(entry.name(), 38, 32);
+        labelTitle = new Label(entry.name(), 38, 32);
         labelTitle.setScale(2);
         this.addComponent(labelTitle);
 
         String version = entry instanceof LocalEntry ? "v" + entry.version() + " - " + entry.author() : entry.author();
-        labelVersion = new com.ultreon.devices.api.app.component.Label(version, 38, 50);
+        labelVersion = new Label(version, 38, 50);
         this.addComponent(labelVersion);
 
         String description = GitWebFrame.parseFormatting(entry.description());

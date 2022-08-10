@@ -1,6 +1,7 @@
 plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
+
 architectury {
     platformSetupLoomIde()
     forge()
@@ -30,6 +31,13 @@ dependencies {
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
+
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.10"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10"
+
+    shadowCommon "org.jetbrains.kotlin:kotlin-reflect:1.7.10"
+    shadowCommon "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10"
+    shadowCommon "com.ultreon:ultranlang:0.0.1-dev2"
 }
 
 processResources {
@@ -45,6 +53,12 @@ shadowJar {
 
     configurations = [project.configurations.shadowCommon]
     classifier "dev-shadow"
+
+    relocate 'org.jetbrains.kotlin', "com.ultreon.devices.shadow.org.jetbrains.kotlin"
+    relocate 'org.jetbrains.kotlinx', "com.ultreon.devices.shadow.org.jetbrains.kotlinx"
+
+    relocate 'kotlin', "com.ultreon.devices.shadow.kotlin"
+    relocate 'kotlinx', "com.ultreon.devices.shadow.kotlinx"
 }
 
 remapJar {

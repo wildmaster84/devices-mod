@@ -3,7 +3,6 @@ package com.ultreon.devices.api.app;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.ultreon.devices.api.app.component.Button;
-import com.ultreon.devices.api.app.component.Image;
 import com.ultreon.devices.api.app.component.ItemList;
 import com.ultreon.devices.api.app.component.Text;
 import com.ultreon.devices.api.app.listener.ClickListener;
@@ -52,7 +51,7 @@ public abstract class Dialog extends Wrappable {
         this.defaultLayout = new Layout(150, 40);
     }
 
-    protected final void addComponent(Component c) {
+    protected final void addComponent(com.ultreon.devices.api.app.Component c) {
         if (c != null) {
             defaultLayout.addComponent(c);
             c.init(defaultLayout);
@@ -212,7 +211,7 @@ public abstract class Dialog extends Wrappable {
         private final String messageText;
 
         private ClickListener positiveListener;
-        private Button buttonPositive;
+        private com.ultreon.devices.api.app.component.Button buttonPositive;
 
         public Message(String messageText) {
             this.messageText = messageText;
@@ -232,7 +231,7 @@ public abstract class Dialog extends Wrappable {
             Text message = new Text(messageText, 5, 5, getWidth() - 10);
             this.addComponent(message);
 
-            buttonPositive = new Button(getWidth() - 41, getHeight() - 20, "Close");
+            buttonPositive = new com.ultreon.devices.api.app.component.Button(getWidth() - 41, getHeight() - 20, "Close");
             buttonPositive.setSize(36, 16);
             buttonPositive.setClickListener((mouseX, mouseY, mouseButton) -> {
                 if (positiveListener != null) {
@@ -263,8 +262,8 @@ public abstract class Dialog extends Wrappable {
         private ClickListener positiveListener;
         private ClickListener negativeListener;
 
-        private Button buttonPositive;
-        private Button buttonNegative;
+        private com.ultreon.devices.api.app.component.Button buttonPositive;
+        private com.ultreon.devices.api.app.component.Button buttonNegative;
 
         public Confirmation() {
         }
@@ -288,7 +287,7 @@ public abstract class Dialog extends Wrappable {
             this.addComponent(message);
 
             int positiveWidth = Minecraft.getInstance().font.width(positiveText);
-            buttonPositive = new Button(getWidth() - positiveWidth - DIVIDE_WIDTH, getHeight() - 20, positiveText);
+            buttonPositive = new com.ultreon.devices.api.app.component.Button(getWidth() - positiveWidth - DIVIDE_WIDTH, getHeight() - 20, positiveText);
             buttonPositive.setSize(positiveWidth + 10, 16);
             buttonPositive.setClickListener((mouseX, mouseY, mouseButton) -> {
                 if (positiveListener != null) {
@@ -299,7 +298,7 @@ public abstract class Dialog extends Wrappable {
             this.addComponent(buttonPositive);
 
             int negativeWidth = Math.max(20, Minecraft.getInstance().font.width(negativeText));
-            buttonNegative = new Button(getWidth() - DIVIDE_WIDTH - positiveWidth - DIVIDE_WIDTH - negativeWidth + 1, getHeight() - 20, negativeText);
+            buttonNegative = new com.ultreon.devices.api.app.component.Button(getWidth() - DIVIDE_WIDTH - positiveWidth - DIVIDE_WIDTH - negativeWidth + 1, getHeight() - 20, negativeText);
             buttonNegative.setSize(negativeWidth + 10, 16);
             buttonNegative.setClickListener((mouseX, mouseY, mouseButton) -> {
                 if (negativeListener != null) {
@@ -362,8 +361,8 @@ public abstract class Dialog extends Wrappable {
         private ResponseHandler<String> responseListener;
 
         private com.ultreon.devices.api.app.component.TextField textFieldInput;
-        private Button buttonPositive;
-        private Button buttonNegative;
+        private com.ultreon.devices.api.app.component.Button buttonPositive;
+        private com.ultreon.devices.api.app.component.Button buttonNegative;
 
         public Input() {
         }
@@ -399,7 +398,7 @@ public abstract class Dialog extends Wrappable {
             this.addComponent(textFieldInput);
 
             int positiveWidth = Minecraft.getInstance().font.width(positiveText);
-            buttonPositive = new Button(getWidth() - positiveWidth - DIVIDE_WIDTH, getHeight() - 20, positiveText);
+            buttonPositive = new com.ultreon.devices.api.app.component.Button(getWidth() - positiveWidth - DIVIDE_WIDTH, getHeight() - 20, positiveText);
             buttonPositive.setSize(positiveWidth + 10, 16);
             buttonPositive.setClickListener((mouseX, mouseY, mouseButton) -> {
                 if (!textFieldInput.getText().isEmpty()) {
@@ -413,7 +412,7 @@ public abstract class Dialog extends Wrappable {
             this.addComponent(buttonPositive);
 
             int negativeWidth = Minecraft.getInstance().font.width(negativeText);
-            buttonNegative = new Button(getWidth() - DIVIDE_WIDTH - positiveWidth - DIVIDE_WIDTH - negativeWidth + 1, getHeight() - 20, negativeText);
+            buttonNegative = new com.ultreon.devices.api.app.component.Button(getWidth() - DIVIDE_WIDTH - positiveWidth - DIVIDE_WIDTH - negativeWidth + 1, getHeight() - 20, negativeText);
             buttonNegative.setSize(negativeWidth + 10, 16);
             buttonNegative.setClickListener((mouseX, mouseY, mouseButton) -> close());
             this.addComponent(buttonNegative);
@@ -489,8 +488,8 @@ public abstract class Dialog extends Wrappable {
 
         private Layout main;
         private FileBrowser browser;
-        private Button buttonPositive;
-        private Button buttonNegative;
+        private com.ultreon.devices.api.app.component.Button buttonPositive;
+        private com.ultreon.devices.api.app.component.Button buttonNegative;
 
         private ResponseHandler<File> responseListener;
         private Predicate<File> filter;
@@ -519,7 +518,7 @@ public abstract class Dialog extends Wrappable {
             main.addComponent(browser);
 
             int positiveWidth = Minecraft.getInstance().font.width(positiveText);
-            buttonPositive = new Button(172, 106, positiveText);
+            buttonPositive = new com.ultreon.devices.api.app.component.Button(172, 106, positiveText);
             buttonPositive.setSize(positiveWidth + 10, 16);
             buttonPositive.setEnabled(false);
             buttonPositive.setClickListener((mouseX, mouseY, mouseButton) -> {
@@ -537,7 +536,7 @@ public abstract class Dialog extends Wrappable {
             main.addComponent(buttonPositive);
 
             int negativeWidth = Minecraft.getInstance().font.width(negativeText);
-            buttonNegative = new Button(125, 106, negativeText);
+            buttonNegative = new com.ultreon.devices.api.app.component.Button(125, 106, negativeText);
             buttonNegative.setSize(negativeWidth + 10, 16);
             buttonNegative.setClickListener((mouseX, mouseY, mouseButton) -> close());
             main.addComponent(buttonNegative);
@@ -611,8 +610,8 @@ public abstract class Dialog extends Wrappable {
         private Layout main;
         private FileBrowser browser;
         private com.ultreon.devices.api.app.component.TextField textFieldFileName;
-        private Button buttonPositive;
-        private Button buttonNegative;
+        private com.ultreon.devices.api.app.component.Button buttonPositive;
+        private com.ultreon.devices.api.app.component.Button buttonNegative;
         private Predicate<File> filter;
 
         private String path = FileSystem.DIR_HOME;
@@ -640,7 +639,7 @@ public abstract class Dialog extends Wrappable {
             browser.openFolder(path);
             main.addComponent(browser);
 
-            buttonPositive = new Button(172, 125, positiveText);
+            buttonPositive = new com.ultreon.devices.api.app.component.Button(172, 125, positiveText);
             buttonPositive.setClickListener((mouseX, mouseY, mouseButton) -> {
                 if (mouseButton == 0) {
                     if (!textFieldFileName.getText().isEmpty()) {
@@ -684,7 +683,7 @@ public abstract class Dialog extends Wrappable {
             });
             main.addComponent(buttonPositive);
 
-            buttonNegative = new Button(126, 125, negativeText);
+            buttonNegative = new com.ultreon.devices.api.app.component.Button(126, 125, negativeText);
             buttonNegative.setClickListener((mouseX, mouseY, mouseButton) -> close());
             main.addComponent(buttonNegative);
 
@@ -768,11 +767,11 @@ public abstract class Dialog extends Wrappable {
 
         private Layout layoutMain;
         private com.ultreon.devices.api.app.component.Label labelMessage;
-        private Button buttonRefresh;
+        private com.ultreon.devices.api.app.component.Button buttonRefresh;
         private ItemList<NetworkDevice> itemListPrinters;
-        private Button buttonPrint;
-        private Button buttonCancel;
-        private Button buttonInfo;
+        private com.ultreon.devices.api.app.component.Button buttonPrint;
+        private com.ultreon.devices.api.app.component.Button buttonCancel;
+        private com.ultreon.devices.api.app.component.Button buttonInfo;
 
         public Print(IPrint print) {
             this.print = print;
@@ -788,7 +787,7 @@ public abstract class Dialog extends Wrappable {
             labelMessage = new com.ultreon.devices.api.app.component.Label("Select a Printer", 5, 5);
             layoutMain.addComponent(labelMessage);
 
-            buttonRefresh = new Button(131, 2, Icons.RELOAD);
+            buttonRefresh = new com.ultreon.devices.api.app.component.Button(131, 2, Icons.RELOAD);
             buttonRefresh.setPadding(2);
             buttonRefresh.setToolTip("Refresh", "Retrieve an updated list of printers");
             buttonRefresh.setClickListener((mouseX, mouseY, mouseButton) -> {
@@ -831,7 +830,7 @@ public abstract class Dialog extends Wrappable {
             });
             layoutMain.addComponent(itemListPrinters);
 
-            buttonPrint = new Button(98, 108, "Print", Icons.CHECK);
+            buttonPrint = new com.ultreon.devices.api.app.component.Button(98, 108, "Print", Icons.CHECK);
             buttonPrint.setPadding(5);
             buttonPrint.setEnabled(false);
             buttonPrint.setClickListener((mouseX, mouseY, mouseButton) -> {
@@ -850,7 +849,7 @@ public abstract class Dialog extends Wrappable {
             });
             layoutMain.addComponent(buttonPrint);
 
-            buttonCancel = new Button(74, 108, Icons.CROSS);
+            buttonCancel = new com.ultreon.devices.api.app.component.Button(74, 108, Icons.CROSS);
             buttonCancel.setPadding(5);
             buttonCancel.setClickListener((mouseX, mouseY, mouseButton) -> {
                 if (mouseButton == 0) {
@@ -859,7 +858,7 @@ public abstract class Dialog extends Wrappable {
             });
             layoutMain.addComponent(buttonCancel);
 
-            buttonInfo = new Button(5, 108, Icons.HELP);
+            buttonInfo = new com.ultreon.devices.api.app.component.Button(5, 108, Icons.HELP);
             buttonInfo.setEnabled(false);
             buttonInfo.setPadding(5);
             buttonInfo.setClickListener((mouseX, mouseY, mouseButton) -> {
@@ -901,10 +900,10 @@ public abstract class Dialog extends Wrappable {
 
             private Layout layoutMain;
             private com.ultreon.devices.api.app.component.Label labelName;
-            private Image imagePaper;
+            private com.ultreon.devices.api.app.component.Image imagePaper;
             private com.ultreon.devices.api.app.component.Label labelPaper;
             private com.ultreon.devices.api.app.component.Label labelPosition;
-            private Button buttonClose;
+            private com.ultreon.devices.api.app.component.Button buttonClose;
 
             private Info(NetworkDevice entry) {
                 this.entry = entry;

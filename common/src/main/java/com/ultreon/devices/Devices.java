@@ -43,6 +43,12 @@ import com.ultreon.devices.programs.system.*;
 import com.ultreon.devices.programs.system.task.*;
 import com.ultreon.devices.util.ArchUtils;
 import com.ultreon.devices.util.SiteRegistration;
+import com.ultreon.ultranlang.*;
+import com.ultreon.ultranlang.ast.Program;
+import com.ultreon.ultranlang.error.LexerException;
+import com.ultreon.ultranlang.error.ParserException;
+import com.ultreon.ultranlang.error.SemanticException;
+import com.ultreon.ultranlang.func.NativeCalls;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.common.InteractionEvent;
@@ -52,6 +58,7 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.injectables.targets.ArchitecturyTarget;
 import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.registry.registries.Registries;
+import kotlin.io.FilesKt;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.nbt.CompoundTag;
@@ -73,12 +80,10 @@ import org.slf4j.LoggerFactory;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -124,6 +129,74 @@ public class Devices {
         setupClientEvents();//todo
         if (!ArchitecturyTarget.getCurrentTarget().equals("forge")) {
             loadComplete();
+        }
+
+        ultranLang: {
+            var inputFile = new File("main.ulan");
+
+            if (!inputFile.exists()) {
+                LOGGER.error("File not found: {}", inputFile.getAbsolutePath());
+            } else {
+                SpiKt.setShouldLogInternalErrors(false);
+                SpiKt.setShouldLogScope(false);
+                SpiKt.setShouldLogStack(false);
+                SpiKt.setShouldLogTokens(false);
+
+                String text = FilesKt.readText(inputFile, Charset.defaultCharset());
+
+                NativeCalls.INSTANCE.load();
+
+                var lexer = new Lexer(text);
+                Program tree;
+                try {
+                    var parser = new Parser(lexer);
+                    tree = parser.parse();
+                } catch (LexerException | ParserException e) {
+                    if (SpiKt.getShouldLogInternalErrors()) e.printStackTrace();
+                    LOGGER.error("Error parsing file: {}", e.getMessage());
+                    break ultranLang;
+                } catch (RuntimeException e) {
+                    var cause = e.getCause();
+                    while (cause instanceof InvocationTargetException || cause instanceof RuntimeException) {
+                        cause = cause.getCause();
+                    }
+                    if (cause instanceof LexerException) {
+                        if (SpiKt.getShouldLogInternalErrors()) cause.printStackTrace();
+                        LOGGER.error("Error parsing file: {}", cause.getMessage());
+                    } else if (cause instanceof ParserException) {
+                        if (SpiKt.getShouldLogInternalErrors()) cause.printStackTrace();
+                        LOGGER.error("Error parsing file: {}", cause.getMessage());
+                    } else {
+                        throw e;
+                    }
+                    break ultranLang;
+                }
+
+                var semanticAnalyzer = new SemanticAnalyzer();
+
+                try {
+                    semanticAnalyzer.visit(tree);
+                } catch (SemanticException e) {
+                    if (SpiKt.getShouldLogInternalErrors()) e.printStackTrace();
+                    LOGGER.error("Error analyzing file: {}", e.getMessage());
+                    break ultranLang;
+                } catch (RuntimeException e) {
+                    var cause = e.getCause();
+                    while (cause instanceof InvocationTargetException || cause instanceof RuntimeException) {
+                        cause = cause.getCause();
+                    }
+                    if (cause instanceof SemanticException) {
+                        if (SpiKt.getShouldLogInternalErrors()) cause.printStackTrace();
+                        LOGGER.error("Error analyzing file: {}", cause.getMessage());
+                    } else {
+                        throw e;
+                    }
+                    break ultranLang;
+                }
+
+                var interpreter = new Interpreter(tree);
+                interpreter.interpret();
+            }
         }
     }
 

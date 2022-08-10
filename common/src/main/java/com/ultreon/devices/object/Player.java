@@ -5,7 +5,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.math.Quaternion;
-import com.ultreon.devices.object.Game.Layer;
 import com.ultreon.devices.object.tiles.Tile;
 import com.ultreon.devices.util.KeyboardHelper;
 import com.ultreon.devices.util.Vec2d;
@@ -71,7 +70,7 @@ public class Player {
             rotation += 8;
         }
 
-        Tile tile = game.getTile(Layer.BACKGROUND, getPosX(), getPosY());
+        Tile tile = game.getTile(Game.Layer.BACKGROUND, getPosX(), getPosY());
         if (tile != null && tile.isSlow()) {
             speed *= 0.1;
         }

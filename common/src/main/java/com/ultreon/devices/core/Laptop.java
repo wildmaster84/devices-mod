@@ -98,7 +98,7 @@ public class Laptop extends Screen implements System {
     private int lastMouseX, lastMouseY;
     private boolean dragging = false;
     private final IntArraySet pressed = new IntArraySet();
-    private final Image wallpaper;
+    private final com.ultreon.devices.api.app.component.Image wallpaper;
     private final Layout wallpaperLayout;
     private BSOD bsod;
 
@@ -129,7 +129,7 @@ public class Laptop extends Screen implements System {
         var posX = (width - DEVICE_WIDTH) / 2;
         var posY = (height - DEVICE_HEIGHT) / 2;
         this.wallpaperLayout = new Layout(SCREEN_WIDTH, SCREEN_HEIGHT);
-        this.wallpaper = new Image(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        this.wallpaper = new com.ultreon.devices.api.app.component.Image(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         if (currentWallpaper.isBuiltIn()) {
             wallpaper.setImage(WALLPAPERS.get(currentWallpaper.location));
         } else {

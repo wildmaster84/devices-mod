@@ -1,16 +1,9 @@
 package com.ultreon.devices;
 
-import com.ultreon.devices.block.entity.renderer.LaptopRenderer;
-import com.ultreon.devices.block.entity.renderer.PaperRenderer;
-import com.ultreon.devices.block.entity.renderer.PrinterRenderer;
-import com.ultreon.devices.block.entity.renderer.RouterRenderer;
 import com.ultreon.devices.core.Laptop;
-import com.ultreon.devices.init.DeviceBlockEntities;
 import com.ultreon.devices.init.DeviceBlocks;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.registry.registries.Registries;
-import dev.architectury.registry.registries.RegistrySupplier;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;

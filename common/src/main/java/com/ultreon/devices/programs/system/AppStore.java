@@ -11,7 +11,6 @@ import com.ultreon.devices.api.app.Icons;
 import com.ultreon.devices.api.app.Layout;
 import com.ultreon.devices.api.app.ScrollableLayout;
 import com.ultreon.devices.api.app.component.Button;
-import com.ultreon.devices.api.app.component.Image;
 import com.ultreon.devices.api.app.component.Label;
 import com.ultreon.devices.api.app.component.Spinner;
 import com.ultreon.devices.api.utils.OnlineRequest;
@@ -64,7 +63,7 @@ public class AppStore extends SystemApp {
             Gui.fill(pose, x, y + offset + 19, x + LAYOUT_WIDTH, y + offset + 20, color.darker().getRGB());
         });
 
-        Image imageBanner = new Image(0, 0, LAYOUT_WIDTH, 60);
+        com.ultreon.devices.api.app.component.Image imageBanner = new com.ultreon.devices.api.app.component.Image(0, 0, LAYOUT_WIDTH, 60);
         imageBanner.setImage(new ResourceLocation(Reference.MOD_ID, "textures/gui/app_market_background.png"));
         imageBanner.setDrawFull(true);
         homePageLayout.addComponent(imageBanner);
@@ -82,7 +81,7 @@ public class AppStore extends SystemApp {
         btnManageApps.setToolTip("Manage Apps", "Manage your installed applications");
         homePageLayout.addComponent(btnManageApps);
 
-        Image image = new Image(5, 33, 20, 20, Icons.SHOP);
+        com.ultreon.devices.api.app.component.Image image = new com.ultreon.devices.api.app.component.Image(5, 33, 20, 20, Icons.SHOP);
         homePageLayout.addComponent(image);
 
         Label labelBanner = new Label("App Market", 32, 35);

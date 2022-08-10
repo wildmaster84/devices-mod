@@ -122,3 +122,9 @@ run/
 
 # Arch
 .architectury-transformer
+
+# Avoid ignoring UltranLang main file.
+!*.ulan
+
+# Avoid ignoring libraries
+!libs/*

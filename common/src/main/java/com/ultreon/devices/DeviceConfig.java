@@ -1,11 +1,8 @@
 package com.ultreon.devices;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import dev.architectury.injectables.annotations.PlatformOnly;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraftforge.api.ModLoadingContext;
-import net.minecraftforge.api.fml.event.config.ModConfigEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class DeviceConfig {

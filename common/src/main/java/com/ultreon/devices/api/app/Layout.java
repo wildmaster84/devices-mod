@@ -29,11 +29,11 @@ import java.util.List;
  * @author MrCrayfish
  */
 @SuppressWarnings("unused")
-public class Layout extends Component {
+public class Layout extends com.ultreon.devices.api.app.Component {
     /**
      * The list of components in the layout
      */
-    public List<Component> components;
+    public List<com.ultreon.devices.api.app.Component> components;
 
     /**
      * The width of the layout
@@ -91,7 +91,7 @@ public class Layout extends Component {
         if (height < 1)
             throw new IllegalArgumentException("Height can not be less than 1 tall");
 
-        this.components = new ArrayList<Component>();
+        this.components = new ArrayList<com.ultreon.devices.api.app.Component>();
         this.width = width;
         this.height = height;
     }

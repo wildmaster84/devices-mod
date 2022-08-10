@@ -21,6 +21,11 @@ subprojects {
             officialMojangMappings()
             parchment("org.parchmentmc.data:parchment-1.18.2:2022.06.26@zip")
         }
+
+        implementation group: "com.ultreon", name: "ultranlang", version: "0.0.1-dev3", changing: true
+        implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.10"
+        implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10"
+
 //        layered
         // The following line declares the yarn mappings you may select this one as well.
         // mappings "net.fabricmc:yarn:@YARN_MAPPINGS@:v2"
@@ -43,6 +48,10 @@ allprojects {
         // See https://docs.gradle.org/current/userguide/declaring_repositories.html
         // for more information about repositories.
         maven {url="https://maven.parchmentmc.org"}
+
+        flatDir {
+            dir "${rootProject.projectDir}/libs"
+        }
     }
 
     tasks.withType(JavaCompile) {

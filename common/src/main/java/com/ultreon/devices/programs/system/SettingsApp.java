@@ -1,6 +1,5 @@
 package com.ultreon.devices.programs.system;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.ultreon.devices.api.ApplicationManager;
 import com.ultreon.devices.api.app.Dialog;
@@ -9,9 +8,7 @@ import com.ultreon.devices.api.app.Layout;
 import com.ultreon.devices.api.app.component.Button;
 import com.ultreon.devices.api.app.component.CheckBox;
 import com.ultreon.devices.api.app.component.ComboBox;
-import com.ultreon.devices.api.app.component.Image;
 import com.ultreon.devices.api.app.renderer.ItemRenderer;
-import com.ultreon.devices.api.utils.RenderUtil;
 import com.ultreon.devices.core.Laptop;
 import com.ultreon.devices.core.Settings;
 import com.ultreon.devices.object.AppInfo;
@@ -22,11 +19,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.List;
 import java.util.Stack;
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -106,7 +101,7 @@ public class SettingsApp extends SystemApp {
             }
         });
         layoutPersonalise.addComponent(buttonWallpaper);
-        var image = new Image(6, 29, 6+122, 29+70);
+        var image = new com.ultreon.devices.api.app.component.Image(6, 29, 6+122, 29+70);
         image.setBorderThickness(1);
         image.setBorderVisible(true);
         image.setImage(getLaptop().getCurrentWallpaper());

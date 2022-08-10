@@ -7,9 +7,8 @@ import com.ultreon.devices.api.app.Component;
 import com.ultreon.devices.api.app.Dialog;
 import com.ultreon.devices.api.app.*;
 import com.ultreon.devices.api.app.component.Button;
-import com.ultreon.devices.api.app.component.ComboBox;
-import com.ultreon.devices.api.app.component.ItemList;
-import com.ultreon.devices.api.app.component.Spinner;
+import com.ultreon.devices.api.app.component.Label;
+import com.ultreon.devices.api.app.component.*;
 import com.ultreon.devices.api.app.listener.ItemClickListener;
 import com.ultreon.devices.api.app.renderer.ListItemRenderer;
 import com.ultreon.devices.api.io.Drive;
@@ -94,7 +93,7 @@ public class FileBrowser extends Component {
     private Button btnDelete;
 
     private ComboBox.List<Drive> comboBoxDrive;
-    private com.ultreon.devices.api.app.component.Label labelPath;
+    private Label labelPath;
 
     private Layout layoutLoading;
     private Spinner spinnerLoading;
@@ -298,7 +297,7 @@ public class FileBrowser extends Component {
         });
         layoutMain.addComponent(comboBoxDrive);
 
-        labelPath = new com.ultreon.devices.api.app.component.Label("/", 72, 6);
+        labelPath = new Label("/", 72, 6);
         layoutMain.addComponent(labelPath);
         layout.addComponent(layoutMain);
 
