@@ -278,11 +278,22 @@ public class Laptop extends Screen implements System {
             renderBsod(pose, mouseX, mouseY, partialTicks);
             return;
         }
+
+        PoseStack.Pose last = pose.last();
+
         try {
             renderLaptop(pose, mouseX, mouseY, partialTicks);
         } catch (NullPointerException e) {
+            while (pose.last() != last) {
+                pose.popPose();
+            }
+            RenderSystem.disableScissor();
             bsod(e);// null
         } catch (Exception e) {
+            while (pose.last() != last) {
+                pose.popPose();
+            }
+            RenderSystem.disableScissor();
             bsod(e);
         }
     }
@@ -461,6 +472,7 @@ public class Laptop extends Screen implements System {
     }
     private void bsod(Throwable e) {
         this.bsod = new BSOD(e);
+        e.printStackTrace();
     }
     private static final class BSOD {
         private final Throwable throwable;
