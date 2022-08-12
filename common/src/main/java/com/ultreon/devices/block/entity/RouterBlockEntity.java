@@ -73,7 +73,7 @@ public class RouterBlockEntity extends DeviceBlockEntity.Colored {
 //    public double getMaxRenderDistanceSqr() {
 //        return 16384;
 //    }
-
+//
 //    @PlatformOnly("forge")
 //    @Environment(EnvType.CLIENT)
 //    @ExpectPlatform
