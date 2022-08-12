@@ -8,6 +8,7 @@ import com.ultreon.devices.api.app.Layout;
 import com.ultreon.devices.api.app.component.Button;
 import com.ultreon.devices.api.app.component.CheckBox;
 import com.ultreon.devices.api.app.component.Label;
+import com.ultreon.devices.core.Laptop;
 import com.ultreon.devices.exception.WorldLessException;
 import com.ultreon.devices.object.Game;
 import com.ultreon.devices.object.TileGrid;
@@ -44,6 +45,7 @@ public class BoatRacersApp extends Application {
             game.fill(Tile.grass);
             layoutLevelEditor.addComponent(game);
         } catch (WorldLessException e) {
+            setCurrentLayout(new Layout(320, 160));
             Dialog.Message message = new Dialog.Message(e.getMessage()) {
                 @Override
                 public void onClose() {
@@ -95,6 +97,14 @@ public class BoatRacersApp extends Application {
         layoutLevelEditor.addComponent(checkBoxPlayer);
 
         setCurrentLayout(layoutLevelEditor);
+    }
+
+    @Override
+    public void onTick() {
+        if (Laptop.isWorldLess()) {
+            return;
+        }
+        super.onTick();
     }
 
     @Override

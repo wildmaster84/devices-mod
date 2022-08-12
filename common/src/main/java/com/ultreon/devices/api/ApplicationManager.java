@@ -4,6 +4,8 @@ import com.ultreon.devices.Devices;
 import com.ultreon.devices.api.app.Application;
 import com.ultreon.devices.object.AppInfo;
 import net.minecraft.resources.ResourceLocation;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 
 public final class ApplicationManager {
     private static final Map<ResourceLocation, AppInfo> APP_INFO = new HashMap<>();
+    private static final Marker MARKER = MarkerFactory.getMarker("ApplicationManager");
 
     private ApplicationManager() {
     }
@@ -31,8 +34,8 @@ public final class ApplicationManager {
      */
     @Nullable
     public static Application registerApplication(ResourceLocation identifier, Class<? extends Application> clazz) {
+        Devices.LOGGER.debug(MARKER, "Registering application {}", identifier);
         Application application = Devices.registerApplication(identifier, clazz);
-        System.out.println("application = " + application);
         if (application != null) {
             APP_INFO.put(identifier, application.getInfo());
             return application;

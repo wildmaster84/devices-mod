@@ -47,8 +47,23 @@ public class Window<T extends Wrappable> {
     }
 
     void init(int x, int y, @Nullable CompoundTag intent) {
-        btnClose = new GuiButtonClose(x + offsetX + width - 12, y + offsetY + 1);
-        content.init(intent);
+        try {
+            btnClose = new GuiButtonClose(x + offsetX + width - 12, y + offsetY + 1);
+            content.init(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            Window.this.close();
+            Dialog.Message message = new Dialog.Message("Error initializing window:\n" + e.getMessage()) {
+                @Override
+                public void onClose() {
+                    super.onClose();
+                }
+            };
+
+            closeDialog();
+            openDialog(message);
+        }
     }
 
     public void onTick() {
@@ -251,7 +266,7 @@ public class Window<T extends Wrappable> {
         return dialogWindow;
     }
 
-    public void close() {
+    public final void close() {
         if (content instanceof Application) {
             laptop.closeApplication(((Application) content).getInfo());
             return;

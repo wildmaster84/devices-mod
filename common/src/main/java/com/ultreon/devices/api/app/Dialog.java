@@ -1,6 +1,5 @@
 package com.ultreon.devices.api.app;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.ultreon.devices.api.app.component.Button;
 import com.ultreon.devices.api.app.component.ItemList;
@@ -82,17 +81,12 @@ public abstract class Dialog extends Wrappable {
 
     @Override
     public void render(PoseStack pose, Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active, float partialTicks) {
-//        GL11.glEnable(GL11.GL_SCISSOR_TEST);
-
-        RenderSystem.enableScissor(x, y, width, height);
+        GLHelper.pushScissor(x, y, width, height);
         customLayout.render(pose, laptop, mc, x, y, mouseX, mouseY, active, partialTicks);
         GLHelper.popScissor();
 
-//        GL11.glDisable(GL11.GL_SCISSOR_TEST);
-
         customLayout.renderOverlay(pose, laptop, mc, mouseX, mouseY, active);
 
-//        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         // TODO - Port this to 1.18.2
 //        RenderHelper.disableStandardItemLighting();
     }
@@ -115,18 +109,6 @@ public abstract class Dialog extends Wrappable {
     @Override
     public void handleMouseScroll(int mouseX, int mouseY, boolean direction) {
         customLayout.handleMouseScroll(mouseX, mouseY, direction);
-    }
-
-    @Deprecated
-    @Override
-    public void handleKeyTyped(char character, int code) {
-        customLayout.handleKeyTyped(character, code);
-    }
-
-    @Deprecated
-    @Override
-    public void handleKeyReleased(char character, int code) {
-        customLayout.handleKeyReleased(character, code);
     }
 
     @Override
@@ -211,7 +193,7 @@ public abstract class Dialog extends Wrappable {
         private final String messageText;
 
         private ClickListener positiveListener;
-        private com.ultreon.devices.api.app.component.Button buttonPositive;
+        private Button buttonPositive;
 
         public Message(String messageText) {
             this.messageText = messageText;
@@ -221,8 +203,8 @@ public abstract class Dialog extends Wrappable {
         public void init(@Nullable CompoundTag intent) {
             super.init(intent);
 
-            int lines = Minecraft.getInstance().font.wordWrapHeight(messageText, getWidth() - 10);
-            defaultLayout.height += (lines - 1) * 9;
+            int textHeight = Minecraft.getInstance().font.wordWrapHeight(messageText, getWidth() - 10);
+            defaultLayout.height += textHeight;
 
             super.init(intent);
 
@@ -231,7 +213,7 @@ public abstract class Dialog extends Wrappable {
             Text message = new Text(messageText, 5, 5, getWidth() - 10);
             this.addComponent(message);
 
-            buttonPositive = new com.ultreon.devices.api.app.component.Button(getWidth() - 41, getHeight() - 20, "Close");
+            buttonPositive = new Button(getWidth() - 41, getHeight() - 20, "Close");
             buttonPositive.setSize(36, 16);
             buttonPositive.setClickListener((mouseX, mouseY, mouseButton) -> {
                 if (positiveListener != null) {
@@ -240,6 +222,7 @@ public abstract class Dialog extends Wrappable {
                 close();
             });
             this.addComponent(buttonPositive);
+
         }
     }
 

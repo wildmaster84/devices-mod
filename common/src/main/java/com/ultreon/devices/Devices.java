@@ -213,7 +213,6 @@ public class Devices {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private static void registerNativeFunctions() {
         HashMap<String, String> params = new HashMap<>();
         params.put("level", BuiltinTypeSymbol.STRING);
@@ -268,6 +267,7 @@ public class Devices {
 
     private static void registerApplications() {
         // Applications (Both)
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "diagnostics"), DiagnosticsApp.class);
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "settings"), SettingsApp.class);
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "bank"), BankApp.class);
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "file_browser"), FileBrowserApp.class);
