@@ -98,6 +98,10 @@ public class TrayItemWifi extends TrayItem {
         List<Device> routers = new ArrayList<>();
 
         Level level = Minecraft.getInstance().level;
+        if (Laptop.isWorldLess()) {
+            return new ArrayList<>();
+        }
+
         BlockPos laptopPos = Laptop.getPos();
         int range = DeviceConfig.SIGNAL_RANGE.get();
 

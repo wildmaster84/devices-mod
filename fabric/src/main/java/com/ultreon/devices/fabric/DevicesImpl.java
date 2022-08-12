@@ -16,7 +16,7 @@ public class DevicesImpl {
     }
 
     public static List<Application> getAPPLICATIONS() {
-        return Laptop.getAPPLICATIONS();
+        return Laptop.getApplicationsForFabric();
     }
 
     public static Map<String, IPrint.Renderer> getRegisteredRenders(){

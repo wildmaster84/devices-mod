@@ -19,8 +19,8 @@ public class LaptopBlockEntity extends NetworkDeviceBlockEntity.Colored {
 
     private boolean open = false;
 
-    private CompoundTag applicationData;
-    private CompoundTag systemData;
+    private CompoundTag applicationData = new CompoundTag();
+    private CompoundTag systemData = new CompoundTag();
     private FileSystem fileSystem;
 
     @Environment(EnvType.CLIENT)

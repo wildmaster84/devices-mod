@@ -69,7 +69,7 @@ public class PixelPainterApp extends Application {
 
     /* Drawing */
     private Layout layoutDraw;
-    private Canvas canvas;
+    private com.ultreon.devices.object.Canvas canvas;
     private ButtonToggle btnPencil;
     private ButtonToggle btnBucket;
     private ButtonToggle btnEraser;
@@ -272,7 +272,7 @@ public class PixelPainterApp extends Application {
 
         layoutDraw = new Layout(213, 140);
 
-        canvas = new Canvas(5, 5);
+        canvas = new com.ultreon.devices.object.Canvas(5, 5);
         layoutDraw.addComponent(canvas);
 
         RadioGroup toolGroup = new RadioGroup();

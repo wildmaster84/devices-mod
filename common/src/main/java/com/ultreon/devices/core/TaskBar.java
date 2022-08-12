@@ -3,7 +3,9 @@ package com.ultreon.devices.core;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.ultreon.devices.Devices;
+import com.ultreon.devices.api.TrayItemAdder;
 import com.ultreon.devices.api.app.Application;
+import com.ultreon.devices.api.event.LaptopEvent;
 import com.ultreon.devices.api.utils.RenderUtil;
 import com.ultreon.devices.core.network.TrayItemWifi;
 import com.ultreon.devices.object.AppInfo;
@@ -39,14 +41,18 @@ public class TaskBar {
 
     public TaskBar(Laptop laptop) {
         this.laptop = laptop;
-        trayItems.add(new FileBrowserApp.FileBrowserTrayItem());
-        trayItems.add(new SettingsApp.SettingsTrayItem());
-        trayItems.add(new AppStore.StoreTrayItem());
-        trayItems.add(new TrayItemWifi());
+
+        this.trayItems.add(new FileBrowserApp.FileBrowserTrayItem());
+        this.trayItems.add(new SettingsApp.SettingsTrayItem());
+        this.trayItems.add(new AppStore.StoreTrayItem());
+        this.trayItems.add(new TrayItemWifi());
+
+        TrayItemAdder trayItemAdder = new TrayItemAdder(this.trayItems);
+        LaptopEvent.SETUP_TRAY_ITEMS.invoker().setupTrayItems(laptop, trayItemAdder);
     }
 
     public void init() {
-        trayItems.forEach(TrayItem::init);
+        this.trayItems.forEach(TrayItem::init);
     }
 
     public void setupApplications(List<Application> applications) {
