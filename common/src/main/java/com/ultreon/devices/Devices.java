@@ -59,6 +59,8 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.injectables.targets.ArchitecturyTarget;
 import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.registry.registries.Registries;
+import dev.architectury.utils.Env;
+import dev.architectury.utils.EnvExecutor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.nbt.CompoundTag;
@@ -112,11 +114,12 @@ public class Devices {
             preInit();
             serverSetup();
         }
-        ClientAppDebug.register();
-        ClientModEvents.clientSetup(); //todo
-        LOGGER.info("HELLO FROM PREINIT");
-        //LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
+        EnvExecutor.runInEnv(Env.CLIENT, () -> () -> {
+            ClientAppDebug.register();
+            ClientModEvents.clientSetup(); //todo
+        });
 
+        //LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
         LOGGER.info("Doing some common setup.");
 
         PacketHandler.init();
@@ -126,7 +129,8 @@ public class Devices {
         setupSiteRegistrations();
 
         setupEvents();
-        setupClientEvents();//todo
+
+        EnvExecutor.runInEnv(Env.CLIENT, () -> Devices::setupClientEvents); //todo
         if (!ArchitecturyTarget.getCurrentTarget().equals("forge")) {
             loadComplete();
         }
@@ -492,8 +496,10 @@ public class Devices {
     public static void showNotification(CompoundTag tag) {
         LOGGER.debug("Showing notification");
 
-        ClientNotification notification = ClientNotification.loadFromTag(tag);
-        notification.push();
+        EnvExecutor.runInEnv(Env.CLIENT, () -> () -> {
+            ClientNotification notification = ClientNotification.loadFromTag(tag);
+            notification.push();
+        });
     }
 
     public static boolean hasAllowedApplications() {
