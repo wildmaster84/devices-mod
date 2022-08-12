@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.math.Quaternion;
+import com.ultreon.devices.core.Laptop;
 import com.ultreon.devices.object.tiles.Tile;
 import com.ultreon.devices.util.KeyboardHelper;
 import com.ultreon.devices.util.Vec2d;
@@ -29,7 +30,7 @@ public class Player {
     private final Vec2d velocity;
     private final BoatRenderer boatModel;
     //private final ModelDummyPlayer playerModel;
-    private Boat boat = new Boat(Objects.requireNonNull(Minecraft.getInstance().level), 0, 0, 0);
+    private Boat boat;
 
     public static EntityRendererProvider.Context createEntityRendererContext() {
         return new EntityRendererProvider.Context(Minecraft.getInstance().getEntityRenderDispatcher(), Minecraft.getInstance().getItemRenderer(), Minecraft.getInstance().getResourceManager(), Minecraft.getInstance().getEntityModels(), Minecraft.getInstance().font);
@@ -42,6 +43,9 @@ public class Player {
         this.boatModel = new BoatRenderer(createEntityRendererContext());
 		assert Minecraft.getInstance().player != null;
 		boolean slim = Minecraft.getInstance().player.getModelName().equals("slim");
+        if (Laptop.isWorldLess()) {
+            boat = new Boat(Objects.requireNonNull(Minecraft.getInstance().level), 0, 0, 0);
+        }
 //        this.playerModel = new ModelDummyPlayer(0f, slim);
 //        this.playerModel.isRiding = true;
 //        this.playerModel.isChild = false;
@@ -82,7 +86,8 @@ public class Player {
         velocity.x = direction.x * speed;
         velocity.y = direction.y * speed;
 
-        if (canMove = canMove()) {
+        canMove = canMove();
+        if (canMove) {
             this.posX += velocity.x;
             this.posY += velocity.y;
         } else {
@@ -113,20 +118,20 @@ public class Player {
 
         pose.pushPose();
         pose.translate((float) px, (float) py, 3f);
-        pose.scale((float) (-scale), (float) -scale, (float) -scale);
+        pose.scale(-scale, -scale, -scale);
         pose.mulPose(new Quaternion(180f, 0f, 0f, 1f)); //Flips boat up
         pose.mulPose(new Quaternion(90, 1, 0, 0));
         pose.translate(0f, -3d, 0f);
         pose.mulPose(new Quaternion(-90, 1f, 0f, 0f));
         pose.mulPose(new Quaternion(rot, 0f, 1f, 0f));
         RenderSystem.setShaderTexture(0, boatTextures);
-        Minecraft.getInstance().getEntityRenderDispatcher().render(this.boat, (double) 0, (double) 0, (double) 0, 0f, partialTicks, pose, MultiBufferSource.immediate(Tesselator.getInstance().getBuilder()), 1);
+        Minecraft.getInstance().getEntityRenderDispatcher().render(this.boat, 0, 0, 0, 0f, partialTicks, pose, MultiBufferSource.immediate(Tesselator.getInstance().getBuilder()), 1);
         boatModel.render(boat, 0f, 0f, pose, Minecraft.getInstance().renderBuffers().bufferSource(), 1);
         pose.popPose();
 
         pose.pushPose();
         pose.translate((float) px, (float) py, 3f);
-        pose.scale((float) (-scale), (float) scale, (float) scale);
+        pose.scale(-scale, scale, scale);
         // //Flips boat up
         pose.mulPose(new Quaternion(90, 1, 0, 0));
         pose.translate(0f, 5f, 0f);

@@ -66,7 +66,7 @@ public class Laptop extends Screen implements System {
     private static Font font;
     private static final ResourceLocation LAPTOP_GUI = new ResourceLocation(Reference.MOD_ID, "textures/gui/laptop.png");
     private static final List<Application> APPLICATIONS = new ArrayList<>();
-    private final boolean worldLess;
+    private static boolean worldLess;
 
     @PlatformOnly("fabric")
     public static List<Application> getApplicationsForFabric() {
@@ -116,6 +116,15 @@ public class Laptop extends Screen implements System {
      * @param laptop the block entity of the laptop in-game, if the laptop is not in-game, the level passed to it should be null.
      */
     public Laptop(LaptopBlockEntity laptop) {
+        this(laptop, false);
+    }
+
+    /**
+     * Creates a new laptop GUI.
+     *
+     * @param laptop the block entity of the laptop in-game, if the laptop is not in-game, the level passed to it should be null.
+     */
+    public Laptop(LaptopBlockEntity laptop, boolean worldLess) {
         super(new TextComponent("Laptop"));
 
         // Laptop data.
@@ -147,10 +156,10 @@ public class Laptop extends Screen implements System {
         this.wallpaperLayout.handleLoad();
 
         // World-less flag.
-        this.worldLess = laptop.getLevel() == null;
+        Laptop.worldLess = worldLess;
     }
 
-    public boolean isWorldLess() {
+    public static boolean isWorldLess() {
         return worldLess;
     }
 

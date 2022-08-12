@@ -21,7 +21,7 @@ public class ClientAppDebug {
             var y = screen.height / 4 + 48;
 
             var a = new Button(screen.width / 2 - 100, y + rowHeight * -1, 200, 20, new TextComponent("DV TEST"), (button) -> {
-                Minecraft.getInstance().setScreen(new Laptop(new LaptopBlockEntity(new BlockPos(0, 0, 0), DeviceBlocks.WHITE_LAPTOP.get().defaultBlockState())));
+                Minecraft.getInstance().setScreen(new Laptop(new LaptopBlockEntity(new BlockPos(0, 0, 0), DeviceBlocks.WHITE_LAPTOP.get().defaultBlockState()), true));
             }, Button.NO_TOOLTIP);
             access.addRenderableWidget(a);
         }));

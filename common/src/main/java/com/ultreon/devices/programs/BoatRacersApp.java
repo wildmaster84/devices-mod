@@ -2,11 +2,13 @@ package com.ultreon.devices.programs;
 
 
 import com.ultreon.devices.api.app.Application;
+import com.ultreon.devices.api.app.Dialog;
 import com.ultreon.devices.api.app.Icons;
 import com.ultreon.devices.api.app.Layout;
 import com.ultreon.devices.api.app.component.Button;
 import com.ultreon.devices.api.app.component.CheckBox;
 import com.ultreon.devices.api.app.component.Label;
+import com.ultreon.devices.exception.WorldLessException;
 import com.ultreon.devices.object.Game;
 import com.ultreon.devices.object.TileGrid;
 import com.ultreon.devices.object.tiles.Tile;
@@ -41,6 +43,17 @@ public class BoatRacersApp extends Application {
             game.setRenderPlayer(false);
             game.fill(Tile.grass);
             layoutLevelEditor.addComponent(game);
+        } catch (WorldLessException e) {
+            Dialog.Message message = new Dialog.Message(e.getMessage()) {
+                @Override
+                public void onClose() {
+                    super.onClose();
+                    BoatRacersApp.this.getWindow().close();
+                }
+            };
+            message.setTitle("Error");
+            openDialog(message);
+            return;
         } catch (Exception e) {
             e.printStackTrace();
         }
