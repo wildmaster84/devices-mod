@@ -32,12 +32,17 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.10"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10"
+    forgeRuntimeLibrary "org.jetbrains.kotlin:kotlin-reflect:1.7.10"
+    forgeRuntimeLibrary "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10"
+    forgeRuntimeLibrary "com.ultreon:ultranlang:0.0.1-dev3"
+
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.7.10")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10")
+    implementation("com.ultreon:ultranlang:0.0.1-dev3")
 
     shadowCommon "org.jetbrains.kotlin:kotlin-reflect:1.7.10"
     shadowCommon "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10"
-    shadowCommon "com.ultreon:ultranlang:0.0.1-dev2"
+    shadowCommon "com.ultreon:ultranlang:0.0.1-dev3"
 }
 
 processResources {
