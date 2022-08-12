@@ -63,20 +63,21 @@ public class Laptop extends Screen implements System {
     public static final ResourceLocation ICON_TEXTURES = new ResourceLocation(Reference.MOD_ID, "textures/atlas/app_icons.png");
     public static final int ICON_SIZE = 14;
     private static final ResourceLocation LAPTOP_FONT = Devices.res("laptop");
-    //    public static final Font font = new LaptopFont(Minecraft.getInstance());
     private static Font font;
     private static final ResourceLocation LAPTOP_GUI = new ResourceLocation(Reference.MOD_ID, "textures/gui/laptop.png");
     private static final List<Application> APPLICATIONS = new ArrayList<>();
+    private final boolean worldLess;
+
     @PlatformOnly("fabric")
-    public static List<Application> getAPPLICATIONS() {
+    public static List<Application> getApplicationsForFabric() {
         return APPLICATIONS;
     }
-
-    private static final List<ResourceLocation> WALLPAPERS = new ArrayList<>();
 
     public static List<ResourceLocation> getWallpapers() {
         return ImmutableList.copyOf(WALLPAPERS);
     }
+
+    private static final List<ResourceLocation> WALLPAPERS = new ArrayList<>();
 
     private static final int BORDER = 10;
     private static final int DEVICE_WIDTH = 384;
@@ -112,22 +113,29 @@ public class Laptop extends Screen implements System {
     /**
      * Creates a new laptop GUI.
      *
-     * @param laptop the block entity of the laptop in-game.
+     * @param laptop the block entity of the laptop in-game, if the laptop is not in-game, the level passed to it should be null.
      */
     public Laptop(LaptopBlockEntity laptop) {
         super(new TextComponent("Laptop"));
 
+        // Laptop data.
         this.appData = laptop.getApplicationData();
         this.systemData = laptop.getSystemData();
+
+        // Windows
         this.windows = new Window[5];
+
+        // Settings etc.
         this.settings = Settings.fromTag(systemData.getCompound("Settings"));
+
+        // GUI Components
         this.bar = new TaskBar(this);
+
+        // Wallpaper stuff
         this.currentWallpaper = systemData.contains("CurrentWallpaper", 10) ? new Wallpaper(systemData.getCompound("CurrentWallpaper")) : null;
         if (this.currentWallpaper == null) this.currentWallpaper = new Wallpaper(0);
         Laptop.system = this;
         Laptop.pos = laptop.getBlockPos();
-        var posX = (width - DEVICE_WIDTH) / 2;
-        var posY = (height - DEVICE_HEIGHT) / 2;
         this.wallpaperLayout = new Layout(SCREEN_WIDTH, SCREEN_HEIGHT);
         this.wallpaper = new com.ultreon.devices.api.app.component.Image(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         if (currentWallpaper.isBuiltIn()) {
@@ -137,6 +145,13 @@ public class Laptop extends Screen implements System {
         }
         this.wallpaperLayout.addComponent(this.wallpaper);
         this.wallpaperLayout.handleLoad();
+
+        // World-less flag.
+        this.worldLess = laptop.getLevel() == null;
+    }
+
+    public boolean isWorldLess() {
+        return worldLess;
     }
 
     /**

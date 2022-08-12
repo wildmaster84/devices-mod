@@ -45,11 +45,10 @@ import com.ultreon.devices.util.ArchUtils;
 import com.ultreon.devices.util.SiteRegistration;
 import com.ultreon.ultranlang.*;
 import com.ultreon.ultranlang.ast.Program;
-import com.ultreon.ultranlang.exception.LexerException;
-import com.ultreon.ultranlang.exception.ParserException;
-import com.ultreon.ultranlang.exception.SemanticException;
+import com.ultreon.ultranlang.error.LexerException;
+import com.ultreon.ultranlang.error.ParserException;
+import com.ultreon.ultranlang.error.SemanticException;
 import com.ultreon.ultranlang.func.NativeCalls;
-import com.ultreon.ultranlang.func.ParamBuilder;
 import com.ultreon.ultranlang.symbol.BuiltinTypeSymbol;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientPlayerEvent;
@@ -138,10 +137,10 @@ public class Devices {
             if (!inputFile.exists()) {
                 LOGGER.error("File not found: {}", inputFile.getAbsolutePath());
             } else {
-                Spi.SHOULD_LOG_INTERNAL_ERRORS = false;
-                Spi.SHOULD_LOG_SCOPE = false;
-                Spi.SHOULD_LOG_STACK = false;
-                Spi.SHOULD_LOG_TOKENS = false;
+                SpiKt.setShouldLogInternalErrors(false);
+                SpiKt.setShouldLogScope(false);
+                SpiKt.setShouldLogStack(false);
+                SpiKt.setShouldLogTokens(false);
 
                 String text;
                 try {
@@ -152,7 +151,7 @@ public class Devices {
                 }
 
                 registerNativeFunctions();
-                NativeCalls.load();
+                NativeCalls.INSTANCE.load();
 
                 var lexer = new Lexer(text);
                 Program tree;
@@ -160,7 +159,7 @@ public class Devices {
                     var parser = new Parser(lexer);
                     tree = parser.parse();
                 } catch (LexerException | ParserException e) {
-                    if (Spi.SHOULD_LOG_INTERNAL_ERRORS) e.printStackTrace();
+                    if (SpiKt.getShouldLogInternalErrors()) e.printStackTrace();
                     LOGGER.error("Error parsing file: {}", e.getMessage());
                     break ultranLang;
                 } catch (RuntimeException e) {
@@ -169,10 +168,10 @@ public class Devices {
                         cause = cause.getCause();
                     }
                     if (cause instanceof LexerException) {
-                        if (Spi.SHOULD_LOG_INTERNAL_ERRORS) cause.printStackTrace();
+                        if (SpiKt.getShouldLogInternalErrors()) cause.printStackTrace();
                         LOGGER.error("Error parsing file: {}", cause.getMessage());
                     } else if (cause instanceof ParserException) {
-                        if (Spi.SHOULD_LOG_INTERNAL_ERRORS) cause.printStackTrace();
+                        if (SpiKt.getShouldLogInternalErrors()) cause.printStackTrace();
                         LOGGER.error("Error parsing file: {}", cause.getMessage());
                     } else {
                         throw e;
@@ -185,7 +184,7 @@ public class Devices {
                 try {
                     semanticAnalyzer.visit(tree);
                 } catch (SemanticException e) {
-                    if (Spi.SHOULD_LOG_INTERNAL_ERRORS) e.printStackTrace();
+                    if (SpiKt.getShouldLogInternalErrors()) e.printStackTrace();
                     LOGGER.error("Error analyzing file: {}", e.getMessage());
                     break ultranLang;
                 } catch (RuntimeException e) {
@@ -194,7 +193,7 @@ public class Devices {
                         cause = cause.getCause();
                     }
                     if (cause instanceof SemanticException) {
-                        if (Spi.SHOULD_LOG_INTERNAL_ERRORS) cause.printStackTrace();
+                        if (SpiKt.getShouldLogInternalErrors()) cause.printStackTrace();
                         LOGGER.error("Error analyzing file: {}", cause.getMessage());
                     } else {
                         throw e;
@@ -206,7 +205,7 @@ public class Devices {
                     var interpreter = new Interpreter(tree);
                     interpreter.interpret();
                 } catch (Exception e) {
-                    if (Spi.SHOULD_LOG_INTERNAL_ERRORS) e.printStackTrace();
+                    if (SpiKt.getShouldLogInternalErrors()) e.printStackTrace();
                     LOGGER.error("Error interpreting file: {}", e.getMessage());
                     break ultranLang;
                 }
@@ -214,10 +213,12 @@ public class Devices {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static void registerNativeFunctions() {
-        NativeCalls.register("log", ParamBuilder.create()
-                .add("level", BuiltinTypeSymbol.STRING)
-                .add("message", BuiltinTypeSymbol.STRING), ar -> {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("level", BuiltinTypeSymbol.STRING);
+        params.put("message", BuiltinTypeSymbol.STRING);
+        NativeCalls.INSTANCE.register("log", params, ar -> {
             Object level = ar.get("level");
             if (level instanceof String levelName) {
                 Object message = ar.get("message");

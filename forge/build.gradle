@@ -34,15 +34,15 @@ dependencies {
 
     forgeRuntimeLibrary "org.jetbrains.kotlin:kotlin-reflect:1.7.10"
     forgeRuntimeLibrary "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10"
-    forgeRuntimeLibrary "com.ultreon:ultranlang:0.0.1-dev3"
+    forgeRuntimeLibrary "com.ultreon:ultranlang:0.0.1-dev5"
 
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.7.10")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10")
-    implementation("com.ultreon:ultranlang:0.0.1-dev3")
+    implementation("com.ultreon:ultranlang:0.0.1-dev5")
 
     shadowCommon "org.jetbrains.kotlin:kotlin-reflect:1.7.10"
     shadowCommon "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10"
-    shadowCommon "com.ultreon:ultranlang:0.0.1-dev3"
+    shadowCommon "com.ultreon:ultranlang:0.0.1-dev5"
 }
 
 processResources {

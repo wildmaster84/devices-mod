@@ -35,11 +35,11 @@ dependencies {
 
     include(implementation("org.jetbrains.kotlin:kotlin-reflect:1.7.10"))
     include(implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10"))
-    include(implementation("com.ultreon:ultranlang:0.0.1-dev3"))
+    include(implementation("com.ultreon:ultranlang:0.0.1-dev5"))
 
     shadowCommon "org.jetbrains.kotlin:kotlin-reflect:1.7.10"
     shadowCommon "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10"
-    shadowCommon "com.ultreon:ultranlang:0.0.1-dev3"
+    shadowCommon "com.ultreon:ultranlang:0.0.1-dev5"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
