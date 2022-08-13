@@ -5,6 +5,8 @@ import com.ultreon.devices.block.entity.LaptopBlockEntity;
 import com.ultreon.devices.core.Laptop;
 import com.ultreon.devices.item.FlashDriveItem;
 import com.ultreon.devices.util.BlockEntityUtil;
+import dev.architectury.utils.Env;
+import dev.architectury.utils.EnvExecutor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -109,7 +111,9 @@ public class LaptopBlock extends DeviceBlock.Colored {
                 }
 
                 if (laptop.isOpen() && level.isClientSide) {
-                    Minecraft.getInstance().setScreen(new Laptop(laptop));
+                    EnvExecutor.runInEnv(Env.CLIENT, () -> () -> {
+                        Minecraft.getInstance().setScreen(new Laptop(laptop));
+                    });
                     return InteractionResult.SUCCESS;
                 }
             }
