@@ -47,6 +47,7 @@ public class GitWebFrame extends Component {
         MODULES.put("download", new DownloadModule());
         MODULES.put("redirect", new RedirectModule());
         MODULES.put("applink", new AppLinkModule());
+        MODULES.put("credits", new AppLinkModule());
     }
 
     private final Application app;
@@ -357,7 +358,7 @@ public class GitWebFrame extends Component {
         for (Component c : layout.components) {
             if (c instanceof Layout) {
                 addWordListener((Layout) c, listener);
-            } else if (c instanceof Text) {
+            } else if (c instanceof Text text && !text.hasWordListener()) {
                 ((Text) c).setWordListener(listener);
             }
         }

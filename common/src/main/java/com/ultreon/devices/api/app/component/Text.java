@@ -143,6 +143,10 @@ public class Text extends Component {
         this.wordListener = wordListener;
     }
 
+    public boolean hasWordListener() {
+        return this.wordListener != null;
+    }
+
     public interface WordListener {
         void onWordClicked(String word, int mouseButton);
     }

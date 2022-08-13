@@ -41,6 +41,8 @@ dependencies {
     shadowCommon "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10"
     shadowCommon "com.ultreon:ultranlang:0.0.1-dev5"
 
+    modRuntimeOnly("net.fabricmc:fabric-language-kotlin:1.8.2+kotlin.1.7.10")
+
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 }
