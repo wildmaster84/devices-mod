@@ -39,7 +39,7 @@ public record PrinterRenderer(
         BlockEntityRendererProvider.Context context) implements BlockEntityRenderer<PrinterBlockEntity> {
     @Override
     public void render(PrinterBlockEntity blockEntity, float partialTick, @NotNull PoseStack pose, @NotNull MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        //PaperModel paperModel = new PaperModel(Minecraft.getInstance().getEntityModels().bakeLayer(PaperModel.LAYER_LOCATION));
+        PaperModel paperModel = new PaperModel(Minecraft.getInstance().getEntityModels().bakeLayer(PaperModel.LAYER_LOCATION));
 
         Tesselator tesselator = Tesselator.getInstance();
         BlockState state = Objects.requireNonNull(blockEntity.getLevel()).getBlockState(blockEntity.getBlockPos());

@@ -75,8 +75,8 @@ public class OfficeChairBlockEntity extends SyncBlockEntity implements Colorable
                 if(seat.getControllingPassenger() instanceof LivingEntity)
                 {
                     LivingEntity living = (LivingEntity) seat.getControllingPassenger();
-                    living.yHeadRotO = living.yHeadRot;
-                    living.yRotO = living.yHeadRot;
+                    //living.yHeadRotO = living.yHeadRot;
+                    //living.yRotO = living.yHeadRot;
                     living.setYBodyRot(living.yHeadRot);
                     //living.renderYawOffset = living.rotationYaw;
                     //living.prevRenderYawOffset = living.rotationYaw;

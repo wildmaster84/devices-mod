@@ -169,7 +169,7 @@ public class EthernetCableItem extends Item {
     @Override
     public Component getName(ItemStack stack) {
         if (stack.hasTag()) {
-            return new TextComponent(ChatFormatting.GRAY.toString() + ChatFormatting.BOLD + super.getDescription());
+            return super.getDescription().copy().withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD);
         }
         return super.getName(stack);
     }
