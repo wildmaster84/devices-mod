@@ -103,10 +103,6 @@ public class Devices {
             preInit();
             serverSetup();
         }
-        EnvExecutor.runInEnv(Env.CLIENT, () -> () -> {
-            ClientAppDebug.register();
-            ClientModEvents.clientSetup(); //todo
-        });
 
         //LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
         LOGGER.info("Doing some common setup.");
@@ -114,6 +110,11 @@ public class Devices {
         PacketHandler.init();
 
         registerApplications();
+
+        EnvExecutor.runInEnv(Env.CLIENT, () -> () -> {
+            ClientAppDebug.register();
+            ClientModEvents.clientSetup(); //todo
+        });
 
         EnvExecutor.runInEnv(Env.CLIENT, () -> Devices::setupSiteRegistrations);
 
