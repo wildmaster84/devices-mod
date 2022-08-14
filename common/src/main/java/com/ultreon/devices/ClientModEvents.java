@@ -1,9 +1,6 @@
 package com.ultreon.devices;
 
-import com.ultreon.devices.block.entity.renderer.LaptopRenderer;
-import com.ultreon.devices.block.entity.renderer.PaperRenderer;
-import com.ultreon.devices.block.entity.renderer.PrinterRenderer;
-import com.ultreon.devices.block.entity.renderer.RouterRenderer;
+import com.ultreon.devices.block.entity.renderer.*;
 import com.ultreon.devices.core.Laptop;
 import com.ultreon.devices.init.DeviceBlockEntities;
 import com.ultreon.devices.init.DeviceBlocks;
@@ -82,6 +79,7 @@ public class ClientModEvents {
         BlockEntityRendererRegistry.register(DeviceBlockEntities.PRINTER.get(), PrinterRenderer::new);
         BlockEntityRendererRegistry.register(DeviceBlockEntities.PAPER.get(), PaperRenderer::new);
         BlockEntityRendererRegistry.register(DeviceBlockEntities.ROUTER.get(), RouterRenderer::new);
+        BlockEntityRendererRegistry.register(DeviceBlockEntities.SEAT.get(), OfficeChairRenderer::new);
     }
 
     public static void registerLayerDefinitions() {

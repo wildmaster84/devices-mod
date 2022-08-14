@@ -1,59 +1,38 @@
 package com.ultreon.devices.block.entity.renderer;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Matrix4f;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import com.ultreon.devices.block.LaptopBlock;
 import com.ultreon.devices.block.entity.LaptopBlockEntity;
-import com.ultreon.devices.init.DeviceBlocks;
 import com.ultreon.devices.init.DeviceItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.CampfireRenderer;
-import net.minecraft.client.renderer.blockentity.LecternRenderer;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
-
-import javax.swing.*;
-import java.util.Objects;
-import java.util.Random;
-
-import static com.mojang.blaze3d.systems.RenderSystem.bindTexture;
 
 public class LaptopRenderer implements BlockEntityRenderer<LaptopBlockEntity> {
     private final BlockEntityRendererProvider.Context context;
-    private Minecraft mc = Minecraft.getInstance();
+    private final Minecraft mc = Minecraft.getInstance();
 
     public LaptopRenderer(BlockEntityRendererProvider.Context context) {
         this.context = context;
     }
+
     @Override
-    public void render(LaptopBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay)
-    {
+    public void render(LaptopBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         var direction = blockEntity.getBlockState().getValue(LaptopBlock.FACING).getClockWise().toYRot();
-        ItemEntity entityItem = new ItemEntity(mc.getInstance().level, 0D, 0D, 0D, ItemStack.EMPTY);
+        ItemEntity entityItem = new ItemEntity(Minecraft.getInstance().level, 0D, 0D, 0D, ItemStack.EMPTY);
         BlockState state = blockEntity.getBlock().defaultBlockState().setValue(LaptopBlock.TYPE, LaptopBlock.Type.SCREEN);
         BlockPos pos = blockEntity.getBlockPos();
 
@@ -67,8 +46,7 @@ public class LaptopRenderer implements BlockEntityRenderer<LaptopBlockEntity> {
         {
             //poseStack.translate(x, y, z);
 
-            if(blockEntity.isExternalDriveAttached())
-            {
+            if (blockEntity.isExternalDriveAttached()) {
                 poseStack.pushPose();
                 {
                     poseStack.translate(0.5, 0, 0.5);
@@ -88,17 +66,17 @@ public class LaptopRenderer implements BlockEntityRenderer<LaptopBlockEntity> {
             {
                 System.out.println("RENDEEING");
                 poseStack.translate(0.5, 0, 0.5);//west/east +90 north/south -90
-                poseStack.mulPose(Vector3f.YP.rotationDegrees(blockEntity.getBlockState().getValue(LaptopBlock.FACING) == Direction.EAST || blockEntity.getBlockState().getValue(LaptopBlock.FACING) == Direction.WEST ? direction+90 : direction-90));
+                poseStack.mulPose(Vector3f.YP.rotationDegrees(blockEntity.getBlockState().getValue(LaptopBlock.FACING) == Direction.EAST || blockEntity.getBlockState().getValue(LaptopBlock.FACING) == Direction.WEST ? direction + 90 : direction - 90));
                 poseStack.translate(-0.5, 0, -0.5);
                 poseStack.translate(0, 0.0625, 0.25);
-                poseStack.mulPose(Quaternion.fromXYZDegrees(new Vector3f(blockEntity.getScreenAngle(partialTick)+180, 1, 0)));
+                poseStack.mulPose(Quaternion.fromXYZDegrees(new Vector3f(blockEntity.getScreenAngle(partialTick) + 180, 1, 0)));
                 //poseStack.mulPose(Vector3f.YP.rotationDegrees(180));
                 poseStack.mulPose(Vector3f.XP.rotationDegrees(180));
                 Lighting.setupForFlatItems();
-          //      Tesselator tessellator = Tesselator.getInstance();
+                //      Tesselator tessellator = Tesselator.getInstance();
                 //BufferBuilder buffer = tessellator.getBuilder();
                 //buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
-            //    poseStack.pushPose();
+                //    poseStack.pushPose();
                 //poseStack.translate(-pos.getX(), -pos.getY(), -pos.getZ());
 
                 BlockRenderDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRenderer();
@@ -110,7 +88,7 @@ public class LaptopRenderer implements BlockEntityRenderer<LaptopBlockEntity> {
                 blockrendererdispatcher.renderSingleBlock(state, poseStack, bufferSource, packedLight, packedOverlay);//.renderModel(poseStack.last(), bufferSource.getBuffer(RenderType.cutout()), state, ibakedmodel, 1, 1, 1, packedLight, packedOverlay);
                 poseStack.popPose();
                 //poseStack.popPose();
-            //    tessellator.end();
+                //    tessellator.end();
                 Lighting.setupFor3DItems();
             }
             poseStack.popPose();

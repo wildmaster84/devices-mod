@@ -2,6 +2,7 @@ package com.ultreon.devices.data.client;
 
 import com.ultreon.devices.Reference;
 import com.ultreon.devices.block.LaptopBlock;
+import com.ultreon.devices.block.OfficeChairBlock;
 import com.ultreon.devices.block.PrinterBlock;
 import com.ultreon.devices.block.RouterBlock;
 import com.ultreon.devices.init.DeviceBlocks;
@@ -41,6 +42,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
         for (RouterBlock block : DeviceBlocks.getAllRouters()) {
             router(block);
         }
+
+        for (OfficeChairBlock block : DeviceBlocks.getAllOfficeChairs()) {
+            officeChair(block);
+        }
     }
 
     @Override
@@ -61,6 +66,22 @@ public class ModBlockStateProvider extends BlockStateProvider {
             var q = a.modelFile(models().getBuilder(type == LaptopBlock.Type.BASE ? name : name + "_closed")
                     .parent(new ModelFile.UncheckedModelFile(modLoc(type == LaptopBlock.Type.BASE ? "block/laptop_base" : "block/laptop_screen")))
                     .texture("2", mcLoc("block/" + block.getColor().getName() + "_wool"))
+            );
+            q
+                    .rotationY((int) state.getValue(LaptopBlock.FACING).toYRot())
+                    .build();
+            return a.build();
+        });
+    }
+
+    private void officeChair(OfficeChairBlock block) {
+        getVariantBuilder(block).forAllStates(state -> {
+            String name = Objects.requireNonNull(block.getRegistryName()).getPath();
+            var type = state.getValue(OfficeChairBlock.TYPE);
+            var a = ConfiguredModel.builder();
+            var q = a.modelFile(models().getBuilder(type == OfficeChairBlock.Type.SEAT ? name + "_seat" : type == OfficeChairBlock.Type.LEGS ? name + "_legs" : name + "_full")
+                    .parent(new ModelFile.UncheckedModelFile(modLoc(type == OfficeChairBlock.Type.SEAT ? "block/office_chair_seat" : type == OfficeChairBlock.Type.LEGS ? "block/office_chair_legs" : "block/office_chair_full")))
+                    .texture("chair_color", mcLoc("block/" + block.getColor().getName() + "_wool"))
             );
             q
                     .rotationY((int) state.getValue(LaptopBlock.FACING).toYRot())
