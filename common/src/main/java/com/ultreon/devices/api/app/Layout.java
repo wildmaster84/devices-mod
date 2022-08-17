@@ -13,6 +13,7 @@ import net.minecraft.nbt.CompoundTag;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The Layout class is the main implementation for displaying
@@ -69,7 +70,7 @@ public class Layout extends com.ultreon.devices.api.app.Component {
         if (height < 1)
             throw new IllegalArgumentException("Height can not be less than 1 tall");
 
-        this.components = new ArrayList<>();
+        this.components = new CopyOnWriteArrayList<>();
         this.width = width;
         this.height = height;
     }
@@ -91,7 +92,7 @@ public class Layout extends com.ultreon.devices.api.app.Component {
         if (height < 1)
             throw new IllegalArgumentException("Height can not be less than 1 tall");
 
-        this.components = new ArrayList<com.ultreon.devices.api.app.Component>();
+        this.components = new CopyOnWriteArrayList<>();
         this.width = width;
         this.height = height;
     }
