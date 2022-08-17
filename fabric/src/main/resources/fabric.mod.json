@@ -2,18 +2,23 @@
   "schemaVersion": 1,
   "id": "devices",
   "version": "${version}",
-  "name": "Devices",
-  "description": "ARCH",
+  "name": "Devices Mod",
+  "description": "Adds working electronic devices into Minecraft!\n\nCredits:\nThanks to MrCrayfish for the idea and the original mod that was made in 1.12.2. Thank you to MinecraftDoodler for helping with textures. Cheers to these people for donating during the development: Mastef Chief, Haunted Corpse, Jake Crowley, fabbe50, PlayDashGaming, jack jook, Hunstagamez, Techyy YT, MinecraftDoodler, Norge100YT, Cyberman2208, CreepergamingsMC",
   "authors": [
-    "Testing"
+    "Qboi123"
+  ],
+  "contributors": [
+    "Qboi123",
+    "Jab125",
+    "MrCrayfish (old mod)"
   ],
   "contact": {
-    "website": "non",
-    "repo": "no",
-    "issues": "no"
+    "website": "https://ultreon.github.io/web/",
+    "repo": "https://github.com/Ultreon/devices-mod",
+    "issues": "https://github.com/Ultreon/devices-mod/issues"
   },
   "license": "GPL-3.0",
-  "icon": "icon.png",
+  "icon": "ultreon.devices-mod.png",
   "environment": "*",
   "entrypoints": {
     "main": [
