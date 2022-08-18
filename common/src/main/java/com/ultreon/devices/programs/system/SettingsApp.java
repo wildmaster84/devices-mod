@@ -152,26 +152,34 @@ public class SettingsApp extends SystemApp {
      */
     private Layout createColorSchemeLayout() {
         final Layout layoutColorScheme = new Menu("UI Colors");
+        layoutColorScheme.addComponent(backBtn);
 
         ComboBox.Custom<Integer> comboBoxTextColor = createColorPicker(145, 26);
+        comboBoxTextColor.setValue(Laptop.getSystem().getSettings().getColorScheme().getTextColor());
         layoutColorScheme.addComponent(comboBoxTextColor);
 
         ComboBox.Custom<Integer> comboBoxTextSecondaryColor = createColorPicker(145, 44);
+        comboBoxTextSecondaryColor.setValue(Laptop.getSystem().getSettings().getColorScheme().getTextSecondaryColor());
         layoutColorScheme.addComponent(comboBoxTextSecondaryColor);
 
         ComboBox.Custom<Integer> comboBoxHeaderColor = createColorPicker(145, 62);
+        comboBoxHeaderColor.setValue(Laptop.getSystem().getSettings().getColorScheme().getHeaderColor());
         layoutColorScheme.addComponent(comboBoxHeaderColor);
 
         ComboBox.Custom<Integer> comboBoxBackgroundColor = createColorPicker(145, 80);
+        comboBoxBackgroundColor.setValue(Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor());
         layoutColorScheme.addComponent(comboBoxBackgroundColor);
 
         ComboBox.Custom<Integer> comboBoxBackgroundSecondaryColor = createColorPicker(145, 98);
+        comboBoxBackgroundSecondaryColor.setValue(Laptop.getSystem().getSettings().getColorScheme().getBackgroundSecondaryColor());
         layoutColorScheme.addComponent(comboBoxBackgroundSecondaryColor);
 
         ComboBox.Custom<Integer> comboBoxItemBackgroundColor = createColorPicker(145, 116);
+        comboBoxItemBackgroundColor.setValue(Laptop.getSystem().getSettings().getColorScheme().getItemBackgroundColor());
         layoutColorScheme.addComponent(comboBoxItemBackgroundColor);
 
         ComboBox.Custom<Integer> comboBoxItemHighlightColor = createColorPicker(145, 134);
+        comboBoxItemHighlightColor.setValue(Laptop.getSystem().getSettings().getColorScheme().getItemHighlightColor());
         layoutColorScheme.addComponent(comboBoxItemHighlightColor);
 
         buttonColorSchemeApply = new Button(5, 79, Icons.CHECK);
@@ -181,7 +189,13 @@ public class SettingsApp extends SystemApp {
         {
             if (mouseButton == 0) {
                 ColorScheme colorScheme = Laptop.getSystem().getSettings().getColorScheme();
-                colorScheme.setBackgroundColor(comboBoxHeaderColor.getValue());
+                colorScheme.setTextColor(comboBoxTextColor.getValue());
+                colorScheme.setTextSecondaryColor(comboBoxTextSecondaryColor.getValue());
+                colorScheme.setHeaderColor(comboBoxHeaderColor.getValue());
+                colorScheme.setBackgroundColor(comboBoxBackgroundColor.getValue());
+                colorScheme.setBackgroundSecondaryColor(comboBoxBackgroundSecondaryColor.getValue());
+                colorScheme.setItemBackgroundColor(comboBoxItemBackgroundColor.getValue());
+                colorScheme.setItemHighlightColor(comboBoxItemHighlightColor.getValue());
                 buttonColorSchemeApply.setEnabled(false);
             }
         });
@@ -349,7 +363,7 @@ public class SettingsApp extends SystemApp {
             }
         });
         colorPicker.setChangeListener((oldValue, newValue) ->
-                buttonColorSchemeApply.setEnabled(true));
+        {if (buttonColorSchemeApply != null) buttonColorSchemeApply.setEnabled(true);});
 
         Palette palette = new Palette(5, 5, colorPicker);
         Layout layout = colorPicker.getLayout();
