@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  */
 @SuppressWarnings("unused")
 public class GitWebFrame extends Component {
-    public static final Pattern PATTERN_LINK = Pattern.compile("(?<domain>[a-zA-Z\\-]+)\\.(?<extension>[a-zA-Z]+)(?<directory>(/[a-zA-Z\\-]+)*)(/)?");
+    public static final Pattern PATTERN_LINK = Pattern.compile("(?<domain>[a-zA-Z0-9\\p{sc=Han}\\p{InHiragana}\\p{InKatakana}\\-]+)\\.(?<extension>[a-zA-Z0-9\\p{sc=Han}\\p{InHiragana}\\p{InKatakana}]+)(?<directory>(/[a-zA-Z0-9\\p{sc=Han}\\p{InHiragana}\\p{InKatakana}\\-]+)*)(/)?");
     private static final Map<String, Module> MODULES = new HashMap<>();
 
     static {
