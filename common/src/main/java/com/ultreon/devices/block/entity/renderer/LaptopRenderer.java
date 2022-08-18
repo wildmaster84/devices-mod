@@ -64,7 +64,7 @@ public class LaptopRenderer implements BlockEntityRenderer<LaptopBlockEntity> {
 
             poseStack.pushPose();
             {
-                System.out.println("RENDEEING");
+                //System.out.println("RENDEEING");
                 poseStack.translate(0.5, 0, 0.5);//west/east +90 north/south -90
                 poseStack.mulPose(Vector3f.YP.rotationDegrees(blockEntity.getBlockState().getValue(LaptopBlock.FACING) == Direction.EAST || blockEntity.getBlockState().getValue(LaptopBlock.FACING) == Direction.WEST ? direction + 90 : direction - 90));
                 poseStack.translate(-0.5, 0, -0.5);
