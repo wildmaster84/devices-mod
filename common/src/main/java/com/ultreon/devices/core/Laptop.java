@@ -18,10 +18,12 @@ import com.ultreon.devices.api.task.TaskManager;
 import com.ultreon.devices.block.entity.LaptopBlockEntity;
 import com.ultreon.devices.core.task.TaskInstallApp;
 import com.ultreon.devices.object.AppInfo;
+import com.ultreon.devices.programs.system.DiagnosticsApp;
 import com.ultreon.devices.programs.system.SystemApp;
 import com.ultreon.devices.programs.system.component.FileBrowser;
 import com.ultreon.devices.programs.system.task.TaskUpdateApplicationData;
 import com.ultreon.devices.programs.system.task.TaskUpdateSystemData;
+import com.ultreon.devices.util.GLHelper;
 import dev.architectury.injectables.annotations.PlatformOnly;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
@@ -460,9 +462,16 @@ public class Laptop extends Screen implements System {
                         }
                         RenderSystem.disableScissor();
                         e.printStackTrace();
-                        if (window.getContent() instanceof Application app) {
-                            AppInfo info = ApplicationManager.getApplication("devices:diagnostics");
-                            system.openApplication(info);
+                        Dialog.Message message = new Dialog.Message("An error has occurred.\nSend logs to devs.");
+                        message.setTitle("Error");
+                        CompoundTag intent = new CompoundTag();
+                        if (window.content instanceof Application app) {
+                            AppInfo info = app.getInfo();
+                            if (info != null) {
+                                intent.putString("name", info.getName());
+                            }
+                            openApplication(ApplicationManager.getApplication("devices:diagnostics"), intent);
+                            closeApplication(app);
                         }
                     }
                     pose.translate(0, 0, 100);
@@ -493,6 +502,8 @@ public class Laptop extends Screen implements System {
         });
 
         super.render(pose, mouseX, mouseY, frameTime);
+
+        GLHelper.clearScissorStack();
     }
 
     private boolean isMouseInside(int mouseX, int mouseY, int startX, int startY, int endX, int endY) {
@@ -528,23 +539,23 @@ public class Laptop extends Screen implements System {
         int posX = (width - SCREEN_WIDTH) / 2;
         int posY = (height - SCREEN_HEIGHT) / 2;
 
-        try {
-            if (this.context != null) {
-                int dropdownX = context.xPosition;
-                int dropdownY = context.yPosition;
-                if (isMouseInside((int) mouseX, (int) mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height)) {
-                    this.context.handleMouseClick((int) mouseX, (int) mouseY, mouseButton);
-                    return false;
-                } else {
-                    this.context = null;
-                }
+        if (this.context != null) {
+            int dropdownX = context.xPosition;
+            int dropdownY = context.yPosition;
+            if (isMouseInside((int) mouseX, (int) mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height)) {
+                this.context.handleMouseClick((int) mouseX, (int) mouseY, mouseButton);
+                return false;
+            } else {
+                this.context = null;
             }
+        }
 
-            this.bar.handleClick(this, posX, posY + SCREEN_HEIGHT - TaskBar.BAR_HEIGHT, (int) mouseX, (int) mouseY, mouseButton);
+        this.bar.handleClick(this, posX, posY + SCREEN_HEIGHT - TaskBar.BAR_HEIGHT, (int) mouseX, (int) mouseY, mouseButton);
 
-            for (int i = 0; i < windows.length; i++) {
-                Window<Application> window = (Window<Application>) windows[i];
-                if (window != null) {
+        for (int i = 0; i < windows.length; i++) {
+            Window<Application> window = (Window<Application>) windows[i];
+            if (window != null) {
+                try {
                     Window<Dialog> dialogWindow = window.getContent().getActiveDialog();
                     if (isMouseWithinWindow((int) mouseX, (int) mouseY, window) || isMouseWithinWindow((int) mouseX, (int) mouseY, dialogWindow)) {
                         windows[i] = null;
@@ -564,13 +575,22 @@ public class Laptop extends Screen implements System {
                         }
                         break;
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Dialog.Message message = new Dialog.Message("An error has occurred.\nSend logs to devs.");
+                    message.setTitle("Error");
+                    if (windows.length == 0 || windows[0] == null) {
+                        CompoundTag intent = new CompoundTag();
+                        AppInfo info = window.content.getInfo();
+                        if (info != null) {
+                            intent.putString("name", info.getName());
+                        }
+                        openApplication(ApplicationManager.getApplication("devices:diagnostics"), intent);
+                    } else {
+                        windows[0].openDialog(message);
+                    }
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Dialog.Message message = new Dialog.Message("An error has occurred.\nSend logs to devs.");
-            message.setTitle("Error");
-            windows[0].openDialog(message);
         }
 
         return super.mouseClicked(mouseX, mouseY, mouseButton);
@@ -766,11 +786,13 @@ public class Laptop extends Screen implements System {
     }
 
     private Application openApplication(Application app, CompoundTag intent) {
-        if (isApplicationNotInstalled(app.getInfo()))
-            return null;
+        if (!(app instanceof DiagnosticsApp)) {
+            if (isApplicationNotInstalled(app.getInfo()))
+                return null;
 
-        if (isInvalidApplication(app.getInfo()))
-            return null;
+            if (isInvalidApplication(app.getInfo()))
+                return null;
+        }
 
         try {
             var q = sendApplicationToFront(app.getInfo());

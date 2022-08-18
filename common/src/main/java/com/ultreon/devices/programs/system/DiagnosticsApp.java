@@ -14,11 +14,17 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 
 public final class DiagnosticsApp extends SystemApp {
-    private final String messageText;
+    private String messageText;
     private final AppInfo appInfo;
     private final Application application;
 
     private ClickListener positiveListener;
+
+    public DiagnosticsApp() {
+        this.messageText = "Unknown app crashed";
+        this.appInfo = null;
+        this.application = null;
+    }
 
     public DiagnosticsApp(AppInfo appInfo) {
         this.appInfo = appInfo;
@@ -54,6 +60,13 @@ public final class DiagnosticsApp extends SystemApp {
 
     @Override
     public void init(@Nullable CompoundTag intent) {
+        String applicationName = null;
+        if (intent != null) {
+            applicationName = intent.getString("applicationName");
+        }
+
+        this.messageText = applicationName == null ? "App Crashed" : "App Crashed:\n" + applicationName;
+
         Layout layoutMain = new Layout(150, 40);
 
         int textHeight = Minecraft.getInstance().font.wordWrapHeight(messageText, getWidth() - 10);

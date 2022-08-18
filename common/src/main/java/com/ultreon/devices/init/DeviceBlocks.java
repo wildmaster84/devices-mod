@@ -1,10 +1,7 @@
 package com.ultreon.devices.init;
 
 import com.ultreon.devices.Devices;
-import com.ultreon.devices.block.LaptopBlock;
-import com.ultreon.devices.block.PaperBlock;
-import com.ultreon.devices.block.PrinterBlock;
-import com.ultreon.devices.block.RouterBlock;
+import com.ultreon.devices.block.*;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.Registry;
@@ -72,6 +69,22 @@ public class DeviceBlocks {
     public static final RegistrySupplier<RouterBlock> BLACK_ROUTER = REGISTER.register(Devices.id("black_router"), () -> new RouterBlock(DyeColor.BLACK));
     public static final RegistrySupplier<PaperBlock> PAPER = REGISTER.register(Devices.id("paper"), PaperBlock::new);
 
+    public static final RegistrySupplier<OfficeChairBlock> WHITE_OFFICE_CHAIR = REGISTER.register(Devices.id("white_office_chair"), () -> new OfficeChairBlock(DyeColor.WHITE));
+    public static final RegistrySupplier<OfficeChairBlock> ORANGE_OFFICE_CHAIR = REGISTER.register(Devices.id("orange_office_chair"), () -> new OfficeChairBlock(DyeColor.ORANGE));
+    public static final RegistrySupplier<OfficeChairBlock> MAGENTA_OFFICE_CHAIR = REGISTER.register(Devices.id("magenta_office_chair"), () -> new OfficeChairBlock(DyeColor.MAGENTA));
+    public static final RegistrySupplier<OfficeChairBlock> LIGHT_BLUE_OFFICE_CHAIR = REGISTER.register(Devices.id("light_blue_office_chair"), () -> new OfficeChairBlock(DyeColor.LIGHT_BLUE));
+    public static final RegistrySupplier<OfficeChairBlock> YELLOW_OFFICE_CHAIR = REGISTER.register(Devices.id("yellow_office_chair"), () -> new OfficeChairBlock(DyeColor.YELLOW));
+    public static final RegistrySupplier<OfficeChairBlock> LIME_OFFICE_CHAIR = REGISTER.register(Devices.id("lime_office_chair"), () -> new OfficeChairBlock(DyeColor.LIME));
+    public static final RegistrySupplier<OfficeChairBlock> PINK_OFFICE_CHAIR = REGISTER.register(Devices.id("pink_office_chair"), () -> new OfficeChairBlock(DyeColor.PINK));
+    public static final RegistrySupplier<OfficeChairBlock> GRAY_OFFICE_CHAIR = REGISTER.register(Devices.id("gray_office_chair"), () -> new OfficeChairBlock(DyeColor.GRAY));
+    public static final RegistrySupplier<OfficeChairBlock> LIGHT_GRAY_OFFICE_CHAIR = REGISTER.register(Devices.id("light_gray_office_chair"), () -> new OfficeChairBlock(DyeColor.LIGHT_GRAY));
+    public static final RegistrySupplier<OfficeChairBlock> CYAN_OFFICE_CHAIR = REGISTER.register(Devices.id("cyan_office_chair"), () -> new OfficeChairBlock(DyeColor.CYAN));
+    public static final RegistrySupplier<OfficeChairBlock> PURPLE_OFFICE_CHAIR = REGISTER.register(Devices.id("purple_office_chair"), () -> new OfficeChairBlock(DyeColor.PURPLE));
+    public static final RegistrySupplier<OfficeChairBlock> BLUE_OFFICE_CHAIR = REGISTER.register(Devices.id("blue_office_chair"), () -> new OfficeChairBlock(DyeColor.BLUE));
+    public static final RegistrySupplier<OfficeChairBlock> BROWN_OFFICE_CHAIR = REGISTER.register(Devices.id("brown_office_chair"), () -> new OfficeChairBlock(DyeColor.BROWN));
+    public static final RegistrySupplier<OfficeChairBlock> GREEN_OFFICE_CHAIR = REGISTER.register(Devices.id("green_office_chair"), () -> new OfficeChairBlock(DyeColor.GREEN));
+    public static final RegistrySupplier<OfficeChairBlock> RED_OFFICE_CHAIR = REGISTER.register(Devices.id("red_office_chair"), () -> new OfficeChairBlock(DyeColor.RED));
+    public static final RegistrySupplier<OfficeChairBlock> BLACK_OFFICE_CHAIR = REGISTER.register(Devices.id("black_office_chair"), () -> new OfficeChairBlock(DyeColor.BLACK));
 
     public static Stream<Block> getAllBlocks() {
         return REGISTER.getIds().stream().map(REGISTER::get);
@@ -87,5 +100,9 @@ public class DeviceBlocks {
 
     public static List<RouterBlock> getAllRouters() {
         return getAllBlocks().filter(block -> block instanceof RouterBlock).map(block -> (RouterBlock) block).toList();
+    }
+
+    public static List<OfficeChairBlock> getAllOfficeChairs() {
+        return getAllBlocks().filter(block -> block instanceof OfficeChairBlock).map(block -> (OfficeChairBlock) block).toList();
     }
 }

@@ -63,8 +63,8 @@ public record PrinterRenderer(
                     BufferBuilder builder = tesselator.getBuilder();
 
                     MultiBufferSource.BufferSource modelBufferSource = MultiBufferSource.immediate(builder);
-                    VertexConsumer vertexconsumer = modelBufferSource.getBuffer(paperModel.renderType(PaperModel.TEXTURE));
-                    paperModel.renderToBuffer(pose, vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+                   // VertexConsumer vertexconsumer = modelBufferSource.getBuffer(paperModel.renderType(PaperModel.TEXTURE));
+                    //paperModel.renderToBuffer(pose, vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
                     tesselator.end();
                     // BUFFER END
@@ -86,8 +86,8 @@ public record PrinterRenderer(
                     BufferBuilder builder = tesselator.getBuilder();
 
                     MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(builder);
-                    VertexConsumer vertexconsumer = buffer.getBuffer(paperModel.renderType(PaperModel.TEXTURE));
-                    paperModel.renderToBuffer(pose, vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+                 //   VertexConsumer vertexconsumer = buffer.getBuffer(paperModel.renderType(PaperModel.TEXTURE));
+                 //   paperModel.renderToBuffer(pose, vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
                     tesselator.end();
                     // BUFFER END
@@ -103,8 +103,8 @@ public record PrinterRenderer(
                     BufferBuilder builder = tesselator.getBuilder();
 
                     MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(builder);
-                    VertexConsumer vertexconsumer = buffer.getBuffer(paperModel.renderType(PaperModel.TEXTURE));
-                    paperModel.renderToBuffer(pose, vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+            //        VertexConsumer vertexconsumer = buffer.getBuffer(paperModel.renderType(PaperModel.TEXTURE));
+            //        paperModel.renderToBuffer(pose, vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
                     tesselator.end();
                     // BUFFER END

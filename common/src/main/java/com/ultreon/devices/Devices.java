@@ -5,7 +5,6 @@ import com.google.common.base.Suppliers;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.mojang.blaze3d.platform.NativeImage;
 import com.ultreon.devices.api.ApplicationManager;
 import com.ultreon.devices.api.app.Application;
 import com.ultreon.devices.api.print.IPrint;
@@ -13,7 +12,6 @@ import com.ultreon.devices.api.print.PrintingManager;
 import com.ultreon.devices.api.task.TaskManager;
 import com.ultreon.devices.api.utils.OnlineRequest;
 import com.ultreon.devices.block.PrinterBlock;
-import com.ultreon.devices.core.Laptop;
 import com.ultreon.devices.core.client.ClientNotification;
 import com.ultreon.devices.core.client.debug.ClientAppDebug;
 import com.ultreon.devices.core.io.task.*;
@@ -61,14 +59,9 @@ import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.registry.registries.Registries;
 import dev.architectury.utils.Env;
 import dev.architectury.utils.EnvExecutor;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -78,18 +71,14 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.List;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -114,10 +103,6 @@ public class Devices {
             preInit();
             serverSetup();
         }
-        EnvExecutor.runInEnv(Env.CLIENT, () -> () -> {
-            ClientAppDebug.register();
-            ClientModEvents.clientSetup(); //todo
-        });
 
         //LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
         LOGGER.info("Doing some common setup.");
@@ -126,7 +111,12 @@ public class Devices {
 
         registerApplications();
 
-        setupSiteRegistrations();
+        EnvExecutor.runInEnv(Env.CLIENT, () -> () -> {
+            ClientAppDebug.register();
+            ClientModEvents.clientSetup(); //todo
+        });
+
+        EnvExecutor.runInEnv(Env.CLIENT, () -> Devices::setupSiteRegistrations);
 
         setupEvents();
 
@@ -265,7 +255,6 @@ public class Devices {
 
     public static void loadComplete() {
         LOGGER.info("Doing some load complete handling.");
-        generateIconAtlas();
     }
 
 
@@ -335,76 +324,9 @@ public class Devices {
             TaskManager.registerTask(TaskNotificationTest.class);
         }
 
-        PrintingManager.registerPrint(new ResourceLocation(Reference.MOD_ID, "picture"), PixelPainterApp.PicturePrint.class);
-    }
-
-    private static void generateIconAtlas() {
-        final int ICON_SIZE = 14;
-        int index = 0;
-
-        BufferedImage atlas = new BufferedImage(ICON_SIZE * 16, ICON_SIZE * 16, BufferedImage.TYPE_INT_ARGB);
-        Graphics g = atlas.createGraphics();
-
-        try {
-            BufferedImage icon = ImageIO.read(Objects.requireNonNull(Devices.class.getResourceAsStream("/assets/" + Reference.MOD_ID + "/textures/app/icon/missing.png")));
-            g.drawImage(icon, 0, 0, ICON_SIZE, ICON_SIZE, null);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        index++;
-
-        for (AppInfo info : ApplicationManager.getAllApplications()) {
-            if (info.getIcon() == null) continue;
-
-            ResourceLocation identifier = info.getId();
-            ResourceLocation iconResource = new ResourceLocation(info.getIcon());
-            String path = "/assets/" + iconResource.getNamespace() + "/" + iconResource.getPath();
-            try {
-                InputStream input = Devices.class.getResourceAsStream(path);
-                if (input != null) {
-                    BufferedImage icon = ImageIO.read(input);
-                    if (icon.getWidth() != ICON_SIZE || icon.getHeight() != ICON_SIZE) {
-                        Devices.LOGGER.error("Incorrect icon size for " + identifier.toString() + " (Must be 14 by 14 pixels)");
-                        continue;
-                    }
-                    int iconU = (index % 16) * ICON_SIZE;
-                    int iconV = (index / 16) * ICON_SIZE;
-                    g.drawImage(icon, iconU, iconV, ICON_SIZE, ICON_SIZE, null);
-                    updateIcon(info, iconU, iconV);
-                    index++;
-                } else {
-                    Devices.LOGGER.error("Icon for application '" + identifier.toString() + "' could not be found at '" + path + "'");
-                }
-            } catch (Exception e) {
-                Devices.LOGGER.error("Unable to load icon for " + identifier.toString());
-            }
-        }
-
-        g.dispose();
-
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        try {
-            ImageIO.write(atlas, "png", output);
-            byte[] bytes = output.toByteArray();
-            ByteArrayInputStream input = new ByteArrayInputStream(bytes);
-            Minecraft.getInstance().submit(() -> {
-                try {
-                    Minecraft.getInstance().getTextureManager().register(Laptop.ICON_TEXTURES, new DynamicTexture(NativeImage.read(input)));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @ExpectPlatform
-    private static void updateIcon(AppInfo info, int iconU, int iconV) {
-        throw new AssertionError();
-//        ObfuscationReflectionHelper.setPrivateValue(AppInfo.class, info, iconU, "iconU");
-//        ObfuscationReflectionHelper.setPrivateValue(AppInfo.class, info, iconV, "iconV");
+        EnvExecutor.runInEnv(Env.CLIENT, () -> () -> {
+            PrintingManager.registerPrint(new ResourceLocation(Reference.MOD_ID, "picture"), PixelPainterApp.PicturePrint.class);
+        });
     }
 
     @ExpectPlatform
@@ -431,20 +353,23 @@ public class Devices {
             allowedApps.add(new AppInfo(identifier, false));
         }
 
-        try {
-            Application application = clazz.getConstructor().newInstance();
-            List<Application> apps = getAPPLICATIONS(); /*ObfuscationReflectionHelper.getPrivateValue(Laptop.class, null, "APPLICATIONS");*/
-            assert apps != null;
-            apps.add(application);
+        AtomicReference<Application> application = new AtomicReference<>(null);
+        EnvExecutor.runInEnv(Env.CLIENT, () -> () -> {
+            try {
+                Application app = clazz.getConstructor().newInstance();
+                List<Application> apps = getAPPLICATIONS(); /*ObfuscationReflectionHelper.getPrivateValue(Laptop.class, null, "APPLICATIONS");*/
+                assert apps != null;
+                apps.add(app);
 
-            application.setInfo( generateAppInfo(identifier, clazz));
+                app.setInfo( generateAppInfo(identifier, clazz));
 
-            return application;
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-                InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return null;
+                application.set(app);
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                     InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        });
+        return application.get();
     }
 
     @NotNull
@@ -515,21 +440,6 @@ public class Devices {
 
     public static ResourceLocation res(String path) {
         return new ResourceLocation(Devices.MOD_ID, path);
-    }
-
-    public static class ReloaderListener implements PreparableReloadListener {
-        @NotNull
-        @Override
-        public CompletableFuture<Void> reload(@NotNull PreparableReloadListener.PreparationBarrier preparationBarrier, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller preparationsProfiler, @NotNull ProfilerFiller reloadProfiler, @NotNull Executor backgroundExecutor, @NotNull Executor gameExecutor) {
-            LOGGER.debug("Reloading resources from the Device Mod.");
-
-            return CompletableFuture.runAsync(() -> {
-                if (ApplicationManager.getAllApplications().size() > 0) {
-                    ApplicationManager.getAllApplications().forEach(AppInfo::reload);
-                    generateIconAtlas();
-                }
-            }, gameExecutor);
-        }
     }
 
 //    private void enqueueIMC(final InterModEnqueueEvent event) {

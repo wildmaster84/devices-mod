@@ -19,6 +19,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -40,6 +41,11 @@ public abstract class DeviceBlock extends HorizontalDirectionalBlock implements 
         super(properties.strength(0.5f));
         this.deviceType = deviceType;
     }
+
+//    @Override
+//    public RenderShape getRenderShape(BlockState state) {
+//        return RenderShape.INVISIBLE;
+//    }
 
     @NotNull
     @Override
