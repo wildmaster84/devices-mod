@@ -15,7 +15,7 @@ import net.minecraft.world.entity.MobCategory;
 public class DeviceEntities {
     private static final Registrar<EntityType<?>> REGISTER = Devices.REGISTRIES.get().get(Registry.ENTITY_TYPE_REGISTRY);
 
-    public static final RegistrySupplier<EntityType<SeatEntity>> SEAT = REGISTER.register(Devices.id("seat"), () -> EntityType.Builder.<SeatEntity>of(SeatEntity::new, MobCategory.MISC).sized(0.5f, 1.975f).clientTrackingRange(10).build(Devices.id("seat").toString()));
+    public static final RegistrySupplier<EntityType<SeatEntity>> SEAT = REGISTER.register(Devices.id("seat"), () -> EntityType.Builder.<SeatEntity>of(SeatEntity::new, MobCategory.MISC).sized(0.5f, 1.975f).clientTrackingRange(10).noSummon().build(Devices.id("seat").toString()));
 
     public static void register() {
 
