@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  */
 @SuppressWarnings("unused")
 public class GitWebFrame extends Component {
-    public static final Pattern PATTERN_LINK = Pattern.compile("(?<domain>[a-zA-Z\\-]+)\\.(?<extension>[a-zA-Z]+)(?<directory>(/[a-zA-Z\\-]+)*)(/)?");
+    public static final Pattern PATTERN_LINK = Pattern.compile("(?<domain>[a-zA-Z0-9\\p{sc=Han}\\p{InHiragana}\\p{InKatakana}\\-]+)\\.(?<extension>[a-zA-Z0-9\\p{sc=Han}\\p{InHiragana}\\p{InKatakana}]+)(?<directory>(/[a-zA-Z0-9\\p{sc=Han}\\p{InHiragana}\\p{InKatakana}\\-]+)*)(/)?");
     private static final Map<String, Module> MODULES = new HashMap<>();
 
     static {
@@ -47,6 +47,7 @@ public class GitWebFrame extends Component {
         MODULES.put("download", new DownloadModule());
         MODULES.put("redirect", new RedirectModule());
         MODULES.put("applink", new AppLinkModule());
+        MODULES.put("credits", new AppLinkModule());
     }
 
     private final Application app;
@@ -357,7 +358,7 @@ public class GitWebFrame extends Component {
         for (Component c : layout.components) {
             if (c instanceof Layout) {
                 addWordListener((Layout) c, listener);
-            } else if (c instanceof Text) {
+            } else if (c instanceof Text text && !text.hasWordListener()) {
                 ((Text) c).setWordListener(listener);
             }
         }

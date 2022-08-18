@@ -7,6 +7,7 @@ public final class DeviceType implements IDeviceType {
     public static final DeviceType PRINTER = new DeviceType();
     public static final DeviceType FLASH_DRIVE = new DeviceType();
     public static final DeviceType ROUTER = new DeviceType();
+    public static final DeviceType SEAT = new DeviceType();
 
     @Override
     @Contract(pure = true, value = "-> this")

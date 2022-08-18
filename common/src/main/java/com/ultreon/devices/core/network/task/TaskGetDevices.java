@@ -10,6 +10,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
 
 import java.util.Collection;
 
@@ -59,7 +60,7 @@ public class TaskGetDevices extends Task {
             e.printStackTrace();
         }
 
-        BlockEntity tileEntity = level.getBlockEntity(devicePos);
+        BlockEntity tileEntity = level.getChunkAt(devicePos).getBlockEntity(devicePos, LevelChunk.EntityCreationType.IMMEDIATE);
         if (tileEntity instanceof NetworkDeviceBlockEntity tileEntityNetworkDevice) {
             if (tileEntityNetworkDevice.isConnected()) {
                 Router router = tileEntityNetworkDevice.getRouter();

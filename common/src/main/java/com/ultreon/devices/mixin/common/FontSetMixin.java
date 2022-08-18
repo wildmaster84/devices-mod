@@ -18,8 +18,8 @@ public class FontSetMixin {
 
     @Inject(method = "getGlyphInfoForSpace", at = @At("HEAD"))
     public void getGlyphInfoForSpace(int i, CallbackInfoReturnable<GlyphInfo> cir) {
-        if (name.equals(Devices.res("laptop"))) {
-            cir.setReturnValue(i == 9 ? DEVICES_TAB_INFO : cir.getReturnValue());
+        if (name.equals(Devices.res("laptop")) && i == 9) {
+            cir.setReturnValue(DEVICES_TAB_INFO);
         }
     }
 }

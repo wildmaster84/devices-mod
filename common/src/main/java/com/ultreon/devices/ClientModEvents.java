@@ -1,11 +1,14 @@
 package com.ultreon.devices;
 
+import com.ultreon.devices.block.entity.renderer.*;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.ultreon.devices.api.ApplicationManager;
 import com.ultreon.devices.core.Laptop;
+import com.ultreon.devices.init.DeviceBlockEntities;
 import com.ultreon.devices.init.DeviceBlocks;
 import com.ultreon.devices.object.AppInfo;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.architectury.registry.client.rendering.BlockEntityRendererRegistry;
 import dev.architectury.registry.client.rendering.RenderTypeRegistry;
 import dev.architectury.registry.registries.Registries;
 import net.minecraft.client.Minecraft;
@@ -79,6 +82,7 @@ public class ClientModEvents {
     }
 
     private static void registerRenderLayers() {
+        if (true) return;
         DeviceBlocks.getAllLaptops().forEach(block -> {
             LOGGER.debug(SETUP, "Setting render layer for laptop {}", Registries.getId(block, Registry.BLOCK_REGISTRY));
             RenderTypeRegistry.register(RenderType.cutout(), block);
@@ -175,10 +179,11 @@ public class ClientModEvents {
     public static void registerRenderers() {
         LOGGER.info("Registering renderers.");
 
-//        BlockEntityRendererRegistry.register(DeviceBlockEntities.LAPTOP.get(), LaptopRenderer::new);
-//        BlockEntityRendererRegistry.register(DeviceBlockEntities.PRINTER.get(), PrinterRenderer::new);
-//        BlockEntityRendererRegistry.register(DeviceBlockEntities.PAPER.get(), PaperRenderer::new);
-//        BlockEntityRendererRegistry.register(DeviceBlockEntities.ROUTER.get(), RouterRenderer::new);
+        BlockEntityRendererRegistry.register(DeviceBlockEntities.LAPTOP.get(), LaptopRenderer::new);
+        BlockEntityRendererRegistry.register(DeviceBlockEntities.PRINTER.get(), PrinterRenderer::new);
+        BlockEntityRendererRegistry.register(DeviceBlockEntities.PAPER.get(), PaperRenderer::new);
+        BlockEntityRendererRegistry.register(DeviceBlockEntities.ROUTER.get(), RouterRenderer::new);
+        BlockEntityRendererRegistry.register(DeviceBlockEntities.SEAT.get(), OfficeChairRenderer::new);
     }
 
     public static void registerLayerDefinitions() {
