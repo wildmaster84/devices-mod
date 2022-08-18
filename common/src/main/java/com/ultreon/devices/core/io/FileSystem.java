@@ -162,8 +162,9 @@ public class FileSystem {
     }
 
     private void load(CompoundTag tag) {
-        if (tag.contains("mainDrive", Tag.TAG_COMPOUND))
-            mainDrive = InternalDrive.fromTag(tag.getCompound("mainDrive"));
+        System.out.println(tag);
+        if (tag.contains("main_drive", Tag.TAG_COMPOUND))
+            mainDrive = InternalDrive.fromTag(tag.getCompound("main_drive"));
         if (tag.contains("drives", Tag.TAG_LIST)) {
             ListTag list = tag.getList("drives", Tag.TAG_COMPOUND);
             for (int i = 0; i < list.size(); i++) {
@@ -172,10 +173,10 @@ public class FileSystem {
                 additionalDrives.put(drive.getUuid(), drive);
             }
         }
-        if (tag.contains("externalDrive", Tag.TAG_COMPOUND))
-            attachedDrive = ExternalDrive.fromTag(tag.getCompound("externalDrive"));
-        if (tag.contains("externalDriveColor", Tag.TAG_BYTE))
-            attachedDriveColor = DyeColor.byId(tag.getByte("externalDriveColor"));
+        if (tag.contains("external_drive", Tag.TAG_COMPOUND))
+            attachedDrive = ExternalDrive.fromTag(tag.getCompound("external_drive"));
+        if (tag.contains("external_drive_color", Tag.TAG_BYTE))
+            attachedDriveColor = DyeColor.byId(tag.getByte("external_drive_color"));
 
         setupDefault();
     }
@@ -243,7 +244,7 @@ public class FileSystem {
 
                 attachedDriveColor = DyeColor.byId(flashDriveTag.getByte("color"));
 
-                blockEntity.getPipeline().putByte("externalDriveColor", (byte) attachedDriveColor.getId());
+                blockEntity.getPipeline().putByte("external_drive_color", (byte) attachedDriveColor.getId());
                 blockEntity.sync();
 
                 return true;
