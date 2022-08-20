@@ -42,7 +42,8 @@ public class Image extends Component {
     protected int imageU, imageV;
     protected int imageWidth, imageHeight;
     protected int sourceWidth, sourceHeight;
-    protected int componentWidth, componentHeight;
+    public int componentWidth;
+    public int componentHeight;
     private Spinner spinner;
     private float alpha = 1f;
 

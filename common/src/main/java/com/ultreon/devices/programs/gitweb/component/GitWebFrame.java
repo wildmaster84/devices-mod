@@ -1,5 +1,6 @@
 package com.ultreon.devices.programs.gitweb.component;
 
+import com.jab125.apoint.api.APointRuntime;
 import com.ultreon.devices.api.app.Application;
 import com.ultreon.devices.api.app.Component;
 import com.ultreon.devices.api.app.Layout;
@@ -7,6 +8,7 @@ import com.ultreon.devices.api.app.ScrollableLayout;
 import com.ultreon.devices.api.app.component.Text;
 import com.ultreon.devices.api.task.Callback;
 import com.ultreon.devices.api.utils.OnlineRequest;
+import com.ultreon.devices.programs.gitweb.layout.ModuleLayout;
 import com.ultreon.devices.programs.gitweb.module.Module;
 import com.ultreon.devices.programs.gitweb.module.*;
 import com.ultreon.devices.util.SiteRegistration;
@@ -48,10 +50,11 @@ public class GitWebFrame extends Component {
         MODULES.put("redirect", new RedirectModule());
         MODULES.put("applink", new AppLinkModule());
         MODULES.put("credits", new AppLinkModule());
+        MODULES.put("script", new ScriptModule());
     }
 
     private final Application app;
-    private final ScrollableLayout layout;
+    public final ScrollableLayout layout;
     private final int width;
     private final int height;
 
@@ -63,6 +66,7 @@ public class GitWebFrame extends Component {
 
     private Callback<String> loadingCallback;
     private Callback<String> loadedCallback;
+    public APointRuntime runtime;
 
     public GitWebFrame(Application app, int left, int top, int width, int height) {
         super(left, top);
@@ -114,7 +118,9 @@ public class GitWebFrame extends Component {
 
     private static ModuleEntry compileEntry(Module module, Map<String, String> data) {
         if (module != null && verifyModuleEntry(module, data)) {
-            return new ModuleEntry(module, data);
+            var moduleEntry = new ModuleEntry(module, data);
+            moduleEntry.setId(data.getOrDefault("id", null));
+            return moduleEntry;
         }
         return null;
     }
@@ -197,6 +203,17 @@ public class GitWebFrame extends Component {
 
     @Override
     protected void handleTick() {
+        //System.out.println("TICK TOCK");
+        for (Component component : this.layout.components) {
+            //System.out.println("A");
+            if (component instanceof ModuleLayout layout) {
+             //   System.out.println("AAAA");
+                layout._tick();
+               // layout.entry.getModule()
+            } else {
+                System.out.println(component);
+            }
+        }
         if (pendingWebsite != null) {
             this.setWebsite(pendingWebsite);
             pendingWebsite = null;
@@ -234,6 +251,7 @@ public class GitWebFrame extends Component {
     }
 
     private void setWebsite(String website) {
+        this.runtime = null;
         layout.clear();
 
         Matcher matcher = GitWebFrame.PATTERN_LINK.matcher(website);
@@ -320,8 +338,7 @@ public class GitWebFrame extends Component {
                 ModuleEntry entry = modules.get(i);
                 Module module = entry.getModule();
                 int height = module.calculateHeight(entry.getData(), width);
-                Layout moduleLayout = new Layout(0, offset, width, height);
-                module.generate(this, moduleLayout, width, entry.getData());
+                ModuleLayout moduleLayout = new ModuleLayout(0, offset, width, this, entry);
                 layout.addComponent(moduleLayout);
                 offset += height;
             }
@@ -330,8 +347,9 @@ public class GitWebFrame extends Component {
                 ModuleEntry entry = modules.get(modules.size() - 1);
                 Module module = entry.getModule();
                 int height = module.calculateHeight(entry.getData(), width);
-                Layout moduleLayout = new Layout(0, offset, width, height);
-                module.generate(this, moduleLayout, width, entry.getData());
+                //if (height == 0)
+                ModuleLayout moduleLayout = new ModuleLayout(0, offset, width, this, entry);
+                //module.generate(this, moduleLayout, width, entry.getData());
                 layout.addComponent(moduleLayout);
             }
 

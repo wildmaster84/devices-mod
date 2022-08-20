@@ -89,7 +89,7 @@ public class Layout extends com.ultreon.devices.api.app.Component {
         if (width < 13)
             throw new IllegalArgumentException("Width can not be less than 13 wide");
 
-        if (height < 1)
+        if (height < 1 && false)
             throw new IllegalArgumentException("Height can not be less than 1 tall");
 
         this.components = new CopyOnWriteArrayList<>();
@@ -350,7 +350,7 @@ public class Layout extends com.ultreon.devices.api.app.Component {
         return initialized;
     }
 
-    public void setInitialized() {
+    public void setInitialized(boolean initialized) {
         this.initialized = initialized;
     }
 
