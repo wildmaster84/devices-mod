@@ -82,4 +82,5 @@ allprojects {
     }
 }
 
-build.dependsOn mergeJars
+mergeJars.mustRunAfter build
+//build.dependsOn mergeJars

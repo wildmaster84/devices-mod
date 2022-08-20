@@ -15,6 +15,7 @@ loom {
 
 repositories {
     maven { url = "https://cursemaven.com" }
+    maven { url "https://maven.terraformersmc.com/releases" }
 }
 
 configurations {
@@ -49,6 +50,10 @@ dependencies {
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
+
+    modImplementation "com.terraformersmc:modmenu:3.0.0", {
+        exclude module: "fabric-api"
+    }
 }
 
 processResources {
