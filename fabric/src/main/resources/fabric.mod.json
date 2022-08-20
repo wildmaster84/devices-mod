@@ -3,14 +3,26 @@
   "id": "devices",
   "version": "${version}",
   "name": "Devices Mod",
-  "description": "Adds working electronic devices into Minecraft!\n\nCredits:\nThanks to MrCrayfish for the idea and the original mod that was made in 1.12.2. Thank you to MinecraftDoodler for helping with textures. Cheers to these people for donating during the development: Mastef Chief, Haunted Corpse, Jake Crowley, fabbe50, PlayDashGaming, jack jook, Hunstagamez, Techyy YT, MinecraftDoodler, Norge100YT, Cyberman2208, CreepergamingsMC",
+  "description": "Adds working electronic devices into Minecraft!",
   "authors": [
-    "Qboi123"
+    "Qboi123",
+    "Jab125"
   ],
   "contributors": [
-    "Qboi123",
-    "Jab125",
-    "MrCrayfish (old mod)"
+    "MrCrayfish",
+    "MinecraftDoodler",
+    "Mastef Chief",
+    "Haunted Corpse",
+    "Jake Crowley",
+    "fabbe50",
+    "PlayDashGaming",
+    "jack jook",
+    "Hunstagamez",
+    "Techyy YT",
+    "MinecraftDoodler",
+    "Norge100YT",
+    "Cyberman2208",
+    "CreepergamingsMC"
   ],
   "contact": {
     "website": "https://ultreon.github.io/web/",
@@ -31,6 +43,6 @@
   ],
   "depends": {
     "fabricloader": ">=0.14.8",
-    "minecraft": ">=1.18.2"
+    "minecraft": "~1.18.2"
   }
 }

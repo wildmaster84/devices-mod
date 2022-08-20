@@ -14,6 +14,7 @@ forgix {
     outputDir = "build/libs/merged"
 
     forge {
+        jarLocation = "build/libs/devices-${mod_version}.jar"
         additionalRelocate("com.ultreon.devices", "forge.com.ultreon.devices")
 
         mixin "devices-common.mixins.json"
@@ -21,6 +22,7 @@ forgix {
     }
 
     fabric {
+        jarLocation = "build/libs/devices-${mod_version}.jar"
         additionalRelocate("com.ultreon.devices", "fabric.com.ultreon.devices")
     }
 }
