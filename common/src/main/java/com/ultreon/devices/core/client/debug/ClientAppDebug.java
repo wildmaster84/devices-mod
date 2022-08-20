@@ -1,9 +1,11 @@
 package com.ultreon.devices.core.client.debug;
 
+import com.ultreon.devices.DeviceConfig;
 import com.ultreon.devices.block.entity.LaptopBlockEntity;
 import com.ultreon.devices.core.Laptop;
 import com.ultreon.devices.init.DeviceBlocks;
 import dev.architectury.event.events.client.ClientGuiEvent;
+import dev.architectury.platform.Platform;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.TitleScreen;
@@ -15,6 +17,7 @@ import net.minecraft.network.chat.TextComponent;
  */
 public class ClientAppDebug {
     public static void register() {
+        if (DeviceConfig.DEBUG_BUTTON.get())
         ClientGuiEvent.INIT_POST.register(((screen, access) -> {
             if (!(screen instanceof TitleScreen)) return;
             var rowHeight = 24;

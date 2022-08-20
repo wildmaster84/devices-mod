@@ -1,6 +1,7 @@
 package com.ultreon.devices;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.architectury.platform.Platform;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -22,6 +23,9 @@ public class DeviceConfig {
     private static final String CATEGORY_PIXEL_PAINTER = "pixel-painter";
     public static final ForgeConfigSpec.BooleanValue PIXEL_PAINTER_ENABLE;
     public static final ForgeConfigSpec.BooleanValue RENDER_PRINTED_3D;
+
+    public static final String CATEGORY_DEBUG = "debug";
+    public static final ForgeConfigSpec.BooleanValue DEBUG_BUTTON;
 
     public static final ForgeConfigSpec CONFIG;
 
@@ -48,6 +52,9 @@ public class DeviceConfig {
                 .define(CATEGORY_PIXEL_PAINTER + ".enabled", true);
         RENDER_PRINTED_3D = builder.comment("Should the pixels on printed pictures be render in 3D? Warning, this will decrease the performance of the game. You shouldn't enable it if you have a slow computer.")
                 .define(CATEGORY_PIXEL_PAINTER + ".render-printed-in-3d", false);
+
+        DEBUG_BUTTON = builder.comment("Display a button to access a worldless laptop")
+                .define(CATEGORY_DEBUG + ".debugButton", Platform.isDevelopmentEnvironment());
 
         CONFIG = builder.build();
     }
