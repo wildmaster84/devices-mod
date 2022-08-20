@@ -1,7 +1,8 @@
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "0.11.0-SNAPSHOT" apply false
+    id "dev.architectury.loom" version "0.12.0-SNAPSHOT" apply false
     id "io.github.pacifistmc.forgix" version "1.2.2"
+  //  id 'org.jetbrains.kotlin.jvm' version '1.7.1'
 }
 architectury {
     minecraft = rootProject.minecraft_version
@@ -13,12 +14,14 @@ forgix {
     outputDir = "build/libs/merged"
 
     forge {
+        additionalRelocate("com.ultreon.devices", "forge.com.ultreon.devices")
+
         mixin "devices-common.mixins.json"
         mixin "devices.mixins.json"
     }
 
     fabric {
-
+        additionalRelocate("com.ultreon.devices", "fabric.com.ultreon.devices")
     }
 }
 
