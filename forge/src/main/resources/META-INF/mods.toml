@@ -19,6 +19,7 @@ authors = "Qboi123, Jab125"
 description = '''
 Adds working electronic devices into Minecraft!
 '''
+itemIcon = "devices:red_laptop"
 
 # Dependencies for the main mod.
 [[dependencies.devices]]
