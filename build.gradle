@@ -81,3 +81,5 @@ allprojects {
         withSourcesJar()
     }
 }
+
+build.dependsOn mergeJars
