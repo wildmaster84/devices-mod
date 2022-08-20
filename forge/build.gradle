@@ -41,6 +41,7 @@ dependencies {
 
     implementation include("org.jetbrains.kotlin:kotlin-reflect:1.7.10")
     implementation include("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10")
+    include("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.10")
     implementation include("com.ultreon:ultranlang:0.0.1-dev5")
     implementation include("com.jab125:apoint:1.0.0")
 
