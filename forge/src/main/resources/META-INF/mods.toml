@@ -2,7 +2,7 @@
 # Copyright (c) 2022 - Ultreon Team, GPLv3 License. See the license at https://www.gnu.org/licenses/gpl-3.0-standalone.html
 
 modLoader = "javafml"
-loaderVersion = "[40,)"
+loaderVersion = "[40.1.60,)"
 license = "GPL-3.0"
 issueTrackerURL = "https://github.com/Ultreon/devices-mod/issues"
 
