@@ -333,7 +333,7 @@ public class SettingsApp extends SystemApp {
         laptop.getTaskBar().setupApplications(laptop.getApplications());
     }
 
-    private static class Menu extends Layout {
+    public static class Menu extends Layout {
         private final String title;
 
         public Menu(String title) {

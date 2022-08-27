@@ -55,6 +55,7 @@ import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.injectables.targets.ArchitecturyTarget;
+import dev.architectury.platform.Platform;
 import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.registry.registries.Registries;
 import dev.architectury.utils.Env;
@@ -232,7 +233,7 @@ public class Devices {
     }
 
     public static void preInit() {
-        if (DEVELOPER_MODE && ArchUtils.isProduction()) {
+        if (DEVELOPER_MODE && Platform.isDevelopmentEnvironment()) {
             throw new LaunchException();
         }
 

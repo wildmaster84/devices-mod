@@ -51,6 +51,7 @@ public class GitWebFrame extends Component {
         MODULES.put("applink", new AppLinkModule());
         MODULES.put("credits", new AppLinkModule());
         MODULES.put("script", new ScriptModule());
+        MODULES.put("bannerII", new BannerIIModule());
     }
 
     private final Application app;
@@ -66,7 +67,7 @@ public class GitWebFrame extends Component {
 
     private Callback<String> loadingCallback;
     private Callback<String> loadedCallback;
-    public APointRuntime runtime;
+    public APointRuntime aPointRuntime;
 
     public GitWebFrame(Application app, int left, int top, int width, int height) {
         super(left, top);
@@ -251,7 +252,7 @@ public class GitWebFrame extends Component {
     }
 
     private void setWebsite(String website) {
-        this.runtime = null;
+        this.aPointRuntime = null;
         layout.clear();
 
         Matcher matcher = GitWebFrame.PATTERN_LINK.matcher(website);

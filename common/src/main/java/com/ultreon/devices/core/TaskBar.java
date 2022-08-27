@@ -163,7 +163,7 @@ public class TaskBar {
     }
 
     public String timeToString(long time) {
-        int hours = (int) ((Math.floor(time / 1000d) + 7) % 24);
+        int hours = (int) ((Math.floor(time / 1000d) + 6) % 24);
         int minutes = (int) Math.floor((time % 1000) / 1000d * 60);
         return String.format("%02d:%02d", hours, minutes);
     }

@@ -24,7 +24,7 @@ Adds working electronic devices into Minecraft!
 [[dependencies.devices]]
 modId = "forge"
 mandatory = true
-versionRange = "[40,)"
+versionRange = "[40.1.60,)"
 ordering = "NONE"
 side = "BOTH"
 

@@ -1,6 +1,5 @@
 package com.ultreon.devices.programs.gitweb.module;
 
-import com.jab125.apoint.a;
 import com.jab125.apoint.api.APoint;
 import com.jab125.apoint.api.APointRuntime;
 import com.ultreon.devices.api.app.Component;
@@ -31,9 +30,9 @@ public class ScriptModule extends Module {
     public void generate(GitWebFrame frame, Layout layout, int width, Map<String, String> data) {
         var script = data.get("script").replaceAll("scriptModule:newLine", "\n").replaceAll("scriptModule:equals", "=");
         if (data.get("runtime").equals("apoint")) {
-            initRuntime(frame);
+            initAPointRuntime(frame);
             System.out.println(script);
-            frame.runtime.parse(script);
+            frame.aPointRuntime.parse(script);
         } else if (data.get("runtime").equals("ulang")) {
             //
         }
@@ -49,8 +48,8 @@ public class ScriptModule extends Module {
         System.out.println(script.replaceAll("\n", "scriptModule:newLine").replaceAll("=", "scriptModule:equals"));
     }
 
-    private void initRuntime(GitWebFrame frame) {
-        if (frame.runtime == null) {
+    private void initAPointRuntime(GitWebFrame frame) {
+        if (frame.aPointRuntime == null) {
             APointRuntime runtime = APoint.createRuntime();
             runtime.removeCommand("METHOD:STATIC");
             runtime.removeCommand("METHOD");
@@ -73,7 +72,7 @@ public class ScriptModule extends Module {
                     }
                 }
             });
-            frame.runtime = runtime;
+            frame.aPointRuntime = runtime;
             //runtime.removeCommand("");
         }
     }
