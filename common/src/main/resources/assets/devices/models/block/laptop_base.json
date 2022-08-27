@@ -4,7 +4,7 @@
         "particle": "block/anvil",
         "0": "block/cauldron_side",
         "1": "block/cauldron_inner",
-        "2": "block/wool_colored_red",
+        "2": "block/red_wool",
         "3": "devices:model/usb"
     },
     "elements": [
