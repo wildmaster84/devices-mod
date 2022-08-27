@@ -7,20 +7,20 @@ import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class DeviceConfig {
-    private static final String CATEGORY_LAPTOP = "laptop-settings";
+    private static final String CATEGORY_LAPTOP = "laptopSettings";
     public static final ForgeConfigSpec.IntValue PING_RATE;
 
-    private static final String CATEGORY_ROUTER = "router-settings";
+    private static final String CATEGORY_ROUTER = "routerSettings";
     public static final ForgeConfigSpec.IntValue SIGNAL_RANGE;
     public static final ForgeConfigSpec.IntValue BEACON_INTERVAL;
     public static final ForgeConfigSpec.IntValue MAX_DEVICES;
 
-    private static final String CATEGORY_PRINTING = "printer-settings";
+    private static final String CATEGORY_PRINTING = "printerSettings";
     public static final ForgeConfigSpec.BooleanValue OVERRIDE_PRINT_SPEED;
     public static final ForgeConfigSpec.IntValue CUSTOM_PRINT_SPEED;
     public static final ForgeConfigSpec.IntValue MAX_PAPER_COUNT;
 
-    private static final String CATEGORY_PIXEL_PAINTER = "pixel-painter";
+    private static final String CATEGORY_PIXEL_PAINTER = "pixelPainter";
     public static final ForgeConfigSpec.BooleanValue PIXEL_PAINTER_ENABLE;
     public static final ForgeConfigSpec.BooleanValue RENDER_PRINTED_3D;
 
