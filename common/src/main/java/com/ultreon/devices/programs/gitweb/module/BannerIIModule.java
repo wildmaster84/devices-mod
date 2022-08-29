@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BannerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.core.Holder;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.BannerItem;
 import net.minecraft.world.item.DyeColor;
@@ -59,7 +60,7 @@ public class BannerIIModule extends Module {
         public static final int HEIGHT = 84;
         private final ItemStack banner;
         private final ModelPart flag;
-        private final List<Pair<BannerPattern, DyeColor>> resultBannerPatterns;
+        private final List<Pair<Holder<BannerPattern>, DyeColor>> resultBannerPatterns;
 
         public LoomBox(ItemStack banner, boolean waving) {
             super(0, 0);

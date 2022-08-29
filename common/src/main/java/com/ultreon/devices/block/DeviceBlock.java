@@ -7,7 +7,7 @@ import com.ultreon.devices.util.BlockEntityUtil;
 import com.ultreon.devices.util.Colorable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.DyeColor;
@@ -96,7 +96,7 @@ public abstract class DeviceBlock extends HorizontalDirectionalBlock implements 
                 drop.setTag(tag);
 
                 if (device.hasCustomName()) {
-                    drop.setHoverName(new TextComponent(device.getCustomName()));
+                    drop.setHoverName(Component.literal(device.getCustomName()));
                 }
 
                 level.addFreshEntity(new ItemEntity((Level) level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));

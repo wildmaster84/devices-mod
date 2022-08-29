@@ -33,14 +33,14 @@ public class Player {
     private Boat boat;
 
     public static EntityRendererProvider.Context createEntityRendererContext() {
-        return new EntityRendererProvider.Context(Minecraft.getInstance().getEntityRenderDispatcher(), Minecraft.getInstance().getItemRenderer(), Minecraft.getInstance().getResourceManager(), Minecraft.getInstance().getEntityModels(), Minecraft.getInstance().font);
+        return null;// new EntityRendererProvider.Context(Minecraft.getInstance().getEntityRenderDispatcher(), Minecraft.getInstance().getItemRenderer(), Minecraft.getInstance().getResourceManager(), Minecraft.getInstance().getEntityModels(), Minecraft.getInstance().font);
     }
 
     public Player(Game game) {
         this.game = game;
         this.direction = new Vec2d(0, 0);
         this.velocity = new Vec2d(0, 0);
-        this.boatModel = new BoatRenderer(createEntityRendererContext());
+        this.boatModel = new BoatRenderer(createEntityRendererContext(), false);
 		assert Minecraft.getInstance().player != null;
 		boolean slim = Minecraft.getInstance().player.getModelName().equals("slim");
         if (Laptop.isWorldLess()) {

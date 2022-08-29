@@ -17,7 +17,7 @@ import com.ultreon.devices.programs.system.SystemApp;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -128,7 +128,7 @@ public class TaskBar {
             int appIndex = (mouseX - x - 1) / 16;
             if (appIndex >= 0 && appIndex < offset + APPS_DISPLAYED && appIndex < laptop.installedApps.size()) {
                 laptop.blit(pose, x + appIndex * 16 + 1, y + 1, 35, 0, 16, 16);
-                laptop.renderComponentTooltip(pose, List.of(new TextComponent(laptop.installedApps.get(appIndex).getName())), mouseX, mouseY);
+                laptop.renderComponentTooltip(pose, List.of(Component.literal(laptop.installedApps.get(appIndex).getName())), mouseX, mouseY);
             }
         }
 

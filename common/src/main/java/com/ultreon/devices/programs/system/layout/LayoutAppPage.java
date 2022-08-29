@@ -20,7 +20,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.awt.*;
@@ -168,7 +168,7 @@ public class LayoutAppPage extends Layout {
         if (store.certifiedApps.contains(entry)) {
             int width = Laptop.getFont().width(entry.name()) * 2;
             if (GuiHelper.isMouseWithin(mouseX, mouseY, xPosition + 38 + width + 3, yPosition + 29, 20, 20)) {
-                laptop.renderComponentTooltip(pose, Lists.newArrayList(new TextComponent("Certified App").withStyle(ChatFormatting.GREEN)), mouseX, mouseY);
+                laptop.renderComponentTooltip(pose, Lists.newArrayList(Component.literal("Certified App").withStyle(ChatFormatting.GREEN)), mouseX, mouseY);
             }
         }
     }

@@ -10,7 +10,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
@@ -54,7 +53,7 @@ public class FlashDriveItem extends Item implements Colored, SubItems, IDeviceTy
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, List<Component> tooltip, @NotNull TooltipFlag isAdvanced) {
         String colorName = color.getName().replace("_", " ");
         colorName = WordUtils.capitalize(colorName);
-        tooltip.add(new TextComponent("Color: " + ChatFormatting.BOLD + getFromColor(color).toString() + colorName));
+        tooltip.add(Component.literal("Color: " + ChatFormatting.BOLD + getFromColor(color).toString() + colorName));
     }
 
     @Override

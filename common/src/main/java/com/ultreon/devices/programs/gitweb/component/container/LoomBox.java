@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BannerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.BannerItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -27,7 +28,7 @@ public class LoomBox extends ContainerBox {
     private final ItemStack dye;
     private final ItemStack pattern;
     private final ItemStack result;
-    private final List<Pair<BannerPattern, DyeColor>> resultBannerPatterns;
+    private final List<Pair<Holder<BannerPattern>, DyeColor>> resultBannerPatterns;
     private final ModelPart flag;
 
     public LoomBox(ItemStack banner, ItemStack dye, ItemStack pattern, ItemStack result) {

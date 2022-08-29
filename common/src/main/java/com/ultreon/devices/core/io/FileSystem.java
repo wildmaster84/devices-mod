@@ -22,7 +22,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -253,7 +253,7 @@ public class FileSystem {
     public ItemStack removeAttachedDrive() {
         if (attachedDrive != null) {
             ItemStack stack = new ItemStack(DeviceItems.getFlashDriveByColor(attachedDriveColor), 1);
-            stack.setHoverName(new TextComponent(attachedDrive.getName()));
+            stack.setHoverName(Component.literal(attachedDrive.getName()));
             stack.getOrCreateTag().put("drive", attachedDrive.toTag());
             attachedDrive = null;
             return stack;

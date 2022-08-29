@@ -64,8 +64,7 @@ public class RenderUtil {
         buffer.vertex(x + width, y + height, z).uv((u + textureWidth) * scale, (v + textureHeight) * scale).endVertex();
         buffer.vertex(x + width, y, z).uv((u + textureWidth) * scale, v * scale).endVertex();
         buffer.vertex(x, y, z).uv(u * scale, v * scale).endVertex();
-        buffer.end();
-        BufferUploader.end(buffer);
+        BufferUploader.drawWithShader(buffer.end());
     }
 
     public static void drawRectWithFullTexture(PoseStack pose, double x, double y, float u, float v, int width, int height) {
@@ -77,8 +76,7 @@ public class RenderUtil {
         buffer.vertex(x + width, y + height, 0).uv(1, 1).endVertex();
         buffer.vertex(x + width, y, 0).uv(1, 0).endVertex();
         buffer.vertex(x, y, 0).uv(0, 0).endVertex();
-        buffer.end();
-        BufferUploader.end(buffer);
+        BufferUploader.drawWithShader(buffer.end());
     }
 
     public static void drawRectWithTexture(PoseStack pose, double x, double y, float u, float v, int width, int height, float textureWidth, float textureHeight, int sourceWidth, int sourceHeight) {
@@ -92,8 +90,7 @@ public class RenderUtil {
         buffer.vertex(x + width, y + height, 0).uv((u + textureWidth) * scaleWidth, (v + textureHeight) * scaleHeight).endVertex();
         buffer.vertex(x + width, y, 0).uv((u + textureWidth) * scaleWidth, v * scaleHeight).endVertex();
         buffer.vertex(x, y, 0).uv(u * scaleWidth, v * scaleHeight).endVertex();
-        buffer.end();
-        BufferUploader.end(buffer);
+        BufferUploader.drawWithShader(buffer.end());
     }
 
     public static void drawApplicationIcon(PoseStack pose, @Nullable AppInfo info, double x, double y) {

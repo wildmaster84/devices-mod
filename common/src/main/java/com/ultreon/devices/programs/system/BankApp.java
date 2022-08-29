@@ -108,7 +108,7 @@ public class BankApp extends Application {//The bank is not a system application
 //                RenderSystem.setShaderTexture(villagerTextures);
 
                 MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-                var renderer = new VillagerRenderer(new EntityRendererProvider.Context(Minecraft.getInstance().getEntityRenderDispatcher(), Minecraft.getInstance().getItemRenderer(), Minecraft.getInstance().getResourceManager(), Minecraft.getInstance().getEntityModels(), Minecraft.getInstance().font));
+//                var renderer = new VillagerRenderer(new EntityRendererProvider.Context(Minecraft.getInstance().getEntityRenderDispatcher(), Minecraft.getInstance().getItemRenderer(), Minecraft.getInstance().getResourceManager(), Minecraft.getInstance().getEntityModels(), Minecraft.getInstance().font));
                 var villager = EntityType.VILLAGER.create(Minecraft.getInstance().level);
                 assert villager != null;
                 villager.setVillagerData(new VillagerData(VillagerType.PLAINS, VillagerProfession.NITWIT, 1));

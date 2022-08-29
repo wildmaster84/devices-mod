@@ -40,7 +40,7 @@ public class PaperBlock extends HorizontalDirectionalBlock implements EntityBloc
     private static final VoxelShape[] SELECTION_BOUNDING_BOX = {SELECTION_BOX_SOUTH, SELECTION_BOX_WEST, SELECTION_BOX_NORTH, SELECTION_BOX_EAST};
 
     public PaperBlock() {
-        super(Properties.of(Material.CLOTH_DECORATION).noCollission().instabreak().noOcclusion().noDrops());
+        super(Properties.of(Material.CLOTH_DECORATION).noCollission().instabreak().noOcclusion().noLootTable());
 
         registerDefaultState(getStateDefinition().any().setValue(FACING, Direction.NORTH));
     }

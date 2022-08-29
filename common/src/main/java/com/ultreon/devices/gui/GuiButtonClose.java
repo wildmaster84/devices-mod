@@ -6,12 +6,12 @@ import com.ultreon.devices.core.Window;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiButtonClose extends Button {
     public GuiButtonClose(int x, int y) {
-        super(x, y, 11, 11, new TextComponent(""), (button) -> {
+        super(x, y, 11, 11, Component.literal(""), (button) -> {
 
         });
     }

@@ -40,7 +40,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.NotNull;
@@ -128,7 +127,7 @@ public class Laptop extends Screen implements System {
      * @param laptop the block entity of the laptop in-game, if the laptop is not in-game, the level passed to it should be null.
      */
     public Laptop(LaptopBlockEntity laptop, boolean worldLess) {
-        super(new TextComponent("Laptop"));
+        super(Component.literal("Laptop"));
 
         instance = this;
 
