@@ -7,6 +7,8 @@ import com.ultreon.devices.block.RouterBlock;
 import com.ultreon.devices.init.DeviceBlocks;
 import com.ultreon.devices.init.DeviceItems;
 import com.ultreon.devices.item.FlashDriveItem;
+import dev.architectury.registry.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -52,12 +54,12 @@ public class ModItemModelProvider extends ItemModelProvider {
     }
 
     private void flashDrive(FlashDriveItem flashDrive) {
-        getBuilder(Objects.requireNonNull(flashDrive.getRegistryName()).getPath()).parent(getExistingFile(modLoc("item/flash_drive"))).texture("1", mcLoc("block/" + flashDrive.getColor().getSerializedName() + "_wool"));
+        getBuilder(Objects.requireNonNull(Registries.getId(flashDrive, Registry.ITEM_REGISTRY)).getPath()).parent(getExistingFile(modLoc("item/flash_drive"))).texture("1", mcLoc("block/" + flashDrive.getColor().getSerializedName() + "_wool"));
     }
 
     private void blockBuilder(Block block) {
         try {
-            String name = Objects.requireNonNull(block.getRegistryName()).getPath();
+            String name = Objects.requireNonNull(Registries.getId(block, Registry.BLOCK_REGISTRY)).getPath();
             withExistingParent(name, modLoc("block/" + name));
         } catch (IllegalStateException ignored) {
 
@@ -65,7 +67,7 @@ public class ModItemModelProvider extends ItemModelProvider {
     }
 
     private void builder(ItemLike item, ModelFile parent) {
-        String name = Objects.requireNonNull(item.asItem().getRegistryName()).getPath();
+        String name = Objects.requireNonNull(Registries.getId(item.asItem(), Registry.ITEM_REGISTRY)).getPath();
         builder(item, parent, "item/" + name);
     }
 
@@ -76,11 +78,11 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     private void builder(ItemLike item, ModelFile parent, String texture) {
         try {
-            getBuilder(Objects.requireNonNull(item.asItem().getRegistryName()).getPath())
+            getBuilder(Objects.requireNonNull(Registries.getId(item.asItem(), Registry.ITEM_REGISTRY)).getPath())
                     .parent(parent)
                     .texture("layer0", modLoc(texture));
         } catch (IllegalArgumentException e) {
-            getBuilder(Objects.requireNonNull(item.asItem().getRegistryName()).getPath())
+            getBuilder(Objects.requireNonNull(Registries.getId(item.asItem(), Registry.ITEM_REGISTRY)).getPath())
                     .parent(getExistingFile(mcLoc("item/generated")))
                     .texture("layer0", modLoc("wip"));
         }
