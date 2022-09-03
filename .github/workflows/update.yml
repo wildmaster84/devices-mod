@@ -8,4 +8,20 @@ on: [workflow_dispatch]
 
 jobs:
   update:
-    uses: LimeAppleBoat/actions-util@v1
+    strategy:
+      matrix:
+        # Use these Java versions
+        java: [
+            17    # Minimum supported by Minecraft
+        ]
+        # and run on both Linux and not Windows
+        os: [ubuntu-20.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+      - name: Update Version Numbers
+        run: java -jar updater/updater.jar
+        env:
+          STORER_TYPE: update
+          JAB125_COM_API_KEY: ${{ secrets.JAB125_COM_API_KEY }}
