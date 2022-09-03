@@ -79,7 +79,7 @@ public class LaptopBlock extends DeviceBlock.Colored {
         if (blockEntity instanceof LaptopBlockEntity laptop) {
             if (player.isCrouching()) {
                 if (!level.isClientSide) {
-                    laptop.openClose();
+                    laptop.openClose(player);
                 }
                 return InteractionResult.SUCCESS;
             } else {

@@ -1,5 +1,6 @@
 package com.ultreon.devices.block.entity;
 
+import com.ultreon.devices.annotations.PlatformOverride;
 import com.ultreon.devices.util.BlockEntityUtil;
 import dev.architectury.injectables.annotations.PlatformOnly;
 import net.minecraft.core.BlockPos;
@@ -28,7 +29,7 @@ public abstract class SyncBlockEntity extends BlockEntity {
     }
 
     @PlatformOnly("forge")
-    //@Override
+    @PlatformOverride("forge")
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         this.load(Objects.requireNonNull(pkt.getTag(), "The data packet for the block entity contained no data"));
     }
