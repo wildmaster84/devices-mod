@@ -59,6 +59,8 @@ hs_err_pid*
 Icon
 !common/src/main/resources/assets/devices/textures/app/icon
 
+
+!updater/updater.jar
 # Thumbnails
 ._*
 
