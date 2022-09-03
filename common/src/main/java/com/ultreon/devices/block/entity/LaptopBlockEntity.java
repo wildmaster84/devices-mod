@@ -9,10 +9,13 @@ import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class LaptopBlockEntity extends NetworkDeviceBlockEntity.Colored {
     private static final int OPENED_ANGLE = 102;
@@ -124,10 +127,11 @@ public class LaptopBlockEntity extends NetworkDeviceBlockEntity.Colored {
 //        return INFINITE_EXTENT_AABB;
 //    }
 
-    public void openClose() {
+    public void openClose(@Nullable Entity entity) {
         Level level = this.level;
         if (level != null) {
             BlockEntityUtil.sendUpdate(level, this.worldPosition, this.getBlockState().setValue(LaptopBlock.OPEN, !open));
+            level.gameEvent(!open ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, getBlockPos(), GameEvent.Context.of(entity, this.getBlockState()));
         }
         boolean oldOpen = open;
         open = getBlockState().getValue(LaptopBlock.OPEN);
