@@ -28,10 +28,12 @@ If applicable, add screenshots to help explain your problem.
  - Minecraft version [example 1.18.2]
  - Devices Mod Version: [example: 0.5.0+64]
  - Architectury API Version: [example: 6.2.43]
- FOR FABRIC:
+
+**FOR FABRIC:**
  - Fabric Loader version [example: 0.14.6]
  - Fabric API version [example: 0.60.0]
- FOR FORGE:
+
+**FOR FORGE:**
  - Forge version [example: 40.1.15]
 
 **Additional context**
