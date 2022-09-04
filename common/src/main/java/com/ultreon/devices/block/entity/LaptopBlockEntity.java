@@ -131,7 +131,7 @@ public class LaptopBlockEntity extends NetworkDeviceBlockEntity.Colored {
         Level level = this.level;
         if (level != null) {
             BlockEntityUtil.sendUpdate(level, this.worldPosition, this.getBlockState().setValue(LaptopBlock.OPEN, !open));
-            level.gameEvent(!open ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, getBlockPos(), GameEvent.Context.of(entity, this.getBlockState()));
+            level.gameEvent(!open ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, getBlockPos());
         }
         boolean oldOpen = open;
         open = getBlockState().getValue(LaptopBlock.OPEN);
