@@ -12,6 +12,7 @@
     "MrCrayfish",
     "MinecraftDoodler",
     "Mastef Chief",
+    "lizterzapzap",
     "Haunted Corpse",
     "Jake Crowley",
     "fabbe50",
@@ -30,7 +31,7 @@
     "issues": "https://github.com/Ultreon/devices-mod/issues"
   },
   "license": "GPL-3.0",
-  "icon": "ultreon.devices-mod.png",
+  "icon": "devices_mod.png",
   "environment": "*",
   "entrypoints": {
     "main": [
