@@ -10,6 +10,7 @@ import com.ultreon.devices.api.app.IIcon;
 import com.ultreon.devices.api.app.Layout;
 import com.ultreon.devices.api.utils.RenderUtil;
 import com.ultreon.devices.core.Laptop;
+import com.ultreon.devices.object.AppInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -34,6 +35,36 @@ import java.util.Map;
 
 @SuppressWarnings("unused")
 public class Image extends Component {
+    public static class AppImage extends Layout {
+        private AppInfo.Icon.Glyph[] glyphs;
+        private int componentWidth;
+        private int componentHeight;
+        public AppImage(int left, int top, AppInfo resource) {
+            this(left, top, 14, 14, resource);
+            this.glyphs = new AppInfo.Icon.Glyph[]{resource.getIcon().getBase(), resource.getIcon().getOverlay0(), resource.getIcon().getOverlay1()};
+        }
+
+        public AppImage(int left, int top, int componentWidth, int componentHeight, AppInfo resource) {
+            super(left, top, componentWidth, componentHeight);
+            this.glyphs = new AppInfo.Icon.Glyph[]{resource.getIcon().getBase(), resource.getIcon().getOverlay0(), resource.getIcon().getOverlay1()};
+            this.componentWidth = componentWidth;
+            this.componentHeight = componentHeight;
+            //super(left, top, componentWidth, componentHeight, imageU, imageV, 14, 14, 224, 224, resource);
+        }
+
+        @Override
+        public void init(Layout layout) {
+            super.init(layout);
+            for (AppInfo.Icon.Glyph glyph : glyphs) {
+                if (glyph.getU() == -1 || glyph.getV() == -1) continue;
+                var image = new Image(0, 0, componentWidth, componentHeight, glyph.getU(), glyph.getV(), 14, 14, 224, 224, Laptop.ICON_TEXTURES);
+                this.addComponent(image);
+                //image.init(layout);
+            }
+        }
+    }
+
+
     public static final Map<String, CachedImage> CACHE = new HashMap<>();
     protected ImageLoader loader;
     protected CachedImage image;

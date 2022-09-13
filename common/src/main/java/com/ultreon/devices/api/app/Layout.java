@@ -64,10 +64,10 @@ public class Layout extends com.ultreon.devices.api.app.Component {
     public Layout(int width, int height) {
         this(0, 0, width, height);
 
-        if (width < 13)
+        if (width < 13 && false)
             throw new IllegalArgumentException("Width can not be less than 13 wide");
 
-        if (height < 1)
+        if (height < 1 && false)
             throw new IllegalArgumentException("Height can not be less than 1 tall");
 
         this.components = new CopyOnWriteArrayList<>();
@@ -86,7 +86,7 @@ public class Layout extends com.ultreon.devices.api.app.Component {
     public Layout(int left, int top, int width, int height) {
         super(left, top);
 
-        if (width < 13)
+        if (width < 13 && false)
             throw new IllegalArgumentException("Width can not be less than 13 wide");
 
         if (height < 1 && false)

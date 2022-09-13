@@ -32,6 +32,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -104,72 +105,98 @@ public class ClientModEvents {
 
     private static void generateIconAtlas() {
         final int ICON_SIZE = 14;
-        int index = 0;
+        var imageWriter = new Object() {
+            final BufferedImage atlas = new BufferedImage(ICON_SIZE * 16, ICON_SIZE * 16, BufferedImage.TYPE_INT_ARGB);
+            final Graphics g = atlas.createGraphics();
+            int index = 0;
+            int mode = 0;
 
-        BufferedImage atlas = new BufferedImage(ICON_SIZE * 16, ICON_SIZE * 16, BufferedImage.TYPE_INT_ARGB);
-        Graphics g = atlas.createGraphics();
+            public boolean writeImage(AppInfo info, ResourceLocation location) {
+                String path = "/assets/" + location.getNamespace() + "/" + location.getPath();
+                try {
+                    InputStream input = Devices.class.getResourceAsStream(path);
+                    if (input != null) {
+                        BufferedImage icon = ImageIO.read(input);
+                        if (icon.getWidth() != ICON_SIZE || icon.getHeight() != ICON_SIZE) {
+                            Devices.LOGGER.error("Incorrect icon size for " + (info == null ? null : info.getId()) + " (Must be 14 by 14 pixels)");
+                            return false;
+                        }
+                        int iconU = (index % 16) * ICON_SIZE;
+                        int iconV = (index / 16) * ICON_SIZE;
+                        g.drawImage(icon, iconU, iconV, ICON_SIZE, ICON_SIZE, null);
+                        if (info != null) {
+                            AppInfo.Icon.Glyph glyph = switch (mode) {
+                                case 0 -> info.getIcon().getBase();
+                                case 1 -> info.getIcon().getOverlay0();
+                                case 2 -> info.getIcon().getOverlay1();
+                                default -> throw new IllegalStateException("Unexpected value: " + mode);
+                            };
+                            glyph.setU(iconU);
+                            glyph.setV(iconV);
+                        }
+                        index++;
+                    } else {
+                        Devices.LOGGER.error("Icon for application '" + (info == null ? null : info.getId()) + "' could not be found at '" + path + "'");
+                    }
+                } catch (Exception e) {
+                    Devices.LOGGER.error("Unable to load icon for " + (info == null ? null : info.getId()));
+                }
+                return false;
+            }
 
-        try {
-            BufferedImage icon = ImageIO.read(Objects.requireNonNull(Devices.class.getResourceAsStream("/assets/" + Reference.MOD_ID + "/textures/app/icon/missing.png")));
-            g.drawImage(icon, 0, 0, ICON_SIZE, ICON_SIZE, null);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            public void finish() {
+                g.dispose();
+                try {
+                    ImageIO.write(atlas, "png", Paths.get("it.png").toFile());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                } finally {
+                 //   System.exit(-1);
+                }
 
-        index++;
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                try {
+                    ImageIO.write(atlas, "png", output);
+                    byte[] bytes = output.toByteArray();
+                    ByteArrayInputStream input = new ByteArrayInputStream(bytes);
+                    Minecraft.getInstance().submit(() -> {
+                        try {
+                            Minecraft.getInstance().getTextureManager().register(Laptop.ICON_TEXTURES, new DynamicTexture(NativeImage.read(input)));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+
+        imageWriter.writeImage(null, new ResourceLocation("devices", "textures/app/icon/base/missing.png"));
+
 
         for (AppInfo info : ApplicationManager.getAllApplications()) {
             if (info.getIcon() == null) continue;
 
-            ResourceLocation identifier = info.getId();
-            ResourceLocation iconResource = new ResourceLocation(info.getIcon());
-            String path = "/assets/" + iconResource.getNamespace() + "/" + iconResource.getPath();
-            try {
-                InputStream input = Devices.class.getResourceAsStream(path);
-                if (input != null) {
-                    BufferedImage icon = ImageIO.read(input);
-                    if (icon.getWidth() != ICON_SIZE || icon.getHeight() != ICON_SIZE) {
-                        Devices.LOGGER.error("Incorrect icon size for " + identifier.toString() + " (Must be 14 by 14 pixels)");
-                        continue;
-                    }
-                    int iconU = (index % 16) * ICON_SIZE;
-                    int iconV = (index / 16) * ICON_SIZE;
-                    g.drawImage(icon, iconU, iconV, ICON_SIZE, ICON_SIZE, null);
-                    updateIcon(info, iconU, iconV);
-                    index++;
-                } else {
-                    Devices.LOGGER.error("Icon for application '" + identifier.toString() + "' could not be found at '" + path + "'");
-                }
-            } catch (Exception e) {
-                Devices.LOGGER.error("Unable to load icon for " + identifier.toString());
-            }
+            //ResourceLocation identifier = info.getId();
+            //ResourceLocation iconResource = new ResourceLocation(info.getIcon());
+            imageWriter.mode = 0;
+            imageWriter.writeImage(info, info.getIcon().getBase().getResourceLocation());
+            imageWriter.mode = 1;
+            imageWriter.writeImage(info, info.getIcon().getOverlay0().getResourceLocation());
+            imageWriter.mode = 2;
+            imageWriter.writeImage(info, info.getIcon().getOverlay1().getResourceLocation());
         }
-
-        g.dispose();
-
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        try {
-            ImageIO.write(atlas, "png", output);
-            byte[] bytes = output.toByteArray();
-            ByteArrayInputStream input = new ByteArrayInputStream(bytes);
-            Minecraft.getInstance().submit(() -> {
-                try {
-                    Minecraft.getInstance().getTextureManager().register(Laptop.ICON_TEXTURES, new DynamicTexture(NativeImage.read(input)));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        imageWriter.mode = 0;
+        imageWriter.finish();
     }
 
-    @ExpectPlatform
-    private static void updateIcon(AppInfo info, int iconU, int iconV) {
-        throw new AssertionError();
-//        ObfuscationReflectionHelper.setPrivateValue(AppInfo.class, info, iconU, "iconU");
-//        ObfuscationReflectionHelper.setPrivateValue(AppInfo.class, info, iconV, "iconV");
-    }
+//    @ExpectPlatform
+//    private static void updateIcon(AppInfo info, int iconU, int iconV) {
+//        throw new AssertionError();
+////        ObfuscationReflectionHelper.setPrivateValue(AppInfo.class, info, iconU, "iconU");
+////        ObfuscationReflectionHelper.setPrivateValue(AppInfo.class, info, iconV, "iconV");
+//    }
 
     @ExpectPlatform
     public static void setRenderLayer(Block block, RenderType type) {
