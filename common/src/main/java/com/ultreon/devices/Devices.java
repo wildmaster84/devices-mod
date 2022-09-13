@@ -1,6 +1,5 @@
 package com.ultreon.devices;
 
-import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -40,7 +39,6 @@ import com.ultreon.devices.programs.gitweb.GitWebApp;
 import com.ultreon.devices.programs.snake.SnakeApp;
 import com.ultreon.devices.programs.system.*;
 import com.ultreon.devices.programs.system.task.*;
-import com.ultreon.devices.util.ArchUtils;
 import com.ultreon.devices.util.SiteRegistration;
 import com.ultreon.ultranlang.*;
 import com.ultreon.ultranlang.ast.Program;
@@ -82,6 +80,7 @@ import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 public class Devices {
