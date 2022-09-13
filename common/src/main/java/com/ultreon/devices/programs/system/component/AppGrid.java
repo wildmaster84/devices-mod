@@ -5,6 +5,7 @@ import com.ultreon.devices.api.ApplicationManager;
 import com.ultreon.devices.api.app.Component;
 import com.ultreon.devices.api.app.Icons;
 import com.ultreon.devices.api.app.Layout;
+import com.ultreon.devices.api.app.component.Image;
 import com.ultreon.devices.api.app.component.Label;
 import com.ultreon.devices.api.utils.RenderUtil;
 import com.ultreon.devices.core.Laptop;
@@ -118,8 +119,9 @@ public class AppGrid extends Component {
 
         int iconOffset = (itemWidth - 14 * 3) / 2;
         if (entry instanceof LocalEntry localEntry) {
-            com.ultreon.devices.api.app.component.Image image = new com.ultreon.devices.api.app.component.Image(iconOffset, padding, 14 * 3, 14 * 3, localEntry.info().getIconU(), localEntry.info().getIconV(), 14, 14, 224, 224, Laptop.ICON_TEXTURES);
-            layout.addComponent(image);
+            Image.AppImage appImage = new Image.AppImage(iconOffset, padding, 14*3, 14*3, localEntry.info());
+         //   com.ultreon.devices.api.app.component.Image image = new com.ultreon.devices.api.app.component.Image(iconOffset, padding, 14 * 3, 14 * 3, localEntry.info().getIconU(), localEntry.info().getIconV(), 14, 14, 224, 224, Laptop.ICON_TEXTURES);
+            layout.addComponent(appImage);
         } else if (entry instanceof RemoteEntry remoteEntry) {
             ResourceLocation resource = new ResourceLocation(remoteEntry.id);
             com.ultreon.devices.api.app.component.Image image = new com.ultreon.devices.api.app.component.Image(iconOffset, padding, 14 * 3, 14 * 3, AppStore.CERTIFICATES_BASE_URL + "/assets/" + resource.getNamespace() + "/" + resource.getPath() + "/icon.png");

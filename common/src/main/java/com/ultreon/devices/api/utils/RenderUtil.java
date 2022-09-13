@@ -30,6 +30,19 @@ public class RenderUtil {
         //Lighting.setupForFlatItems();
     }
 
+    public static void drawIcon(PoseStack pose, double x, double y, AppInfo info, int width, int height) {
+        //Gui.blit(pose, (int) x, (int) y, width, height, u, v, sourceWidth, sourceHeight, (int) textureWidth, (int) textureHeight);
+        if (info == null) {
+            drawRectWithTexture(pose, x, y, 0, 0, width, height, 14, 14, 224, 224);
+            return;
+        }
+        drawRectWithTexture(pose, x, y, info.getIcon().getBase().getU(), info.getIcon().getBase().getV(), width, height, 14, 14, 224, 224);
+        if (info.getIcon().getOverlay0().getU() != -1 || info.getIcon().getOverlay0().getV() != -1)
+        drawRectWithTexture(pose, x, y, info.getIcon().getOverlay0().getU(), info.getIcon().getOverlay0().getV(), width, height, 14, 14, 224, 224);
+        if (info.getIcon().getOverlay1().getU() != -1 || info.getIcon().getOverlay1().getV() != -1)
+        drawRectWithTexture(pose, x, y, info.getIcon().getOverlay1().getU(), info.getIcon().getOverlay1().getV(), width, height, 14, 14, 224, 224);
+    }
+
     public static void drawRectWithTexture(PoseStack pose, double x, double y, float u, float v, int width, int height, float textureWidth, float textureHeight) {
         drawRectWithTexture(pose, x, y, 0, u, v, width, height, textureWidth, textureHeight);
         // Gui.blit(pose, (int) x, (int) y, width, height, u, v, width, height, (int) textureWidth, (int) textureHeight);
@@ -100,7 +113,8 @@ public class RenderUtil {
         //TODO: Reset color GlStateManager.color(1f, 1f, 1f);
         RenderSystem.setShaderTexture(0, Laptop.ICON_TEXTURES);
         if (info != null) {
-            drawRectWithTexture(pose, x, y, info.getIconU(), info.getIconV(), 14, 14, 14, 14, 224, 224);
+            drawIcon(pose, x, y, info, 14, 14);
+          //  drawRectWithTexture(pose, x, y, info.getIconU(), info.getIconV(), 14, 14, 14, 14, 224, 224);
         } else {
             drawRectWithTexture(pose, x, y, 0, 0, 14, 14, 14, 14, 224, 224);
         }

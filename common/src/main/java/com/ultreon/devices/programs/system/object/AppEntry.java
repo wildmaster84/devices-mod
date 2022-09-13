@@ -1,5 +1,7 @@
 package com.ultreon.devices.programs.system.object;
 
+import com.ultreon.devices.object.AppInfo;
+
 import javax.annotation.Nullable;
 
 /**
@@ -18,7 +20,7 @@ public interface AppEntry {
     String version();
 
     @Nullable
-    String icon();
+    AppInfo.Icon icon();
 
     @Nullable
     String[] screenshots();

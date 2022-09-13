@@ -33,7 +33,7 @@ public record LocalEntry(AppInfo info) implements AppEntry {
     }
 
     @Override
-    public String icon() {
+    public AppInfo.Icon icon() {
         return info.getIcon();
     }
 

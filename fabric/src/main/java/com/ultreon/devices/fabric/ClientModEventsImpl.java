@@ -11,7 +11,7 @@ public class ClientModEventsImpl {
     }
 
     public static void updateIcon(AppInfo info, int iconU, int iconV) {
-        info.setIconU(iconU);
-        info.setIconV(iconV);
+//        info.setIconU(iconU);
+//        info.setIconV(iconV);
     }
 }
