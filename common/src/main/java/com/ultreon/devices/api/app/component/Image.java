@@ -58,6 +58,14 @@ public class Image extends Component {
             for (AppInfo.Icon.Glyph glyph : glyphs) {
                 if (glyph.getU() == -1 || glyph.getV() == -1) continue;
                 var image = new Image(0, 0, componentWidth, componentHeight, glyph.getU(), glyph.getV(), 14, 14, 224, 224, Laptop.ICON_TEXTURES);
+                int tint = switch (glyph.getType()) {
+                    case 0 -> new Color(255, 255, 255).getRGB();
+                    case 1 -> Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor();
+                    case 2 -> Laptop.getSystem().getSettings().getColorScheme().getBackgroundSecondaryColor();
+                    default -> throw new IllegalStateException();
+                };
+                var col = new Color(tint);
+                image.setTint(col.getRed(), col.getGreen(), col.getBlue());
                 this.addComponent(image);
                 //image.init(layout);
             }
@@ -77,6 +85,13 @@ public class Image extends Component {
     public int componentHeight;
     private Spinner spinner;
     private float alpha = 1f;
+    private int[] tint = new int[]{255, 255, 255};
+
+    public void setTint(int r, int g, int b) {
+        this.tint[0] = r;
+        this.tint[1] = g;
+        this.tint[2] = b;
+    }
 
     private boolean hasBorder = false;
     private int borderColor = Color.BLACK.getRGB();
@@ -217,10 +232,12 @@ public class Image extends Component {
                 fill(pose, x, y, x + componentWidth, y + componentHeight, borderColor);
             }
 
+            RenderSystem.setShaderColor(tint[0]/255f, tint[1]/255f, tint[2]/255f, alpha);
+
             if (image != null && image.textureId != -1) {
                 image.restore();
 
-                RenderSystem.setShaderColor(1f, 1f, 1f, alpha);
+                RenderSystem.setShaderColor(tint[0]/255f, tint[1]/255f, tint[2]/255f, alpha);
                 RenderSystem.enableBlend();
                 RenderSystem.setShaderTexture(0, image.textureId);
 
@@ -252,6 +269,7 @@ public class Image extends Component {
                     fill(pose, x, y, x + componentWidth, y + componentHeight, Color.LIGHT_GRAY.getRGB());
                 }
             }
+            RenderSystem.setShaderColor(1f, 1f, 1f, alpha);
         }
     }
 
