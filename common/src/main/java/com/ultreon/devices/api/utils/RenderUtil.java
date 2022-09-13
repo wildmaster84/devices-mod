@@ -41,7 +41,7 @@ public class RenderUtil {
         var col = new Color(scheme.getBackgroundColor());
         var backCol = new Color(scheme.getBackgroundSecondaryColor());
         int[] tint = new int[]{col.getRed(), col.getGreen(), col.getBlue()};
-
+        RenderSystem.enableBlend();
         drawRectWithTexture(pose, x, y, info.getIcon().getBase().getU(), info.getIcon().getBase().getV(), width, height, 14, 14, 224, 224);
         if (info.getIcon().getOverlay0().getU() != -1 || info.getIcon().getOverlay0().getV() != -1) {
             RenderSystem.setShaderColor(tint[0]/255f, tint[1]/255f, tint[2]/255f, 1f);
