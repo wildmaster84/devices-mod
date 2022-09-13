@@ -86,6 +86,7 @@ public class AppInfo {
             private ResourceLocation resourceLocation;
             private int u = -1;
             private int v = -1;
+            private int type;
             private Glyph(ResourceLocation res) {
                 this.resourceLocation = res;
             }
@@ -112,12 +113,19 @@ public class AppInfo {
             public int getV() {
                 return v;
             }
+
+            public int getType() {
+                return type;
+            }
         }
 
         private Icon(AppInfo info) {
             this.base = Glyph.of(new ResourceLocation(info.APP_ID.getNamespace(), "textures/app/icon/base/" + info.APP_ID.getPath() + ".png"));
+            this.base.type = 0;
             this.overlay0 = Glyph.of(new ResourceLocation(info.APP_ID.getNamespace(), "textures/app/icon/overlay0/" + info.APP_ID.getPath() + ".png"));
+            this.overlay0.type = 1;
             this.overlay1 = Glyph.of(new ResourceLocation(info.APP_ID.getNamespace(), "textures/app/icon/overlay1/" + info.APP_ID.getPath() + ".png"));
+            this.overlay1.type = 2;
         }
 
         public Glyph getBase() {
