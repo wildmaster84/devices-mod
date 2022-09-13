@@ -1,14 +1,10 @@
 package com.ultreon.devices.init;
 
 import com.ultreon.devices.Devices;
-import com.ultreon.devices.block.LaptopBlock;
-import com.ultreon.devices.block.entity.LaptopBlockEntity;
 import com.ultreon.devices.entity.SeatEntity;
-import dev.architectury.injectables.targets.ArchitecturyTarget;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.Registry;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 
