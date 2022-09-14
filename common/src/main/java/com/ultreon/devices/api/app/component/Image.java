@@ -443,6 +443,8 @@ public class Image extends Component {
                         setup = true;
                     });
                 } catch (IOException e) {
+                    texture = MissingTextureAtlasSprite.getTexture();
+                    setup = true;
                     e.printStackTrace();
                 }
             };

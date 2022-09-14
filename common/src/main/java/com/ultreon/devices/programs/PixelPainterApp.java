@@ -312,7 +312,7 @@ public class PixelPainterApp extends Application {
                 openDialog(dialog);
             }
         });
-        button.setEnabled(false);
+       // button.setEnabled(false);
         layoutDraw.addComponent(button);
 
         btnCancel = new Button(138, 100, PIXEL_PAINTER_ICONS, 50, 0, 10, 10);
