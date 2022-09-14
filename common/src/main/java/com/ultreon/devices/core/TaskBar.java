@@ -85,9 +85,10 @@ public class TaskBar {
         RenderSystem.enableBlend();
         RenderSystem.setShaderTexture(0, APP_BAR_GUI);
 
-        Color bgColor = new Color(laptop.getSettings().getColorScheme().getBackgroundColor()).brighter().brighter();
+        // r=217,g=230,b=255
+        Color bgColor = new Color(laptop.getSettings().getColorScheme().getBackgroundColor());//.brighter().brighter();
         float[] hsb = Color.RGBtoHSB(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), null);
-        bgColor = new Color(Color.HSBtoRGB(hsb[0], hsb[1], 1f));
+        bgColor = new Color(Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]));
         RenderSystem.setShaderColor(bgColor.getRed() / 255f, bgColor.getGreen() / 255f, bgColor.getBlue() / 255f, 1f);
 
         int trayItemsWidth = trayItems.size() * 14;
