@@ -1,3 +1,6 @@
 {
-    "parent": "devices:block/lime_laptop"
+    "parent": "devices:item/laptop",
+    "textures": {
+        "2": "block/lime_wool"
+    }
 }

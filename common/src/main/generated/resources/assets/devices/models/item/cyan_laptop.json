@@ -1,3 +1,6 @@
 {
-    "parent": "devices:block/cyan_laptop"
+    "parent": "devices:item/laptop",
+    "textures": {
+        "2": "block/cyan_wool"
+    }
 }
