@@ -1,3 +1,6 @@
 {
-    "parent": "devices:block/green_laptop"
+    "parent": "devices:item/laptop",
+    "textures": {
+        "2": "block/green_wool"
+    }
 }
