@@ -1,5 +1,7 @@
 package com.ultreon.devices.programs.system.object;
 
+import com.ultreon.devices.object.AppInfo;
+
 import javax.annotation.Nullable;
 
 /**
@@ -40,7 +42,7 @@ public class RemoteEntry implements AppEntry {
     }
 
     @Override
-    public String icon() {
+    public AppInfo.Icon icon() {
         return null;
     }
 

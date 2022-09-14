@@ -3,7 +3,6 @@
     "author": "Jab125",
     "description": "snake game for block game",
     "version": "0.0.1",
-    "icon": "devices:textures/app/icon/snake.png",
     "screenshots": [
         "devices:textures/app/screenshot/gitweb_screenshot_1.png"
     ]

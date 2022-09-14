@@ -20,18 +20,6 @@ public class AppInfo {
     public static final Comparator<AppInfo> SORT_NAME = Comparator.comparing(AppInfo::getName);
 
     private transient final ResourceLocation APP_ID;
-    private transient int iconU = 0; // you do not just set a value that reflection needs to modify as "final"
-    private transient int iconV = 0;
-
-    @PlatformOnly("fabric")
-    public void setIconU(int iconU) {
-        this.iconU = iconU;
-    }
-
-    @PlatformOnly("fabric")
-    public void setIconV(int iconV) {
-        this.iconV = iconV;
-    }
 
     private final transient boolean systemApp;
 
@@ -39,7 +27,7 @@ public class AppInfo {
     private String author;
     private String description;
     private String version;
-    private String icon;
+    private Icon icon;
     private String[] screenshots;
     private Support support;
 
@@ -87,16 +75,70 @@ public class AppInfo {
         return version;
     }
 
-    public String getIcon() {
-        return icon;
+    public Icon getIcon() {
+        return this.icon;
     }
+    public static class Icon {
+        Glyph base;
+        Glyph overlay0;
+        Glyph overlay1;
+        public static class Glyph {
+            private ResourceLocation resourceLocation;
+            private int u = -1;
+            private int v = -1;
+            private int type;
+            private Glyph(ResourceLocation res) {
+                this.resourceLocation = res;
+            }
+            private static Glyph of(ResourceLocation res) {
+                return new Glyph(res);
+            }
 
-    public int getIconU() {
-        return iconU;
-    }
+            public ResourceLocation getResourceLocation() {
+                return resourceLocation;
+            }
 
-    public int getIconV() {
-        return iconV;
+            public void setU(int u) {
+                this.u = u;
+            }
+
+            public void setV(int v) {
+                this.v = v;
+            }
+
+            public int getU() {
+                return u;
+            }
+
+            public int getV() {
+                return v;
+            }
+
+            public int getType() {
+                return type;
+            }
+        }
+
+        private Icon(AppInfo info) {
+            this.base = Glyph.of(new ResourceLocation(info.APP_ID.getNamespace(), "textures/app/icon/base/" + info.APP_ID.getPath() + ".png"));
+            this.base.type = 0;
+            this.overlay0 = Glyph.of(new ResourceLocation(info.APP_ID.getNamespace(), "textures/app/icon/overlay0/" + info.APP_ID.getPath() + ".png"));
+            this.overlay0.type = 1;
+            this.overlay1 = Glyph.of(new ResourceLocation(info.APP_ID.getNamespace(), "textures/app/icon/overlay1/" + info.APP_ID.getPath() + ".png"));
+            this.overlay1.type = 2;
+        }
+
+        public Glyph getBase() {
+            return base;
+        }
+
+        public Glyph getOverlay0() {
+            return overlay0;
+        }
+
+        public Glyph getOverlay1() {
+            return overlay1;
+        }
     }
 
     public String[] getScreenshots() {
@@ -166,14 +208,13 @@ public class AppInfo {
                 info.author = convertToLocal(json.getAsJsonObject().get("author").getAsString());
                 info.description = convertToLocal(json.getAsJsonObject().get("description").getAsString());
                 info.version = json.getAsJsonObject().get("version").getAsString();
-
                 if (json.getAsJsonObject().has("screenshots") && json.getAsJsonObject().get("screenshots").isJsonArray()) {
                     info.screenshots = context.deserialize(json.getAsJsonObject().get("screenshots"), new TypeToken<String[]>() {
                     }.getType());
                 }
 
                 if (json.getAsJsonObject().has("icon") && json.getAsJsonObject().get("icon").isJsonPrimitive()) {
-                    info.icon = json.getAsJsonObject().get("icon").getAsString();
+                    Devices.LOGGER.warn("{} uses removed \"icon\"! Please advise {} to fix the icon!", info.name, info.author);
                 }
 
                 if (json.getAsJsonObject().has("support") && json.getAsJsonObject().get("support").getAsJsonObject().size() > 0) {
@@ -195,6 +236,7 @@ public class AppInfo {
 
                     info.support = support;
                 }
+                info.icon = new Icon(info);
             } catch (JsonParseException e) {
                 Devices.LOGGER.error("Malformed app info json for '" + info.getFormattedId() + "'");
             }

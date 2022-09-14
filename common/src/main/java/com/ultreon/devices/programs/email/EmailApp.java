@@ -53,7 +53,7 @@ public class EmailApp extends Application {
 
     /* Main Menu Layout */
     private Layout layoutMainMenu;
-    private Image logo;
+    private Image.AppImage logo;
     private Label labelLogo;
     private Button btnRegisterAccount;
 
@@ -143,7 +143,8 @@ public class EmailApp extends Application {
         image.setAlpha(0.85f);
         layoutMainMenu.addComponent(image);
 
-        logo = new Image(86, 20, 28, 28, info.getIconU(), info.getIconV(), 14, 14, 224, 224, Laptop.ICON_TEXTURES);
+        logo = new Image.AppImage(86, 20, 28, 28, info);
+        //logo = new Image(86, 20, 28, 28, info.getIconU(), info.getIconV(), 14, 14, 224, 224, Laptop.ICON_TEXTURES);
         layoutMainMenu.addComponent(logo);
 
         labelLogo = new Label("Ender Mail", 100, 46);

@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
+import java.awt.*;
 
 @SuppressWarnings("unused")
 public class RenderUtil {
@@ -28,6 +29,30 @@ public class RenderUtil {
         // Todo - Port to 1.18.2 if possible
         //RenderSystem.enableAlpha();
         //Lighting.setupForFlatItems();
+    }
+
+    public static void drawIcon(PoseStack pose, double x, double y, AppInfo info, int width, int height) {
+        //Gui.blit(pose, (int) x, (int) y, width, height, u, v, sourceWidth, sourceHeight, (int) textureWidth, (int) textureHeight);
+        if (info == null) {
+            drawRectWithTexture(pose, x, y, 0, 0, width, height, 14, 14, 224, 224);
+            return;
+        }
+        var scheme = Laptop.getSystem().getSettings().getColorScheme();
+        var col = new Color(scheme.getBackgroundColor());
+        var backCol = new Color(scheme.getBackgroundSecondaryColor());
+        int[] tint = new int[]{col.getRed(), col.getGreen(), col.getBlue()};
+        RenderSystem.enableBlend();
+        drawRectWithTexture(pose, x, y, info.getIcon().getBase().getU() != -1 ? info.getIcon().getBase().getU() : 0, info.getIcon().getBase().getV() != -1 ? info.getIcon().getBase().getV() : 0, width, height, 14, 14, 224, 224);
+        if (info.getIcon().getOverlay0().getU() != -1 || info.getIcon().getOverlay0().getV() != -1) {
+            RenderSystem.setShaderColor(tint[0]/255f, tint[1]/255f, tint[2]/255f, 1f);
+            drawRectWithTexture(pose, x, y, info.getIcon().getOverlay0().getU(), info.getIcon().getOverlay0().getV(), width, height, 14, 14, 224, 224);
+        }
+        tint = new int[]{backCol.getRed(), backCol.getGreen(), backCol.getBlue()};
+        if (info.getIcon().getOverlay1().getU() != -1 || info.getIcon().getOverlay1().getV() != -1) {
+            RenderSystem.setShaderColor(tint[0]/255f, tint[1]/255f, tint[2]/255f, 1f);
+            drawRectWithTexture(pose, x, y, info.getIcon().getOverlay1().getU(), info.getIcon().getOverlay1().getV(), width, height, 14, 14, 224, 224);
+        }
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
     }
 
     public static void drawRectWithTexture(PoseStack pose, double x, double y, float u, float v, int width, int height, float textureWidth, float textureHeight) {
@@ -97,7 +122,8 @@ public class RenderUtil {
         //TODO: Reset color GlStateManager.color(1f, 1f, 1f);
         RenderSystem.setShaderTexture(0, Laptop.ICON_TEXTURES);
         if (info != null) {
-            drawRectWithTexture(pose, x, y, info.getIconU(), info.getIconV(), 14, 14, 14, 14, 224, 224);
+            drawIcon(pose, x, y, info, 14, 14);
+          //  drawRectWithTexture(pose, x, y, info.getIconU(), info.getIconV(), 14, 14, 14, 14, 224, 224);
         } else {
             drawRectWithTexture(pose, x, y, 0, 0, 14, 14, 14, 14, 224, 224);
         }
