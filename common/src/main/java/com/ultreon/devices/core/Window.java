@@ -25,6 +25,7 @@ public class Window<T extends Wrappable> {
     int offsetX, offsetY;
     Window<Dialog> dialogWindow = null;
     Window<? extends Wrappable> parent = null;
+    protected boolean removed;
 
     public Window(T wrappable, Laptop laptop) {
         this.content = wrappable;
@@ -267,6 +268,7 @@ public class Window<T extends Wrappable> {
     }
 
     public final void close() {
+        this.removed = true;
         if (content instanceof Application) {
             laptop.closeApplication(((Application) content).getInfo());
             return;

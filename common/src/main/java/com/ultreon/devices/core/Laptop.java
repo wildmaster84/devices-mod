@@ -92,7 +92,7 @@ public class Laptop extends Screen implements System {
     private static Drive mainDrive;
     private final Settings settings;
     private final TaskBar bar;
-    private final Window<?>[] windows; // Todo: make this a list
+    final ArrayList<Window<?>> windows;
     private final CompoundTag appData;
     private final CompoundTag systemData;
     protected List<AppInfo> installedApps = new ArrayList<>();
@@ -136,7 +136,22 @@ public class Laptop extends Screen implements System {
         this.systemData = laptop.getSystemData();
 
         // Windows
-        this.windows = new Window[5];
+        this.windows = new ArrayList<>() {
+            @Override
+            public Window<?> get(int index) {
+                try {
+                    return super.get(index);
+                } catch (Exception e) {
+                    return null;
+                }
+            }
+
+            @Override
+            public boolean add(Window<?> window) {
+                window.removed = false;
+                return super.add(window);
+            }
+        };
 
         // Settings etc.
         this.settings = Settings.fromTag(systemData.getCompound("Settings"));
@@ -242,9 +257,11 @@ public class Laptop extends Screen implements System {
         Minecraft.getInstance().keyboardHandler.setSendRepeatsToGui(false);
 
         /* Close all windows and sendTask application data */
-        for (Window<?> window : windows) {
+        for (int i = 0; i < windows.size(); i++) {
+            Window<?> window = windows.get(i);
             if (window != null) {
                 window.close();
+                i--;
             }
         }
 
@@ -289,15 +306,25 @@ public class Laptop extends Screen implements System {
      */
     @Override
     public void tick() {
-        bar.onTick();
+        try {
+            bar.onTick();
 
-        for (var window : windows) {
-            if (window != null) {
-                window.onTick();
+            for (int i = 0; i < windows.size(); i++) {
+                Window<?> window = windows.get(i);
+                if (window != null) {
+                    window.onTick();
+                    if (window.removed) {
+                //        java.lang.System.out.println("REMOVED " + window);
+                   //     windows.remove(window);
+                    //    i--;
+                    }
+                }
             }
-        }
 
-        FileBrowser.refreshList = false;
+            FileBrowser.refreshList = false;
+        } catch (Exception e) {
+            bsod(e);
+        }
     }
 
     @Override
@@ -444,9 +471,9 @@ public class Laptop extends Screen implements System {
         //****************//
         pose.pushPose();
         {
-            Window<?>[] windows1 = Arrays.stream(windows).filter(Objects::nonNull).toArray(Window<?>[]::new);
-            for (int i = windows1.length - 1; i >= 0; i--) {
-                var window = windows1[i];
+         //   Window<?>[] windows1 = Arrays.stream(windows.toArray()).filter(Objects::nonNull).toArray(Window<?>[]::new);
+            for (int i = windows.size() - 1; i >= 0; i--) {
+                var window = windows.get(i);
                 if (window != null) {
                     PoseStack.Pose last = pose.last();
                     try {
@@ -551,17 +578,18 @@ public class Laptop extends Screen implements System {
 
         this.bar.handleClick(this, posX, posY + SCREEN_HEIGHT - TaskBar.BAR_HEIGHT, (int) mouseX, (int) mouseY, mouseButton);
 
-        for (int i = 0; i < windows.length; i++) {
-            Window<Application> window = (Window<Application>) windows[i];
+        for (int i = 0; i < windows.size(); i++) {
+            Window<Application> window = (Window<Application>) windows.get(i);
             if (window != null) {
                 try {
                     Window<Dialog> dialogWindow = window.getContent().getActiveDialog();
                     if (isMouseWithinWindow((int) mouseX, (int) mouseY, window) || isMouseWithinWindow((int) mouseX, (int) mouseY, dialogWindow)) {
-                        windows[i] = null;
+                        windows.remove(i);
+                        i--;
                         updateWindowStack();
-                        windows[0] = window;
+                        windows.add(0, window);
 
-                        windows[0].handleMouseClick(this, posX, posY, (int) mouseX, (int) mouseY, mouseButton);
+                        windows.get(0).handleMouseClick(this, posX, posY, (int) mouseX, (int) mouseY, mouseButton);
 
                         if (isMouseWithinWindowBar((int) mouseX, (int) mouseY, dialogWindow)) {
                             this.dragging = true;
@@ -578,7 +606,7 @@ public class Laptop extends Screen implements System {
                     e.printStackTrace();
                     Dialog.Message message = new Dialog.Message("An error has occurred.\nSend logs to devs.");
                     message.setTitle("Error");
-                    if (windows.length == 0 || windows[0] == null) {
+                    if (windows.size() == 0 || windows.get(0) == null) {
                         CompoundTag intent = new CompoundTag();
                         AppInfo info = window.content.getInfo();
                         if (info != null) {
@@ -586,7 +614,7 @@ public class Laptop extends Screen implements System {
                         }
                         openApplication(ApplicationManager.getApplication("devices:diagnostics"), intent);
                     } else {
-                        windows[0].openDialog(message);
+                        windows.get(0).openDialog(message);
                     }
                 }
             }
@@ -606,14 +634,14 @@ public class Laptop extends Screen implements System {
                 if (isMouseInside((int) mouseX, (int) mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height)) {
                     this.context.handleMouseRelease((int) mouseX, (int) mouseY, state);
                 }
-            } else if (windows[0] != null) {
-                windows[0].handleMouseRelease((int) mouseX, (int) mouseY, state);
+            } else if (windows.get(0) != null) {
+                windows.get(0).handleMouseRelease((int) mouseX, (int) mouseY, state);
             }
         } catch (Exception e) {
             e.printStackTrace();
             Dialog.Message message = new Dialog.Message("An error has occurred.\nSend logs to devs.");
             message.setTitle("Error");
-            windows[0].openDialog(message);
+            windows.get(0).openDialog(message);
         }
         return true;
     }
@@ -640,13 +668,13 @@ public class Laptop extends Screen implements System {
     public boolean charTyped(char codePoint, int modifiers) {
         boolean override = super.charTyped(codePoint, modifiers);
         try {
-            if (!override && windows[0] != null)
-                windows[0].handleCharTyped(codePoint, modifiers);
+            if (!override && windows.get(0) != null)
+                windows.get(0).handleCharTyped(codePoint, modifiers);
         } catch (Exception e) {
             e.printStackTrace();
             Dialog.Message message = new Dialog.Message("An error has occurred.\nSend logs to devs.");
             message.setTitle("Error");
-            windows[0].openDialog(message);
+            windows.get(0).openDialog(message);
         }
         return override;
     }
@@ -656,14 +684,14 @@ public class Laptop extends Screen implements System {
         final boolean override = super.keyPressed(keyCode, scanCode, modifiers);
 
         try {
-            if (!pressed.contains(keyCode) && !override && windows[0] != null) {
-                windows[0].handleKeyPressed(keyCode, scanCode, modifiers);
+            if (!pressed.contains(keyCode) && !override && windows.get(0) != null) {
+                windows.get(0).handleKeyPressed(keyCode, scanCode, modifiers);
             }
         } catch (Exception e) {
             e.printStackTrace();
             Dialog.Message message = new Dialog.Message("An error has occurred.\nSend logs to devs.");
             message.setTitle("Error");
-            windows[0].openDialog(message);
+            windows.get(0).openDialog(message);
         }
         pressed.add(keyCode);
         return super.keyPressed(keyCode, scanCode, modifiers);
@@ -676,15 +704,15 @@ public class Laptop extends Screen implements System {
         boolean b = super.keyReleased(keyCode, scanCode, modifiers);
 
         try {
-            if (keyCode >= 32 && keyCode < 256 && windows[0] != null) {
-                windows[0].handleKeyReleased(keyCode, scanCode, modifiers);
+            if (keyCode >= 32 && keyCode < 256 && windows.get(0) != null) {
+                windows.get(0).handleKeyReleased(keyCode, scanCode, modifiers);
                 return true;
             }
         } catch (Exception e) {
             e.printStackTrace();
             Dialog.Message message = new Dialog.Message("An error has occurred.\nSend logs to devs.");
             message.setTitle("Error");
-            windows[0].openDialog(message);
+            windows.get(0).openDialog(message);
         }
         return b;
     }
@@ -705,8 +733,8 @@ public class Laptop extends Screen implements System {
                 return true;
             }
 
-            if (windows[0] != null) {
-                Window<Application> window = (Window<Application>) windows[0];
+            if (windows.get(0) != null) {
+                Window<Application> window = (Window<Application>) windows.get(0);
                 Window<Dialog> dialogWindow = window.getContent().getActiveDialog();
                 if (dragging) {
                     if (isMouseOnScreen((int) mouseX, (int) mouseY)) {
@@ -724,7 +752,7 @@ public class Laptop extends Screen implements System {
             e.printStackTrace();
             Dialog.Message message = new Dialog.Message("An error has occurred.\nSend logs to devs.");
             message.setTitle("Error");
-            windows[0].openDialog(message);
+            windows.get(0).openDialog(message);
         }
         this.lastMouseX = (int) mouseX;
         this.lastMouseY = (int) mouseY;
@@ -740,14 +768,14 @@ public class Laptop extends Screen implements System {
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
         if (delta != 0) {
             try {
-                if (windows[0] != null) {
-                    windows[0].handleMouseScroll((int) mouseX, (int) mouseY, delta >= 0);
+                if (windows.get(0) != null) {
+                    windows.get(0).handleMouseScroll((int) mouseX, (int) mouseY, delta >= 0);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 Dialog.Message message = new Dialog.Message("An error has occurred.\nSend logs to devs.");
                 message.setTitle("Error");
-                windows[0].openDialog(message);
+                windows.get(0).openDialog(message);
             }
         }
         return true;
@@ -759,12 +787,14 @@ public class Laptop extends Screen implements System {
     }
 
     public Pair<Application, Boolean> sendApplicationToFront(AppInfo info) {
-        for (int i = 0; i < windows.length; i++) {
-            Window<?> window = windows[i];
+        int i = 0;
+        for (; i < windows.size(); i++) {
+            Window<?> window = windows.get(i);
             if (window != null && window.content instanceof Application && ((Application) window.content).getInfo() == info) {
-                windows[i] = null;
+                windows.remove(i);
                 updateWindowStack();
-                windows[0] = window;
+                windows.add(0, window);
+                i--;
                 return Pair.of((Application) window.content, true);
             }
         }
@@ -868,8 +898,8 @@ public class Laptop extends Screen implements System {
 
     @SuppressWarnings("unchecked")
     private void closeApplication(Application app) {
-        for (int i = 0; i < windows.length; i++) {
-            Window<Application> window = (Window<Application>) windows[i];
+        for (int i = 0; i < windows.size(); i++) {
+            Window<Application> window = (Window<Application>) windows.get(i);
             if (window != null) {
                 if (window.content.getInfo().equals(app.getInfo())) {
                     if (app.isDirty()) {
@@ -885,7 +915,7 @@ public class Laptop extends Screen implements System {
                     }
 
                     window.handleClose();
-                    windows[i] = null;
+                    windows.remove(i);
                     return;
                 }
             }
@@ -897,17 +927,17 @@ public class Laptop extends Screen implements System {
             return;
 
         updateWindowStack();
-        windows[0] = window;
+        windows.add(0, window);
     }
 
     private void updateWindowStack() {
-        for (int i = windows.length - 1; i >= 0; i--) {
-            if (windows[i] != null) {
-                if (i + 1 < windows.length) {
-                    if (i == 0 || windows[i - 1] != null) {
-                        if (windows[i + 1] == null) {
-                            windows[i + 1] = windows[i];
-                            windows[i] = null;
+        for (int i = windows.size() - 1; i >= 0; i--) {
+            if (windows.get(i) != null) {
+                if (i + 1 < windows.size()) {
+                    if (i == 0 || windows.get(i - 1) != null) {
+                        if (windows.get(i + 1) == null) {
+                            windows.add(i + 1, windows.get(i));
+                            windows.remove(i);
                         }
                     }
                 }
@@ -916,10 +946,10 @@ public class Laptop extends Screen implements System {
     }
 
     private boolean hasReachedWindowLimit() {
-        for (Window<?> window : windows) {
-            if (window == null) return false;
-        }
-        return true;
+//        for (Window<?> window : windows) {
+//           // if (window == null) return false;
+//        }
+        return false;
     }
 
     private boolean isMouseOnScreen(int mouseX, int mouseY) {
