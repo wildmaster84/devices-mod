@@ -66,6 +66,7 @@ public class LaptopBlockEntity extends NetworkDeviceBlockEntity.Colored {
         super.load(compound);
         if (compound.contains("open")) {
             this.open = compound.getBoolean("open");
+            this.getBlockState().setValue(LaptopBlock.OPEN, open);
         }
         if (compound.contains("system_data", Tag.TAG_COMPOUND)) {
             this.systemData = compound.getCompound("system_data");
@@ -136,12 +137,19 @@ public class LaptopBlockEntity extends NetworkDeviceBlockEntity.Colored {
         open = !getBlockState().getValue(LaptopBlock.OPEN);
         if (oldOpen != open) {
             pipeline.putBoolean("open", open);
-            getBlockState().setValue(LaptopBlock.OPEN, open);
+            var d = getBlockState().setValue(LaptopBlock.OPEN, open);
+            this.level.setBlock(this.getBlockPos(), d, 18);
             sync();
         }
+
         if (level != null) {
             markUpdated();
+            doNeighborUpdates(level, this.getBlockPos(), this.getBlockState());
         }
+    }
+
+    private static void doNeighborUpdates(Level level, BlockPos pos, BlockState state) {
+        state.updateNeighbourShapes(level, pos, 3);
     }
 
     public boolean isOpen() {
