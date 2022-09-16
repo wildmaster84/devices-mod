@@ -129,7 +129,7 @@ public class BankApp extends Application {//The bank is not a system application
         labelTeller = new Label(ChatFormatting.YELLOW + "Casey The Teller", 60, 7);
         layoutStart.addComponent(labelTeller);
 
-        assert Minecraft.getInstance().player != null;
+        assert Minecraft.getInstance().level == null || Minecraft.getInstance().player != null;
         textWelcome = new Text(ChatFormatting.BLACK + "Hello " + Minecraft.getInstance().player.getGameProfile().getName() + ", welcome to The Emerald Bank! How can I help you?", 62, 25, 125);
         layoutStart.addComponent(textWelcome);
 

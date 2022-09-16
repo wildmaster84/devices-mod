@@ -108,7 +108,7 @@ public class TaskBar {
             }
         }
 
-        assert mc.player != null;
+        assert mc.level == null || mc.player != null;
        // assert mc.level != null; //can no longer assume
         mc.font.drawShadow(pose, timeToString(mc.level != null ? mc.level.getDayTime() : 0), x + 334, y + 5, Color.WHITE.getRGB(), true);
 
