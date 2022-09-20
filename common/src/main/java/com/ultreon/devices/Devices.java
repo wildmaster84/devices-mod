@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.jab125.classloader.api.ClassLoaderApi;
 import com.ultreon.devices.api.ApplicationManager;
 import com.ultreon.devices.api.app.Application;
 import com.ultreon.devices.api.print.IPrint;
@@ -39,6 +40,7 @@ import com.ultreon.devices.programs.gitweb.GitWebApp;
 import com.ultreon.devices.programs.snake.SnakeApp;
 import com.ultreon.devices.programs.system.*;
 import com.ultreon.devices.programs.system.task.*;
+import com.ultreon.devices.util.BlockEntityUtil;
 import com.ultreon.devices.util.SiteRegistration;
 import com.ultreon.ultranlang.*;
 import com.ultreon.ultranlang.ast.Program;
@@ -102,6 +104,7 @@ public class Devices {
             preInit();
             serverSetup();
         }
+   //     BlockEntityUtil.sendUpdate(null, null, null);
 
         //LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
         LOGGER.info("Doing some common setup.");
