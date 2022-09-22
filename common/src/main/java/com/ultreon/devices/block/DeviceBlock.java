@@ -1,6 +1,6 @@
 package com.ultreon.devices.block;
 
-import com.ultreon.devices.DeviceType;
+import com.ultreon.devices.ModDeviceTypes;
 import com.ultreon.devices.IDeviceType;
 import com.ultreon.devices.block.entity.DeviceBlockEntity;
 import com.ultreon.devices.util.BlockEntityUtil;
@@ -19,7 +19,6 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -35,9 +34,9 @@ import java.util.Objects;
 
 @SuppressWarnings("deprecation")
 public abstract class DeviceBlock extends HorizontalDirectionalBlock implements EntityBlock, IDeviceType {
-    private final DeviceType deviceType;
+    private final ModDeviceTypes deviceType;
 
-    public DeviceBlock(Properties properties, DeviceType deviceType) {
+    public DeviceBlock(Properties properties, ModDeviceTypes deviceType) {
         super(properties.strength(0.5f));
         this.deviceType = deviceType;
     }
@@ -129,14 +128,14 @@ public abstract class DeviceBlock extends HorizontalDirectionalBlock implements 
     }
 
     @Override
-    public DeviceType getDeviceType() {
+    public ModDeviceTypes getDeviceType() {
         return deviceType;
     }
 
     public static abstract class Colored extends DeviceBlock {
         private final DyeColor color;
 
-        protected Colored(Properties properties, DyeColor color, DeviceType deviceType) {
+        protected Colored(Properties properties, DyeColor color, ModDeviceTypes deviceType) {
             super(properties, deviceType);
             this.color = color;
         }

@@ -1,6 +1,6 @@
 package com.ultreon.devices.block;
 
-import com.ultreon.devices.DeviceType;
+import com.ultreon.devices.ModDeviceTypes;
 import com.ultreon.devices.block.entity.LaptopBlockEntity;
 import com.ultreon.devices.item.FlashDriveItem;
 import com.ultreon.devices.util.BlockEntityUtil;
@@ -49,7 +49,7 @@ public class LaptopBlock extends DeviceBlock.Colored {
     private static final VoxelShape SHAPE_CLOSED_WEST = Block.box(1, 0, 1, 13, 2, 15);
 
     public LaptopBlock(DyeColor color) {
-        super(Properties.of(Material.HEAVY_METAL, color).strength(6f).sound(SoundType.METAL), color, DeviceType.LAPTOP);
+        super(Properties.of(Material.HEAVY_METAL, color).strength(6f).sound(SoundType.METAL), color, ModDeviceTypes.LAPTOP);
         registerDefaultState(this.getStateDefinition().any().setValue(TYPE, Type.BASE).setValue(OPEN, false));
     }
 
