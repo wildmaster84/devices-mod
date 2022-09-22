@@ -1,19 +1,13 @@
 package com.ultreon.devices.block;
 
-import com.ultreon.devices.DeviceType;
-import com.ultreon.devices.block.entity.DeviceBlockEntity;
+import com.ultreon.devices.ModDeviceTypes;
 import com.ultreon.devices.block.entity.OfficeChairBlockEntity;
 import com.ultreon.devices.entity.SeatEntity;
-import com.ultreon.devices.init.DeviceBlockEntities;
-import com.ultreon.devices.init.DeviceEntities;
 import com.ultreon.devices.util.SeatUtil;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
@@ -22,18 +16,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.AnvilBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -52,7 +42,7 @@ public class OfficeChairBlock extends DeviceBlock.Colored
 
     public OfficeChairBlock(DyeColor color)
     {
-        super(BlockBehaviour.Properties.of(Material.STONE, color.getMaterialColor()), color, DeviceType.SEAT);
+        super(BlockBehaviour.Properties.of(Material.STONE, color.getMaterialColor()), color, ModDeviceTypes.SEAT);
         //this.setUnlocalizedName("office_chair");
         //this.setRegistryName("office_chair");
         //this.setCreativeTab(MrCrayfishDeviceMod.TAB_DEVICE);

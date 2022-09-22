@@ -1,6 +1,6 @@
 package com.ultreon.devices.item;
 
-import com.ultreon.devices.DeviceType;
+import com.ultreon.devices.ModDeviceTypes;
 import com.ultreon.devices.Devices;
 import com.ultreon.devices.IDeviceType;
 import com.ultreon.devices.Reference;
@@ -70,7 +70,7 @@ public class FlashDriveItem extends Item implements Colored, SubItems, IDeviceTy
     }
 
     @Override
-    public DeviceType getDeviceType() {
-        return DeviceType.FLASH_DRIVE;
+    public ModDeviceTypes getDeviceType() {
+        return ModDeviceTypes.FLASH_DRIVE;
     }
 }

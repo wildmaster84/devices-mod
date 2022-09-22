@@ -1,6 +1,6 @@
 package com.ultreon.devices.block;
 
-import com.ultreon.devices.DeviceType;
+import com.ultreon.devices.ModDeviceTypes;
 import com.ultreon.devices.block.entity.PrinterBlockEntity;
 import com.ultreon.devices.util.Colored;
 import net.minecraft.core.BlockPos;
@@ -78,7 +78,7 @@ public class PrinterBlock extends DeviceBlock.Colored implements Colored {
             box(12, 3, 4, 16, 9.3, 12));
 
     public PrinterBlock(DyeColor color) {
-        super(Properties.of(Material.HEAVY_METAL, color).strength(6f).sound(SoundType.METAL), color, DeviceType.PRINTER);
+        super(Properties.of(Material.HEAVY_METAL, color).strength(6f).sound(SoundType.METAL), color, ModDeviceTypes.PRINTER);
         this.registerDefaultState(getStateDefinition().any().setValue(FACING, Direction.NORTH));
     }
 
