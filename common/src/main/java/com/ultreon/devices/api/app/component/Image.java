@@ -11,6 +11,7 @@ import com.ultreon.devices.api.app.Layout;
 import com.ultreon.devices.api.utils.RenderUtil;
 import com.ultreon.devices.core.Laptop;
 import com.ultreon.devices.object.AppInfo;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -32,10 +33,12 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 public class Image extends Component {
     public static class AppImage extends Layout {
+        private final AppInfo appInfo;
         private AppInfo.Icon.Glyph[] glyphs;
         private int componentWidth;
         private int componentHeight;
@@ -46,6 +49,7 @@ public class Image extends Component {
 
         public AppImage(int left, int top, int componentWidth, int componentHeight, AppInfo resource) {
             super(left, top, componentWidth, componentHeight);
+            this.appInfo = resource;
             this.glyphs = new AppInfo.Icon.Glyph[]{resource.getIcon().getBase(), resource.getIcon().getOverlay0(), resource.getIcon().getOverlay1()};
             this.componentWidth = componentWidth;
             this.componentHeight = componentHeight;
@@ -58,14 +62,16 @@ public class Image extends Component {
             for (AppInfo.Icon.Glyph glyph : glyphs) {
                 if (glyph.getU() == -1 || glyph.getV() == -1) continue;
                 var image = new Image(0, 0, componentWidth, componentHeight, glyph.getU(), glyph.getV(), 14, 14, 224, 224, Laptop.ICON_TEXTURES);
-                int tint = switch (glyph.getType()) {
-                    case 0 -> new Color(255, 255, 255).getRGB();
-                    case 1 -> Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor();
-                    case 2 -> Laptop.getSystem().getSettings().getColorScheme().getBackgroundSecondaryColor();
-                    default -> throw new IllegalStateException();
+                Supplier<ColorSupplier> suscs = () -> {
+                    int tint = appInfo.getTint(glyph.getType());
+                    var col = new Color(tint);
+                    var cs = new ColorSupplier();
+                    cs.r = col.getRed();
+                    cs.g = col.getGreen();
+                    cs.b = col.getBlue();
+                    return cs;
                 };
-                var col = new Color(tint);
-                image.setTint(col.getRed(), col.getGreen(), col.getBlue());
+                image.setTint(suscs);
                 this.addComponent(image);
                 //image.init(layout);
             }
@@ -85,12 +91,28 @@ public class Image extends Component {
     public int componentHeight;
     private Spinner spinner;
     private float alpha = 1f;
-    private int[] tint = new int[]{255, 255, 255};
+    private Supplier<ColorSupplier> tint = () -> Util.make(new ColorSupplier(), cs -> {
+        cs.r = 255;
+        cs.g = 255;
+        cs.b = 255;
+    });
 
     public void setTint(int r, int g, int b) {
-        this.tint[0] = r;
-        this.tint[1] = g;
-        this.tint[2] = b;
+        var cs = new ColorSupplier();
+        cs.r = r;
+        cs.g = g;
+        cs.b = b;
+        this.setTint(() -> cs);
+    }
+
+    private static class ColorSupplier {
+        int r;
+        int g;
+        int b;
+    }
+
+    public void setTint(Supplier<ColorSupplier> colorSupplier) {
+        this.tint = colorSupplier;
     }
 
     private boolean hasBorder = false;
@@ -232,12 +254,12 @@ public class Image extends Component {
                 fill(pose, x, y, x + componentWidth, y + componentHeight, borderColor);
             }
 
-            RenderSystem.setShaderColor(tint[0]/255f, tint[1]/255f, tint[2]/255f, alpha);
+            RenderSystem.setShaderColor(tint.get().r/255f, tint.get().g/255f, tint.get().b/255f, alpha);
 
             if (image != null && image.textureId != -1) {
                 image.restore();
 
-                RenderSystem.setShaderColor(tint[0]/255f, tint[1]/255f, tint[2]/255f, alpha);
+                RenderSystem.setShaderColor(tint.get().r/255f, tint.get().g/255f, tint.get().b/255f, alpha);
                 RenderSystem.enableBlend();
                 RenderSystem.setShaderTexture(0, image.textureId);
 
