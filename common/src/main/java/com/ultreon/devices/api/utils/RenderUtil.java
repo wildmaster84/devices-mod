@@ -3,6 +3,7 @@ package com.ultreon.devices.api.utils;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import com.ultreon.devices.api.app.component.Image;
 import com.ultreon.devices.core.Laptop;
 import com.ultreon.devices.object.AppInfo;
 import net.minecraft.ChatFormatting;
@@ -37,20 +38,15 @@ public class RenderUtil {
             drawRectWithTexture(pose, x, y, 0, 0, width, height, 14, 14, 224, 224);
             return;
         }
-        var scheme = Laptop.getSystem().getSettings().getColorScheme();
-        var col = new Color(scheme.getBackgroundColor());
-        var backCol = new Color(scheme.getBackgroundSecondaryColor());
-        int[] tint = new int[]{col.getRed(), col.getGreen(), col.getBlue()};
         RenderSystem.enableBlend();
-        drawRectWithTexture(pose, x, y, info.getIcon().getBase().getU() != -1 ? info.getIcon().getBase().getU() : 0, info.getIcon().getBase().getV() != -1 ? info.getIcon().getBase().getV() : 0, width, height, 14, 14, 224, 224);
-        if (info.getIcon().getOverlay0().getU() != -1 || info.getIcon().getOverlay0().getV() != -1) {
+        var glyphs = new AppInfo.Icon.Glyph[]{info.getIcon().getBase(), info.getIcon().getOverlay0(), info.getIcon().getOverlay1()};
+        for (AppInfo.Icon.Glyph glyph : glyphs) {
+            if (glyph.getU() == -1 || glyph.getV() == -1) continue;
+            var col = new Color(info.getTint(glyph.getType()));
+            int[] tint = new int[]{col.getRed(), col.getGreen(), col.getBlue()};
             RenderSystem.setShaderColor(tint[0]/255f, tint[1]/255f, tint[2]/255f, 1f);
-            drawRectWithTexture(pose, x, y, info.getIcon().getOverlay0().getU(), info.getIcon().getOverlay0().getV(), width, height, 14, 14, 224, 224);
-        }
-        tint = new int[]{backCol.getRed(), backCol.getGreen(), backCol.getBlue()};
-        if (info.getIcon().getOverlay1().getU() != -1 || info.getIcon().getOverlay1().getV() != -1) {
-            RenderSystem.setShaderColor(tint[0]/255f, tint[1]/255f, tint[2]/255f, 1f);
-            drawRectWithTexture(pose, x, y, info.getIcon().getOverlay1().getU(), info.getIcon().getOverlay1().getV(), width, height, 14, 14, 224, 224);
+            drawRectWithTexture(pose, x, y, glyph.getU(), glyph.getV(), width, height, 14, 14, 224, 224);
+            //image.init(layout);
         }
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
     }
