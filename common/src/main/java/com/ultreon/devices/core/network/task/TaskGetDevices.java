@@ -23,7 +23,7 @@ public class TaskGetDevices extends Task {
 
     private Collection<NetworkDevice> foundDevices;
 
-    private TaskGetDevices() {
+    public TaskGetDevices() {
         super("get_network_devices");
     }
 

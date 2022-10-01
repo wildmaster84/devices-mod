@@ -16,7 +16,7 @@ public class TaskPing extends Task {
     private BlockPos sourceDevicePos;
     private int strength;
 
-    private TaskPing() {
+    public TaskPing() {
         super("ping");
     }
 

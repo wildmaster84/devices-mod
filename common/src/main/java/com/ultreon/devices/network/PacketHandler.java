@@ -1,10 +1,15 @@
 package com.ultreon.devices.network;
 
 import com.ultreon.devices.Devices;
+import com.ultreon.devices.core.laptop.common.UpdatePacket;
 import com.ultreon.devices.network.task.*;
 import dev.architectury.networking.NetworkChannel;
+import dev.architectury.networking.NetworkManager;
+import dev.architectury.utils.Env;
+import net.fabricmc.api.EnvType;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 public class PacketHandler {
@@ -18,6 +23,7 @@ public class PacketHandler {
         INSTANCE.register(SyncConfigPacket.class, Packet::toBytes, SyncConfigPacket::new, SyncConfigPacket::onMessage);
         INSTANCE.register(SyncBlockPacket.class, Packet::toBytes, SyncBlockPacket::new, SyncBlockPacket::onMessage);
         INSTANCE.register(NotificationPacket.class, Packet::toBytes, NotificationPacket::new, NotificationPacket::onMessage);
+        INSTANCE.register(UpdatePacket.class, Packet::toBytes, UpdatePacket::new, UpdatePacket::onMessage);
     }
 
     private static int nextId() {
@@ -25,6 +31,25 @@ public class PacketHandler {
     }
 
     public static <T extends Packet<T>> void sendToClient(Packet<T> messageNotification, ServerPlayer player) {
+        if (player.level == null) {
+            messageNotification.onMessage(() -> new NetworkManager.PacketContext() {
+                @Override
+                public Player getPlayer() {
+                    return player;
+                }
+
+                @Override
+                public void queue(Runnable runnable) {
+
+                }
+
+                @Override
+                public Env getEnvironment() {
+                    return Env.CLIENT;
+                }
+            });
+            return;
+        }
         INSTANCE.sendToPlayer(player, messageNotification);
         //INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), messageNotification);
     }
