@@ -23,7 +23,7 @@ public class TaskPrint extends Task {
     private UUID printerId;
     private IPrint print;
 
-    private TaskPrint() {
+    public TaskPrint() {
         super("print");
     }
 

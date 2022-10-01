@@ -262,68 +262,68 @@ public class Devices {
 
     private static void registerApplications() {
         // Applications (Both)
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "diagnostics"), DiagnosticsApp.class);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "settings"), SettingsApp.class);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "bank"), BankApp.class);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "file_browser"), FileBrowserApp.class);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "gitweb"), GitWebApp.class);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "note_stash"), NoteStashApp.class);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "pixel_painter"), PixelPainterApp.class);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "ender_mail"), EmailApp.class);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "app_store"), AppStore.class);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "diagnostics"), DiagnosticsApp::new);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "settings"), SettingsApp::new);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "bank"), BankApp::new);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "file_browser"), FileBrowserApp::new);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "gitweb"), GitWebApp::new);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "note_stash"), NoteStashApp::new);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "pixel_painter"), PixelPainterApp::new);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "ender_mail"), EmailApp::new);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "app_store"), AppStore::new);
 
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "boat_racers"), BoatRacersApp.class);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "mine_bay"), MineBayApp.class);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "boat_racers"), BoatRacersApp::new);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "mine_bay"), MineBayApp::new);
 
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "snake"), SnakeApp.class);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "snake"), SnakeApp::new);
 
         // Core
-        TaskManager.registerTask(TaskUpdateApplicationData.class);
-        TaskManager.registerTask(TaskPrint.class);
-        TaskManager.registerTask(TaskUpdateSystemData.class);
-        TaskManager.registerTask(TaskConnect.class);
-        TaskManager.registerTask(TaskPing.class);
-        TaskManager.registerTask(TaskGetDevices.class);
+        TaskManager.registerTask(TaskUpdateApplicationData::new);
+        TaskManager.registerTask(TaskPrint::new);
+        TaskManager.registerTask(TaskUpdateSystemData::new);
+        TaskManager.registerTask(TaskConnect::new);
+        TaskManager.registerTask(TaskPing::new);
+        TaskManager.registerTask(TaskGetDevices::new);
 
         // Bank
-        TaskManager.registerTask(TaskDeposit.class);
-        TaskManager.registerTask(TaskWithdraw.class);
-        TaskManager.registerTask(TaskGetBalance.class);
-        TaskManager.registerTask(TaskPay.class);
-        TaskManager.registerTask(TaskAdd.class);
-        TaskManager.registerTask(TaskRemove.class);
+        TaskManager.registerTask(TaskDeposit::new);
+        TaskManager.registerTask(TaskWithdraw::new);
+        TaskManager.registerTask(TaskGetBalance::new);
+        TaskManager.registerTask(TaskPay::new);
+        TaskManager.registerTask(TaskAdd::new);
+        TaskManager.registerTask(TaskRemove::new);
 
         // File browser
-        TaskManager.registerTask(TaskSendAction.class);
-        TaskManager.registerTask(TaskSetupFileBrowser.class);
-        TaskManager.registerTask(TaskGetFiles.class);
-        TaskManager.registerTask(TaskGetStructure.class);
-        TaskManager.registerTask(TaskGetMainDrive.class);
+        TaskManager.registerTask(TaskSendAction::new);
+        TaskManager.registerTask(TaskSetupFileBrowser::new);
+        TaskManager.registerTask(TaskGetFiles::new);
+        TaskManager.registerTask(TaskGetStructure::new);
+        TaskManager.registerTask(TaskGetMainDrive::new);
 
         // App Store
-        TaskManager.registerTask(TaskInstallApp.class);
+        TaskManager.registerTask(TaskInstallApp::new);
 
         // Ender Mail
-        TaskManager.registerTask(TaskUpdateInbox.class);
-        TaskManager.registerTask(TaskSendEmail.class);
-        TaskManager.registerTask(TaskCheckEmailAccount.class);
-        TaskManager.registerTask(TaskRegisterEmailAccount.class);
-        TaskManager.registerTask(TaskDeleteEmail.class);
-        TaskManager.registerTask(TaskViewEmail.class);
+        TaskManager.registerTask(TaskUpdateInbox::new);
+        TaskManager.registerTask(TaskSendEmail::new);
+        TaskManager.registerTask(TaskCheckEmailAccount::new);
+        TaskManager.registerTask(TaskRegisterEmailAccount::new);
+        TaskManager.registerTask(TaskDeleteEmail::new);
+        TaskManager.registerTask(TaskViewEmail::new);
 
         // Auction
-        TaskManager.registerTask(TaskAddAuction.class);
-        TaskManager.registerTask(TaskGetAuctions.class);
-        TaskManager.registerTask(TaskBuyItem.class);
+        TaskManager.registerTask(TaskAddAuction::new);
+        TaskManager.registerTask(TaskGetAuctions::new);
+        TaskManager.registerTask(TaskBuyItem::new);
 
         if (DEVELOPER_MODE) {
             // Applications (Developers)
-            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "example"), ExampleApp.class);
-            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "icons"), IconsApp.class);
-            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "text_area"), TextAreaApp.class);
-            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "test"), TestApp.class);
+            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "example"), ExampleApp::new);
+            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "icons"), IconsApp::new);
+            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "text_area"), TextAreaApp::new);
+            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "test"), TestApp::new);
 
-            TaskManager.registerTask(TaskNotificationTest.class);
+            TaskManager.registerTask(TaskNotificationTest::new);
         }
 
         EnvExecutor.runInEnv(Env.CLIENT, () -> () -> PrintingManager.registerPrint(new ResourceLocation(Reference.MOD_ID, "picture"), PixelPainterApp.PicturePrint.class));
@@ -339,7 +339,7 @@ public class Devices {
     }
 
     @Nullable
-    public static Application registerApplication(ResourceLocation identifier, Class<? extends Application> clazz) {
+    public static Application registerApplication(ResourceLocation identifier, Supplier<Application> app) {
         if ("minecraft".equals(identifier.getNamespace())) {
             throw new IllegalArgumentException("Identifier cannot be \"minecraft\"!");
         }
@@ -347,7 +347,9 @@ public class Devices {
         if (allowedApps == null) {
             allowedApps = new ArrayList<>();
         }
-        if (SystemApp.class.isAssignableFrom(clazz)) {
+
+        Application appl = app.get();
+        if (app instanceof SystemApp) {
             allowedApps.add(new AppInfo(identifier, true));
         } else {
             allowedApps.add(new AppInfo(identifier, false));
@@ -355,19 +357,13 @@ public class Devices {
 
         AtomicReference<Application> application = new AtomicReference<>(null);
         EnvExecutor.runInEnv(Env.CLIENT, () -> () -> {
-            try {
-                Application app = clazz.getConstructor().newInstance();
-                List<Application> apps = getAPPLICATIONS(); /*ObfuscationReflectionHelper.getPrivateValue(Laptop.class, null, "APPLICATIONS");*/
-                assert apps != null;
-                apps.add(app);
+            List<Application> apps = getAPPLICATIONS(); /*ObfuscationReflectionHelper.getPrivateValue(Laptop.class, null, "APPLICATIONS");*/
+            assert apps != null;
+            apps.add(appl);
 
-                app.setInfo(generateAppInfo(identifier, clazz));
+            appl.setInfo(generateAppInfo(identifier, appl.getClass()));
 
-                application.set(app);
-            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-                     InvocationTargetException e) {
-                e.printStackTrace();
-            }
+            application.set(appl);
         });
         return application.get();
     }

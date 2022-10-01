@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public final class ApplicationManager {
@@ -33,9 +34,9 @@ public final class ApplicationManager {
      * @param clazz      the class of the application
      */
     @Nullable
-    public static Application registerApplication(ResourceLocation identifier, Class<? extends Application> clazz) {
+    public static Application registerApplication(ResourceLocation identifier, Supplier<Application> app) {
         Devices.LOGGER.debug(MARKER, "Registering application {}", identifier);
-        Application application = Devices.registerApplication(identifier, clazz);
+        Application application = Devices.registerApplication(identifier, app);
         if (application != null) {
             APP_INFO.put(identifier, application.getInfo());
             return application;
