@@ -38,7 +38,10 @@ public class ClientAppDebug {
 
             var a = new Button(screen.width / 2 - 100, y + rowHeight * -2, 200, 20, Component.literal("DV TEST #2"), (button) -> {
                 var serverLaptop = new ServerLaptop();
+                ServerLaptop.laptops.put(serverLaptop.getUuid(), serverLaptop);
                 var clientLaptop = new ClientLaptop();
+                clientLaptop.setUuid(serverLaptop.getUuid());
+                ClientLaptop.laptops.put(clientLaptop.getUuid(), clientLaptop);
                 Minecraft.getInstance().setScreen(new ClientLaptopScreen(clientLaptop));
             }, Button.NO_TOOLTIP);
             access.addRenderableWidget(a);

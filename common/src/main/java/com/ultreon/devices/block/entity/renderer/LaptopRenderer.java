@@ -7,6 +7,7 @@ import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import com.ultreon.devices.block.LaptopBlock;
 import com.ultreon.devices.block.entity.LaptopBlockEntity;
+import com.ultreon.devices.core.laptop.client.ClientLaptop;
 import com.ultreon.devices.init.DeviceItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -31,6 +32,14 @@ public class LaptopRenderer implements BlockEntityRenderer<LaptopBlockEntity> {
 
     @Override
     public void render(LaptopBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+//        poseStack.pushPose();
+//        RenderSystem.depthMask(true);
+//        poseStack.scale(0.005f, 0.005f, -1.0f);
+//        poseStack.mulPose(Quaternion.fromXYZDegrees(new Vector3f(0, 180, 180)));
+//        var l = new ClientLaptop();
+//        l.render(poseStack, -999, -999, partialTick);
+//        RenderSystem.depthMask(true);
+//        poseStack.popPose();
         var direction = blockEntity.getBlockState().getValue(LaptopBlock.FACING).getClockWise().toYRot();
         ItemEntity entityItem = new ItemEntity(Minecraft.getInstance().level, 0D, 0D, 0D, ItemStack.EMPTY);
         BlockState state = blockEntity.getBlock().defaultBlockState().setValue(LaptopBlock.TYPE, LaptopBlock.Type.SCREEN);
