@@ -20,7 +20,7 @@ import net.minecraft.network.chat.TextComponent;
  */
 public class ClientAppDebug {
     public static void register() {
-        if (DeviceConfig.DEBUG_BUTTON.get())
+        if (DeviceConfig.DEBUG_BUTTON.get()) {
             ClientGuiEvent.INIT_POST.register(((screen, access) -> {
                 if (!(screen instanceof TitleScreen)) return;
                 var rowHeight = 24;
@@ -31,20 +31,23 @@ public class ClientAppDebug {
                 }, Button.NO_TOOLTIP);
                 access.addRenderableWidget(a);
             }));
-        ClientGuiEvent.INIT_POST.register(((screen, access) -> {
-            if (!(screen instanceof TitleScreen)) return;
-            var rowHeight = 24;
-            var y = screen.height / 4 + 48;
 
-            var a = new Button(screen.width / 2 - 100, y + rowHeight * -2, 200, 20, new TextComponent("DV TEST #2"), (button) -> {
-                var serverLaptop = new ServerLaptop();
-                ServerLaptop.laptops.put(serverLaptop.getUuid(), serverLaptop);
-                var clientLaptop = new ClientLaptop();
-                clientLaptop.setUuid(serverLaptop.getUuid());
-                ClientLaptop.laptops.put(clientLaptop.getUuid(), clientLaptop);
-                Minecraft.getInstance().setScreen(new ClientLaptopScreen(clientLaptop));
-            }, Button.NO_TOOLTIP);
-            access.addRenderableWidget(a);
-        }));
+
+            ClientGuiEvent.INIT_POST.register(((screen, access) -> {
+                if (!(screen instanceof TitleScreen)) return;
+                var rowHeight = 24;
+                var y = screen.height / 4 + 48;
+
+                var a = new Button(screen.width / 2 - 100, y + rowHeight * -2, 200, 20, new TextComponent("DV TEST #2"), (button) -> {
+                    var serverLaptop = new ServerLaptop();
+                    ServerLaptop.laptops.put(serverLaptop.getUuid(), serverLaptop);
+                    var clientLaptop = new ClientLaptop();
+                    clientLaptop.setUuid(serverLaptop.getUuid());
+                    ClientLaptop.laptops.put(clientLaptop.getUuid(), clientLaptop);
+                    Minecraft.getInstance().setScreen(new ClientLaptopScreen(clientLaptop));
+                }, Button.NO_TOOLTIP);
+                access.addRenderableWidget(a);
+            }));
+        }
     }
 }
