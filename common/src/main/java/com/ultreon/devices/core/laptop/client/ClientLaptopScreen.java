@@ -6,6 +6,7 @@ import com.ultreon.devices.Reference;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +20,7 @@ public class ClientLaptopScreen extends Screen {
 
 
     public ClientLaptopScreen(ClientLaptop laptop) {
-        super(Component.translatable(laptop.toString()));
+        super(new TranslatableComponent(laptop.toString()));
         this.laptop = laptop;
     }
 
