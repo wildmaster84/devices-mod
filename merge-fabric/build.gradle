@@ -25,7 +25,7 @@ configurations {
 }
 
 dependencies {
-    include(project(":fabric"))
+    modRuntimeOnly include(project(":fabric"))
 }
 
 processResources {
