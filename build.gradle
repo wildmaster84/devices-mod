@@ -27,8 +27,8 @@ forgix {
         jarLocation = "build/libs/devices-${version}.jar"
        // additionalRelocate("com.ultreon.devices", "forge.com.ultreon.devices")
 
-        mixin "devices-common.mixins.json"
-        mixin "devices.mixins.json"
+    //    mixin "devices-common.mixins.json"
+   //     mixin "devices.mixins.json"
     }
 
     fabric {
