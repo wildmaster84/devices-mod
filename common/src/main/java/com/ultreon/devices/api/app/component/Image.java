@@ -460,7 +460,7 @@ public class Image extends Component {
                     NativeImage nativeImage = NativeImage.read(in);
 
                     Laptop.runLater(() -> {
-                        System.out.println("Loaded image: " + url);
+                        Devices.LOGGER.debug("Loaded image: " + url);
                         texture = new DynamicTexture(nativeImage);
                         setup = true;
                     });

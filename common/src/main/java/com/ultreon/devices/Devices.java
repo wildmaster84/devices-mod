@@ -5,7 +5,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.jab125.classloader.api.ClassLoaderApi;
 import com.ultreon.devices.api.ApplicationManager;
 import com.ultreon.devices.api.app.Application;
 import com.ultreon.devices.api.print.IPrint;
@@ -40,7 +39,6 @@ import com.ultreon.devices.programs.gitweb.GitWebApp;
 import com.ultreon.devices.programs.snake.SnakeApp;
 import com.ultreon.devices.programs.system.*;
 import com.ultreon.devices.programs.system.task.*;
-import com.ultreon.devices.util.BlockEntityUtil;
 import com.ultreon.devices.util.SiteRegistration;
 import com.ultreon.ultranlang.*;
 import com.ultreon.ultranlang.ast.Program;
@@ -95,6 +93,7 @@ public class Devices {
     private static final Pattern DEV_PREVIEW_PATTERN = Pattern.compile("\\d+\\.\\d+\\.\\d+-dev\\d+");
     private static final boolean IS_DEV_PREVIEW = DEV_PREVIEW_PATTERN.matcher(Reference.VERSION).matches();
     private static final String GITWEB_REGISTER_URL = "https://ultreon.gitlab.io/gitweb/site_register.json";
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private static final SiteRegisterStack SITE_REGISTER_STACK = new SiteRegisterStack();
     static List<AppInfo> allowedApps;
     private static MinecraftServer server;
@@ -646,6 +645,7 @@ public class Devices {
         }
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     private static class SiteRegisterStack extends Stack<Object> {
         public Object push() {
             return super.push(new Object());
