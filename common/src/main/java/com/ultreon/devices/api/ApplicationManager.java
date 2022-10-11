@@ -31,11 +31,12 @@ public final class ApplicationManager {
      * Example: {@code new ResourceLocation("modid:appid");}
      *
      * @param identifier the
-     * @param clazz      the class of the application
+     * @param app      a supplier that provides an application
      */
     @Nullable
     public static Application registerApplication(ResourceLocation identifier, Supplier<Application> app) {
         Devices.LOGGER.debug(MARKER, "Registering application {}", identifier);
+        @SuppressWarnings("deprecation")
         Application application = Devices.registerApplication(identifier, app);
         if (application != null) {
             APP_INFO.put(identifier, application.getInfo());
@@ -65,7 +66,7 @@ public final class ApplicationManager {
     }
 
     @Nullable
-    public static AppInfo getApplication(String appId) {
-        return APP_INFO.get(new ResourceLocation(appId.replace(".", ":")));
+    public static AppInfo getApplication(ResourceLocation appId) {
+        return APP_INFO.get(appId);
     }
 }

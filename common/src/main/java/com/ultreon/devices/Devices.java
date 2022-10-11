@@ -40,6 +40,7 @@ import com.ultreon.devices.programs.gitweb.GitWebApp;
 import com.ultreon.devices.programs.snake.SnakeApp;
 import com.ultreon.devices.programs.system.*;
 import com.ultreon.devices.programs.system.task.*;
+import com.ultreon.devices.programs.themes.ThemesApp;
 import com.ultreon.devices.util.BlockEntityUtil;
 import com.ultreon.devices.util.SiteRegistration;
 import com.ultreon.ultranlang.*;
@@ -91,7 +92,7 @@ public class Devices {
     public static final Supplier<Registries> REGISTRIES = Suppliers.memoize(() -> Registries.get(MOD_ID));
     public static final List<SiteRegistration> SITE_REGISTRATIONS = new ProtectedArrayList<>();
     public static final Logger LOGGER = LoggerFactory.getLogger("Devices Mod");
-    public static final boolean DEVELOPER_MODE = false;
+    public static final boolean DEVELOPER_MODE = true;
     private static final Pattern DEV_PREVIEW_PATTERN = Pattern.compile("\\d+\\.\\d+\\.\\d+-dev\\d+");
     private static final boolean IS_DEV_PREVIEW = DEV_PREVIEW_PATTERN.matcher(Reference.VERSION).matches();
     private static final String GITWEB_REGISTER_URL = "https://ultreon.gitlab.io/gitweb/site_register.json";
@@ -234,7 +235,7 @@ public class Devices {
     }
 
     public static void preInit() {
-        if (DEVELOPER_MODE && Platform.isDevelopmentEnvironment()) {
+        if (DEVELOPER_MODE && !Platform.isDevelopmentEnvironment() && false) {
             throw new LaunchException();
         }
 
@@ -276,6 +277,8 @@ public class Devices {
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "mine_bay"), MineBayApp::new);
 
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "snake"), SnakeApp::new);
+
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "themes"), ThemesApp::new);
 
         // Core
         TaskManager.registerTask(TaskUpdateApplicationData::new);
@@ -338,6 +341,10 @@ public class Devices {
         Devices.allowedApps = allowedApps;
     }
 
+    /**
+     * @deprecated do not call
+     */
+    @Deprecated
     @Nullable
     public static Application registerApplication(ResourceLocation identifier, Supplier<Application> app) {
         if ("minecraft".equals(identifier.getNamespace())) {

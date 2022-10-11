@@ -241,7 +241,7 @@ public class Laptop extends Screen implements System {
         installedApps.clear();
         ListTag list = systemData.getList("InstalledApps", Tag.TAG_STRING);
         for (int i = 0; i < list.size(); i++) {
-            AppInfo info = ApplicationManager.getApplication(list.getString(i));
+            AppInfo info = ApplicationManager.getApplication(ResourceLocation.tryParse(list.getString(i)));
             if (info != null) {
                 installedApps.add(info);
             }
@@ -496,7 +496,7 @@ public class Laptop extends Screen implements System {
                             if (info != null) {
                                 intent.putString("name", info.getName());
                             }
-                            openApplication(ApplicationManager.getApplication("devices:diagnostics"), intent);
+                            openApplication(ApplicationManager.getApplication(Devices.id("diagnostics")), intent);
                             closeApplication(app);
                         }
                     }
@@ -612,7 +612,7 @@ public class Laptop extends Screen implements System {
                         if (info != null) {
                             intent.putString("name", info.getName());
                         }
-                        openApplication(ApplicationManager.getApplication("devices:diagnostics"), intent);
+                        openApplication(ApplicationManager.getApplication(Devices.id("diagnostics")), intent);
                     } else {
                         windows.get(0).openDialog(message);
                     }
@@ -852,7 +852,7 @@ public class Laptop extends Screen implements System {
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1f));
         } catch (Exception e) {
             e.printStackTrace();
-            AppInfo info = ApplicationManager.getApplication("devices:diagnostics");
+            AppInfo info = ApplicationManager.getApplication(Devices.id("diagnostics"));
             system.openApplication(info);
         }
         return app;
@@ -884,7 +884,7 @@ public class Laptop extends Screen implements System {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            AppInfo info1 = ApplicationManager.getApplication("devices:diagnostics");
+            AppInfo info1 = ApplicationManager.getApplication(Devices.id("diagnostics"));
             system.openApplication(info1);
         }
         return Pair.of(null, true);

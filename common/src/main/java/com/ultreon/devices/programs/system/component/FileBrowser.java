@@ -70,7 +70,7 @@ public class FileBrowser extends Component {
                 RenderUtil.drawRectWithTexture(pose, x + 3, y + 2, 0, 0, 14, 14, 14, 14);
             } else {
                 assert file.getOpeningApp() != null;
-                AppInfo info = ApplicationManager.getApplication(file.getOpeningApp());
+                AppInfo info = ApplicationManager.getApplication(ResourceLocation.tryParse(file.getOpeningApp()));
                 RenderUtil.drawApplicationIcon(pose, info, x + 3, y + 2);
             }
             drawString(pose, Minecraft.getInstance().font, file.getName(), x + 22, y + 5, file.isProtected() ? PROTECTED_FILE.getRGB() : Laptop.getSystem().getSettings().getColorScheme().getTextColor());

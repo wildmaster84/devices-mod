@@ -332,7 +332,7 @@ public class EmailApp extends Application {
         layoutNewEmail = new Layout(231, 148);
         layoutNewEmail.setBackground((pose, gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> {
             if (attachedFile != null) {
-                AppInfo info = ApplicationManager.getApplication(Objects.requireNonNull(attachedFile.getOpeningApp(), "Attached file has no opening app"));
+                AppInfo info = ApplicationManager.getApplication(Objects.requireNonNull(ResourceLocation.tryParse(attachedFile.getOpeningApp()), "Attached file has no opening app"));
                 RenderUtil.drawApplicationIcon(pose, info, x + 46, y + 130);
             }
         });
@@ -430,7 +430,7 @@ public class EmailApp extends Application {
 
             if (attachedFile != null) {
                 RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-                AppInfo info = ApplicationManager.getApplication(Objects.requireNonNull(attachedFile.getOpeningApp(), "Attached file has no opening app"));
+                AppInfo info = ApplicationManager.getApplication(Objects.requireNonNull(ResourceLocation.tryParse(attachedFile.getOpeningApp()), "Attached file has no opening app"));
                 RenderUtil.drawApplicationIcon(pose, info, x + 204, y + 4);
             }
         });

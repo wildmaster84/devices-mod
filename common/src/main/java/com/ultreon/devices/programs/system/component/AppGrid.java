@@ -107,7 +107,7 @@ public class AppGrid extends Component {
     }
 
     private AppEntry adjustEntry(AppEntry entry) {
-        AppInfo info = ApplicationManager.getApplication(entry.id());
+        AppInfo info = ApplicationManager.getApplication(ResourceLocation.tryParse(entry.id()));
         if (info != null) {
             return new LocalEntry(info);
         }
