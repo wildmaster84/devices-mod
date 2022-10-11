@@ -1,6 +1,7 @@
 package com.ultreon.devices.programs.system;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.ultreon.devices.Devices;
 import com.ultreon.devices.api.ApplicationManager;
 import com.ultreon.devices.api.app.Dialog;
 import com.ultreon.devices.api.app.Icons;
@@ -8,6 +9,7 @@ import com.ultreon.devices.api.app.Layout;
 import com.ultreon.devices.api.app.component.Button;
 import com.ultreon.devices.api.app.component.CheckBox;
 import com.ultreon.devices.api.app.component.ComboBox;
+import com.ultreon.devices.api.app.component.Text;
 import com.ultreon.devices.api.app.renderer.ItemRenderer;
 import com.ultreon.devices.core.Laptop;
 import com.ultreon.devices.core.Settings;
@@ -78,7 +80,33 @@ public class SettingsApp extends SystemApp {
     private Menu addMainLayout() {
         Menu layoutMain = new Menu("Home");
 
-        Button buttonColorScheme = new Button(5, 26, "Personalise", Icons.EDIT);
+        Button aboutButton = new Button(5, 26, "About", Icons.INFO);
+        aboutButton.setSize(90, 20);
+        aboutButton.setClickListener((__, ___, ____) -> {
+            var l = new Menu("About");
+            l.addComponent(backBtn);
+            l.addComponent(new Text("""
+                    Version: 0.5.0 (local)
+                    Model: CD1
+                    STORAGE: 32MB
+                    RAM: 512KB
+                    
+                    Credits:
+                    - MrCrayfish (https://mrcrayfish.com/)
+                    - Qboi123
+                    - Jab125
+                    - lizterzapzap
+                    - MrBean6000
+                    - them
+                    - alfff
+                    - 6
+                    - あ
+                    """, 5, 26, 140));
+            this.showMenu(l);
+        });
+        layoutMain.addComponent(aboutButton);
+        //aboutButton.setToolTip("About", "When to call emergency services because you just lost all of your NFTs to a scammer");
+        Button buttonColorScheme = new Button(5, 26+20+4, "Personalise", Icons.EDIT);
         buttonColorScheme.setSize(90, 20);
         buttonColorScheme.setToolTip("Personalise", "Change the wallpaper, UI colors, and more!");
         buttonColorScheme.setClickListener((mouseX, mouseY, mouseButton) ->
@@ -379,7 +407,7 @@ public class SettingsApp extends SystemApp {
 
         @Override
         public void handleClick(int mouseX, int mouseY, int mouseButton) {
-            AppInfo info = ApplicationManager.getApplication("devices:settings");
+            AppInfo info = ApplicationManager.getApplication(Devices.id("settings"));
             if (info != null) {
                 Laptop.getSystem().openApplication(info);
             }

@@ -268,6 +268,12 @@ public class Button extends Component {
         }
     }
 
+    public void forceClick(int mouseX, int mouseY, int mouseButton) {
+        if (clickListener != null) {
+            clickListener.onClick(mouseX, mouseY, mouseButton);
+        }
+    }
+
     @Override
     public void handleMouseClick(int mouseX, int mouseY, int mouseButton) {
         if (!this.visible || !this.enabled)

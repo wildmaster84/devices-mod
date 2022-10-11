@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import com.ultreon.devices.Devices;
 import com.ultreon.devices.Reference;
 import com.ultreon.devices.api.ApplicationManager;
 import com.ultreon.devices.api.app.Component;
@@ -48,7 +49,10 @@ public class AppStore extends SystemApp {
     public void init(@Nullable CompoundTag intent) {
         layoutMain = new Layout(LAYOUT_WIDTH, LAYOUT_HEIGHT);
 
-        ScrollableLayout homePageLayout = new ScrollableLayout(0, 0, LAYOUT_WIDTH, 368, LAYOUT_HEIGHT);
+        var q = ApplicationManager.getAvailableApplications().size();
+        var rows = (int)Math.round(Math.ceil(q/3D));
+
+        ScrollableLayout homePageLayout = new ScrollableLayout(0, 0, LAYOUT_WIDTH, 368-160+80*rows, LAYOUT_HEIGHT);
         homePageLayout.setScrollSpeed(10);
         homePageLayout.setBackground((pose, gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> {
             Color color = new Color(Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor());
@@ -125,8 +129,6 @@ public class AppStore extends SystemApp {
         labelOtherDesc.setShadow(false);
         homePageLayout.addComponent(labelOtherDesc);
 
-        var q = ApplicationManager.getAvailableApplications().size();
-        var rows = (int)Math.round(Math.ceil(q/3D));
         AppGrid other = new AppGrid(0, 192, 3, rows, this);
         shuffleAndShrink(ApplicationManager.getAvailableApplications(), q).forEach(a -> localAppList.add(other.addEntry(a)));
         homePageLayout.addComponent(other);
@@ -193,7 +195,7 @@ public class AppStore extends SystemApp {
 
         @Override
         public void handleClick(int mouseX, int mouseY, int mouseButton) {
-            AppInfo info = ApplicationManager.getApplication("devices:app_store");
+            AppInfo info = ApplicationManager.getApplication(Devices.id("app_store"));
             if (info != null) {
                 Laptop.getSystem().openApplication(info);
             }

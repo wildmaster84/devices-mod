@@ -23,16 +23,18 @@ forgix {
     outputDir = "build/libs/merged"
 
     forge {
+        projectName = "merge-forge"
         jarLocation = "build/libs/devices-${version}.jar"
-        additionalRelocate("com.ultreon.devices", "forge.com.ultreon.devices")
+       // additionalRelocate("com.ultreon.devices", "forge.com.ultreon.devices")
 
-        mixin "devices-common.mixins.json"
-        mixin "devices.mixins.json"
+    //    mixin "devices-common.mixins.json"
+   //     mixin "devices.mixins.json"
     }
 
     fabric {
+        projectName = "merge-fabric"
         jarLocation = "build/libs/devices-${version}.jar"
-        additionalRelocate("com.ultreon.devices", "fabric.com.ultreon.devices")
+     //   additionalRelocate("com.ultreon.devices", "fabric.com.ultreon.devices")
     }
 }
 

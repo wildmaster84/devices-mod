@@ -6,6 +6,7 @@ import com.ultreon.devices.Devices;
 import com.ultreon.devices.core.Laptop;
 import dev.architectury.injectables.annotations.PlatformOnly;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -26,12 +27,31 @@ public class AppInfo {
 
     private final transient boolean systemApp;
 
-    private static final TintProvider DEFAULT_TINT_PROVIDER = (i, o) -> switch (o) {
-        case 0 -> new Color(255, 255, 255).getRGB();
-        case 1 -> Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor();
-        case 2 -> Laptop.getSystem().getSettings().getColorScheme().getBackgroundSecondaryColor();
-        default -> new Color(255, 255, 255).getRGB();
+    private static final TintProvider DEFAULT_TINT_PROVIDER = new TintProvider() {
+        @Override
+        public int getTintColor(AppInfo info, int o) {
+            return switch (o) {
+                case 0 -> new Color(255, 255, 255).getRGB();
+                case 1 -> Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor();
+                case 2 -> Laptop.getSystem().getSettings().getColorScheme().getBackgroundSecondaryColor();
+                default -> new Color(255, 255, 255).getRGB();
+            };
+        }
+
+        @Override
+        public CompoundTag toTag() {
+            return new CompoundTag();
+        }
+
     };
+
+    public static TintProvider getDefaultTintProvider() {
+        return DEFAULT_TINT_PROVIDER;
+    }
+
+    public TintProvider getTintProvider() {
+        return tintProvider;
+    }
 
     private TintProvider tintProvider = DEFAULT_TINT_PROVIDER;
 
@@ -93,6 +113,10 @@ public class AppInfo {
 
     public int getTint(int i) {
         return this.tintProvider != null ? this.tintProvider.getTintColor(this, i) : DEFAULT_TINT_PROVIDER.getTintColor(this, i);
+    }
+
+    public void setTintProvider(TintProvider tintProvider) {
+        this.tintProvider = tintProvider;
     }
 
     public static class Icon {
@@ -274,5 +298,7 @@ public class AppInfo {
     @ApiStatus.Experimental
     public interface TintProvider {
         int getTintColor(AppInfo info, int o);
+
+        CompoundTag toTag();
     }
 }

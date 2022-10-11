@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "devices-fabric",
+  "custom": {
+    "modmenu": {
+      "badges": [
+        "library"
+      ],
+      "parent": "devices"
+    }
+  }
+}

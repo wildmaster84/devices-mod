@@ -54,22 +54,22 @@ dependencies {
     forgeRuntimeLibrary "com.ultreon:ultranlang:0.0.1-dev5"
     forgeRuntimeLibrary "com.jab125:apoint:1.0.0"
 
-    include("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
-    implementation include("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10")
-    include("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.10")
-    implementation include("org.jetbrains.kotlin:kotlin-reflect:1.7.10")
+//    include("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
+//    implementation include("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10")
+//    include("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.10")
+//    implementation include("org.jetbrains.kotlin:kotlin-reflect:1.7.10")
+//
+//    include("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+//    include("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4")
+//    include("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.4")
+//    include("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.3.3")
+//    include("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.3")
+//    include("org.jetbrains.kotlinx:kotlinx-serialization-cbor-jvm:1.3.3")
+//    include('org.jetbrains.kotlinx:atomicfu-jvm:0.18.3')
+//    include("org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.4.0")
 
-    include("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    include("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4")
-    include("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.4")
-    include("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.3.3")
-    include("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.3")
-    include("org.jetbrains.kotlinx:kotlinx-serialization-cbor-jvm:1.3.3")
-    include('org.jetbrains.kotlinx:atomicfu-jvm:0.18.3')
-    include("org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.4.0")
-
-    include("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.10")
-    include("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
+//    include("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.10")
+//    include("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
 
     implementation include("com.ultreon:ultranlang:0.0.1-dev5")
     implementation include("com.jab125:apoint:1.0.0")
