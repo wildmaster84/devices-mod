@@ -96,6 +96,7 @@ public class Devices {
     private static final Pattern DEV_PREVIEW_PATTERN = Pattern.compile("\\d+\\.\\d+\\.\\d+-dev\\d+");
     private static final boolean IS_DEV_PREVIEW = DEV_PREVIEW_PATTERN.matcher(Reference.VERSION).matches();
     private static final String GITWEB_REGISTER_URL = "https://ultreon.gitlab.io/gitweb/site_register.json";
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private static final SiteRegisterStack SITE_REGISTER_STACK = new SiteRegisterStack();
     static List<AppInfo> allowedApps;
     private static MinecraftServer server;
@@ -653,6 +654,7 @@ public class Devices {
         }
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     private static class SiteRegisterStack extends Stack<Object> {
         public Object push() {
             return super.push(new Object());

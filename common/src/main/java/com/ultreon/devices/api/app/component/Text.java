@@ -63,7 +63,6 @@ public class Text extends Component {
     public void setText(String text) {
         rawText = text;
         text = text.replace("\\n", "\n");
-        System.out.println(Laptop.getFont().plainSubstrByWidth(text, width - padding * 2));
         var a = new ArrayList<String>();
         Laptop.getFont().getSplitter().splitLines(FormattedText.of(text), width - padding * 2, Style.EMPTY).forEach(b -> a.add(b.getString()));
         this.lines = a;
