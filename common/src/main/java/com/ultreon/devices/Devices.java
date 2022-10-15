@@ -50,6 +50,7 @@ import com.ultreon.ultranlang.error.ParserException;
 import com.ultreon.ultranlang.error.SemanticException;
 import com.ultreon.ultranlang.func.NativeCalls;
 import com.ultreon.ultranlang.symbol.BuiltinTypeSymbol;
+import dev.architectury.core.item.ArchitecturyBucketItem;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.common.InteractionEvent;
@@ -265,23 +266,8 @@ public class Devices {
 
     private static void registerApplications() {
         // Applications (Both)
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "diagnostics"), () -> DiagnosticsApp::new, true);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "settings"), () -> SettingsApp::new, true);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "bank"), () -> BankApp::new, false);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "file_browser"), () -> FileBrowserApp::new, true);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "gitweb"), () -> GitWebApp::new, false);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "note_stash"), () -> NoteStashApp::new, false);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "pixel_painter"), () -> PixelPainterApp::new, false);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "ender_mail"), () -> EmailApp::new, false);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "app_store"), () -> AppStore::new, true);
 
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "boat_racers"), () -> BoatRacersApp::new, false);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "mine_bay"), () -> MineBayApp::new, false);
-
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "snake"), () -> SnakeApp::new, false);
-
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "themes"), () -> ThemesApp::new, false);
-
+        registerApplicationEvent();
         // Core
         TaskManager.registerTask(TaskUpdateApplicationData::new);
         TaskManager.registerTask(TaskPrint::new);
@@ -332,6 +318,11 @@ public class Devices {
         }
 
         EnvExecutor.runInEnv(Env.CLIENT, () -> () -> PrintingManager.registerPrint(new ResourceLocation(Reference.MOD_ID, "picture"), PixelPainterApp.PicturePrint.class));
+    }
+
+    @ExpectPlatform
+    private static void registerApplicationEvent() {
+        throw new AssertionError();
     }
 
     @ExpectPlatform
