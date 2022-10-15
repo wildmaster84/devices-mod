@@ -97,7 +97,7 @@ public class Devices {
     public static final boolean DEVELOPER_MODE = false;
     private static final Pattern DEV_PREVIEW_PATTERN = Pattern.compile("\\d+\\.\\d+\\.\\d+-dev\\d+");
     private static final boolean IS_DEV_PREVIEW = DEV_PREVIEW_PATTERN.matcher(Reference.VERSION).matches();
-    private static final String GITWEB_REGISTxER_URL = "https://ultreon.gitlab.io/gitweb/site_register.json";
+    private static final String GITWEB_REGISTER_URL = "https://ultreon.gitlab.io/gitweb/site_register.json";
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private static final SiteRegisterStack SITE_REGISTER_STACK = new SiteRegisterStack();
     static List<AppInfo> allowedApps;
