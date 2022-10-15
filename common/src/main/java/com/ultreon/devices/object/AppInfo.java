@@ -200,6 +200,9 @@ public class AppInfo {
             this.overlay1.type = 2;
         }
 
+        /**
+         * @deprecated Used in legacy <code>icon</code> in schema version 0
+         */
         @Deprecated
         private Icon() {
         }
