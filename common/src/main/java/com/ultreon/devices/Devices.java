@@ -73,6 +73,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import oshi.util.tuples.Pair;
 
 import java.io.File;
 import java.io.IOException;
@@ -264,22 +265,22 @@ public class Devices {
 
     private static void registerApplications() {
         // Applications (Both)
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "diagnostics"), DiagnosticsApp::new);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "settings"), SettingsApp::new);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "bank"), BankApp::new);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "file_browser"), FileBrowserApp::new);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "gitweb"), GitWebApp::new);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "note_stash"), NoteStashApp::new);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "pixel_painter"), PixelPainterApp::new);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "ender_mail"), EmailApp::new);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "app_store"), AppStore::new);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "diagnostics"), () -> DiagnosticsApp::new, true);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "settings"), () -> SettingsApp::new, true);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "bank"), () -> BankApp::new, false);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "file_browser"), () -> FileBrowserApp::new, true);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "gitweb"), () -> GitWebApp::new, false);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "note_stash"), () -> NoteStashApp::new, false);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "pixel_painter"), () -> PixelPainterApp::new, false);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "ender_mail"), () -> EmailApp::new, false);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "app_store"), () -> AppStore::new, true);
 
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "boat_racers"), BoatRacersApp::new);
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "mine_bay"), MineBayApp::new);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "boat_racers"), () -> BoatRacersApp::new, false);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "mine_bay"), () -> MineBayApp::new, false);
 
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "snake"), SnakeApp::new);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "snake"), () -> SnakeApp::new, false);
 
-        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "themes"), ThemesApp::new);
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "themes"), () -> ThemesApp::new, false);
 
         // Core
         TaskManager.registerTask(TaskUpdateApplicationData::new);
@@ -322,10 +323,10 @@ public class Devices {
 
         if (DEVELOPER_MODE) {
             // Applications (Developers)
-            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "example"), ExampleApp::new);
-            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "icons"), IconsApp::new);
-            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "text_area"), TextAreaApp::new);
-            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "test"), TestApp::new);
+            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "example"), () -> ExampleApp::new, false);
+            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "icons"), () -> IconsApp::new, false);
+            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "text_area"), () -> TextAreaApp::new, false);
+            ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "test"), () -> TestApp::new, false);
 
             TaskManager.registerTask(TaskNotificationTest::new);
         }
@@ -342,12 +343,24 @@ public class Devices {
         Devices.allowedApps = allowedApps;
     }
 
+    public interface ApplicationSupplier {
+
+        /**
+         * Gets a result.
+         *
+         * @return a result
+         */
+        Supplier<Application> get();
+
+        boolean isSystem();
+    }
+
     /**
      * @deprecated do not call
      */
     @Deprecated
     @Nullable
-    public static Application registerApplication(ResourceLocation identifier, Supplier<Application> app) {
+    public static Application registerApplication(ResourceLocation identifier, ApplicationSupplier app) {
         if ("minecraft".equals(identifier.getNamespace())) {
             throw new IllegalArgumentException("Identifier cannot be \"minecraft\"!");
         }
@@ -356,8 +369,7 @@ public class Devices {
             allowedApps = new ArrayList<>();
         }
 
-        Application appl = app.get();
-        if (app instanceof SystemApp) {
+        if (app.isSystem()) {
             allowedApps.add(new AppInfo(identifier, true));
         } else {
             allowedApps.add(new AppInfo(identifier, false));
@@ -365,6 +377,7 @@ public class Devices {
 
         AtomicReference<Application> application = new AtomicReference<>(null);
         EnvExecutor.runInEnv(Env.CLIENT, () -> () -> {
+            Application appl = app.get().get();
             List<Application> apps = getAPPLICATIONS(); /*ObfuscationReflectionHelper.getPrivateValue(Laptop.class, null, "APPLICATIONS");*/
             assert apps != null;
             apps.add(appl);
