@@ -1,4 +1,5 @@
 {
+    "schemaVersion": 2,
     "name": "File Browser",
     "authors": ["MrCrayfish"],
     "description": "${desc}",

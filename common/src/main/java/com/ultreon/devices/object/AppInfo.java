@@ -3,6 +3,7 @@ package com.ultreon.devices.object;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.ultreon.devices.Devices;
+import com.ultreon.devices.Reference;
 import com.ultreon.devices.core.Laptop;
 import dev.architectury.injectables.annotations.PlatformOnly;
 import net.minecraft.client.resources.language.I18n;
@@ -199,6 +200,10 @@ public class AppInfo {
             this.overlay1.type = 2;
         }
 
+        @Deprecated
+        private Icon() {
+        }
+
         public Glyph getBase() {
             return base;
         }
@@ -260,6 +265,7 @@ public class AppInfo {
     private static class Support {
         private String paypal;
         private String patreon;
+        public String kofi;
         private String twitter;
         private String youtube;
     }
@@ -276,72 +282,220 @@ public class AppInfo {
         @Override
         public AppInfo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
             try {
-                info.name = convertToLocal(json.getAsJsonObject().get("name").getAsString());
-
-                ArrayList<String> authors = new ArrayList<>();
-                if (json.getAsJsonObject().has("authors") && json.getAsJsonObject().get("authors").isJsonArray()) {
-                    json.getAsJsonObject().get("authors").getAsJsonArray().forEach(e -> authors.add(convertToLocal(e.getAsString())));
-                    info.authors = authors.toArray(new String[0]);
+                switch (getSchemaVersion(json)) {
+                    case 0 -> deserializeSchemaVersion0(json, context);
+                    case 1 -> deserializeSchemaVersion1(json, context);
+                    case 2 -> deserializeSchemaVersion2(json, context);
+                    case 3 -> deserializeSchemaVersion3(json, context);
+                    default -> throw new RuntimeException("Schema " + getSchemaVersion(json) + " is not implemented in " + Reference.VERSION + "!");
                 }
-
-                ArrayList<String> contributors = new ArrayList<>();
-                if (json.getAsJsonObject().has("contributors") && json.getAsJsonObject().get("contributors").isJsonArray()) {
-                    json.getAsJsonObject().get("contributors").getAsJsonArray().forEach(e -> contributors.add(convertToLocal(e.getAsString())));
-                }
-
-                var d = false;
-                if (info.authors.length == 0) {
-                    info.authors = new String[]{"the application's developer"};
-                    d = true;
-                }
-
-                if (json.getAsJsonObject().has("author") && json.getAsJsonObject().get("author").isJsonPrimitive()) {
-                    if (info.authors == null) {
-                        info.authors = new String[]{convertToLocal(json.getAsJsonObject().get("author").getAsString())};
-                        Devices.LOGGER.warn("{} uses deprecated \"author\"!, Please advise {} to replace \"author\": \"{}\" with the \"authors\": [] format", info.name, info.authors[0], info.authors[0]);
-                    }
-                }
-
-                info.description = convertToLocal(json.getAsJsonObject().get("description").getAsString());
-                info.version = json.getAsJsonObject().get("version").getAsString();
-                if (json.getAsJsonObject().has("screenshots") && json.getAsJsonObject().get("screenshots").isJsonArray()) {
-                    info.screenshots = context.deserialize(json.getAsJsonObject().get("screenshots"), new TypeToken<String[]>() {
-                    }.getType());
-                }
-
-                if (json.getAsJsonObject().has("icon") && json.getAsJsonObject().get("icon").isJsonPrimitive()) {
-                    Devices.LOGGER.warn("{} uses removed \"icon\"! Please advise {} to fix the icon!", info.name, info.authors[0]);
-                }
-
-                if (d) info.authors = new String[0];
-                var l = new ArrayList<String>(List.of(info.authors));l.addAll(contributors);
-                info.contributors = l.toArray(new String[0]);
-
-                if (json.getAsJsonObject().has("support") && json.getAsJsonObject().get("support").getAsJsonObject().size() > 0) {
-                    JsonObject supportObj = json.getAsJsonObject().get("support").getAsJsonObject();
-                    Support support = new Support();
-
-                    if (supportObj.has("paypal")) {
-                        support.paypal = supportObj.get("paypal").getAsString();
-                    }
-                    if (supportObj.has("patreon")) {
-                        support.patreon = supportObj.get("patreon").getAsString();
-                    }
-                    if (supportObj.has("twitter")) {
-                        support.twitter = supportObj.get("twitter").getAsString();
-                    }
-                    if (supportObj.has("youtube")) {
-                        support.youtube = supportObj.get("youtube").getAsString();
-                    }
-
-                    info.support = support;
-                }
-                info.icon = new Icon(info);
             } catch (JsonParseException e) {
                 Devices.LOGGER.error("Malformed app info json for '" + info.getFormattedId() + "'");
             }
 
             return info;
+        }
+
+        private void deserializeSchemaVersion0(JsonElement json, JsonDeserializationContext context) throws JsonParseException {
+            info.name = convertToLocal(json.getAsJsonObject().get("name").getAsString());
+            info.authors = new String[]{convertToLocal(json.getAsJsonObject().get("author").getAsString())};
+            info.description = convertToLocal(json.getAsJsonObject().get("description").getAsString());
+            info.version = json.getAsJsonObject().get("version").getAsString();
+
+            if (json.getAsJsonObject().has("screenshots") && json.getAsJsonObject().get("screenshots").isJsonArray()) {
+                info.screenshots = context.deserialize(json.getAsJsonObject().get("screenshots"), new TypeToken<String[]>() {
+                }.getType());
+            }
+
+            if (json.getAsJsonObject().has("icon") && json.getAsJsonObject().get("icon").isJsonPrimitive()) {
+                info.icon = new Icon();
+                info.icon.base = Icon.Glyph.of(new ResourceLocation(json.getAsJsonObject().get("icon").getAsString()));
+                info.icon.base.type = 0;
+                info.icon.overlay0 = Icon.Glyph.of(new ResourceLocation(info.APP_ID.getNamespace(), "textures/app/icon/overlay0/empty.png"));
+                info.icon.overlay0.type = 1;
+                info.icon.overlay1 = Icon.Glyph.of(new ResourceLocation(info.APP_ID.getNamespace(), "textures/app/icon/overlay1/empty.png"));
+                info.icon.overlay1.type = 2;
+            }
+
+            if (json.getAsJsonObject().has("support") && json.getAsJsonObject().get("support").getAsJsonObject().size() > 0) {
+                JsonObject supportObj = json.getAsJsonObject().get("support").getAsJsonObject();
+                Support support = new Support();
+
+                if (supportObj.has("paypal")) {
+                    support.paypal = supportObj.get("paypal").getAsString();
+                }
+                if (supportObj.has("patreon")) {
+                    support.patreon = supportObj.get("patreon").getAsString();
+                }
+                if (supportObj.has("twitter")) {
+                    support.twitter = supportObj.get("twitter").getAsString();
+                }
+                if (supportObj.has("youtube")) {
+                    support.youtube = supportObj.get("youtube").getAsString();
+                }
+
+                info.support = support;
+            }
+        }
+
+        private void deserializeSchemaVersion1(JsonElement json, JsonDeserializationContext context) throws JsonParseException {
+            info.name = convertToLocal(json.getAsJsonObject().get("name").getAsString());
+            info.authors = new String[]{convertToLocal(json.getAsJsonObject().get("author").getAsString())};
+            info.description = convertToLocal(json.getAsJsonObject().get("description").getAsString());
+            info.version = json.getAsJsonObject().get("version").getAsString();
+            if (json.getAsJsonObject().has("screenshots") && json.getAsJsonObject().get("screenshots").isJsonArray()) {
+                info.screenshots = context.deserialize(json.getAsJsonObject().get("screenshots"), new TypeToken<String[]>() {
+                }.getType());
+            }
+
+            if (json.getAsJsonObject().has("icon") && json.getAsJsonObject().get("icon").isJsonPrimitive()) {
+                Devices.LOGGER.warn("{} uses removed \"icon\"! Please advise {} to fix the icon!", info.name, info.authors[0]);
+            }
+
+            if (json.getAsJsonObject().has("support") && json.getAsJsonObject().get("support").getAsJsonObject().size() > 0) {
+                JsonObject supportObj = json.getAsJsonObject().get("support").getAsJsonObject();
+                Support support = new Support();
+
+                if (supportObj.has("paypal")) {
+                    support.paypal = supportObj.get("paypal").getAsString();
+                }
+                if (supportObj.has("patreon")) {
+                    support.patreon = supportObj.get("patreon").getAsString();
+                }
+                if (supportObj.has("twitter")) {
+                    support.twitter = supportObj.get("twitter").getAsString();
+                }
+                if (supportObj.has("youtube")) {
+                    support.youtube = supportObj.get("youtube").getAsString();
+                }
+
+                info.support = support;
+            }
+            info.icon = new Icon(info);
+        }
+
+        private void deserializeSchemaVersion2(JsonElement json, JsonDeserializationContext context) throws JsonParseException {
+            info.name = convertToLocal(json.getAsJsonObject().get("name").getAsString());
+
+            ArrayList<String> authors = new ArrayList<>();
+            if (json.getAsJsonObject().has("authors") && json.getAsJsonObject().get("authors").isJsonArray()) {
+                json.getAsJsonObject().get("authors").getAsJsonArray().forEach(e -> authors.add(convertToLocal(e.getAsString())));
+                info.authors = authors.toArray(new String[0]);
+            }
+
+            ArrayList<String> contributors = new ArrayList<>();
+            if (json.getAsJsonObject().has("contributors") && json.getAsJsonObject().get("contributors").isJsonArray()) {
+                json.getAsJsonObject().get("contributors").getAsJsonArray().forEach(e -> contributors.add(convertToLocal(e.getAsString())));
+            }
+
+            var d = false;
+            if (info.authors.length == 0) {
+                info.authors = new String[]{"the application's developer"};
+                d = true;
+            }
+
+            if (json.getAsJsonObject().has("author") && json.getAsJsonObject().get("author").isJsonPrimitive()) {
+                if (info.authors == null) {
+                    info.authors = new String[]{convertToLocal(json.getAsJsonObject().get("author").getAsString())};
+                    Devices.LOGGER.warn("{} uses deprecated \"author\"!, Please advise {} to replace \"author\": \"{}\" with the \"authors\": [] format", info.name, info.authors[0], info.authors[0]);
+                }
+            }
+
+            info.description = convertToLocal(json.getAsJsonObject().get("description").getAsString());
+            info.version = json.getAsJsonObject().get("version").getAsString();
+            if (json.getAsJsonObject().has("screenshots") && json.getAsJsonObject().get("screenshots").isJsonArray()) {
+                info.screenshots = context.deserialize(json.getAsJsonObject().get("screenshots"), new TypeToken<String[]>() {
+                }.getType());
+            }
+
+            if (json.getAsJsonObject().has("icon") && json.getAsJsonObject().get("icon").isJsonPrimitive()) {
+                Devices.LOGGER.warn("{} uses removed \"icon\"! Please advise {} to fix the icon!", info.name, info.authors[0]);
+            }
+
+            if (d) info.authors = new String[0];
+            var l = new ArrayList<String>(List.of(info.authors));l.addAll(contributors);
+            info.contributors = l.toArray(new String[0]);
+
+            if (json.getAsJsonObject().has("support") && json.getAsJsonObject().get("support").getAsJsonObject().size() > 0) {
+                JsonObject supportObj = json.getAsJsonObject().get("support").getAsJsonObject();
+                Support support = new Support();
+
+                if (supportObj.has("paypal")) {
+                    support.paypal = supportObj.get("paypal").getAsString();
+                }
+                if (supportObj.has("patreon")) {
+                    support.patreon = supportObj.get("patreon").getAsString();
+                }
+                if (supportObj.has("twitter")) {
+                    support.twitter = supportObj.get("twitter").getAsString();
+                }
+                if (supportObj.has("youtube")) {
+                    support.youtube = supportObj.get("youtube").getAsString();
+                }
+
+                info.support = support;
+            }
+            info.icon = new Icon(info);
+        }
+
+        private void deserializeSchemaVersion3(JsonElement json, JsonDeserializationContext context) throws JsonParseException {
+            info.name = convertToLocal(json.getAsJsonObject().get("name").getAsString());
+
+            ArrayList<String> authors = new ArrayList<>();
+            if (json.getAsJsonObject().has("authors") && json.getAsJsonObject().get("authors").isJsonArray()) {
+                json.getAsJsonObject().get("authors").getAsJsonArray().forEach(e -> authors.add(convertToLocal(e.getAsString())));
+                info.authors = authors.toArray(new String[0]);
+            }
+
+            ArrayList<String> contributors = new ArrayList<>();
+            if (json.getAsJsonObject().has("contributors") && json.getAsJsonObject().get("contributors").isJsonArray()) {
+                json.getAsJsonObject().get("contributors").getAsJsonArray().forEach(e -> contributors.add(convertToLocal(e.getAsString())));
+            }
+
+            if (info.authors.length == 0) {
+                throw new RuntimeException("No authors defined!");
+            }
+
+            info.description = convertToLocal(json.getAsJsonObject().get("description").getAsString());
+            info.version = json.getAsJsonObject().get("version").getAsString();
+            if (json.getAsJsonObject().has("screenshots") && json.getAsJsonObject().get("screenshots").isJsonArray()) {
+                info.screenshots = context.deserialize(json.getAsJsonObject().get("screenshots"), new TypeToken<String[]>() {
+                }.getType());
+            }
+
+            var l = new ArrayList<String>(List.of(info.authors));l.addAll(contributors);
+            info.contributors = l.toArray(new String[0]);
+
+            if (json.getAsJsonObject().has("support") && json.getAsJsonObject().get("support").getAsJsonObject().size() > 0) {
+                JsonObject supportObj = json.getAsJsonObject().get("support").getAsJsonObject();
+                Support support = new Support();
+
+                if (supportObj.has("paypal")) {
+                    support.paypal = supportObj.get("paypal").getAsString();
+                }
+                if (supportObj.has("patreon")) {
+                    support.patreon = supportObj.get("patreon").getAsString();
+                }
+                if (supportObj.has("ko-fi")) {
+                    support.kofi = supportObj.get("ko-fi").getAsString();
+                }
+                if (supportObj.has("twitter")) {
+                    support.twitter = supportObj.get("twitter").getAsString();
+                }
+                if (supportObj.has("youtube")) {
+                    support.youtube = supportObj.get("youtube").getAsString();
+                }
+
+                info.support = support;
+            }
+            info.icon = new Icon(info);
+        }
+
+        private int getSchemaVersion(JsonElement json) {
+            boolean has = json.getAsJsonObject().has("schemaVersion");
+            boolean isPrimitive = has && json.getAsJsonObject().get("schemaVersion").isJsonPrimitive();
+            if (has && isPrimitive) return json.getAsJsonObject().get("schemaVersion").getAsInt();
+            return 2;
         }
 
         private String convertToLocal(String s) {

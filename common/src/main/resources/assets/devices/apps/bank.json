@@ -1,4 +1,5 @@
 {
+    "schemaVersion": 2,
     "name": "Bank",
     "authors": ["MrCrayfish", "Jab125", "Qboi123"],
     "description": "${desc}",

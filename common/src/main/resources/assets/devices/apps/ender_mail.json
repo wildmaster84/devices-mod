@@ -1,4 +1,5 @@
 {
+    "schemaVersion": 2,
     "name": "Ender Mail",
     "authors": ["MrCrayfish", "Jab125"],
     "description": "${desc}",

@@ -1,4 +1,5 @@
 {
+    "schemaVersion": 2,
     "name": "Pixel Painter",
     "authors": ["MrCrayfish", "Jab125"],
     "description": "${desc}",
