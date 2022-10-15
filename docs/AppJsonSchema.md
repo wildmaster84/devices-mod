@@ -13,7 +13,7 @@
 `schemaVersion`: The schema version\
 `name`: The name of the application\
 `authors`: The authors of the application, provided in an array\
-`author`: The author of the application, will be used if `authors` is not specified
+`author`: The author of the application, will be used if `authors` is not specified\
 `contributors`: Additional contributors to the application\
 `description`: The description of the application to show up in the Application Market\
 `version`: The application version, preferably following the SemVer 2.0 specification\
