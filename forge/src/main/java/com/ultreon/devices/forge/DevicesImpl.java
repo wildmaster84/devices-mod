@@ -21,4 +21,8 @@ public class DevicesImpl {
     public static void setRegisteredRenders(Map<String, IPrint.Renderer> map){
         ObfuscationReflectionHelper.setPrivateValue(PrintingManager.class, null, map, "registeredRenders");
     }
+
+    public static void registerApplicationEvent() {
+        DevicesForge.MOD_EVENTBUS.post(new ForgeApplicationRegistration());
+    }
 }

@@ -36,6 +36,9 @@
   "entrypoints": {
     "main": [
       "com.ultreon.devices.fabric.DevicesFabric"
+    ],
+    "devices:application_registration": [
+      "com.ultreon.devices.fabric.BuiltinAppsRegistration"
     ]
   },
   "mixins": [

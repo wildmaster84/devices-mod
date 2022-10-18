@@ -11,6 +11,8 @@ import com.ultreon.devices.core.io.FileSystem;
 import com.ultreon.devices.object.AppInfo;
 import com.ultreon.devices.util.DataHandler;
 import com.ultreon.devices.util.GLHelper;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

@@ -25,9 +25,15 @@ public class RemoteEntry implements AppEntry {
         return name;
     }
 
+    @Deprecated
     @Override
     public String author() {
         return author;
+    }
+
+    @Override
+    public String[] authors() {
+        return new String[]{author};
     }
 
     @Override
