@@ -1,6 +1,7 @@
 {
+    "schemaVersion": 2,
     "name": "File Browser",
-    "author": "MrCrayfish",
+    "authors": ["MrCrayfish"],
     "description": "${desc}",
     "version": "1.0",
     "screenshots": [

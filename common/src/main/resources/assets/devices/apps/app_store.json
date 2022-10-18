@@ -1,6 +1,7 @@
 {
+    "schemaVersion": 2,
     "name": "Application Market",
-    "author": "MrCrayfish, Jab125",
+    "authors": ["MrCrayfish", "Jab125"],
     "description": "${desc}",
     "version": "1.0",
     "screenshots": [

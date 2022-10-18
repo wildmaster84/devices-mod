@@ -1,6 +1,7 @@
 {
+    "schemaVersion": 2,
     "name": "Snake",
-    "author": "Jab125",
+    "authors": ["Jab125"],
     "description": "snake game for block game",
     "version": "0.0.1",
     "screenshots": [

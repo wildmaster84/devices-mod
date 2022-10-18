@@ -31,10 +31,13 @@ public class DevicesForge {
 
     public static final boolean DEVELOPER_MODE = false;
 
+    public static IEventBus MOD_EVENTBUS;
+
     public DevicesForge() throws LaunchException {
         EventBuses.registerModEventBus(Devices.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
+        MOD_EVENTBUS = FMLJavaModLoadingContext.get().getModEventBus();
+        MOD_EVENTBUS.register(BuiltinAppsRegistration.class);
         Devices.preInit();
-
         FMLJavaModLoadingContext javaFmlLoadingCtx = FMLJavaModLoadingContext.get();
         ModLoadingContext loadingCtx = ModLoadingContext.get();
         IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
