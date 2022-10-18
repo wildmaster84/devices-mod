@@ -26,7 +26,6 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
@@ -73,10 +72,9 @@ public class OfficeChairBlock extends DeviceBlock.Colored
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        if (context instanceof EntityCollisionContext entityCollisionContext) {
-            if (entityCollisionContext.getEntity() != null && entityCollisionContext.getEntity().getVehicle() instanceof SeatEntity) {
-                return EMPTY_BOX;
-            }
+        if(Minecraft.getInstance().player != null && Minecraft.getInstance().player.getVehicle() instanceof SeatEntity)
+        {
+            return EMPTY_BOX;
         }
         return SELECTION_BOX;
     }

@@ -17,15 +17,9 @@ public record LocalEntry(AppInfo info) implements AppEntry {
         return info.getName();
     }
 
-    @Deprecated
     @Override
     public String author() {
         return info.getAuthor();
-    }
-
-    @Override
-    public String[] authors() {
-        return info.getAuthors();
     }
 
     @Override

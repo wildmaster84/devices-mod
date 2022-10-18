@@ -1,7 +1,6 @@
 {
-    "schemaVersion": 2,
     "name": "Text Area Test",
-    "authors": ["MrCrayfish", "Jab125"],
+    "author": "MrCrayfish, Jab125",
     "description": "",
     "version": "1.0",
     "screenshots": [

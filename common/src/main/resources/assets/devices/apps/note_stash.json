@@ -1,8 +1,6 @@
 {
-    "schemaVersion": 2,
     "name": "Note Stash",
-    "authors": ["MrCrayfish"],
-    "support": {"twitter": "@Jab125"},
+    "author": "MrCrayfish",
     "description": "${desc}",
     "version": "1.0",
     "screenshots": [

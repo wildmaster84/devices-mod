@@ -1,7 +1,6 @@
 {
-    "schemaVersion": 2,
     "name": "Pixel Painter",
-    "authors": ["MrCrayfish", "Jab125"],
+    "author": "MrCrayfish, Jab125",
     "description": "${desc}",
     "version": "1.0",
     "screenshots": [

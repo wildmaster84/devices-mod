@@ -1,7 +1,6 @@
 {
-    "schemaVersion": 2,
     "name": "Boat Racers",
-    "authors": ["MrCrayfish", "MinecraftDoodler", "Jab125", "Qboi123"],
+    "author": "MrCrayfish, MinecraftDoodler, Jab125, Qboi123",
     "description": "VERY VERY WIP",
     "version": "0.0.1",
     "screenshots": [

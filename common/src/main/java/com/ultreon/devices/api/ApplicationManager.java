@@ -32,23 +32,12 @@ public final class ApplicationManager {
      *
      * @param identifier the
      * @param app      a supplier that provides an application
-     * @param isSystem whether the application is a SystemApp (required as on the server, "Application" cannot instantiate)
      */
     @Nullable
-    public static Application registerApplication(ResourceLocation identifier, Supplier<Supplier<Application>> app, boolean isSystem) {
+    public static Application registerApplication(ResourceLocation identifier, Supplier<Application> app) {
         Devices.LOGGER.debug(MARKER, "Registering application {}", identifier);
         @SuppressWarnings("deprecation")
-        Application application = Devices.registerApplication(identifier, new Devices.ApplicationSupplier() {
-            @Override
-            public Supplier<Application> get() {
-                return app.get();
-            }
-
-            @Override
-            public boolean isSystem() {
-                return isSystem;
-            }
-        });
+        Application application = Devices.registerApplication(identifier, app);
         if (application != null) {
             APP_INFO.put(identifier, application.getInfo());
             return application;

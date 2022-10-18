@@ -1,7 +1,6 @@
 {
-    "schemaVersion": 2,
     "name": "Themes",
-    "authors": ["Jab125"],
+    "author": "Jab125",
     "description": "Themes",
     "version": "1.0",
     "screenshots": [

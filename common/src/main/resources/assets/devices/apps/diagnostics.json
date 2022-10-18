@@ -1,7 +1,6 @@
 {
-    "schemaVersion": 2,
     "name": "App Diagnostics",
-    "authors": ["Qboi123"],
+    "author": "Qboi123",
     "description": "",
     "version": "1.0",
     "screenshots": [

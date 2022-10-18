@@ -1,7 +1,6 @@
 {
   "schemaVersion": 1,
   "id": "devices-fabric",
-  "version": "1.0.0",
   "custom": {
     "modmenu": {
       "badges": [
