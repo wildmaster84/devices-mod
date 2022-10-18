@@ -127,6 +127,8 @@ run/
 
 # Avoid ignoring UltranLang main file.
 !*.ulan
+!forge/run/*.ulam
+!fabric/run/*.ulam
 
 # Avoid ignoring libraries
 !libs/*
