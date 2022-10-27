@@ -316,6 +316,10 @@ public class SettingsApp extends SystemApp {
             openDialog(dialog);
         });
         wallpaperLayout.addComponent(urlWallpaperBtn);
+        var wallpaperText = new Text("Wallpaper", image.left+3, image.top+3, image.componentWidth-6);
+        wallpaperText.setShadow(true);
+        wallpaperText.setTextColor(new Color(getLaptop().getSettings().getColorScheme().getTextColor()));
+        wallpaperLayout.addComponent(wallpaperText);
 
         return wallpaperLayout;
     }

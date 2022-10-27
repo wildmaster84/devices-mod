@@ -57,6 +57,9 @@ public class ClientModEvents {
             Laptop.addWallpaper(new ResourceLocation("devices:textures/gui/laptop_wallpaper_5.png"));
             Laptop.addWallpaper(new ResourceLocation("devices:textures/gui/laptop_wallpaper_6.png"));
             Laptop.addWallpaper(new ResourceLocation("devices:textures/gui/laptop_wallpaper_7.png"));
+            Laptop.addWallpaper(new ResourceLocation("devices:textures/gui/laptop_wallpaper_8.png"));
+            Laptop.addWallpaper(new ResourceLocation("devices:textures/gui/laptop_wallpaper_9.png"));
+            Laptop.addWallpaper(new ResourceLocation("devices:textures/gui/laptop_wallpaper_10.png"));
         }
 
 

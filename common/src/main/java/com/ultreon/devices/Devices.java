@@ -133,6 +133,7 @@ public class Devices {
 
         ultranLang:
         {
+            if (true) break ultranLang;
             var inputFile = new File("main.ulan");
 
             if (!inputFile.exists()) {
