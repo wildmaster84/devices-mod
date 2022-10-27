@@ -38,7 +38,8 @@ public class Image extends Component
     protected int imageU, imageV;
     protected int imageWidth, imageHeight;
     protected int sourceWidth, sourceHeight;
-    protected int componentWidth, componentHeight;
+    public int componentWidth;
+    protected int componentHeight;
 
     private float alpha = 1.0F;
 
@@ -159,8 +160,10 @@ public class Image extends Component
     @Override
     public void init(Layout layout)
     {
-        spinner = new Spinner(left + (componentWidth / 2) - 6, top + (componentHeight / 2) - 6);
-        layout.addComponent(spinner);
+        if (layout != null) {
+            spinner = new Spinner(left + (componentWidth / 2) - 6, top + (componentHeight / 2) - 6);
+            layout.addComponent(spinner);
+        }
         initialized = true;
     }
 
@@ -257,6 +260,14 @@ public class Image extends Component
     {
         setLoader(new DynamicLoader(url));
         this.drawFull = true;
+    }
+
+    public void setImage(Laptop.Wallpaper wallpaper) {
+        if (wallpaper.isBuiltIn()) {
+            setImage(Laptop.getWallpapers().get(wallpaper.getLocation()));
+        } else {
+            setImage(wallpaper.getUrl());
+        }
     }
 
     private void setLoader(ImageLoader loader)
@@ -417,6 +428,8 @@ public class Image extends Component
                 catch(IOException e)
                 {
                     e.printStackTrace();
+                    texture = TextureUtil.MISSING_TEXTURE;
+                    setup = true;
                 }
             };
             Thread thread = new Thread(r, "Image Loader");

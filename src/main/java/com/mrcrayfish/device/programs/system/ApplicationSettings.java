@@ -4,9 +4,9 @@ import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.component.CheckBox;
-import com.mrcrayfish.device.api.app.component.ComboBox;
+import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.renderer.ItemRenderer;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
@@ -24,6 +24,7 @@ import net.minecraft.util.ResourceLocation;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.Stack;
 
 public class ApplicationSettings extends SystemApplication
@@ -73,10 +74,21 @@ public class ApplicationSettings extends SystemApplication
 		{
 			if(mouseButton == 0)
 			{
-				showMenu(layoutPersonalise);
+				showMenu(layoutPersonalise = addWallpaperLayout());
 			}
 		});
 		layoutMain.addComponent(buttonColorScheme);
+
+		Button buttonReset = new Button(5, 100, "Reset Color Scheme");
+		buttonReset.top = layoutMain.height - buttonReset.getHeight() - 5;
+		buttonReset.setClickListener((mouseX, mouseY, mouseButton) ->
+		{
+			if(mouseButton == 0)
+			{
+				Laptop.getSystem().getSettings().getColorScheme().resetDefault();
+			}
+		});
+		layoutMain.addComponent(buttonReset);
 
 		layoutGeneral = new Menu("General");
 		layoutGeneral.addComponent(buttonPrevious);
@@ -91,74 +103,9 @@ public class ApplicationSettings extends SystemApplication
 		});
 		layoutGeneral.addComponent(checkBoxShowApps);
 
-		layoutPersonalise = new Menu("Personalise");
-		layoutPersonalise.addComponent(buttonPrevious);
-		layoutPersonalise.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
-		{
-			int wallpaperX = 7;
-			int wallpaperY = 28;
-			Gui.drawRect(x + wallpaperX - 1, y + wallpaperY - 1, x + wallpaperX - 1 + 122, y + wallpaperY - 1 + 70, getLaptop().getSettings().getColorScheme().getHeaderColor());
-			GlStateManager.color(1.0F, 1.0F, 1.0F);
-			List<ResourceLocation> wallpapers = getLaptop().getWallapapers();
-			mc.getTextureManager().bindTexture(wallpapers.get(getLaptop().getCurrentWallpaper()));
-			RenderUtil.drawRectWithFullTexture(x + wallpaperX, y + wallpaperY, 0, 0, 120, 68);
-			mc.fontRenderer.drawString("Wallpaper", x + wallpaperX + 3, y + wallpaperY + 3, getLaptop().getSettings().getColorScheme().getTextColor(), true);
-		});
-
-		buttonWallpaperLeft = new Button(135, 27, Icons.ARROW_LEFT);
-		buttonWallpaperLeft.setSize(25, 20);
-		buttonWallpaperLeft.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-			if(mouseButton != 0)
-				return;
-
-			Laptop laptop = getLaptop();
-			if(laptop != null)
-			{
-				laptop.prevWallpaper();
-			}
-        });
-		layoutPersonalise.addComponent(buttonWallpaperLeft);
-
-		buttonWallpaperRight = new Button(165, 27, Icons.ARROW_RIGHT);
-		buttonWallpaperRight.setSize(25, 20);
-		buttonWallpaperRight.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-			if(mouseButton != 0)
-				return;
-
-			Laptop laptop = getLaptop();
-			if(laptop != null)
-			{
-				laptop.nextWallpaper();
-			}
-		});
-		layoutPersonalise.addComponent(buttonWallpaperRight);
-
-		buttonWallpaperUrl = new Button(135, 52, "Load", Icons.EARTH);
-		buttonWallpaperUrl.setSize(55, 20);
-		buttonWallpaperUrl.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-			if(mouseButton != 0)
-				return;
-
-			Dialog dialog = new Dialog.Message("This feature has not be added yet!");
-			openDialog(dialog);
-        });
-		layoutPersonalise.addComponent(buttonWallpaperUrl);
-
-		Button buttonReset = new Button(6, 100, "Reset Color Scheme");
-		buttonReset.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-            if(mouseButton == 0)
-			{
-				Laptop.getSystem().getSettings().getColorScheme().resetDefault();
-			}
-        });
-		layoutPersonalise.addComponent(buttonReset);
+		layoutPersonalise = null;
 
 		layoutColorScheme = new Menu("UI Colors");
-		layoutPersonalise.addComponent(buttonPrevious);
 
 		ComboBox.Custom<Integer> comboBoxTextColor = createColorPicker(145, 26);
 		layoutColorScheme.addComponent(comboBoxTextColor);
@@ -196,6 +143,102 @@ public class ApplicationSettings extends SystemApplication
 		layoutColorScheme.addComponent(buttonColorSchemeApply);
 
 		setCurrentLayout(layoutMain);
+	}
+
+	/**
+	 * Create the layout for the wallpaper settings
+	 *
+	 * @return the layout.
+	 */
+	private Layout addWallpaperLayout() {
+		// Create layout.
+		Layout wallpaperLayout = new Menu("Wallpaper");
+
+		// Wallpaper image.
+		Image image = new Image(6, 29, 6+122, 29+70);
+		image.setBorderThickness(1);
+		image.setBorderVisible(true);
+		assert getLaptop() != null;
+		image.setImage(getLaptop().getCurrentWallpaper());
+		wallpaperLayout.addComponent(image);
+
+		// Previous wallpaper button.
+		buttonWallpaperLeft = new Button(135, 27, Icons.ARROW_LEFT);
+		buttonWallpaperLeft.setSize(25, 20);
+		buttonWallpaperLeft.setClickListener((mouseX, mouseY, mouseButton) -> {
+			if (mouseButton != 0)
+				return;
+
+			Laptop laptop = getLaptop();
+			if (laptop != null) {
+				laptop.prevWallpaper();
+				image.setImage(getLaptop().getCurrentWallpaper());
+			}
+		});
+		buttonWallpaperLeft.setEnabled(getLaptop().getCurrentWallpaper().isBuiltIn());
+		wallpaperLayout.addComponent(buttonWallpaperLeft);
+
+		// Next wallpaper button.
+		buttonWallpaperRight = new Button(165, 27, Icons.ARROW_RIGHT);
+		buttonWallpaperRight.setSize(25, 20);
+		buttonWallpaperRight.setClickListener((mouseX, mouseY, mouseButton) -> {
+			if (mouseButton != 0)
+				return;
+
+			Laptop laptop = getLaptop();
+			if (laptop != null) {
+				laptop.nextWallpaper();
+				image.setImage(getLaptop().getCurrentWallpaper());
+			}
+		});
+		buttonWallpaperRight.setEnabled(getLaptop().getCurrentWallpaper().isBuiltIn());
+		wallpaperLayout.addComponent(buttonWallpaperRight);
+
+		// Reset wallpaper button.
+		Button resetWallpaperBtn = new Button(6, 100, "Reset Wallpaper");
+		resetWallpaperBtn.setClickListener((mouseX, mouseY, mouseButton) -> {
+			if (mouseButton == 0) {
+				getLaptop().setWallpaper(0);
+				image.setImage(getLaptop().getCurrentWallpaper());
+				buttonWallpaperLeft.setEnabled(getLaptop().getCurrentWallpaper().isBuiltIn());
+				buttonWallpaperRight.setEnabled(getLaptop().getCurrentWallpaper().isBuiltIn());
+			}
+		});
+		resetWallpaperBtn.top = wallpaperLayout.height - resetWallpaperBtn.getHeight() - 5;
+		wallpaperLayout.addComponent(resetWallpaperBtn);
+
+		// Add back button.
+		wallpaperLayout.addComponent(buttonPrevious);
+
+		// Add wallpaper load from url button.
+		buttonWallpaperUrl = new Button(135, 52, "Load", Icons.EARTH);
+		buttonWallpaperUrl.setSize(55, 20);
+		buttonWallpaperUrl.setClickListener((mouseX, mouseY, mouseButton) -> {
+			if (mouseButton != 0)
+				return;
+
+			Dialog.Input dialog = new Dialog.Input("Enter the URL of the image");
+			dialog.setResponseHandler((success, string) -> {
+				if (getLaptop() != null) {
+					getLaptop().setWallpaper(string);
+					image.setImage(getLaptop().getCurrentWallpaper());
+					buttonWallpaperLeft.setEnabled(getLaptop().getCurrentWallpaper().isBuiltIn());
+					buttonWallpaperRight.setEnabled(getLaptop().getCurrentWallpaper().isBuiltIn());
+				}
+				return success;
+			});
+			openDialog(dialog);
+		});
+		wallpaperLayout.addComponent(buttonWallpaperUrl);
+		Text wallpaperText = new Text("Wallpaper", image.left+3, image.top+3, image.componentWidth-6);
+		wallpaperText.setShadow(true);
+		wallpaperText.setTextColor(new Color(getLaptop().getSettings().getColorScheme().getTextColor()));
+		wallpaperLayout.addComponent(wallpaperText);
+
+
+		wallpaperLayout.addComponent(buttonPrevious);
+
+		return wallpaperLayout;
 	}
 
 	@Override

@@ -67,6 +67,9 @@ public class ClientProxy extends CommonProxy implements IResourceManagerReloadLi
             Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_5.png"));
             Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_6.png"));
             Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_7.png"));
+            Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_8.png"));
+            Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_9.png"));
+            Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_10.png"));
         }
     }
 

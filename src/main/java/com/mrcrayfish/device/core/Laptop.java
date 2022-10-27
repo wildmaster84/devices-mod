@@ -78,9 +78,15 @@ public class Laptop extends GuiScreen implements System
 	private NBTTagCompound appData;
 	private NBTTagCompound systemData;
 
-	private int currentWallpaper;
+	private Wallpaper currentWallpaper;
 	private int lastMouseX, lastMouseY;
 	private boolean dragging = false;
+	private final Image wallpaper;
+	private final Layout wallpaperLayout;
+
+	public static List<ResourceLocation> getWallpapers() {
+		return ImmutableList.copyOf(WALLPAPERS);
+	}
 
 	protected List<AppInfo> installedApps = new ArrayList<>();
 
@@ -91,12 +97,21 @@ public class Laptop extends GuiScreen implements System
 		this.windows = new Window[5];
 		this.settings = Settings.fromTag(systemData.getCompoundTag("Settings"));
 		this.bar = new TaskBar(this);
-		this.currentWallpaper = systemData.getInteger("CurrentWallpaper");
-		if(currentWallpaper < 0 || currentWallpaper >= WALLPAPERS.size()) {
-			this.currentWallpaper = 0;
-		}
+		this.currentWallpaper = systemData.hasKey("CurrentWallpaper", 10) ? new Wallpaper(systemData.getCompoundTag("CurrentWallpaper")) : null;
+		if (this.currentWallpaper == null) this.currentWallpaper = new Wallpaper(0);
 		Laptop.system = this;
 		Laptop.pos = laptop.getPos();
+		int posX = (width - DEVICE_WIDTH) / 2;
+		int posY = (height - DEVICE_HEIGHT) / 2;
+		this.wallpaperLayout = new Layout(SCREEN_WIDTH, SCREEN_HEIGHT);
+		this.wallpaper = new Image(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+		if (currentWallpaper.isBuiltIn()) {
+			wallpaper.setImage(WALLPAPERS.get(currentWallpaper.location));
+		} else {
+			wallpaper.setImage(currentWallpaper.url);
+		}
+		this.wallpaperLayout.addComponent(this.wallpaper);
+		this.wallpaperLayout.handleLoad();
 	}
 
 	/**
@@ -109,6 +124,17 @@ public class Laptop extends GuiScreen implements System
 	public static BlockPos getPos()
 	{
 		return pos;
+	}
+
+	/**
+	 * Add a wallpaper to the list of available wallpapers.
+	 *
+	 * @param wallpaper location to the wallpaper texture, if null the wallpaper will not be added.
+	 */
+	public static void addWallpaper(ResourceLocation wallpaper) {
+		if (wallpaper != null) {
+			WALLPAPERS.add(wallpaper);
+		}
 	}
 
 	@Override
@@ -156,7 +182,7 @@ public class Laptop extends GuiScreen implements System
 
     private void updateSystemData()
 	{
-		systemData.setInteger("CurrentWallpaper", currentWallpaper);
+		systemData.setTag("CurrentWallpaper", currentWallpaper.serialize());
 		systemData.setTag("Settings", settings.toTag());
 
 		NBTTagList tagListApps = new NBTTagList();
@@ -226,8 +252,8 @@ public class Laptop extends GuiScreen implements System
 		RenderUtil.drawRectWithTexture(posX + BORDER, posY + BORDER, 10, 10, SCREEN_WIDTH, SCREEN_HEIGHT, 1, 1);
 		
 		/* Wallpaper */
-		this.mc.getTextureManager().bindTexture(WALLPAPERS.get(currentWallpaper));
-		RenderUtil.drawRectWithFullTexture(posX + 10, posY + 10, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+		Image.CACHE.forEach((s, cachedImage) -> cachedImage.delete());
+		this.wallpaperLayout.render(this, this.mc, posX+10, posY+10, mouseX, mouseY, true, partialTicks);
 
 		if(!MrCrayfishDeviceMod.DEVELOPER_MODE)
 		{
@@ -244,7 +270,6 @@ public class Laptop extends GuiScreen implements System
 			insideContext = GuiHelper.isMouseInside(mouseX, mouseY, context.xPosition, context.yPosition, context.xPosition + context.width, context.yPosition + context.height);
 		}
 
-		Image.CACHE.forEach((s, cachedImage) -> cachedImage.delete());
 
 		/* Window */
 		for(int i = windows.length - 1; i >= 0; i--)
@@ -673,33 +698,41 @@ public class Laptop extends GuiScreen implements System
 		return false;
 	}
 
-	public void nextWallpaper()
-	{
-		if(currentWallpaper + 1 < WALLPAPERS.size())
-		{
-			currentWallpaper++;
+	public void nextWallpaper() {
+		if (!currentWallpaper.isBuiltIn()) return;
+		if (currentWallpaper.location + 1 < WALLPAPERS.size()) {
+			this.currentWallpaper = new Wallpaper(currentWallpaper.location+1);
 		}
+		wallpaperUpdated();
 	}
-	
-	public void prevWallpaper()
-	{
-		if(currentWallpaper - 1 >= 0)
-		{
-			currentWallpaper--;
+
+	public void prevWallpaper() {
+		if (currentWallpaper.location - 1 >= 0) {
+			this.currentWallpaper = new Wallpaper(currentWallpaper.location-1);
+		}
+		wallpaperUpdated();
+	}
+
+	private void wallpaperUpdated() {
+		if (currentWallpaper.isBuiltIn()) {
+			wallpaper.setImage(WALLPAPERS.get(currentWallpaper.location));
+		} else {
+			wallpaper.setImage(currentWallpaper.url);
 		}
 	}
 
-	public int getCurrentWallpaper()
-	{
+	public void setWallpaper(String url) {
+		currentWallpaper = new Wallpaper(url);
+		wallpaperUpdated();
+	}
+
+	public void setWallpaper(int wall) {
+		currentWallpaper = new Wallpaper(wall);
+		wallpaperUpdated();
+	}
+
+	public Wallpaper getCurrentWallpaper() {
 		return currentWallpaper;
-	}
-
-	public static void addWallpaper(ResourceLocation wallpaper)
-	{
-		if(wallpaper != null)
-		{
-			WALLPAPERS.add(wallpaper);
-		}
 	}
 
 	public List<ResourceLocation> getWallapapers()
@@ -833,5 +866,55 @@ public class Laptop extends GuiScreen implements System
 	{
 		context = null;
 		dragging = false;
+	}
+
+
+	public static final class Wallpaper {
+		private final String url;
+		private final int location;
+
+
+		public String getUrl() {
+			return url;
+		}
+
+		public int getLocation() {
+			return location;
+		}
+
+		public Wallpaper(NBTTagCompound tag) {
+			String a = tag.getString("url");
+			int b = tag.getInteger("location");
+			if (tag.hasKey("url", 8)) {
+				this.url = a;
+				this.location = -87;
+			} else {
+				this.url = null;
+				this.location = b;
+			}
+		}
+		public Wallpaper(String url) {
+			this.url = url;
+			this.location = -87;
+		}
+
+		public Wallpaper(int location) {
+			this.location = location;
+			this.url = null;
+		}
+
+		public boolean isBuiltIn() {
+			return this.location != -87;
+		}
+
+		public NBTTagCompound serialize() {
+			NBTTagCompound a = new NBTTagCompound();
+			if (isBuiltIn()) {
+				a.setInteger("location", location);
+			} else {
+				a.setString("url", this.url);
+			}
+			return a;
+		}
 	}
 }
