@@ -61,7 +61,12 @@ processResources {
     inputs.property "version", rootProject.getIngame_version()
 
     filesMatching("fabric.mod.json") {
-        expand "version": rootProject.getIngame_version()
+        HashMap<String, ?> p = new HashMap<>()
+        p.put("version", rootProject.getIngame_version())
+        p.put("description", rootProject.getModDescription())
+        p.put("loaderVersion", rootProject.fabric_loader_version)
+        p.put("minecraftVersion", rootProject.architectury.minecraft)
+        expand(p)
     }
 }
 

@@ -27,7 +27,7 @@ configurations {
 }
 
 dependencies {
-    forge "net.minecraftforge:forge:${rootProject.forge_version}"
+    forge "net.minecraftforge:forge:${rootProject.architectury.minecraft}-${rootProject.forge_version}"
     // Remove the next line if you don't want to depend on the API
     modApi "dev.architectury:architectury-forge:${rootProject.architectury_version}"
 
@@ -81,9 +81,17 @@ dependencies {
 
 processResources {
     inputs.property "version", rootProject.getIngame_version()
+    inputs.property "description", rootProject.getModDescription()
+    System.out.println(inputs.getProperties())
 
     filesMatching("META-INF/mods.toml") {
-        expand "version": rootProject.getIngame_version()
+        HashMap<String, ?> p = new HashMap<>()
+        p.put("version", rootProject.getIngame_version())
+        p.put("description", rootProject.getModDescription())
+        p.put("loaderVersion", rootProject.forge_version.split("\\.")[0])
+        p.put("forgeVersion", rootProject.forge_version)
+        p.put("minecraftVersion", rootProject.architectury.minecraft)
+        expand(p)
     }
 }
 

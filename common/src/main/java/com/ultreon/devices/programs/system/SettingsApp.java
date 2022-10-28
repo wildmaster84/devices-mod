@@ -2,10 +2,12 @@ package com.ultreon.devices.programs.system;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.ultreon.devices.Devices;
+import com.ultreon.devices.Reference;
 import com.ultreon.devices.api.ApplicationManager;
 import com.ultreon.devices.api.app.Dialog;
 import com.ultreon.devices.api.app.Icons;
 import com.ultreon.devices.api.app.Layout;
+import com.ultreon.devices.api.app.ScrollableLayout;
 import com.ultreon.devices.api.app.component.Button;
 import com.ultreon.devices.api.app.component.CheckBox;
 import com.ultreon.devices.api.app.component.ComboBox;
@@ -24,6 +26,7 @@ import net.minecraft.nbt.CompoundTag;
 
 import javax.annotation.Nullable;
 import java.awt.*;
+import java.text.MessageFormat;
 import java.util.Objects;
 import java.util.Stack;
 
@@ -83,26 +86,31 @@ public class SettingsApp extends SystemApp {
         Button aboutButton = new Button(5, 26, "About", Icons.INFO);
         aboutButton.setSize(90, 20);
         aboutButton.setClickListener((__, ___, ____) -> {
-            var l = new Menu("About");
-            l.addComponent(backBtn);
-            l.addComponent(new Text("""
-                    Version: 0.5.0 (local)
-                    Model: CD1
-                    STORAGE: 32MB
-                    RAM: 512KB
-                    
-                    Credits:
-                    - MrCrayfish (https://mrcrayfish.com/)
-                    - Qboi123
-                    - Jab125
-                    - lizterzapzap
-                    - MrBean6000
-                    - them
-                    - alfff
-                    - 6
-                    - あ
-                    """, 5, 26, 140));
-            this.showMenu(l);
+            var qq = new Menu("About");
+            qq.addComponent(backBtn);
+            var l = new ScrollableLayout(layoutMain.width, layoutMain.height, 124);
+            l.top = 26;
+            l = ScrollableLayout.create(0, 26, layoutMain.width, 124, MessageFormat.format("""
+                    Version: {0} ({1})
+                    """
+//                    Model: CD1
+//                    STORAGE: 32MB
+//                    RAM: 512KB
+//
+//                    Credits:
+//                    - MrCrayfish (https://mrcrayfish.com/)
+//                    - Qboi123
+//                    - Jab125
+//                    - lizterzapzap
+//                    - MrBean6000
+//                    - them
+//                    - alfff
+//                    - 6
+//                    - あ
+/*                    """*/, Reference.getVerInfo()[0], Reference.getVerInfo()[1]));
+            //l.height = 124;
+            qq.addComponent(l);
+            this.showMenu(qq);
         });
         layoutMain.addComponent(aboutButton);
         //aboutButton.setToolTip("About", "When to call emergency services because you just lost all of your NFTs to a scammer");

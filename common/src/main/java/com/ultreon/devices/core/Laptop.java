@@ -447,19 +447,6 @@ public class Laptop extends Screen implements System {
         //RenderUtil.drawRectWithTexture(pose, posX + 10, posY + 10, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 512, 288);
         Image.CACHE.forEach((s, cachedImage) -> cachedImage.delete());
         this.wallpaperLayout.render(pose, this, this.minecraft, posX+10, posY+10, mouseX, mouseY, true, partialTicks);
-
-        //************************************//
-        // Draw the watermark on the desktop. //
-        //************************************//
-        if (!Devices.DEVELOPER_MODE) { // TODO: figure out a way to separate the build number
-             if (Devices.isDevelopmentPreview()) {
-                 drawString(pose, getFont(), "Development Preview - " + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
-             } else {
-                 drawString(pose, getFont(), "Beta " + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
-             }
-         } else {
-             drawString(pose, getFont(), "Developer Version - " + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
-         }
         boolean insideContext = false;
         if (context != null) {
             insideContext = isMouseInside(mouseX, mouseY, context.xPosition, context.yPosition, context.xPosition + context.width, context.yPosition + context.height);

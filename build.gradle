@@ -17,6 +17,10 @@ version = "${mod_version}-${System.getenv("GITHUB_BUILD_NUMBER") == null ? "loca
 Object getIngame_version() {
     return "${mod_version}+${System.getenv("GITHUB_BUILD_NUMBER") == null ? "local" : System.getenv("GITHUB_BUILD_NUMBER")}"
 }
+
+Object getModDescription() {
+    return "${mod_description}"
+}
 forgix {
     group = "com.ultreon.mods"
     mergedJarName = "devices-${version}.jar"
