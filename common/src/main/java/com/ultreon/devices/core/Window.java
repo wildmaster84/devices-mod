@@ -242,8 +242,8 @@ public class Window<T extends Wrappable> {
 
     private void updateComponents(int x, int y) {
         content.updateComponents(x + offsetX + 1, y + offsetY + 13);
-        btnClose.x = x + offsetX + width - 12;
-        btnClose.y = y + offsetY + 1;
+        btnClose.setX(x + offsetX + width - 12);
+        btnClose.setY(y + offsetY + 1);
     }
 
     public void openDialog(Dialog dialog) {

@@ -25,7 +25,7 @@ public class FlashDriveItem extends Item implements Colored, SubItems, IDeviceTy
     private final DyeColor color;
 
     public FlashDriveItem(DyeColor color) {
-        super(new Properties().tab(Devices.TAB_DEVICE).rarity(Rarity.UNCOMMON).stacksTo(1));
+        super(new Properties().arch$tab(Devices.TAB_DEVICE).rarity(Rarity.UNCOMMON).stacksTo(1));
         this.color = color;
     }
 
