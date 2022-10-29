@@ -1,8 +1,8 @@
 package com.ultreon.devices.item;
 
-import com.ultreon.devices.ModDeviceTypes;
 import com.ultreon.devices.Devices;
 import com.ultreon.devices.IDeviceType;
+import com.ultreon.devices.ModDeviceTypes;
 import com.ultreon.devices.Reference;
 import com.ultreon.devices.util.Colored;
 import dev.architectury.registry.registries.Registries;

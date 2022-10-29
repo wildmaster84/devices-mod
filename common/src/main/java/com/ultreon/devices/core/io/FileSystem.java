@@ -44,13 +44,11 @@ public class FileSystem {
     public static final String DIR_APPLICATION_DATA = DIR_ROOT + "Application Data";
     public static final String DIR_HOME = DIR_ROOT + "Home";
     public static final String LAPTOP_DRIVE_NAME = "Root";
-
-    private AbstractDrive mainDrive = null;
     private final Map<UUID, AbstractDrive> additionalDrives = new HashMap<>();
+    private final LaptopBlockEntity blockEntity;
+    private AbstractDrive mainDrive = null;
     private AbstractDrive attachedDrive = null;
     private DyeColor attachedDriveColor = DyeColor.RED;
-
-    private final LaptopBlockEntity blockEntity;
 
     public FileSystem(LaptopBlockEntity blockEntity, CompoundTag tag) {
         this.blockEntity = blockEntity;

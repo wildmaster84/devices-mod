@@ -26,7 +26,9 @@ import com.ultreon.devices.network.PacketHandler;
 import com.ultreon.devices.network.task.SyncApplicationPacket;
 import com.ultreon.devices.network.task.SyncConfigPacket;
 import com.ultreon.devices.object.AppInfo;
-import com.ultreon.devices.programs.*;
+import com.ultreon.devices.programs.IconsApp;
+import com.ultreon.devices.programs.PixelPainterApp;
+import com.ultreon.devices.programs.TestApp;
 import com.ultreon.devices.programs.auction.task.TaskAddAuction;
 import com.ultreon.devices.programs.auction.task.TaskBuyItem;
 import com.ultreon.devices.programs.auction.task.TaskGetAuctions;
@@ -34,7 +36,7 @@ import com.ultreon.devices.programs.debug.TextAreaApp;
 import com.ultreon.devices.programs.email.task.*;
 import com.ultreon.devices.programs.example.ExampleApp;
 import com.ultreon.devices.programs.example.task.TaskNotificationTest;
-import com.ultreon.devices.programs.system.*;
+import com.ultreon.devices.programs.system.SystemApp;
 import com.ultreon.devices.programs.system.task.*;
 import com.ultreon.devices.util.SiteRegistration;
 import com.ultreon.devices.util.Vulnerability;
@@ -88,25 +90,26 @@ public class Devices {
     public static final List<SiteRegistration> SITE_REGISTRATIONS = new ProtectedArrayList<>();
     public static final Logger LOGGER = LoggerFactory.getLogger("Devices Mod");
     public static final boolean DEVELOPER_MODE = false;
+    public static final String VULNERABILITIES_URL = "https://jab125.com/gitweb/vulnerabilities.php";
     private static final Pattern DEV_PREVIEW_PATTERN = Pattern.compile("\\d+\\.\\d+\\.\\d+-dev\\d+");
     private static final boolean IS_DEV_PREVIEW = DEV_PREVIEW_PATTERN.matcher(Reference.VERSION).matches();
     private static final String GITWEB_REGISTER_URL = "https://ultreon.gitlab.io/gitweb/site_register.json";
-    public static final String VULNERABILITIES_URL = "https://jab125.com/gitweb/vulnerabilities.php";
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private static final SiteRegisterStack SITE_REGISTER_STACK = new SiteRegisterStack();
     static List<AppInfo> allowedApps;
     private static List<Vulnerability> vulnerabilities;
+    private static MinecraftServer server;
+
     public static List<Vulnerability> getVulnerabilities() {
         return vulnerabilities;
     }
-    private static MinecraftServer server;
 
     public static void init() {
         if (ArchitecturyTarget.getCurrentTarget().equals("fabric")) {
             preInit();
             serverSetup();
         }
-   //     BlockEntityUtil.sendUpdate(null, null, null);
+        //     BlockEntityUtil.sendUpdate(null, null, null);
 
         //LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
         LOGGER.info("Doing some common setup.");
@@ -238,7 +241,10 @@ public class Devices {
     }
 
     public static void preInit() {
-        if (DEVELOPER_MODE && !Platform.isDevelopmentEnvironment() && false) {
+        if (DEVELOPER_MODE) {
+            Platform.isDevelopmentEnvironment();
+        }
+        if (false) {
             throw new LaunchException();
         }
 
@@ -332,18 +338,6 @@ public class Devices {
 
     public static void setAllowedApps(List<AppInfo> allowedApps) {
         Devices.allowedApps = allowedApps;
-    }
-
-    public interface ApplicationSupplier {
-
-        /**
-         * Gets a result.
-         *
-         * @return a result
-         */
-        Supplier<Application> get();
-
-        boolean isSystem();
     }
 
     /**
@@ -450,6 +444,15 @@ public class Devices {
         return new ResourceLocation(Devices.MOD_ID, path);
     }
 
+    private static void setupClientEvents() {
+        ClientPlayerEvent.CLIENT_PLAYER_QUIT.register((player -> {
+            LOGGER.debug("Client disconnected from server");
+
+            allowedApps = null;
+            DeviceConfig.restore();
+        }));
+    }
+
 //    private void enqueueIMC(final InterModEnqueueEvent event) {
 //        // Check for self availability.
 //        InterModComms.sendTo(Reference.MOD_ID, "availability", () -> {
@@ -466,15 +469,6 @@ public class Devices {
 //            }
 //        });
 //    }
-
-    private static void setupClientEvents() {
-        ClientPlayerEvent.CLIENT_PLAYER_QUIT.register((player -> {
-            LOGGER.debug("Client disconnected from server");
-
-            allowedApps = null;
-            DeviceConfig.restore();
-        }));
-    }
 
     private static void setupEvents() {
         LifecycleEvent.SERVER_STARTING.register((instance -> server = instance));
@@ -587,6 +581,18 @@ public class Devices {
 
     public static ResourceLocation id(String id) {
         return new ResourceLocation(MOD_ID, id);
+    }
+
+    public interface ApplicationSupplier {
+
+        /**
+         * Gets a result.
+         *
+         * @return a result
+         */
+        Supplier<Application> get();
+
+        boolean isSystem();
     }
 
     private static class ProtectedArrayList<T> extends ArrayList<T> {

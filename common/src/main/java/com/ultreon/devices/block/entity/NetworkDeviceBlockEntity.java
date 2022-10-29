@@ -144,13 +144,13 @@ public abstract class NetworkDeviceBlockEntity extends DeviceBlockEntity impleme
         }
 
         @Override
-        public void setColor(DyeColor color) {
-            this.color = color;
+        public DyeColor getColor() {
+            return color;
         }
 
         @Override
-        public DyeColor getColor() {
-            return color;
+        public void setColor(DyeColor color) {
+            this.color = color;
         }
     }
 }

@@ -11,6 +11,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ScriptModule extends Module {
+    public static void main(String[] args) {
+        var script = """
+                VAL str paragraph
+                VAL str text
+                VAL str "Hello World!"
+                MODIFY
+                """;
+        System.out.println(script.replaceAll("\n", "scriptModule:newLine").replaceAll("=", "scriptModule:equals"));
+    }
+
+    public static void setTimeout(Runnable runnable, int delay) {
+        new Thread(() -> {
+            try {
+                Thread.sleep(delay);
+                runnable.run();
+            } catch (Exception e) {
+                System.err.println(e);
+            }
+        }).start();
+    }
+
     @Override
     public String[] getRequiredData() {
         return new String[]{"script", "runtime"};
@@ -36,16 +57,6 @@ public class ScriptModule extends Module {
         } else if (data.get("runtime").equals("ulang")) {
             //
         }
-    }
-
-    public static void main(String[] args) {
-        var script = """
-                VAL str paragraph
-                VAL str text
-                VAL str "Hello World!"
-                MODIFY
-                """;
-        System.out.println(script.replaceAll("\n", "scriptModule:newLine").replaceAll("=", "scriptModule:equals"));
     }
 
     private void initAPointRuntime(GitWebFrame frame) {
@@ -75,18 +86,6 @@ public class ScriptModule extends Module {
             frame.aPointRuntime = runtime;
             //runtime.removeCommand("");
         }
-    }
-
-    public static void setTimeout(Runnable runnable, int delay){
-        new Thread(() -> {
-            try {
-                Thread.sleep(delay);
-                runnable.run();
-            }
-            catch (Exception e){
-                System.err.println(e);
-            }
-        }).start();
     }
 
     @Override

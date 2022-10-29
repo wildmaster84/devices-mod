@@ -2,7 +2,6 @@ package com.ultreon.devices.programs.system;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.math.Quaternion;
 import com.ultreon.devices.api.app.Application;
 import com.ultreon.devices.api.app.Dialog;
 import com.ultreon.devices.api.app.Layout;
@@ -20,16 +19,10 @@ import com.ultreon.devices.util.InventoryUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.VillagerRenderer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerData;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerType;
@@ -100,9 +93,9 @@ public class BankApp extends Application {//The bank is not a system application
                 pose.translate(x + 25, y + 33, 15);
                 pose.scale((float) -2.5, (float) -2.5, (float) -2.5);
                 // Todo: do rotations
-              //  pose.mulPose(new Quaternion(1, 0, 0, -mouseX+mouseY));
-               // pose.mulPose(new Quaternion(0, 0, 1, mouseX+mouseY));
-              //  pose.mulPose(new Quaternion(0, 1, 0, -mouseX+mouseY));
+                //  pose.mulPose(new Quaternion(1, 0, 0, -mouseX+mouseY));
+                // pose.mulPose(new Quaternion(0, 0, 1, mouseX+mouseY));
+                //  pose.mulPose(new Quaternion(0, 1, 0, -mouseX+mouseY));
                 float scaleX = (mouseX - x - 25) / (float) width;
                 float scaleY = (mouseY - y - 20) / (float) height;
 //                RenderSystem.setShaderTexture(villagerTextures);
@@ -115,7 +108,7 @@ public class BankApp extends Application {//The bank is not a system application
                 villager.getVillagerData().setProfession(VillagerProfession.NITWIT);
                 pose.pushPose();
                 pose.scale(scaleX, scaleY, 1F);
-        //        renderer.render(villager, 0F, 0F, pose, buffer, 15);
+                //        renderer.render(villager, 0F, 0F, pose, buffer, 15);
                 pose.popPose();
 
                 RenderSystem.disableDepthTest();

@@ -42,7 +42,7 @@ public class TaskInstallApp extends Task {
 
     @Override
     public void processRequest(CompoundTag tag, Level level, Player player) {
-        System.out.println("Proc message " + tag.getString("appId") + ", " +  BlockPos.of(tag.getLong("pos")) + ", " + tag.getBoolean("install"));
+        System.out.println("Proc message " + tag.getString("appId") + ", " + BlockPos.of(tag.getLong("pos")) + ", " + tag.getBoolean("install"));
         String appId = tag.getString("appId");
         System.out.println(level.getBlockState(BlockPos.of(tag.getLong("pos"))).getBlock().toString());
         BlockEntity tileEntity = level.getChunkAt(BlockPos.of(tag.getLong("pos"))).getBlockEntity(BlockPos.of(tag.getLong("pos")), LevelChunk.EntityCreationType.IMMEDIATE);

@@ -27,6 +27,26 @@ public class ClientNotification implements Toast {
     private ClientNotification() {
     }
 
+    public static ClientNotification loadFromTag(CompoundTag tag) {
+        ClientNotification notification = new ClientNotification();
+
+        int ordinal = tag.getCompound("icon").getInt("ordinal");
+        String className = tag.getCompound("icon").getString("className");
+
+        try {
+            notification.icon = (IIcon) Class.forName(className).getEnumConstants()[ordinal];
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        notification.title = tag.getString("title");
+        if (tag.contains("subTitle", Tag.TAG_STRING)) {
+            notification.subTitle = tag.getString("subTitle");
+        }
+
+        return notification;
+    }
+
     @NotNull
     @Override
     public Visibility render(@NotNull PoseStack pose, ToastComponent toastComponent, long timeSinceLastVisible) {
@@ -46,26 +66,6 @@ public class ClientNotification implements Toast {
         RenderUtil.drawRectWithTexture(pose, 6, 6, icon.getGridWidth(), icon.getGridHeight(), icon.getU(), icon.getV(), icon.getSourceWidth(), icon.getSourceHeight(), icon.getIconSize(), icon.getIconSize());
 
         return timeSinceLastVisible >= 5000L ? Visibility.HIDE : Visibility.SHOW;
-    }
-
-    public static ClientNotification loadFromTag(CompoundTag tag) {
-        ClientNotification notification = new ClientNotification();
-
-        int ordinal = tag.getCompound("icon").getInt("ordinal");
-        String className = tag.getCompound("icon").getString("className");
-
-        try {
-            notification.icon = (IIcon) Class.forName(className).getEnumConstants()[ordinal];
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        notification.title = tag.getString("title");
-        if (tag.contains("subTitle", Tag.TAG_STRING)) {
-            notification.subTitle = tag.getString("subTitle");
-        }
-
-        return notification;
     }
 
     public void push() {

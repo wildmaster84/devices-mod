@@ -43,9 +43,9 @@ public class LoomBox extends ContainerBox {
         slots.add(new Slot(94, 58, this.result));
 
         if (!result.isEmpty())
-        this.resultBannerPatterns = BannerBlockEntity.createPatterns(((BannerItem)this.result.getItem()).getColor(), BannerBlockEntity.getItemPatterns(this.result));
+            this.resultBannerPatterns = BannerBlockEntity.createPatterns(((BannerItem) this.result.getItem()).getColor(), BannerBlockEntity.getItemPatterns(this.result));
         else
-        this.resultBannerPatterns = new ArrayList<>();
+            this.resultBannerPatterns = new ArrayList<>();
         this.flag = Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.BANNER).getChild("flag");
     }
 
@@ -53,13 +53,13 @@ public class LoomBox extends ContainerBox {
     protected void render(PoseStack pose, Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks) {
         super.render(pose, laptop, mc, x, y, mouseX, mouseY, windowActive, partialTicks);
         int i = x;//this.leftPos;
-        int j = y+12;//this.topPos;
-        if (result.isEmpty())return;
+        int j = y + 12;//this.topPos;
+        if (result.isEmpty()) return;
         Lighting.setupForFlatItems();
         MultiBufferSource.BufferSource bufferSource = mc.renderBuffers().bufferSource();
         pose.pushPose();
         //pose.translate((double)(i + 139), (double)(j + 52), 0.0D);
-        pose.translate(i+90d,j+52d,0.0D);
+        pose.translate(i + 90d, j + 52d, 0.0D);
         pose.scale(24.0F, -24.0F, 1.0F);
         pose.translate(0.5D, 0.5D, 0.5D);
         float f = 0.6666667F;

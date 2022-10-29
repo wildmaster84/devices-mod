@@ -16,8 +16,6 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.*;
 
-;
-
 /**
  * @author MrCrayfish
  */

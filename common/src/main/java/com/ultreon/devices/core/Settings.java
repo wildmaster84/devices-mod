@@ -12,12 +12,20 @@ public class Settings {
 
     private ColorScheme colorScheme = new ColorScheme();
 
+    public static boolean isShowAllApps() {
+        return Settings.showAllApps;
+    }
+
     public static void setShowAllApps(boolean showAllApps) {
         Settings.showAllApps = showAllApps;
     }
 
-    public static boolean isShowAllApps() {
-        return Settings.showAllApps;
+    public static Settings fromTag(CompoundTag tag) {
+        //showAllApps = tag.getBoolean("showAllApps");
+
+        Settings settings = new Settings();
+        settings.colorScheme = ColorScheme.fromTag(tag.getCompound("colorScheme"));
+        return settings;
     }
 
     public ColorScheme getColorScheme() {
@@ -38,13 +46,5 @@ public class Settings {
             ct.put(installedApplication.getId().toString(), installedApplication.getTintProvider().toTag());
         }
         return ct;
-    }
-
-    public static Settings fromTag(CompoundTag tag) {
-        //showAllApps = tag.getBoolean("showAllApps");
-
-        Settings settings = new Settings();
-        settings.colorScheme = ColorScheme.fromTag(tag.getCompound("colorScheme"));
-        return settings;
     }
 }

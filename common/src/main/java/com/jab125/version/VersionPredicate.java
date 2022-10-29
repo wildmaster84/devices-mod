@@ -20,30 +20,31 @@ import java.util.Collection;
 import java.util.function.Predicate;
 
 public interface VersionPredicate extends Predicate<Version> {
-	/**
-	 * Get all terms that have to be satisfied for this predicate to match.
-	 *
-	 * @return Required predicate terms, empty if anything matches
-	 */
-	Collection<? extends PredicateTerm> getTerms();
+    static VersionPredicate parse(String predicate) throws VersionParsingException {
+        return VersionPredicateParser.parse(predicate);
+    }
 
-	/**
-	 * Get the version interval representing the matched versions.
-	 *
-	 * @return Covered version interval or null if nothing
-	 */
-	VersionInterval getInterval();
+    static Collection<VersionPredicate> parse(Collection<String> predicates) throws VersionParsingException {
+        return VersionPredicateParser.parse(predicates);
+    }
 
-	interface PredicateTerm {
-		VersionComparisonOperator getOperator();
-		Version getReferenceVersion();
-	}
+    /**
+     * Get all terms that have to be satisfied for this predicate to match.
+     *
+     * @return Required predicate terms, empty if anything matches
+     */
+    Collection<? extends PredicateTerm> getTerms();
 
-	static VersionPredicate parse(String predicate) throws VersionParsingException {
-		return VersionPredicateParser.parse(predicate);
-	}
+    /**
+     * Get the version interval representing the matched versions.
+     *
+     * @return Covered version interval or null if nothing
+     */
+    VersionInterval getInterval();
 
-	static Collection<VersionPredicate> parse(Collection<String> predicates) throws VersionParsingException {
-		return VersionPredicateParser.parse(predicates);
-	}
+    interface PredicateTerm {
+        VersionComparisonOperator getOperator();
+
+        Version getReferenceVersion();
+    }
 }

@@ -16,8 +16,6 @@ public sealed class ServerFile permits ServerFolder {
         if (!f1.isFolder() && f2.isFolder()) return 1;
         return f1.name.compareTo(f2.name);
     };
-    private MimeType mimeType = MimeType.APPLICATION_OCTET_STREAM;
-
     protected ServerFolder parent;
     protected String name;
     protected String openingApp;
@@ -26,6 +24,7 @@ public sealed class ServerFile permits ServerFolder {
     protected long lastModified;
     protected long lastAccessed;
     protected long creationTime;
+    private MimeType mimeType = MimeType.APPLICATION_OCTET_STREAM;
 
     protected ServerFile() {
 
@@ -43,7 +42,7 @@ public sealed class ServerFile permits ServerFolder {
         this(name, openingAppId, data, mimeType, false);
     }
 
-    private ServerFile(String name, String openingAppId, CompoundTag data,  boolean protect) {
+    private ServerFile(String name, String openingAppId, CompoundTag data, boolean protect) {
         this(name, openingAppId, data, MimeType.APPLICATION_OCTET_STREAM, protect);
     }
 
@@ -67,6 +66,10 @@ public sealed class ServerFile permits ServerFolder {
         this.lastAccessed = tag.getLong("lastAccessed");
         this.protect = protect;
         this.mimeType = MimeType.of(tag.getCompound("mimeType"));
+    }
+
+    public static ServerFile fromTag(String name, CompoundTag tag) {
+        return new ServerFile(name, false, tag);
     }
 
     public String getName() {
@@ -156,10 +159,6 @@ public sealed class ServerFile permits ServerFolder {
         tag.putLong("creationTime", creationTime);
         tag.put("data", data);
         return tag;
-    }
-
-    public static ServerFile fromTag(String name, CompoundTag tag) {
-        return new ServerFile(name, false, tag);
     }
 
     @Override

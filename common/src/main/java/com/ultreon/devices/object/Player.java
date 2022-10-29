@@ -20,35 +20,35 @@ import java.util.Objects;
 
 public class Player {
     private static final ResourceLocation boatTextures = new ResourceLocation("textures/entity/boat/oak.png");
-    boolean canMove = false;
     private final Game game;
+    private final Vec2d direction;
+    private final Vec2d velocity;
+    private final BoatRenderer boatModel;
+    boolean canMove = false;
     private double posX, posY;
     private double posXPrev, posYPrev;
     private double speed;
     private int rotation, rotationPrev;
-    private final Vec2d direction;
-    private final Vec2d velocity;
-    private final BoatRenderer boatModel;
     //private final ModelDummyPlayer playerModel;
     private Boat boat;
-
-    public static EntityRendererProvider.Context createEntityRendererContext() {
-        return null;// new EntityRendererProvider.Context(Minecraft.getInstance().getEntityRenderDispatcher(), Minecraft.getInstance().getItemRenderer(), Minecraft.getInstance().getResourceManager(), Minecraft.getInstance().getEntityModels(), Minecraft.getInstance().font);
-    }
 
     public Player(Game game) {
         this.game = game;
         this.direction = new Vec2d(0, 0);
         this.velocity = new Vec2d(0, 0);
         this.boatModel = new BoatRenderer(createEntityRendererContext(), false);
-		assert Minecraft.getInstance().player != null;
-		boolean slim = Minecraft.getInstance().player.getModelName().equals("slim");
+        assert Minecraft.getInstance().player != null;
+        boolean slim = Minecraft.getInstance().player.getModelName().equals("slim");
         if (Laptop.isWorldLess()) {
             boat = new Boat(Objects.requireNonNull(Minecraft.getInstance().level), 0, 0, 0);
         }
 //        this.playerModel = new ModelDummyPlayer(0f, slim);
 //        this.playerModel.isRiding = true;
 //        this.playerModel.isChild = false;
+    }
+
+    public static EntityRendererProvider.Context createEntityRendererContext() {
+        return null;// new EntityRendererProvider.Context(Minecraft.getInstance().getEntityRenderDispatcher(), Minecraft.getInstance().getItemRenderer(), Minecraft.getInstance().getResourceManager(), Minecraft.getInstance().getEntityModels(), Minecraft.getInstance().font);
     }
 
     public void tick() {
@@ -99,8 +99,8 @@ public class Player {
         if (posX + velocity.x <= 0) return false;
         if (posY + velocity.y <= 0) return false;
         if (posX + velocity.x >= game.mapWidth * Tile.WIDTH) return false;
-		return !(posY + velocity.y >= game.mapHeight * Tile.HEIGHT);
-	}
+        return !(posY + velocity.y >= game.mapHeight * Tile.HEIGHT);
+    }
 
     public int getPosX() {
         return (int) (posX / Tile.WIDTH);

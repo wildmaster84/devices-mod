@@ -26,7 +26,7 @@ public class SnakeLayout extends Layout {
         }));
 
         this.setBackground((pose, gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> {
-            Gui.fill(pose, x,y,x+width,x+height, new Color(0x0, 0x0, 0x0).getRGB());
+            Gui.fill(pose, x, y, x + width, x + height, new Color(0x0, 0x0, 0x0).getRGB());
         });
         this.addComponent(button);
         this.addComponent(new Grid(0, 0));
@@ -42,8 +42,14 @@ public class SnakeLayout extends Layout {
         super.handleLoad();
     }
 
+    @Override
+    public void handleTick() {
+        super.handleTick();
+
+    }
+
     public static class Grid extends Component {
-        private ArrayList<Pos2d> snakePos = new ArrayList<>() {
+        private final ArrayList<Pos2d> snakePos = new ArrayList<>() {
             @Override
             public Pos2d get(int index) {
                 try {
@@ -78,7 +84,7 @@ public class SnakeLayout extends Layout {
             snakePos.add(lastInitPos);
             snakePos.add(new Pos2d(5, 6));
             snakePos.add(initialPos);
-            this.applePos = new Pos2d((int) (Math.random()*15), (int) (Math.random()*15));
+            this.applePos = new Pos2d((int) (Math.random() * 15), (int) (Math.random() * 15));
             var clean = false;
             while (!clean) {
                 for (var pos : snakePos) {
@@ -91,9 +97,10 @@ public class SnakeLayout extends Layout {
                 for (var pos : snakePos) {
                     if (pos.samePos(applePos)) {
                         isC = false;
+                        break;
                     }
                 }
-                if (isC)clean=true;
+                if (isC) clean = true;
             }
 
         }
@@ -120,43 +127,44 @@ public class SnakeLayout extends Layout {
                 //Pos2d pos = snakePos.get(i);
                 renderConnectedSnakePart(pose, x, y, white, i);
             }
-            Gui.fill(pose, x+applePos.x*10, y+applePos.y*10, x+applePos.x*10+10, y+applePos.y*10+10, red);
+            Gui.fill(pose, x + applePos.x * 10, y + applePos.y * 10, x + applePos.x * 10 + 10, y + applePos.y * 10 + 10, red);
         }
 
         private void renderConnectedSnakePart(PoseStack pose, int x, int y, int color, int index) {
             var pos = snakePos.get(index);
-            Gui.fill(pose, x+pos.x*10+1, y+pos.y*10+1, x+pos.x*10+10-1, y+pos.y*10+10-1, color);
+            Gui.fill(pose, x + pos.x * 10 + 1, y + pos.y * 10 + 1, x + pos.x * 10 + 10 - 1, y + pos.y * 10 + 10 - 1, color);
 
             // Right Checks
-            if (snakePos.get(index+1) != null && snakePos.get(index).right().samePos(snakePos.get(index+1))) {
-                Gui.fill(pose, x+pos.x*10+10-1, y+pos.y*10+1, x+pos.x*10+10, y+pos.y*10+10-1, color);
+            if (snakePos.get(index + 1) != null && snakePos.get(index).right().samePos(snakePos.get(index + 1))) {
+                Gui.fill(pose, x + pos.x * 10 + 10 - 1, y + pos.y * 10 + 1, x + pos.x * 10 + 10, y + pos.y * 10 + 10 - 1, color);
             }
-            if (snakePos.get(index-1) != null && snakePos.get(index).right().samePos(snakePos.get(index-1))) {
-                Gui.fill(pose, x+pos.x*10+10-1, y+pos.y*10+1, x+pos.x*10+10, y+pos.y*10+10-1, color);
+            if (snakePos.get(index - 1) != null && snakePos.get(index).right().samePos(snakePos.get(index - 1))) {
+                Gui.fill(pose, x + pos.x * 10 + 10 - 1, y + pos.y * 10 + 1, x + pos.x * 10 + 10, y + pos.y * 10 + 10 - 1, color);
             }
             // Left Checks
-            if (snakePos.get(index+1) != null && snakePos.get(index).left().samePos(snakePos.get(index+1))) {
-                Gui.fill(pose, x+pos.x*10, y+pos.y*10+1, x+pos.x*10+1, y+pos.y*10+10-1, color);
+            if (snakePos.get(index + 1) != null && snakePos.get(index).left().samePos(snakePos.get(index + 1))) {
+                Gui.fill(pose, x + pos.x * 10, y + pos.y * 10 + 1, x + pos.x * 10 + 1, y + pos.y * 10 + 10 - 1, color);
             }
-            if (snakePos.get(index-1) != null && snakePos.get(index).left().samePos(snakePos.get(index-1))) {
-                Gui.fill(pose, x+pos.x*10, y+pos.y*10+1, x+pos.x*10+1, y+pos.y*10+10-1, color);
+            if (snakePos.get(index - 1) != null && snakePos.get(index).left().samePos(snakePos.get(index - 1))) {
+                Gui.fill(pose, x + pos.x * 10, y + pos.y * 10 + 1, x + pos.x * 10 + 1, y + pos.y * 10 + 10 - 1, color);
             }
             // Down Checks
-            if (snakePos.get(index+1) != null && snakePos.get(index).down().samePos(snakePos.get(index+1))) {
-                Gui.fill(pose, x+pos.x*10+1, y+pos.y*10+10-1, x+pos.x*10+10-1, y+pos.y*10+10, color);
+            if (snakePos.get(index + 1) != null && snakePos.get(index).down().samePos(snakePos.get(index + 1))) {
+                Gui.fill(pose, x + pos.x * 10 + 1, y + pos.y * 10 + 10 - 1, x + pos.x * 10 + 10 - 1, y + pos.y * 10 + 10, color);
             }
-            if (snakePos.get(index-1) != null && snakePos.get(index).down().samePos(snakePos.get(index-1))) {
-                Gui.fill(pose, x+pos.x*10+1, y+pos.y*10+10-1, x+pos.x*10+10-1, y+pos.y*10+10, color);
+            if (snakePos.get(index - 1) != null && snakePos.get(index).down().samePos(snakePos.get(index - 1))) {
+                Gui.fill(pose, x + pos.x * 10 + 1, y + pos.y * 10 + 10 - 1, x + pos.x * 10 + 10 - 1, y + pos.y * 10 + 10, color);
             }
             // Up Checks
-            if (snakePos.get(index+1) != null && snakePos.get(index).up().samePos(snakePos.get(index+1))) {
-                Gui.fill(pose, x+pos.x*10+1, y+pos.y*10, x+pos.x*10+10-1, y+pos.y*10+1, color);
+            if (snakePos.get(index + 1) != null && snakePos.get(index).up().samePos(snakePos.get(index + 1))) {
+                Gui.fill(pose, x + pos.x * 10 + 1, y + pos.y * 10, x + pos.x * 10 + 10 - 1, y + pos.y * 10 + 1, color);
             }
-            if (snakePos.get(index-1) != null && snakePos.get(index).up().samePos(snakePos.get(index-1))) {
-                Gui.fill(pose, x+pos.x*10+1, y+pos.y*10, x+pos.x*10+10-1, y+pos.y*10+1, color);
+            if (snakePos.get(index - 1) != null && snakePos.get(index).up().samePos(snakePos.get(index - 1))) {
+                Gui.fill(pose, x + pos.x * 10 + 1, y + pos.y * 10, x + pos.x * 10 + 10 - 1, y + pos.y * 10 + 1, color);
             }
             //Gui.fill(pose, x+pos.x*10, y+pos.y*10, x+pos.x*10+10, y+pos.y*10+10, color);
         }
+
         @Override
         public void handleKeyPressed(int keyCode, int scanCode, int modifiers) {
             super.handleKeyPressed(keyCode, scanCode, modifiers);
@@ -226,7 +234,7 @@ public class SnakeLayout extends Layout {
                 assert newPos != null;
                 snakePos.add(newPos);
                 //snakePos.add(0, newLastPos);
-                if (applePos.samePos(snakePos.get(snakePos.size()-1))) {
+                if (applePos.samePos(snakePos.get(snakePos.size() - 1))) {
                     newApplePos();
                     var newLast = new Pos2d(newLastPos.x, newLastPos.y);
                     newLast.setLast();
@@ -254,21 +262,23 @@ public class SnakeLayout extends Layout {
                 for (var pos : snakePos) {
                     if (pos.samePos(applePos)) {
                         isC = false;
+                        break;
                     }
                 }
-                if (isC)clean=true;
+                if (isC) clean = true;
             }
         }
 
-        private static enum Direction2d {
+        private enum Direction2d {
             LEFT, RIGHT, UP, DOWN
         }
 
         private class Pos2d {
-            private int x;
-            private int y;
+            private final int x;
+            private final int y;
             private boolean last;
             private boolean first;
+
             public Pos2d(int x, int y) {
                 this.x = x;
                 this.y = y;
@@ -286,26 +296,30 @@ public class SnakeLayout extends Layout {
                     case RIGHT -> right();
                 };
             }
+
             private Pos2d up() {
-                return new Pos2d(x, y-1);
+                return new Pos2d(x, y - 1);
             }
+
             private Pos2d down() {
-                return new Pos2d(x, y+1);
+                return new Pos2d(x, y + 1);
             }
 
             private Pos2d left() {
-                return new Pos2d(x-1, y);
+                return new Pos2d(x - 1, y);
             }
 
             private Pos2d right() {
-                return new Pos2d(x+1, y);
+                return new Pos2d(x + 1, y);
             }
+
             private void setLast() {
                 for (Pos2d pos2d : Grid.this.snakePos) {
                     if (pos2d.last) pos2d.last = false;
                 }
                 this.last = true;
             }
+
             private void setFirst() {
                 for (Pos2d pos2d : Grid.this.snakePos) {
                     if (pos2d.first) pos2d.first = false;
@@ -313,11 +327,5 @@ public class SnakeLayout extends Layout {
                 this.first = true;
             }
         }
-    }
-
-    @Override
-    public void handleTick() {
-        super.handleTick();
-
     }
 }

@@ -14,12 +14,12 @@ public abstract class SystemApp extends Application {
     SystemApp() {
     }
 
-    public void setLaptop(@Nullable Laptop laptop) {
-        this.laptop = laptop;
-    }
-
     @Nullable
     public Laptop getLaptop() {
         return laptop;
+    }
+
+    public void setLaptop(@Nullable Laptop laptop) {
+        this.laptop = laptop;
     }
 }

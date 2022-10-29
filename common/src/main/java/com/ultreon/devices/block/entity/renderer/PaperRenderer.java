@@ -1,7 +1,8 @@
 package com.ultreon.devices.block.entity.renderer;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import com.ultreon.devices.DeviceConfig;
@@ -11,12 +12,10 @@ import com.ultreon.devices.api.print.PrintingManager;
 import com.ultreon.devices.block.PaperBlock;
 import com.ultreon.devices.block.entity.PaperBlockEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.MapRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemFrameRenderer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -33,6 +32,8 @@ import java.util.Objects;
  */
 public record PaperRenderer(
         BlockEntityRendererProvider.Context context) implements BlockEntityRenderer<PaperBlockEntity> {
+
+    private static long AA = 0;
 
     @SuppressWarnings("SameParameterValue")
     private static void drawCuboid(double x, double y, double z, double width, double height, double depth, MultiBufferSource bufferSource) {
@@ -63,7 +64,6 @@ public record PaperRenderer(
 
     }
 
-    private static long AA = 0;
     private static void drawPixels(PoseStack poseStack, int[] pixels, int resolution, boolean cut, int packedLight, MultiBufferSource bufferSource) {
         double scale = 16 / (double) resolution;
         var d = new DynamicTexture(resolution, resolution, true);
@@ -110,7 +110,7 @@ public record PaperRenderer(
                 if (data.contains("pixels", Tag.TAG_INT_ARRAY) && data.contains("resolution", Tag.TAG_INT)) {
                     RenderSystem.setShaderTexture(0, PrinterRenderer.PaperModel.TEXTURE);
                     if (DeviceConfig.RENDER_PRINTED_3D.get() && !data.getBoolean("cut")) {
-                       // drawCuboid(0, 0, 0, 16, 16, 1, bufferSource);
+                        // drawCuboid(0, 0, 0, 16, 16, 1, bufferSource);
                     }
 
                     pose.translate(0, 0, DeviceConfig.RENDER_PRINTED_3D.get() ? 0.0625 : 0.001);

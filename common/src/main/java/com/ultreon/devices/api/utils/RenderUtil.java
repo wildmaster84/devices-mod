@@ -3,7 +3,6 @@ package com.ultreon.devices.api.utils;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.ultreon.devices.api.app.component.Image;
 import com.ultreon.devices.core.Laptop;
 import com.ultreon.devices.object.AppInfo;
 import net.minecraft.ChatFormatting;
@@ -45,7 +44,7 @@ public class RenderUtil {
             if (glyph.getU() == -1 || glyph.getV() == -1) continue;
             var col = new Color(info.getTint(glyph.getType()));
             int[] tint = new int[]{col.getRed(), col.getGreen(), col.getBlue()};
-            RenderSystem.setShaderColor(tint[0]/255f, tint[1]/255f, tint[2]/255f, 1f);
+            RenderSystem.setShaderColor(tint[0] / 255f, tint[1] / 255f, tint[2] / 255f, 1f);
             drawRectWithTexture(pose, x, y, glyph.getU(), glyph.getV(), width, height, 14, 14, 224, 224);
             //image.init(layout);
         }
@@ -120,15 +119,17 @@ public class RenderUtil {
         RenderSystem.setShaderTexture(0, Laptop.ICON_TEXTURES);
         if (info != null) {
             drawIcon(pose, x, y, info, 14, 14);
-          //  drawRectWithTexture(pose, x, y, info.getIconU(), info.getIconV(), 14, 14, 14, 14, 224, 224);
+            //  drawRectWithTexture(pose, x, y, info.getIconU(), info.getIconV(), 14, 14, 14, 14, 224, 224);
         } else {
             drawRectWithTexture(pose, x, y, 0, 0, 14, 14, 14, 14, 224, 224);
         }
     }
 
     public static void drawStringClipped(PoseStack pose, String text, int x, int y, int width, int color, boolean shadow) {
-        if (shadow) Laptop.getFont().drawShadow(pose, clipStringToWidth(text, width) + ChatFormatting.RESET, x, y, color);
-        else Laptop.getFont().draw(pose, Laptop.getFont().plainSubstrByWidth(text, width) + ChatFormatting.RESET, x, y, color);
+        if (shadow)
+            Laptop.getFont().drawShadow(pose, clipStringToWidth(text, width) + ChatFormatting.RESET, x, y, color);
+        else
+            Laptop.getFont().draw(pose, Laptop.getFont().plainSubstrByWidth(text, width) + ChatFormatting.RESET, x, y, color);
     }
 
     public static String clipStringToWidth(String text, int width) {

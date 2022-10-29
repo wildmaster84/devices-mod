@@ -26,6 +26,18 @@ public class Router {
         this.pos = pos;
     }
 
+    public static Router fromTag(BlockPos pos, CompoundTag tag) {
+        Router router = new Router(pos);
+        router.routerId = tag.getUUID("id");
+
+        ListTag deviceList = tag.getList("network_devices", 10);
+        for (int i = 0; i < deviceList.size(); i++) {
+            NetworkDevice device = NetworkDevice.fromTag(deviceList.getCompound(i));
+            router.NETWORK_DEVICES.put(device.getId(), device);
+        }
+        return router;
+    }
+
     public void tick(Level level) {
         if (++timer >= DeviceConfig.BEACON_INTERVAL.get()) {
             sendBeacon(level);
@@ -143,18 +155,6 @@ public class Router {
         tag.put("network_devices", deviceList);
 
         return tag;
-    }
-
-    public static Router fromTag(BlockPos pos, CompoundTag tag) {
-        Router router = new Router(pos);
-        router.routerId = tag.getUUID("id");
-
-        ListTag deviceList = tag.getList("network_devices", 10);
-        for (int i = 0; i < deviceList.size(); i++) {
-            NetworkDevice device = NetworkDevice.fromTag(deviceList.getCompound(i));
-            router.NETWORK_DEVICES.put(device.getId(), device);
-        }
-        return router;
     }
 
     @Override

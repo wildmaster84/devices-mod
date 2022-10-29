@@ -1,15 +1,7 @@
 package com.ultreon.devices.mixin.common;
 
-import com.mojang.blaze3d.font.GlyphInfo;
-import com.ultreon.devices.Devices;
 import net.minecraft.client.gui.font.FontSet;
-import net.minecraft.resources.ResourceLocation;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(FontSet.class)
 public class FontSetMixin {

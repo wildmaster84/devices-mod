@@ -23,6 +23,12 @@ public class Connection {
         this.routerPos = router.getPos();
     }
 
+    public static Connection fromTag(CompoundTag tag) {
+        Connection connection = new Connection();
+        connection.routerId = UUID.fromString(tag.getString("id"));
+        return connection;
+    }
+
     public UUID getRouterId() {
         return routerId;
     }
@@ -58,11 +64,5 @@ public class Connection {
         CompoundTag tag = new CompoundTag();
         tag.putString("id", routerId.toString());
         return tag;
-    }
-
-    public static Connection fromTag(CompoundTag tag) {
-        Connection connection = new Connection();
-        connection.routerId = UUID.fromString(tag.getString("id"));
-        return connection;
     }
 }

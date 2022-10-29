@@ -37,49 +37,9 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 public class Image extends Component {
-    public static class AppImage extends Layout {
-        private final AppInfo appInfo;
-        private AppInfo.Icon.Glyph[] glyphs;
-        private int componentWidth;
-        private int componentHeight;
-        public AppImage(int left, int top, AppInfo resource) {
-            this(left, top, 14, 14, resource);
-            this.glyphs = new AppInfo.Icon.Glyph[]{resource.getIcon().getBase(), resource.getIcon().getOverlay0(), resource.getIcon().getOverlay1()};
-        }
-
-        public AppImage(int left, int top, int componentWidth, int componentHeight, AppInfo resource) {
-            super(left, top, componentWidth, componentHeight);
-            this.appInfo = resource;
-            this.glyphs = new AppInfo.Icon.Glyph[]{resource.getIcon().getBase(), resource.getIcon().getOverlay0(), resource.getIcon().getOverlay1()};
-            this.componentWidth = componentWidth;
-            this.componentHeight = componentHeight;
-            //super(left, top, componentWidth, componentHeight, imageU, imageV, 14, 14, 224, 224, resource);
-        }
-
-        @Override
-        public void init(Layout layout) {
-            super.init(layout);
-            for (AppInfo.Icon.Glyph glyph : glyphs) {
-                if (glyph.getU() == -1 || glyph.getV() == -1) continue;
-                var image = new Image(0, 0, componentWidth, componentHeight, glyph.getU(), glyph.getV(), 14, 14, 224, 224, Laptop.ICON_TEXTURES);
-                Supplier<ColorSupplier> suscs = () -> {
-                    int tint = appInfo.getTint(glyph.getType());
-                    var col = new Color(tint);
-                    var cs = new ColorSupplier();
-                    cs.r = col.getRed();
-                    cs.g = col.getGreen();
-                    cs.b = col.getBlue();
-                    return cs;
-                };
-                image.setTint(suscs);
-                this.addComponent(image);
-                //image.init(layout);
-            }
-        }
-    }
-
-
     public static final Map<String, CachedImage> CACHE = new HashMap<>();
+    public int componentWidth;
+    public int componentHeight;
     protected ImageLoader loader;
     protected CachedImage image;
     protected boolean initialized = false;
@@ -87,8 +47,6 @@ public class Image extends Component {
     protected int imageU, imageV;
     protected int imageWidth, imageHeight;
     protected int sourceWidth, sourceHeight;
-    public int componentWidth;
-    public int componentHeight;
     private Spinner spinner;
     private float alpha = 1f;
     private Supplier<ColorSupplier> tint = () -> Util.make(new ColorSupplier(), cs -> {
@@ -96,35 +54,16 @@ public class Image extends Component {
         cs.g = 255;
         cs.b = 255;
     });
-
-    public void setTint(int r, int g, int b) {
-        var cs = new ColorSupplier();
-        cs.r = r;
-        cs.g = g;
-        cs.b = b;
-        this.setTint(() -> cs);
-    }
-
-    private static class ColorSupplier {
-        int r;
-        int g;
-        int b;
-    }
-
-    public void setTint(Supplier<ColorSupplier> colorSupplier) {
-        this.tint = colorSupplier;
-    }
-
     private boolean hasBorder = false;
     private int borderColor = Color.BLACK.getRGB();
     private int borderThickness = 0;
+    private int _pBorderThickness = 1;
 
     public Image(int left, int top, int width, int height) {
         super(left, top);
         this.componentWidth = width;
         this.componentHeight = height;
     }
-
     /**
      * Creates a new Image using a ResourceLocation. This automatically sets the width and height of
      * the component according to the width and height of the image.
@@ -140,7 +79,6 @@ public class Image extends Component {
     public Image(int left, int top, int imageU, int imageV, int imageWidth, int imageHeight, ResourceLocation resource) {
         this(left, top, imageWidth, imageHeight, imageU, imageV, imageWidth, imageHeight, resource);
     }
-
     /**
      * Creates a new Image using a ResourceLocation. This constructor allows the specification of
      * the width and height of the component instead of automatically unlike
@@ -222,6 +160,18 @@ public class Image extends Component {
         this.sourceHeight = icon.getGridHeight() * icon.getIconSize();
     }
 
+    public void setTint(int r, int g, int b) {
+        var cs = new ColorSupplier();
+        cs.r = r;
+        cs.g = g;
+        cs.b = b;
+        this.setTint(() -> cs);
+    }
+
+    public void setTint(Supplier<ColorSupplier> colorSupplier) {
+        this.tint = colorSupplier;
+    }
+
     @Override
     public void init(Layout layout) {
         if (layout != null) {
@@ -254,12 +204,12 @@ public class Image extends Component {
                 fill(pose, x, y, x + componentWidth, y + componentHeight, borderColor);
             }
 
-            RenderSystem.setShaderColor(tint.get().r/255f, tint.get().g/255f, tint.get().b/255f, alpha);
+            RenderSystem.setShaderColor(tint.get().r / 255f, tint.get().g / 255f, tint.get().b / 255f, alpha);
 
             if (image != null && image.textureId != -1) {
                 image.restore();
 
-                RenderSystem.setShaderColor(tint.get().r/255f, tint.get().g/255f, tint.get().b/255f, alpha);
+                RenderSystem.setShaderColor(tint.get().r / 255f, tint.get().g / 255f, tint.get().b / 255f, alpha);
                 RenderSystem.enableBlend();
                 RenderSystem.setShaderTexture(0, image.textureId);
 
@@ -345,8 +295,6 @@ public class Image extends Component {
         this.alpha = alpha;
     }
 
-    private int _pBorderThickness = 1;
-
     /**
      * Makes it so the border shows
      *
@@ -378,6 +326,54 @@ public class Image extends Component {
 
     public void setDrawFull(boolean drawFull) {
         this.drawFull = drawFull;
+    }
+
+    public static class AppImage extends Layout {
+        private final AppInfo appInfo;
+        private AppInfo.Icon.Glyph[] glyphs;
+        private final int componentWidth;
+        private final int componentHeight;
+
+        public AppImage(int left, int top, AppInfo resource) {
+            this(left, top, 14, 14, resource);
+            this.glyphs = new AppInfo.Icon.Glyph[]{resource.getIcon().getBase(), resource.getIcon().getOverlay0(), resource.getIcon().getOverlay1()};
+        }
+
+        public AppImage(int left, int top, int componentWidth, int componentHeight, AppInfo resource) {
+            super(left, top, componentWidth, componentHeight);
+            this.appInfo = resource;
+            this.glyphs = new AppInfo.Icon.Glyph[]{resource.getIcon().getBase(), resource.getIcon().getOverlay0(), resource.getIcon().getOverlay1()};
+            this.componentWidth = componentWidth;
+            this.componentHeight = componentHeight;
+            //super(left, top, componentWidth, componentHeight, imageU, imageV, 14, 14, 224, 224, resource);
+        }
+
+        @Override
+        public void init(Layout layout) {
+            super.init(layout);
+            for (AppInfo.Icon.Glyph glyph : glyphs) {
+                if (glyph.getU() == -1 || glyph.getV() == -1) continue;
+                var image = new Image(0, 0, componentWidth, componentHeight, glyph.getU(), glyph.getV(), 14, 14, 224, 224, Laptop.ICON_TEXTURES);
+                Supplier<ColorSupplier> suscs = () -> {
+                    int tint = appInfo.getTint(glyph.getType());
+                    var col = new Color(tint);
+                    var cs = new ColorSupplier();
+                    cs.r = col.getRed();
+                    cs.g = col.getGreen();
+                    cs.b = col.getBlue();
+                    return cs;
+                };
+                image.setTint(suscs);
+                this.addComponent(image);
+                //image.init(layout);
+            }
+        }
+    }
+
+    private static class ColorSupplier {
+        int r;
+        int g;
+        int b;
     }
 
     /**

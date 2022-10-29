@@ -18,7 +18,7 @@ package com.ultreon.devices.block;
 //import javax.annotation.Nullable;
 //import java.util.List;
 
-public class DigitalClockBlock{// extends Block {
+public class DigitalClockBlock {// extends Block {
 //    private static final AABB COLLISION_BOXES = new AABB(6, 0, 4, 9, 4, 12);
 //    private static final AABB SELECTION_BOXES = new AABB(5, 0, 3, 10, 5, 13);
 //

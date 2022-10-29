@@ -260,7 +260,7 @@ public abstract class Dialog extends Wrappable {
             super.init(intent);
 
             int lines = Minecraft.getInstance().font.wordWrapHeight(messageText, getWidth() - 10);
-            defaultLayout.height += (lines - 1) ;
+            defaultLayout.height += (lines - 1);
 
             super.init(intent);
 

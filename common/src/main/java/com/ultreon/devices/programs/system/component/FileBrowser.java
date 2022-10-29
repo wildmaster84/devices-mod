@@ -81,7 +81,7 @@ public class FileBrowser extends Component {
 
     private final Wrappable wrappable;
     private final Mode mode;
-
+    private final Stack<Folder> predecessor = new Stack<>();
     private Layout layoutMain;
     private ItemList<File> fileList;
     private Button btnPreviousFolder;
@@ -91,14 +91,10 @@ public class FileBrowser extends Component {
     private Button btnCut;
     private Button btnPaste;
     private Button btnDelete;
-
     private ComboBox.List<Drive> comboBoxDrive;
     private Label labelPath;
-
     private Layout layoutLoading;
     private Spinner spinnerLoading;
-
-    private final Stack<Folder> predecessor = new Stack<>();
     private Drive currentDrive;
     private Folder currentFolder;
 

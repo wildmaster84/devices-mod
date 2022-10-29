@@ -48,8 +48,10 @@ import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.*;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 //TODO Intro message (created by mrcrayfish, donate here)
@@ -64,54 +66,35 @@ public class Laptop extends Screen implements System {
     public static final ResourceLocation ICON_TEXTURES = new ResourceLocation(Reference.MOD_ID, "textures/atlas/app_icons.png");
     public static final int ICON_SIZE = 14;
     private static final ResourceLocation LAPTOP_FONT = Devices.res("laptop");
-    private static Font font;
     private static final ResourceLocation LAPTOP_GUI = new ResourceLocation(Reference.MOD_ID, "textures/gui/laptop.png");
     private static final List<Application> APPLICATIONS = new ArrayList<>();
-    private static boolean worldLess;
-    private static Laptop instance;
-
-    @PlatformOnly("fabric")
-    public static List<Application> getApplicationsForFabric() {
-        return APPLICATIONS;
-    }
-
-    public static List<ResourceLocation> getWallpapers() {
-        return ImmutableList.copyOf(WALLPAPERS);
-    }
-
     private static final List<ResourceLocation> WALLPAPERS = new ArrayList<>();
-
     private static final int BORDER = 10;
     private static final int DEVICE_WIDTH = 384;
     static final int SCREEN_WIDTH = DEVICE_WIDTH - BORDER * 2;
     private static final int DEVICE_HEIGHT = 216;
     static final int SCREEN_HEIGHT = DEVICE_HEIGHT - BORDER * 2;
     private static final List<Runnable> tasks = new CopyOnWriteArrayList<>();
+    private static Font font;
+    private static boolean worldLess;
+    private static Laptop instance;
     private static System system;
     private static BlockPos pos;
     private static Drive mainDrive;
+    final ArrayList<Window<?>> windows;
     private final Settings settings;
     private final TaskBar bar;
-    final ArrayList<Window<?>> windows;
     private final CompoundTag appData;
     private final CompoundTag systemData;
+    private final IntArraySet pressed = new IntArraySet();
+    private final com.ultreon.devices.api.app.component.Image wallpaper;
+    private final Layout wallpaperLayout;
     protected List<AppInfo> installedApps = new ArrayList<>();
     private Layout context = null;
     private Wallpaper currentWallpaper;
     private int lastMouseX, lastMouseY;
     private boolean dragging = false;
-    private final IntArraySet pressed = new IntArraySet();
-    private final com.ultreon.devices.api.app.component.Image wallpaper;
-    private final Layout wallpaperLayout;
     private BSOD bsod;
-
-    public static Font getFont() {
-        if (font == null) {
-            font = Minecraft.getInstance().font;
-        }
-        return font;
-    }
-
     /**
      * Creates a new laptop GUI.
      *
@@ -120,7 +103,6 @@ public class Laptop extends Screen implements System {
     public Laptop(LaptopBlockEntity laptop) {
         this(laptop, false);
     }
-
     /**
      * Creates a new laptop GUI.
      *
@@ -178,6 +160,22 @@ public class Laptop extends Screen implements System {
         Laptop.worldLess = worldLess;
     }
 
+    @PlatformOnly("fabric")
+    public static List<Application> getApplicationsForFabric() {
+        return APPLICATIONS;
+    }
+
+    public static List<ResourceLocation> getWallpapers() {
+        return ImmutableList.copyOf(WALLPAPERS);
+    }
+
+    public static Font getFont() {
+        if (font == null) {
+            font = Minecraft.getInstance().font;
+        }
+        return font;
+    }
+
     public static boolean isWorldLess() {
         return worldLess;
     }
@@ -226,6 +224,25 @@ public class Laptop extends Screen implements System {
      */
     public static void runLater(Runnable task) {
         tasks.add(task);
+    }
+
+    public static void drawLines(PoseStack poseStack, Font font, String text, int x, int y, int width, int color) {
+        var lines = new ArrayList<String>();
+        font.getSplitter().splitLines(FormattedText.of(text.replaceAll("\r\n", "\n").replaceAll("\r", "\n")), width, Style.EMPTY).forEach(b -> lines.add(b.getString()));
+        var totalTextHeight = font.lineHeight * lines.size();
+        var textScale = (DEVICE_HEIGHT - 20 - (getFont().lineHeight * 2)) / (float) totalTextHeight;
+        textScale = (float) (1f / Minecraft.getInstance().getWindow().getGuiScale());
+        textScale = Math.max(0.5f, textScale);
+        poseStack.pushPose();
+        poseStack.scale(textScale, textScale, 1);
+        poseStack.translate(x / textScale, (y + 3) / textScale, 0);
+        //poseStack.translate();
+        var lineNr = 0;
+        for (String s : lines) {
+            font.draw(poseStack, s.replaceAll("\t", "    "), (float) 0, (float) 0 + (lineNr * font.lineHeight), color);
+            lineNr++;
+        }
+        poseStack.popPose();
     }
 
     /**
@@ -314,9 +331,9 @@ public class Laptop extends Screen implements System {
                 if (window != null) {
                     window.onTick();
                     if (window.removed) {
-                //        java.lang.System.out.println("REMOVED " + window);
-                   //     windows.remove(window);
-                    //    i--;
+                        //        java.lang.System.out.println("REMOVED " + window);
+                        //     windows.remove(window);
+                        //    i--;
                     }
                 }
             }
@@ -357,7 +374,7 @@ public class Laptop extends Screen implements System {
         renderBezels(pose, mouseX, mouseY, partialTicks);
         int posX = (width - DEVICE_WIDTH) / 2;
         int posY = (height - DEVICE_HEIGHT) / 2;
-        Gui.fill(pose, posX+10, posY+10, posX + DEVICE_WIDTH-10, posY + DEVICE_HEIGHT-10, new Color(0, 0, 255).getRGB());
+        Gui.fill(pose, posX + 10, posY + 10, posX + DEVICE_WIDTH - 10, posY + DEVICE_HEIGHT - 10, new Color(0, 0, 255).getRGB());
         var bo = new ByteArrayOutputStream();
 
         double scale = Minecraft.getInstance().getWindow().getGuiScale();
@@ -365,31 +382,12 @@ public class Laptop extends Screen implements System {
         var b = new PrintStream(bo);
         bsod.throwable.printStackTrace(b);
         var str = bo.toString();
-        drawLines(pose, Laptop.getFont(), str, posX+10, posY+10+getFont().lineHeight*2, (int) ((DEVICE_WIDTH - 10) * scale), new Color(255, 255, 255).getRGB());
+        drawLines(pose, Laptop.getFont(), str, posX + 10, posY + 10 + getFont().lineHeight * 2, (int) ((DEVICE_WIDTH - 10) * scale), new Color(255, 255, 255).getRGB());
         pose.pushPose();
         pose.scale(2, 2, 0);
-        pose.translate((posX+10)/2f,(posY+10)/2f,0);
+        pose.translate((posX + 10) / 2f, (posY + 10) / 2f, 0);
         drawString(pose, getFont(), "System has crashed!", 0, 0, new Color(255, 255, 255).getRGB());
         pose.popPose();
-    }
-
-    public static void drawLines(PoseStack poseStack, Font font, String text, int x, int y, int width, int color) {
-        var lines = new ArrayList<String>();
-        font.getSplitter().splitLines(FormattedText.of(text.replaceAll("\r\n", "\n").replaceAll("\r", "\n")), width, Style.EMPTY).forEach(b -> lines.add(b.getString()));
-        var totalTextHeight = font.lineHeight*lines.size();
-        var textScale = (DEVICE_HEIGHT-20-(getFont().lineHeight*2))/(float)totalTextHeight;
-        textScale = (float) (1f / Minecraft.getInstance().getWindow().getGuiScale());
-        textScale = Math.max(0.5f, textScale);
-        poseStack.pushPose();
-        poseStack.scale(textScale, textScale, 1);
-        poseStack.translate(x / textScale, (y+3)/textScale, 0);
-        //poseStack.translate();
-        var lineNr = 0;
-        for (String s : lines) {
-            font.draw(poseStack, s.replaceAll("\t", "    "), (float)0, (float)0+(lineNr*font.lineHeight), color);
-            lineNr++;
-        }
-        poseStack.popPose();
     }
 
     public void renderBezels(final @NotNull PoseStack pose, final int mouseX, final int mouseY, float partialTicks) {
@@ -446,7 +444,7 @@ public class Laptop extends Screen implements System {
         //RenderSystem.setShaderTexture(0, WALLPAPERS.get(currentWallpaper));
         //RenderUtil.drawRectWithTexture(pose, posX + 10, posY + 10, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 512, 288);
         Image.CACHE.forEach((s, cachedImage) -> cachedImage.delete());
-        this.wallpaperLayout.render(pose, this, this.minecraft, posX+10, posY+10, mouseX, mouseY, true, partialTicks);
+        this.wallpaperLayout.render(pose, this, this.minecraft, posX + 10, posY + 10, mouseX, mouseY, true, partialTicks);
         boolean insideContext = false;
         if (context != null) {
             insideContext = isMouseInside(mouseX, mouseY, context.xPosition, context.yPosition, context.xPosition + context.width, context.yPosition + context.height);
@@ -457,7 +455,7 @@ public class Laptop extends Screen implements System {
         //****************//
         pose.pushPose();
         {
-         //   Window<?>[] windows1 = Arrays.stream(windows.toArray()).filter(Objects::nonNull).toArray(Window<?>[]::new);
+            //   Window<?>[] windows1 = Arrays.stream(windows.toArray()).filter(Objects::nonNull).toArray(Window<?>[]::new);
             for (int i = windows.size() - 1; i >= 0; i--) {
                 var window = windows.get(i);
                 if (window != null) {
@@ -533,16 +531,12 @@ public class Laptop extends Screen implements System {
         }
         return super.mouseClicked(mouseX, mouseY, mouseButton);
     }
+
     private void bsod(Throwable e) {
         this.bsod = new BSOD(e);
         e.printStackTrace();
     }
-    private static final class BSOD {
-        private final Throwable throwable;
-        public BSOD(Throwable e) {
-            this.throwable = e;
-        }
-    }
+
     @SuppressWarnings("unchecked")
     public boolean mouseClickedInternal(double mouseX, double mouseY, int mouseButton) {
         this.lastMouseX = (int) mouseX;
@@ -976,14 +970,14 @@ public class Laptop extends Screen implements System {
     public void nextWallpaper() {
         if (!currentWallpaper.isBuiltIn()) return;
         if (currentWallpaper.location + 1 < WALLPAPERS.size()) {
-            this.currentWallpaper = new Wallpaper(currentWallpaper.location+1);
+            this.currentWallpaper = new Wallpaper(currentWallpaper.location + 1);
         }
         wallpaperUpdated();
     }
 
     public void prevWallpaper() {
         if (currentWallpaper.location - 1 >= 0) {
-            this.currentWallpaper = new Wallpaper(currentWallpaper.location-1);
+            this.currentWallpaper = new Wallpaper(currentWallpaper.location - 1);
         }
         wallpaperUpdated();
     }
@@ -1112,17 +1106,17 @@ public class Laptop extends Screen implements System {
         dragging = false;
     }
 
+    private static final class BSOD {
+        private final Throwable throwable;
+
+        public BSOD(Throwable e) {
+            this.throwable = e;
+        }
+    }
+
     public static final class Wallpaper {
         private final String url;
         private final int location;
-
-        public String getUrl() {
-            return url;
-        }
-
-        public int getLocation() {
-            return location;
-        }
 
         private Wallpaper(CompoundTag tag) {
             var a = tag.getString("url");
@@ -1135,6 +1129,7 @@ public class Laptop extends Screen implements System {
                 this.location = b;
             }
         }
+
         private Wallpaper(String url) {
             this.url = url;
             this.location = -87;
@@ -1143,6 +1138,14 @@ public class Laptop extends Screen implements System {
         private Wallpaper(int location) {
             this.location = location;
             this.url = null;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public int getLocation() {
+            return location;
         }
 
         public boolean isBuiltIn() {

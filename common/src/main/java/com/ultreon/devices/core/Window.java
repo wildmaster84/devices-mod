@@ -20,12 +20,12 @@ public class Window<T extends Wrappable> {
     public static final int Color_WINDOW_DARK = new Color(0f, 0f, 0f, 0.25f).getRGB();
     final Laptop laptop;
     protected GuiButtonClose btnClose;
+    protected boolean removed;
     T content;
     int width, height;
     int offsetX, offsetY;
     Window<Dialog> dialogWindow = null;
     Window<? extends Wrappable> parent = null;
-    protected boolean removed;
 
     public Window(T wrappable, Laptop laptop) {
         this.content = wrappable;

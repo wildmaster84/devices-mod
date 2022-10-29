@@ -26,9 +26,8 @@ import static com.ultreon.devices.block.entity.PrinterBlockEntity.State.*;
  * @author MrCrayfish
  */
 public class PrinterBlockEntity extends NetworkDeviceBlockEntity.Colored {
-    private State state = IDLE;
-
     private final Deque<IPrint> printQueue = new ArrayDeque<>();
+    private State state = IDLE;
     private IPrint currentPrint;
 
     private int totalPrintTime;

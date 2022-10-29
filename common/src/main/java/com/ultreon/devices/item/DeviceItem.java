@@ -1,7 +1,7 @@
 package com.ultreon.devices.item;
 
-import com.ultreon.devices.ModDeviceTypes;
 import com.ultreon.devices.IDeviceType;
+import com.ultreon.devices.ModDeviceTypes;
 import dev.architectury.injectables.annotations.PlatformOnly;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;

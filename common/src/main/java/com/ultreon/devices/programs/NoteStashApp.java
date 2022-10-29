@@ -207,9 +207,9 @@ public class NoteStashApp extends Application {
     }
 
     private static class Note {
-        private File source;
         private final String title;
         private final String content;
+        private File source;
 
         public Note(String title, String content) {
             this.title = title;

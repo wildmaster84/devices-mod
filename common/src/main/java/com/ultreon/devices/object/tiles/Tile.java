@@ -4,110 +4,98 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.ultreon.devices.api.utils.RenderUtil;
 import com.ultreon.devices.object.Game;
 
-public class Tile
-{
-	// Blocks
-	public static final Tile water = new TileBlock(0, 2, 0).setCategory(Category.BLOCKS);
-	public static final Tile stone = new Tile(1, 2, 1).setCategory(Category.BLOCKS);
-	public static final Tile grass = new TileGrass(2, 1, 0).setCategory(Category.BLOCKS);
-	public static final Tile dirt = new Tile(3, 6, 1).setCategory(Category.BLOCKS);
-	public static final Tile gravel = new TileBlock(4, 7, 0).setCategory(Category.BLOCKS);
-	public static final Tile sand = new TileBlock(5, 6, 0).setCategory(Category.BLOCKS);
-	public static final Tile log = new TileBlock(6, 3, 0).setCategory(Category.BLOCKS);
-	public static final Tile planks_oak = new TileBlock(7, 3, 1).setCategory(Category.BLOCKS);
-	public static final Tile leaves_oak = new TileBlock(8, 4, 1).setCategory(Category.BLOCKS);
-	public static final Tile brick = new TileBlock(9, 5, 1).setCategory(Category.BLOCKS);
-	public static final Tile netherrack = new TileBlock(10, 7, 1).setCategory(Category.BLOCKS);
-	public static final Tile soul_sand = new TileBlock(11, 8, 0).setCategory(Category.BLOCKS);
-	public static final Tile farm_land = new TileBlock(12, 5, 0).setCategory(Category.BLOCKS);
+public class Tile {
+    // Blocks
+    public static final Tile water = new TileBlock(0, 2, 0).setCategory(Category.BLOCKS);
+    public static final Tile stone = new Tile(1, 2, 1).setCategory(Category.BLOCKS);
+    public static final Tile grass = new TileGrass(2, 1, 0).setCategory(Category.BLOCKS);
+    public static final Tile dirt = new Tile(3, 6, 1).setCategory(Category.BLOCKS);
+    public static final Tile gravel = new TileBlock(4, 7, 0).setCategory(Category.BLOCKS);
+    public static final Tile sand = new TileBlock(5, 6, 0).setCategory(Category.BLOCKS);
+    public static final Tile log = new TileBlock(6, 3, 0).setCategory(Category.BLOCKS);
+    public static final Tile planks_oak = new TileBlock(7, 3, 1).setCategory(Category.BLOCKS);
+    public static final Tile leaves_oak = new TileBlock(8, 4, 1).setCategory(Category.BLOCKS);
+    public static final Tile brick = new TileBlock(9, 5, 1).setCategory(Category.BLOCKS);
+    public static final Tile netherrack = new TileBlock(10, 7, 1).setCategory(Category.BLOCKS);
+    public static final Tile soul_sand = new TileBlock(11, 8, 0).setCategory(Category.BLOCKS);
+    public static final Tile farm_land = new TileBlock(12, 5, 0).setCategory(Category.BLOCKS);
 
-	// Details
-	public static final Tile red_flower = new TileFlower(13, 0, 2).setCategory(Category.DECORATION);
-	public static final Tile flower_blue_orchid = new TileFlower(14, 0, 3).setCategory(Category.DECORATION);
-	public static final Tile flower_oxeye_daisy = new TileFlower(15, 0, 4).setCategory(Category.DECORATION);
-	public static final Tile flower_allium = new TileFlower(16, 0, 5).setCategory(Category.DECORATION);
-	public static final Tile lily_pad = new Tile(17, 1, 2).setCategory(Category.DECORATION);
-	public static final Tile wheat = new TileWheat(18, 2, 2).setCategory(Category.DECORATION);
-	public static final Tile cactus = new TileCactus(19).setCategory(Category.DECORATION); //Need tile
-	public static final Tile enchantment_table = new TileEnchantmentTable(20, 5, 2).setCategory(Category.DECORATION);
-	public static final Tile pumpkin = new TileBlock(21, 7, 2, 8, 2).setCategory(Category.DECORATION);
-	public static final Tile wheat_block = new TileBlock(22, 8, 1, 9, 1).setCategory(Category.DECORATION);
-	public static final Tile carrot = new TileWheat(23, 2, 3).setCategory(Category.DECORATION);
-	public static final Tile netherwart = new TileWheat(24, 3, 3).setCategory(Category.DECORATION);
+    // Details
+    public static final Tile red_flower = new TileFlower(13, 0, 2).setCategory(Category.DECORATION);
+    public static final Tile flower_blue_orchid = new TileFlower(14, 0, 3).setCategory(Category.DECORATION);
+    public static final Tile flower_oxeye_daisy = new TileFlower(15, 0, 4).setCategory(Category.DECORATION);
+    public static final Tile flower_allium = new TileFlower(16, 0, 5).setCategory(Category.DECORATION);
+    public static final Tile lily_pad = new Tile(17, 1, 2).setCategory(Category.DECORATION);
+    public static final Tile wheat = new TileWheat(18, 2, 2).setCategory(Category.DECORATION);
+    public static final Tile cactus = new TileCactus(19).setCategory(Category.DECORATION); //Need tile
+    public static final Tile enchantment_table = new TileEnchantmentTable(20, 5, 2).setCategory(Category.DECORATION);
+    public static final Tile pumpkin = new TileBlock(21, 7, 2, 8, 2).setCategory(Category.DECORATION);
+    public static final Tile wheat_block = new TileBlock(22, 8, 1, 9, 1).setCategory(Category.DECORATION);
+    public static final Tile carrot = new TileWheat(23, 2, 3).setCategory(Category.DECORATION);
+    public static final Tile netherwart = new TileWheat(24, 3, 3).setCategory(Category.DECORATION);
 
 
-	public static final int WIDTH = 8;
-	public static final int HEIGHT = 6;
+    public static final int WIDTH = 8;
+    public static final int HEIGHT = 6;
 
-	public final int id;
-	public final int x, y;
+    public final int id;
+    public final int x, y;
+    public int topX = -1, topY = -1;
+    private boolean hasTop = false;
+    private Category category;
 
-	private boolean hasTop = false;
-	public int topX = -1, topY = -1;
+    public Tile(int id, int x, int y) {
+        this.id = id;
+        this.x = x;
+        this.y = y;
+        this.topX = x;
+        this.topY = y;
 
-	private Category category;
+        Game.registerTile(id, this);
+    }
 
-	public Tile(int id, int x, int y)
-	{
-		this.id = id;
-		this.x = x;
-		this.y = y;
-		this.topX = x;
-		this.topY = y;
+    public Tile(int id, int x, int y, int topX, int topY) {
+        this(id, x, y);
+        this.hasTop = true;
+        this.topX = topX;
+        this.topY = topY;
+    }
 
-		Game.registerTile(id, this);
-	}
+    public void render(PoseStack pose, Game game, int x, int y, Game.Layer layer) {
+        RenderUtil.drawRectWithTexture(pose, game.xPosition + x * Tile.WIDTH, game.yPosition + y * Tile.HEIGHT, this.x * 16, this.y * 16, WIDTH, HEIGHT, 16, 16);
+    }
 
-	public Tile(int id, int x, int y, int topX, int topY)
-	{
-		this(id, x, y);
-		this.hasTop = true;
-		this.topX = topX;
-		this.topY = topY;
-	}
+    public void renderForeground(PoseStack pose, Game game, int x, int y, Game.Layer layer) {
+    }
 
-	public Tile setCategory(Category category)
-	{
-		this.category = category;
-		return this;
-	}
+    public boolean isFullTile() {
+        return true;
+    }
 
-	public void render(PoseStack pose, Game game, int x, int y, Game.Layer layer)
-	{
-		RenderUtil.drawRectWithTexture(pose, game.xPosition + x * Tile.WIDTH , game.yPosition + y * Tile.HEIGHT, this.x * 16, this.y * 16, WIDTH, HEIGHT, 16, 16);
-	}
+    public boolean isSolid() {
+        return false;
+    }
 
-	public void renderForeground(PoseStack pose, Game game, int x, int y, Game.Layer layer) {}
+    public boolean isSlow() {
+        return false;
+    }
 
-	public boolean isFullTile()
-	{
-		return true;
-	}
+    public Category getCategory() {
+        return category;
+    }
 
-	public boolean isSolid()
-	{
-		return false;
-	}
+    public Tile setCategory(Category category) {
+        this.category = category;
+        return this;
+    }
 
-	public boolean isSlow()
-	{
-		return false;
-	}
+    public enum Category {
+        BLOCKS("Blocks"), DECORATION("Decorations"), GAME("Game");
 
-	public Category getCategory()
-	{
-		return category;
-	}
+        public String name;
 
-	public static enum Category
-	{
-		BLOCKS("Blocks"), DECORATION("Decorations"), GAME("Game");
-
-		public String name;
-
-		private Category(String name)
-		{
-			this.name = name;
-		}
-	}
+        Category(String name) {
+            this.name = name;
+        }
+    }
 }

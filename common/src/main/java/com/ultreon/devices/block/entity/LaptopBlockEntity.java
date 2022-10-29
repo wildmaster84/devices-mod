@@ -38,6 +38,10 @@ public class LaptopBlockEntity extends NetworkDeviceBlockEntity.Colored {
         super(DeviceBlockEntities.LAPTOP.get(), pWorldPosition, pBlockState);
     }
 
+    private static void doNeighborUpdates(Level level, BlockPos pos, BlockState state) {
+        state.updateNeighbourShapes(level, pos, 3);
+    }
+
     @Override
     public String getDeviceName() {
         return "Laptop";
@@ -103,6 +107,16 @@ public class LaptopBlockEntity extends NetworkDeviceBlockEntity.Colored {
         }
     }
 
+    // Todo: Port to 1.18.2 if possible
+//    @Override
+//    public double getMaxRenderDistanceSquared() {
+//        return 16384;
+//    }
+//
+//    public AxisAlignedBB getRenderBoundingBox() {
+//        return INFINITE_EXTENT_AABB;
+//    }
+
     @Override
     public CompoundTag saveSyncTag() {
         CompoundTag tag = super.saveSyncTag();
@@ -117,16 +131,6 @@ public class LaptopBlockEntity extends NetworkDeviceBlockEntity.Colored {
 
         return tag;
     }
-
-    // Todo: Port to 1.18.2 if possible
-//    @Override
-//    public double getMaxRenderDistanceSquared() {
-//        return 16384;
-//    }
-//
-//    public AxisAlignedBB getRenderBoundingBox() {
-//        return INFINITE_EXTENT_AABB;
-//    }
 
     public void openClose(@Nullable Entity entity) {
         Level level = this.level;
@@ -146,10 +150,6 @@ public class LaptopBlockEntity extends NetworkDeviceBlockEntity.Colored {
             markUpdated();
             doNeighborUpdates(level, this.getBlockPos(), this.getBlockState());
         }
-    }
-
-    private static void doNeighborUpdates(Level level, BlockPos pos, BlockState state) {
-        state.updateNeighbourShapes(level, pos, 3);
     }
 
     public boolean isOpen() {

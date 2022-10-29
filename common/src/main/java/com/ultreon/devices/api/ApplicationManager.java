@@ -31,8 +31,8 @@ public final class ApplicationManager {
      * Example: {@code new ResourceLocation("modid:appid");}
      *
      * @param identifier the
-     * @param app      a supplier that provides an application
-     * @param isSystem whether the application is a SystemApp (required as on the server, "Application" cannot instantiate)
+     * @param app        a supplier that provides an application
+     * @param isSystem   whether the application is a SystemApp (required as on the server, "Application" cannot instantiate)
      */
     @Nullable
     public static Application registerApplication(ResourceLocation identifier, Supplier<Supplier<Application>> app, boolean isSystem) {

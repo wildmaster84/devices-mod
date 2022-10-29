@@ -16,17 +16,17 @@ public class FileAction {
         this.data = data;
     }
 
+    public static FileAction fromTag(CompoundTag tag) {
+        Type type = Type.values()[tag.getInt("type")];
+        CompoundTag data = tag.getCompound("data");
+        return new FileAction(type, data);
+    }
+
     public CompoundTag toTag() {
         CompoundTag tag = new CompoundTag();
         tag.putInt("type", type.ordinal());
         tag.put("data", data);
         return tag;
-    }
-
-    public static FileAction fromTag(CompoundTag tag) {
-        Type type = Type.values()[tag.getInt("type")];
-        CompoundTag data = tag.getCompound("data");
-        return new FileAction(type, data);
     }
 
     public Type getType() {

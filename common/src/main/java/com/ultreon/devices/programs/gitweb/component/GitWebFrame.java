@@ -54,20 +54,18 @@ public class GitWebFrame extends Component {
         MODULES.put("bannerII", new BannerIIModule());
     }
 
-    private final Application app;
     public final ScrollableLayout layout;
+    private final Application app;
     private final int width;
     private final int height;
-
+    public APointRuntime aPointRuntime;
     private boolean allowRemoteUrls = false;
     private boolean initialized = false;
     private String currentWebsite;
     private String pendingWebsite;
     private String pendingUrl;
-
     private Callback<String> loadingCallback;
     private Callback<String> loadedCallback;
-    public APointRuntime aPointRuntime;
 
     public GitWebFrame(Application app, int left, int top, int width, int height) {
         super(left, top);
@@ -208,9 +206,9 @@ public class GitWebFrame extends Component {
         for (Component component : this.layout.components) {
             //System.out.println("A");
             if (component instanceof ModuleLayout layout) {
-             //   System.out.println("AAAA");
+                //   System.out.println("AAAA");
                 layout._tick();
-               // layout.entry.getModule()
+                // layout.entry.getModule()
             } else {
                 System.out.println(component);
             }

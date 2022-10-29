@@ -14,10 +14,9 @@ import net.minecraft.world.level.block.Blocks;
  */
 public class FurnaceBox extends ContainerBox {
     public static final int HEIGHT = 68;
-
+    private final int fuelTime;
     private int progressTimer;
     private int fuelTimer;
-    private final int fuelTime;
 
     public FurnaceBox(ItemStack input, ItemStack fuel, ItemStack result) {
         super(0, 0, 0, 68, HEIGHT, new ItemStack(Blocks.FURNACE), "Furnace");

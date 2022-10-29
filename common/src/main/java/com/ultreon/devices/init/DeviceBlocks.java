@@ -13,10 +13,6 @@ import java.util.stream.Stream;
 
 public class DeviceBlocks {
     private static final Registrar<Block> REGISTER = Devices.REGISTRIES.get().get(Registry.BLOCK_REGISTRY);
-
-    public static void register() {
-    }
-
     public static final RegistrySupplier<LaptopBlock> WHITE_LAPTOP = REGISTER.register(Devices.id("white_laptop"), () -> new LaptopBlock(DyeColor.WHITE));
     public static final RegistrySupplier<LaptopBlock> ORANGE_LAPTOP = REGISTER.register(Devices.id("orange_laptop"), () -> new LaptopBlock(DyeColor.ORANGE));
     public static final RegistrySupplier<LaptopBlock> MAGENTA_LAPTOP = REGISTER.register(Devices.id("magenta_laptop"), () -> new LaptopBlock(DyeColor.MAGENTA));
@@ -33,7 +29,6 @@ public class DeviceBlocks {
     public static final RegistrySupplier<LaptopBlock> GREEN_LAPTOP = REGISTER.register(Devices.id("green_laptop"), () -> new LaptopBlock(DyeColor.GREEN));
     public static final RegistrySupplier<LaptopBlock> RED_LAPTOP = REGISTER.register(Devices.id("red_laptop"), () -> new LaptopBlock(DyeColor.RED));
     public static final RegistrySupplier<LaptopBlock> BLACK_LAPTOP = REGISTER.register(Devices.id("black_laptop"), () -> new LaptopBlock(DyeColor.BLACK));
-
     public static final RegistrySupplier<PrinterBlock> WHITE_PRINTER = REGISTER.register(Devices.id("white_printer"), () -> new PrinterBlock(DyeColor.WHITE));
     public static final RegistrySupplier<PrinterBlock> ORANGE_PRINTER = REGISTER.register(Devices.id("orange_printer"), () -> new PrinterBlock(DyeColor.ORANGE));
     public static final RegistrySupplier<PrinterBlock> MAGENTA_PRINTER = REGISTER.register(Devices.id("magenta_printer"), () -> new PrinterBlock(DyeColor.MAGENTA));
@@ -50,7 +45,6 @@ public class DeviceBlocks {
     public static final RegistrySupplier<PrinterBlock> GREEN_PRINTER = REGISTER.register(Devices.id("green_printer"), () -> new PrinterBlock(DyeColor.GREEN));
     public static final RegistrySupplier<PrinterBlock> RED_PRINTER = REGISTER.register(Devices.id("red_printer"), () -> new PrinterBlock(DyeColor.RED));
     public static final RegistrySupplier<PrinterBlock> BLACK_PRINTER = REGISTER.register(Devices.id("black_printer"), () -> new PrinterBlock(DyeColor.BLACK));
-
     public static final RegistrySupplier<RouterBlock> WHITE_ROUTER = REGISTER.register(Devices.id("white_router"), () -> new RouterBlock(DyeColor.WHITE));
     public static final RegistrySupplier<RouterBlock> ORANGE_ROUTER = REGISTER.register(Devices.id("orange_router"), () -> new RouterBlock(DyeColor.ORANGE));
     public static final RegistrySupplier<RouterBlock> MAGENTA_ROUTER = REGISTER.register(Devices.id("magenta_router"), () -> new RouterBlock(DyeColor.MAGENTA));
@@ -68,7 +62,6 @@ public class DeviceBlocks {
     public static final RegistrySupplier<RouterBlock> RED_ROUTER = REGISTER.register(Devices.id("red_router"), () -> new RouterBlock(DyeColor.RED));
     public static final RegistrySupplier<RouterBlock> BLACK_ROUTER = REGISTER.register(Devices.id("black_router"), () -> new RouterBlock(DyeColor.BLACK));
     public static final RegistrySupplier<PaperBlock> PAPER = REGISTER.register(Devices.id("paper"), PaperBlock::new);
-
     public static final RegistrySupplier<OfficeChairBlock> WHITE_OFFICE_CHAIR = REGISTER.register(Devices.id("white_office_chair"), () -> new OfficeChairBlock(DyeColor.WHITE));
     public static final RegistrySupplier<OfficeChairBlock> ORANGE_OFFICE_CHAIR = REGISTER.register(Devices.id("orange_office_chair"), () -> new OfficeChairBlock(DyeColor.ORANGE));
     public static final RegistrySupplier<OfficeChairBlock> MAGENTA_OFFICE_CHAIR = REGISTER.register(Devices.id("magenta_office_chair"), () -> new OfficeChairBlock(DyeColor.MAGENTA));
@@ -85,6 +78,9 @@ public class DeviceBlocks {
     public static final RegistrySupplier<OfficeChairBlock> GREEN_OFFICE_CHAIR = REGISTER.register(Devices.id("green_office_chair"), () -> new OfficeChairBlock(DyeColor.GREEN));
     public static final RegistrySupplier<OfficeChairBlock> RED_OFFICE_CHAIR = REGISTER.register(Devices.id("red_office_chair"), () -> new OfficeChairBlock(DyeColor.RED));
     public static final RegistrySupplier<OfficeChairBlock> BLACK_OFFICE_CHAIR = REGISTER.register(Devices.id("black_office_chair"), () -> new OfficeChairBlock(DyeColor.BLACK));
+
+    public static void register() {
+    }
 
     public static Stream<Block> getAllBlocks() {
         return REGISTER.getIds().stream().map(REGISTER::get);

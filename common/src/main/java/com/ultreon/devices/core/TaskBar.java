@@ -32,13 +32,11 @@ public class TaskBar {
     public static final ResourceLocation APP_BAR_GUI = new ResourceLocation("devices:textures/gui/application_bar.png");
     public static final int BAR_HEIGHT = 18;
     private static final int APPS_DISPLAYED = Devices.DEVELOPER_MODE ? 18 : 10;
+    private static final Marker MARKER = MarkerFactory.getMarker("TaskBar");
     private final Laptop laptop;
-
     private final int offset = 0;
     private final int pingTimer = 0;
-
     private final List<TrayItem> trayItems = new ArrayList<>();
-    private static final Marker MARKER = MarkerFactory.getMarker("TaskBar");
 
     public TaskBar(Laptop laptop) {
         this.laptop = laptop;
@@ -111,7 +109,7 @@ public class TaskBar {
         }
 
         assert mc.level == null || mc.player != null;
-       // assert mc.level != null; //can no longer assume
+        // assert mc.level != null; //can no longer assume
         mc.font.drawShadow(pose, timeToString(mc.level != null ? mc.level.getDayTime() : 0), x + 334, y + 5, Color.WHITE.getRGB(), true);
 
         /* Settings App */

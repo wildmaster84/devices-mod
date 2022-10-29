@@ -9,36 +9,30 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.vehicle.Boat;
-import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class SeatEntity extends Entity
-{
+public class SeatEntity extends Entity {
     private double yOffset;
-    public SeatEntity(EntityType<SeatEntity> type, Level worldIn)
-    {
+
+    public SeatEntity(EntityType<SeatEntity> type, Level worldIn) {
         super(type, worldIn);
         this.setBoundingBox(new AABB(0.001F, 0.001F, 0.001F, -0.001F, -0.001F, -0.001F));
         this.setInvisible(true);
+    }
+
+    public SeatEntity(Level worldIn, BlockPos pos, double yOffset) {
+        this(DeviceEntities.SEAT.get(), worldIn);
+        this.setPos(pos.getX() + 0.5, pos.getY() + yOffset, pos.getZ() + 0.5);
     }
 
     @Override
     protected float getEyeHeight(Pose pose, EntityDimensions dimensions) {
         return 0;
     }
-
-    public SeatEntity(Level worldIn, BlockPos pos, double yOffset)
-    {
-        this(DeviceEntities.SEAT.get(), worldIn);
-        this.setPos(pos.getX() + 0.5, pos.getY() + yOffset, pos.getZ() + 0.5);
-    }
-
 
     public void setYOffset(double offset) {
         this.yOffset = offset;
@@ -47,7 +41,6 @@ public class SeatEntity extends Entity
     public void setViaYOffset(BlockPos pos) {
         this.setPos(pos.getX() + 0.5, pos.getY() + yOffset, pos.getZ() + 0.5);
     }
-
 
 
 //    @Override
@@ -61,18 +54,15 @@ public class SeatEntity extends Entity
     }
 
     @Override
-    public void tick()
-    {
-        if(!this.level.isClientSide && (!this.hasExactlyOnePlayerPassenger() || this.level.isEmptyBlock(this.getOnPos())))
-        {
+    public void tick() {
+        if (!this.level.isClientSide && (!this.hasExactlyOnePlayerPassenger() || this.level.isEmptyBlock(this.getOnPos()))) {
             this.kill();
         }
     }
 
 
     @Nullable
-    public Entity getControllingPassenger()
-    {
+    public Entity getControllingPassenger() {
         List<Entity> list = this.getPassengers();
         return list.isEmpty() ? null : list.get(0);
     }
@@ -86,8 +76,10 @@ public class SeatEntity extends Entity
 //    protected void init() {}
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {}
+    protected void readAdditionalSaveData(CompoundTag compound) {
+    }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {}
+    protected void addAdditionalSaveData(CompoundTag compound) {
+    }
 }

@@ -8,11 +8,11 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class Picture {
+    private final String name;
+    private final String author;
     public int[] pixels;
     public Size size;
     private File source;
-    private final String name;
-    private final String author;
 
     public Picture(String name, String author, Size size) {
         this.name = name;
