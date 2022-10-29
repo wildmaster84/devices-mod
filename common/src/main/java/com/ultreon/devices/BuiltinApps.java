@@ -30,5 +30,7 @@ public class BuiltinApps {
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "snake"), () -> SnakeApp::new, false);
 
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "themes"), () -> ThemesApp::new, false);
+
+        ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "vulnerability"), () -> VulnerabilityApp::new, true);
     }
 }

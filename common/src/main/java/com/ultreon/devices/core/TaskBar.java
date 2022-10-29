@@ -14,6 +14,7 @@ import com.ultreon.devices.programs.system.AppStore;
 import com.ultreon.devices.programs.system.FileBrowserApp;
 import com.ultreon.devices.programs.system.SettingsApp;
 import com.ultreon.devices.programs.system.SystemApp;
+import com.ultreon.devices.util.Vulnerability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
@@ -42,6 +43,7 @@ public class TaskBar {
     public TaskBar(Laptop laptop) {
         this.laptop = laptop;
 
+        this.trayItems.add(new Vulnerability.VulnerabilityTrayItem());
         this.trayItems.add(new FileBrowserApp.FileBrowserTrayItem());
         this.trayItems.add(new SettingsApp.SettingsTrayItem());
         this.trayItems.add(new AppStore.StoreTrayItem());

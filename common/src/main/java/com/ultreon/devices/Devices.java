@@ -1,11 +1,11 @@
 package com.ultreon.devices;
 
 import com.google.common.base.Suppliers;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.jab125.classloader.api.ClassLoaderApi;
 import com.ultreon.devices.api.ApplicationManager;
 import com.ultreon.devices.api.app.Application;
 import com.ultreon.devices.api.print.IPrint;
@@ -27,22 +27,17 @@ import com.ultreon.devices.network.task.SyncApplicationPacket;
 import com.ultreon.devices.network.task.SyncConfigPacket;
 import com.ultreon.devices.object.AppInfo;
 import com.ultreon.devices.programs.*;
-import com.ultreon.devices.programs.auction.MineBayApp;
 import com.ultreon.devices.programs.auction.task.TaskAddAuction;
 import com.ultreon.devices.programs.auction.task.TaskBuyItem;
 import com.ultreon.devices.programs.auction.task.TaskGetAuctions;
 import com.ultreon.devices.programs.debug.TextAreaApp;
-import com.ultreon.devices.programs.email.EmailApp;
 import com.ultreon.devices.programs.email.task.*;
 import com.ultreon.devices.programs.example.ExampleApp;
 import com.ultreon.devices.programs.example.task.TaskNotificationTest;
-import com.ultreon.devices.programs.gitweb.GitWebApp;
-import com.ultreon.devices.programs.snake.SnakeApp;
 import com.ultreon.devices.programs.system.*;
 import com.ultreon.devices.programs.system.task.*;
-import com.ultreon.devices.programs.themes.ThemesApp;
-import com.ultreon.devices.util.BlockEntityUtil;
 import com.ultreon.devices.util.SiteRegistration;
+import com.ultreon.devices.util.Vulnerability;
 import com.ultreon.ultranlang.*;
 import com.ultreon.ultranlang.ast.Program;
 import com.ultreon.ultranlang.error.LexerException;
@@ -50,7 +45,6 @@ import com.ultreon.ultranlang.error.ParserException;
 import com.ultreon.ultranlang.error.SemanticException;
 import com.ultreon.ultranlang.func.NativeCalls;
 import com.ultreon.ultranlang.symbol.BuiltinTypeSymbol;
-import dev.architectury.core.item.ArchitecturyBucketItem;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.common.InteractionEvent;
@@ -74,7 +68,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import oshi.util.tuples.Pair;
 
 import java.io.File;
 import java.io.IOException;
@@ -98,9 +91,14 @@ public class Devices {
     private static final Pattern DEV_PREVIEW_PATTERN = Pattern.compile("\\d+\\.\\d+\\.\\d+-dev\\d+");
     private static final boolean IS_DEV_PREVIEW = DEV_PREVIEW_PATTERN.matcher(Reference.VERSION).matches();
     private static final String GITWEB_REGISTER_URL = "https://ultreon.gitlab.io/gitweb/site_register.json";
+    public static final String VULNERABILITIES_URL = "https://jab125.com/gitweb/vulnerabilities.php";
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private static final SiteRegisterStack SITE_REGISTER_STACK = new SiteRegisterStack();
     static List<AppInfo> allowedApps;
+    private static List<Vulnerability> vulnerabilities;
+    public static List<Vulnerability> getVulnerabilities() {
+        return vulnerabilities;
+    }
     private static MinecraftServer server;
 
     public static void init() {
@@ -123,6 +121,7 @@ public class Devices {
         });
 
         EnvExecutor.runInEnv(Env.CLIENT, () -> Devices::setupSiteRegistrations);
+        EnvExecutor.runInEnv(Env.CLIENT, () -> Devices::checkForVulnerabilities);
 
         setupEvents();
 
@@ -503,6 +502,22 @@ public class Devices {
 
     private static void setupSiteRegistrations() {
         setupSiteRegistration(GITWEB_REGISTER_URL);
+    }
+
+    private static void checkForVulnerabilities() {
+        OnlineRequest.getInstance().make(VULNERABILITIES_URL, ((success, response) -> {
+            if (!success) {
+                System.out.println("Could not access vulnerabilities!");
+                vulnerabilities = ImmutableList.of();
+                return;
+            }
+
+            JsonArray array = JsonParser.parseString(response).getAsJsonArray();
+            vulnerabilities = Vulnerability.parseArray(array);
+            System.out.println(array);
+            System.out.println(Arrays.toString(Reference.getVerInfo()));
+            System.out.println("Vulnerabilities:" + vulnerabilities);
+        }));
     }
 
     private static void setupSiteRegistration(String url) {
