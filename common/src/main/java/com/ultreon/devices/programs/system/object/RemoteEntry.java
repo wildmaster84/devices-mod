@@ -11,6 +11,7 @@ public class RemoteEntry implements AppEntry {
     public String id;
     public String name;
     public String[] authors;
+    public String author;
     public String description;
     public int screenshots;
     public String projectId;
@@ -25,9 +26,15 @@ public class RemoteEntry implements AppEntry {
         return name;
     }
 
+    @Deprecated
+    @Override
+    public String author() {
+        return author == null ? AppEntry.super.author() : author;
+    }
+
     @Override
     public String[] authors() {
-        return authors;
+        return new String[]{author};
     }
 
     @Override
