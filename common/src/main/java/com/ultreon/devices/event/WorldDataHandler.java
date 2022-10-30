@@ -8,7 +8,6 @@ import net.minecraft.world.level.storage.LevelResource;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-
 //TODO
 public class WorldDataHandler {
     private static final LevelResource DEVICES_MOD_DATA = new LevelResource("data/devices-mod");

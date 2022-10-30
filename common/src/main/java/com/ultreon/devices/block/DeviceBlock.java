@@ -1,7 +1,7 @@
 package com.ultreon.devices.block;
 
-import com.ultreon.devices.IDeviceType;
 import com.ultreon.devices.ModDeviceTypes;
+import com.ultreon.devices.IDeviceType;
 import com.ultreon.devices.block.entity.DeviceBlockEntity;
 import com.ultreon.devices.util.BlockEntityUtil;
 import com.ultreon.devices.util.Colorable;

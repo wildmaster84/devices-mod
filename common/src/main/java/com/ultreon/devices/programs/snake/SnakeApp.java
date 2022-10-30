@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 public class SnakeApp extends Application {
     public Layout titleScreen;
     public SnakeLayout gameLayout;
-
     @Override
     public void init(@Nullable CompoundTag intent) {
         this.titleScreen = new Layout(200, 100);

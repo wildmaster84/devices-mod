@@ -15,9 +15,9 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 public class Text extends Component {
-    public int width;
     protected String rawText;
     protected List<String> lines;
+    public int width;
     protected int padding;
     protected boolean shadow = false;
 

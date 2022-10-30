@@ -50,9 +50,9 @@ public class AppStore extends SystemApp {
         layoutMain = new Layout(LAYOUT_WIDTH, LAYOUT_HEIGHT);
 
         var q = ApplicationManager.getAvailableApplications().size();
-        var rows = (int) Math.round(Math.ceil(q / 3D));
+        var rows = (int)Math.round(Math.ceil(q/3D));
 
-        ScrollableLayout homePageLayout = new ScrollableLayout(0, 0, LAYOUT_WIDTH, 368 - 160 + 80 * rows, LAYOUT_HEIGHT);
+        ScrollableLayout homePageLayout = new ScrollableLayout(0, 0, LAYOUT_WIDTH, 368-160+80*rows, LAYOUT_HEIGHT);
         homePageLayout.setScrollSpeed(10);
         homePageLayout.setBackground((pose, gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> {
             Color color = new Color(Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor());

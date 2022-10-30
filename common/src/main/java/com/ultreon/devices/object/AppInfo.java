@@ -5,9 +5,11 @@ import com.google.gson.reflect.TypeToken;
 import com.ultreon.devices.Devices;
 import com.ultreon.devices.Reference;
 import com.ultreon.devices.core.Laptop;
+import dev.architectury.injectables.annotations.PlatformOnly;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.awt.*;
@@ -25,6 +27,11 @@ import java.util.regex.Pattern;
 @SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal"})
 public class AppInfo {
     public static final Comparator<AppInfo> SORT_NAME = Comparator.comparing(AppInfo::getName);
+
+    private transient final ResourceLocation APP_ID;
+
+    private final transient boolean systemApp;
+
     private static final TintProvider DEFAULT_TINT_PROVIDER = new TintProvider() {
         @Override
         public int getTintColor(AppInfo info, int o) {
@@ -42,21 +49,6 @@ public class AppInfo {
         }
 
     };
-    private transient final ResourceLocation APP_ID;
-    private final transient boolean systemApp;
-    private TintProvider tintProvider = DEFAULT_TINT_PROVIDER;
-    private String name;
-    private String[] authors;
-    private String[] contributors;
-    private String description;
-    private String version;
-    private Icon icon;
-    private String[] screenshots;
-    private Support support;
-    public AppInfo(ResourceLocation identifier, boolean isSystemApp) {
-        this.APP_ID = identifier;
-        this.systemApp = isSystemApp;
-    }
 
     public static TintProvider getDefaultTintProvider() {
         return DEFAULT_TINT_PROVIDER;
@@ -66,8 +58,20 @@ public class AppInfo {
         return tintProvider;
     }
 
-    public void setTintProvider(TintProvider tintProvider) {
-        this.tintProvider = tintProvider;
+    private TintProvider tintProvider = DEFAULT_TINT_PROVIDER;
+
+    private String name;
+    private String[] authors;
+    private String[] contributors;
+    private String description;
+    private String version;
+    private Icon icon;
+    private String[] screenshots;
+    private Support support;
+
+    public AppInfo(ResourceLocation identifier, boolean isSystemApp) {
+        this.APP_ID = identifier;
+        this.systemApp = isSystemApp;
     }
 
     /**
@@ -104,10 +108,10 @@ public class AppInfo {
     /**
      * {@code contributors} should include all authors, plus extra contributors
      * <p><code>
-     * {
-     * "authors": ["Me!"],
-     * "contributors": ["You!"]
-     * }
+     *     {
+     *         "authors": ["Me!"],
+     *         "contributors": ["You!"]
+     *     }
      * </code><br/>
      * should return ["Me!", "You!"] with this method.</p>
      */
@@ -140,6 +144,80 @@ public class AppInfo {
 
     public int getTint(int i) {
         return this.tintProvider != null ? this.tintProvider.getTintColor(this, i) : DEFAULT_TINT_PROVIDER.getTintColor(this, i);
+    }
+
+    public void setTintProvider(TintProvider tintProvider) {
+        this.tintProvider = tintProvider;
+    }
+
+    public static class Icon {
+        Glyph base;
+        Glyph overlay0;
+        Glyph overlay1;
+        public static class Glyph {
+            private ResourceLocation resourceLocation;
+            private int u = -1;
+            private int v = -1;
+            private int type;
+            private Glyph(ResourceLocation res) {
+                this.resourceLocation = res;
+            }
+            private static Glyph of(ResourceLocation res) {
+                return new Glyph(res);
+            }
+
+            public ResourceLocation getResourceLocation() {
+                return resourceLocation;
+            }
+
+            public void setU(int u) {
+                this.u = u;
+            }
+
+            public void setV(int v) {
+                this.v = v;
+            }
+
+            public int getU() {
+                return u;
+            }
+
+            public int getV() {
+                return v;
+            }
+
+            public int getType() {
+                return type;
+            }
+        }
+
+        private Icon(AppInfo info) {
+            this.base = Glyph.of(new ResourceLocation(info.APP_ID.getNamespace(), "textures/app/icon/base/" + info.APP_ID.getPath() + ".png"));
+            this.base.type = 0;
+            this.overlay0 = Glyph.of(new ResourceLocation(info.APP_ID.getNamespace(), "textures/app/icon/overlay0/" + info.APP_ID.getPath() + ".png"));
+            this.overlay0.type = 1;
+            this.overlay1 = Glyph.of(new ResourceLocation(info.APP_ID.getNamespace(), "textures/app/icon/overlay1/" + info.APP_ID.getPath() + ".png"));
+            this.overlay1.type = 2;
+        }
+
+        /**
+         * @deprecated Used in legacy <code>icon</code> in schema version 0
+         */
+        @Deprecated
+        private Icon() {
+        }
+
+        public Glyph getBase() {
+            return base;
+        }
+
+        public Glyph getOverlay0() {
+            return overlay0;
+        }
+
+        public Glyph getOverlay1() {
+            return overlay1;
+        }
     }
 
     public String[] getScreenshots() {
@@ -187,90 +265,10 @@ public class AppInfo {
         support = null;
     }
 
-    @ApiStatus.Experimental
-    public interface TintProvider {
-        int getTintColor(AppInfo info, int o);
-
-        CompoundTag toTag();
-    }
-
-    public static class Icon {
-        Glyph base;
-        Glyph overlay0;
-        Glyph overlay1;
-
-        private Icon(AppInfo info) {
-            this.base = Glyph.of(new ResourceLocation(info.APP_ID.getNamespace(), "textures/app/icon/base/" + info.APP_ID.getPath() + ".png"));
-            this.base.type = 0;
-            this.overlay0 = Glyph.of(new ResourceLocation(info.APP_ID.getNamespace(), "textures/app/icon/overlay0/" + info.APP_ID.getPath() + ".png"));
-            this.overlay0.type = 1;
-            this.overlay1 = Glyph.of(new ResourceLocation(info.APP_ID.getNamespace(), "textures/app/icon/overlay1/" + info.APP_ID.getPath() + ".png"));
-            this.overlay1.type = 2;
-        }
-
-        /**
-         * @deprecated Used in legacy <code>icon</code> in schema version 0
-         */
-        @Deprecated
-        private Icon() {
-        }
-
-        public Glyph getBase() {
-            return base;
-        }
-
-        public Glyph getOverlay0() {
-            return overlay0;
-        }
-
-        public Glyph getOverlay1() {
-            return overlay1;
-        }
-
-        public static class Glyph {
-            private ResourceLocation resourceLocation;
-            private int u = -1;
-            private int v = -1;
-            private int type;
-
-            private Glyph(ResourceLocation res) {
-                this.resourceLocation = res;
-            }
-
-            private static Glyph of(ResourceLocation res) {
-                return new Glyph(res);
-            }
-
-            public ResourceLocation getResourceLocation() {
-                return resourceLocation;
-            }
-
-            public int getU() {
-                return u;
-            }
-
-            public void setU(int u) {
-                this.u = u;
-            }
-
-            public int getV() {
-                return v;
-            }
-
-            public void setV(int v) {
-                this.v = v;
-            }
-
-            public int getType() {
-                return type;
-            }
-        }
-    }
-
     private static class Support {
-        public String kofi;
         private String paypal;
         private String patreon;
+        public String kofi;
         private String twitter;
         private String youtube;
     }
@@ -292,8 +290,7 @@ public class AppInfo {
                     case 1 -> deserializeSchemaVersion1(json, context);
                     case 2 -> deserializeSchemaVersion2(json, context);
                     case 3 -> deserializeSchemaVersion3(json, context);
-                    default ->
-                            throw new RuntimeException("Schema " + getSchemaVersion(json) + " is not implemented in " + Reference.VERSION + "!");
+                    default -> throw new RuntimeException("Schema " + getSchemaVersion(json) + " is not implemented in " + Reference.VERSION + "!");
                 }
             } catch (JsonParseException e) {
                 Devices.LOGGER.error("Malformed app info json for '" + info.getFormattedId() + "'");
@@ -419,8 +416,7 @@ public class AppInfo {
             }
 
             if (d) info.authors = new String[0];
-            var l = new ArrayList<String>(List.of(info.authors));
-            l.addAll(contributors);
+            var l = new ArrayList<String>(List.of(info.authors));l.addAll(contributors);
             info.contributors = l.toArray(new String[0]);
 
             if (json.getAsJsonObject().has("support") && json.getAsJsonObject().get("support").getAsJsonObject().size() > 0) {
@@ -470,8 +466,7 @@ public class AppInfo {
                 }.getType());
             }
 
-            var l = new ArrayList<String>(List.of(info.authors));
-            l.addAll(contributors);
+            var l = new ArrayList<String>(List.of(info.authors));l.addAll(contributors);
             info.contributors = l.toArray(new String[0]);
 
             if (json.getAsJsonObject().has("support") && json.getAsJsonObject().get("support").getAsJsonObject().size() > 0) {
@@ -514,5 +509,12 @@ public class AppInfo {
             }
             return s;
         }
+    }
+
+    @ApiStatus.Experimental
+    public interface TintProvider {
+        int getTintColor(AppInfo info, int o);
+
+        CompoundTag toTag();
     }
 }

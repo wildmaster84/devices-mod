@@ -1,10 +1,10 @@
 package com.ultreon.devices.programs.themes;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.ultreon.devices.api.app.*;
 import com.ultreon.devices.api.app.Component;
 import com.ultreon.devices.api.app.Dialog;
 import com.ultreon.devices.api.app.System;
-import com.ultreon.devices.api.app.*;
 import com.ultreon.devices.api.app.component.Button;
 import com.ultreon.devices.api.app.component.TextField;
 import com.ultreon.devices.api.utils.RenderUtil;
@@ -14,24 +14,20 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.nbt.CompoundTag;
+import org.apache.commons.codec.binary.Hex;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.HexFormat;
 
 public class ThemesApp extends Application implements SystemAccessor {
-    private final int[] currentMouse = new int[2];
-    int marginX = 10;
-    int marginY = 10;
-    int paddingY = 4;
     private System system;
     private int[] lastMousePositionsX = null;
     private int[] lastMousePositionsY = null;
 
-    private static void createCTP() {
-
-    }
+    private final int[] currentMouse = new int[2];
 
     @Override
     public void init(@Nullable CompoundTag intent) {
@@ -65,11 +61,11 @@ public class ThemesApp extends Application implements SystemAccessor {
             var newX = new int[20];
             var newY = new int[20];
             assert lastMousePositionsX.length == lastMousePositionsY.length;
-            for (int i = 0; i < newX.length - 1; i++) {
+            for (int i = 0; i < newX.length-1; i++) {
                 var x = lastMousePositionsX[i];
                 var y = lastMousePositionsY[i];
-                newX[i + 1] = x;
-                newY[i + 1] = y;
+                newX[i+1] = x;
+                newY[i+1] = y;
             }
             newX[0] = currentMouse[0];
             newY[0] = currentMouse[1];
@@ -100,6 +96,9 @@ public class ThemesApp extends Application implements SystemAccessor {
         poseStack.popPose();
     }
 
+    int marginX = 10;
+    int marginY = 10;
+    int paddingY = 4;
     private Layout createMainMenu() {
         Layout mainMenu = new Layout(200, 100);
         mainMenu.setBackground(this::renderBackground);
@@ -124,7 +123,7 @@ public class ThemesApp extends Application implements SystemAccessor {
                 var s = new ScrollableLayout(200, 800, 100);
                 var i = 0;
                 for (AppInfo installedApplication : ThemesApp.this.system.getInstalledApplications()) {
-                    s.addComponent(new AppTintSet(0, 16 * i, installedApplication));
+                    s.addComponent(new AppTintSet(0, 16*i, installedApplication));
                     i++;
                 }
                 this.addComponent(s);
@@ -132,35 +131,6 @@ public class ThemesApp extends Application implements SystemAccessor {
         };
         ly.setTitle("Tints");
         return ly;
-    }
-
-    private static class ThemeTintProvider implements AppInfo.TintProvider {
-        private final Color l;
-        private final Color ll;
-
-        ThemeTintProvider(Color l, Color ll) {
-            this.l = l;
-            this.ll = ll;
-        }
-
-        @Override
-        public int getTintColor(AppInfo info, int i) {
-            return switch (i) {
-                case 0 -> new Color(255, 255, 255).getRGB();
-                case 1 -> l.getRGB();
-                case 2 -> ll.getRGB();
-                default -> new Color(255, 255, 255).getRGB();
-            };
-        }
-
-        @Override
-        public CompoundTag toTag() {
-            var l = new CompoundTag();
-            l.putInt("0", getTintColor(null, 0));
-            l.putInt("1", getTintColor(null, 1));
-            l.putInt("2", getTintColor(null, 2));
-            return l;
-        }
     }
 
     private class AppTintSet extends Component {
@@ -187,28 +157,28 @@ public class ThemesApp extends Application implements SystemAccessor {
         @Override
         protected void init(Layout layout) {
             super.init(layout);
-            var primaryTint = new TextField(left + 16, top, 50);
+            var primaryTint = new TextField(left+16, top, 50);
             primaryTint.setText(toColorHex(info.getTint(1)));
             primaryTint.setBackgroundColor(new Color(getColorScheme().getBackgroundColor()).darker().darker());
             primaryTint.setTextColor(Color.WHITE.darker());
             primaryTint.setEnabled(false);
             layout.addComponent(primaryTint);
 
-            var secondaryTint = new TextField(left + 16 + 50, top, 50);
+            var secondaryTint = new TextField(left+16+50, top, 50);
             secondaryTint.setText(toColorHex(info.getTint(2)));
             secondaryTint.setBackgroundColor(new Color(getColorScheme().getBackgroundColor()).darker().darker());
             secondaryTint.setTextColor(Color.WHITE.darker());
             secondaryTint.setEnabled(false);
             layout.addComponent(secondaryTint);
 
-            var editButton = new Button(left + 16 + 50 + 50, top, Icons.EDIT);
+            var editButton = new Button(left+16+50+50, top, Icons.EDIT);
             editButton.setSize(16, 16);
 
-            var resetButton = new Button(left + 16 + 50 + 50 + 16, top, Icons.RELOAD);
+            var resetButton = new Button(left+16+50+50+16, top, Icons.RELOAD);
             resetButton.setSize(16, 16);
             resetButton.setEnabled(false);
 
-            var okButton = new Button(left + 16 + 50 + 50 + 16 + 16, top, Icons.CHECK);
+            var okButton = new Button(left+16+50+50+16+16, top, Icons.CHECK);
             resetButton.setClickListener((__, ___, ____) -> {
                 this.info.setTintProvider(AppInfo.getDefaultTintProvider());
 
@@ -240,7 +210,7 @@ public class ThemesApp extends Application implements SystemAccessor {
                     e.printStackTrace();
                     openDialog(new Dialog.Message("Failed to set tint"));
                 }
-                //   okButton.setEnabled();
+             //   okButton.setEnabled();
             });
             layout.addComponent(okButton);
 
@@ -278,6 +248,37 @@ public class ThemesApp extends Application implements SystemAccessor {
             pose.pushPose();
             RenderUtil.drawIcon(pose, x, y, info, height, height); // height is intended
             pose.popPose();
+        }
+    }
+
+    private static void createCTP() {
+
+    }
+
+    private static class ThemeTintProvider implements AppInfo.TintProvider {
+        private final Color l;
+        private final Color ll;
+        ThemeTintProvider(Color l, Color ll) {
+            this.l = l;
+            this.ll = ll;
+        }
+        @Override
+        public int getTintColor(AppInfo info, int i) {
+            return switch (i) {
+                case 0 -> new Color(255, 255, 255).getRGB();
+                case 1 -> l.getRGB();
+                case 2 -> ll.getRGB();
+                default -> new Color(255, 255, 255).getRGB();
+            };
+        }
+
+        @Override
+        public CompoundTag toTag() {
+            var l = new CompoundTag();
+            l.putInt("0", getTintColor(null, 0));
+            l.putInt("1", getTintColor(null, 1));
+            l.putInt("2", getTintColor(null, 2));
+            return l;
         }
     }
 }

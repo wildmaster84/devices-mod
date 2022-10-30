@@ -13,6 +13,7 @@ import com.ultreon.devices.util.GLHelper;
 import com.ultreon.devices.util.GuiHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GameRenderer;
 
 import java.awt.*;
 
@@ -75,7 +76,7 @@ public class Palette extends Component {
 //        RenderSystem.disableAlpha();
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         // Todo: Make shade model for GL_SMOOTH possible.
-        // RenderSystem.setShaderTexture(0, GameRenderer.());
+       // RenderSystem.setShaderTexture(0, GameRenderer.());
 //        RenderSystem.shadeModel(GL11.GL_SMOOTH);
 
         Tesselator tessellator = Tesselator.getInstance();

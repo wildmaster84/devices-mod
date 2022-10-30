@@ -24,85 +24,84 @@ import java.util.List;
  *
  * <p>The represented version interval is contiguous between its lower and upper limit, disjoint intervals are built
  * using collections of {@link VersionInterval}. Empty intervals may be represented by {@code null} or any interval
- *
- * @code (x, x)} with x being a non-{@code null} version and both endpoints being exclusive.
+ * @code (x,x)} with x being a non-{@code null} version and both endpoints being exclusive.
  */
 public interface VersionInterval {
-    VersionInterval INFINITE = new VersionIntervalImpl(null, false, null, false);
+	VersionInterval INFINITE = new VersionIntervalImpl(null, false, null, false);
 
-    /**
-     * Compute the intersection between two version intervals.
-     */
-    static VersionInterval and(VersionInterval a, VersionInterval b) {
-        return VersionIntervalImpl.and(a, b);
-    }
+	/**
+	 * Get whether the interval uses {@link SemanticVersion} compatible bounds.
+	 *
+	 * @return True if both bounds are open (null), {@link SemanticVersion} instances or a combination of both, false otherwise.
+	 */
+	boolean isSemantic();
 
-    /**
-     * Compute the intersection between two potentially disjoint of version intervals.
-     */
-    static List<VersionInterval> and(Collection<VersionInterval> a, Collection<VersionInterval> b) {
-        return VersionIntervalImpl.and(a, b);
-    }
+	/**
+	 * Get the lower limit of the version interval.
+	 *
+	 * @return Version's lower limit or null if none, inclusive depending on {@link #isMinInclusive()}
+	 */
+	Version getMin();
 
-    /**
-     * Compute the union between multiple version intervals.
-     */
-    static List<VersionInterval> or(Collection<VersionInterval> a, VersionInterval b) {
-        return VersionIntervalImpl.or(a, b);
-    }
+	/**
+	 * Get whether the lower limit of the version interval is inclusive.
+	 *
+	 * @return True if inclusive, false otherwise
+	 */
+	boolean isMinInclusive();
 
-    static List<VersionInterval> not(VersionInterval interval) {
-        return VersionIntervalImpl.not(interval);
-    }
+	/**
+	 * Get the upper limit of the version interval.
+	 *
+	 * @return Version's upper limit or null if none, inclusive depending on {@link #isMaxInclusive()}
+	 */
+	Version getMax();
 
-    static List<VersionInterval> not(Collection<VersionInterval> intervals) {
-        return VersionIntervalImpl.not(intervals);
-    }
+	/**
+	 * Get whether the upper limit of the version interval is inclusive.
+	 *
+	 * @return True if inclusive, false otherwise
+	 */
+	boolean isMaxInclusive();
 
-    /**
-     * Get whether the interval uses {@link SemanticVersion} compatible bounds.
-     *
-     * @return True if both bounds are open (null), {@link SemanticVersion} instances or a combination of both, false otherwise.
-     */
-    boolean isSemantic();
+	default VersionInterval and(VersionInterval o) {
+		return and(this, o);
+	}
 
-    /**
-     * Get the lower limit of the version interval.
-     *
-     * @return Version's lower limit or null if none, inclusive depending on {@link #isMinInclusive()}
-     */
-    Version getMin();
+	default List<VersionInterval> or(Collection<VersionInterval> o) {
+		return or(o, this);
+	}
 
-    /**
-     * Get whether the lower limit of the version interval is inclusive.
-     *
-     * @return True if inclusive, false otherwise
-     */
-    boolean isMinInclusive();
+	default List<VersionInterval> not() {
+		return not(this);
+	}
 
-    /**
-     * Get the upper limit of the version interval.
-     *
-     * @return Version's upper limit or null if none, inclusive depending on {@link #isMaxInclusive()}
-     */
-    Version getMax();
+	/**
+	 * Compute the intersection between two version intervals.
+	 */
+	static VersionInterval and(VersionInterval a, VersionInterval b) {
+		return VersionIntervalImpl.and(a, b);
+	}
 
-    /**
-     * Get whether the upper limit of the version interval is inclusive.
-     *
-     * @return True if inclusive, false otherwise
-     */
-    boolean isMaxInclusive();
+	/**
+	 * Compute the intersection between two potentially disjoint of version intervals.
+	 */
+	static List<VersionInterval> and(Collection<VersionInterval> a, Collection<VersionInterval> b) {
+		return VersionIntervalImpl.and(a, b);
+	}
 
-    default VersionInterval and(VersionInterval o) {
-        return and(this, o);
-    }
+	/**
+	 * Compute the union between multiple version intervals.
+	 */
+	static List<VersionInterval> or(Collection<VersionInterval> a, VersionInterval b) {
+		return VersionIntervalImpl.or(a, b);
+	}
 
-    default List<VersionInterval> or(Collection<VersionInterval> o) {
-        return or(o, this);
-    }
+	static List<VersionInterval> not(VersionInterval interval) {
+		return VersionIntervalImpl.not(interval);
+	}
 
-    default List<VersionInterval> not() {
-        return not(this);
-    }
+	static List<VersionInterval> not(Collection<VersionInterval> intervals) {
+		return VersionIntervalImpl.not(intervals);
+	}
 }

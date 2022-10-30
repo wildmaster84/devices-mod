@@ -23,8 +23,7 @@ public abstract class Module {
 
     }
 
-    public void modify(GitWebFrame frame, ModuleLayout layout, int width, Map<String, String> data) {
-    }
+    public void modify(GitWebFrame frame, ModuleLayout layout, int width, Map<String, String> data){}
 
     //TODO: slideshow module, text area syntax highlighting
 }

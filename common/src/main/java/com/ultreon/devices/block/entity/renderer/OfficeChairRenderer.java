@@ -1,5 +1,6 @@
 package com.ultreon.devices.block.entity.renderer;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -7,6 +8,7 @@ import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import com.ultreon.devices.block.OfficeChairBlock;
 import com.ultreon.devices.block.entity.OfficeChairBlockEntity;
+import com.ultreon.devices.init.DeviceBlocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -18,17 +20,19 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class OfficeChairRenderer implements BlockEntityRenderer<OfficeChairBlockEntity> {
-    private final Minecraft mc = Minecraft.getInstance();
+    private Minecraft mc = Minecraft.getInstance();
 
     public OfficeChairRenderer(BlockEntityRendererProvider.Context context) {
 
     }
 
     @Override
-    public void render(OfficeChairBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+    public void render(OfficeChairBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay)
+    {
         BlockPos pos = blockEntity.getBlockPos();
         BlockState tempState = blockEntity.getLevel().getBlockState(pos);
-        if (!(tempState.getBlock() instanceof OfficeChairBlock)) {
+        if(!(tempState.getBlock() instanceof OfficeChairBlock))
+        {
             return;
         }
 
@@ -38,10 +42,10 @@ public class OfficeChairRenderer implements BlockEntityRenderer<OfficeChairBlock
 
         poseStack.pushPose();
         {
-            // poseStack.translate(x, y, z);
+           // poseStack.translate(x, y, z);
 
             poseStack.translate(0.5, 0, 0.5);
-            poseStack.mulPose(Quaternion.fromXYZDegrees(new Vector3f(0, -blockEntity.getRotation() + 180, 0)));
+            poseStack.mulPose(Quaternion.fromXYZDegrees(new Vector3f(0, -blockEntity.getRotation()+180, 0)));
             poseStack.translate(-0.5, 0, -0.5);
 
             BlockState state = tempState.setValue(OfficeChairBlock.FACING, Direction.NORTH).setValue(OfficeChairBlock.TYPE, OfficeChairBlock.Type.SEAT);

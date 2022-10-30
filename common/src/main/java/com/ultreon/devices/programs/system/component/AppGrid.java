@@ -119,8 +119,8 @@ public class AppGrid extends Component {
 
         int iconOffset = (itemWidth - 14 * 3) / 2;
         if (entry instanceof LocalEntry localEntry) {
-            Image.AppImage appImage = new Image.AppImage(iconOffset, padding, 14 * 3, 14 * 3, localEntry.info());
-            //   com.ultreon.devices.api.app.component.Image image = new com.ultreon.devices.api.app.component.Image(iconOffset, padding, 14 * 3, 14 * 3, localEntry.info().getIconU(), localEntry.info().getIconV(), 14, 14, 224, 224, Laptop.ICON_TEXTURES);
+            Image.AppImage appImage = new Image.AppImage(iconOffset, padding, 14*3, 14*3, localEntry.info());
+         //   com.ultreon.devices.api.app.component.Image image = new com.ultreon.devices.api.app.component.Image(iconOffset, padding, 14 * 3, 14 * 3, localEntry.info().getIconU(), localEntry.info().getIconV(), 14, 14, 224, 224, Laptop.ICON_TEXTURES);
             layout.addComponent(appImage);
         } else if (entry instanceof RemoteEntry remoteEntry) {
             ResourceLocation resource = new ResourceLocation(remoteEntry.id);

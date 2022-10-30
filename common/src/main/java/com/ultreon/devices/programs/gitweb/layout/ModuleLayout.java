@@ -5,8 +5,8 @@ import com.ultreon.devices.programs.gitweb.component.GitWebFrame;
 import com.ultreon.devices.programs.gitweb.module.ModuleEntry;
 
 public class ModuleLayout extends Layout {
-    private final GitWebFrame frame;
     public ModuleEntry entry;
+    private final GitWebFrame frame;
 
     public ModuleLayout(int left, int top, int width, GitWebFrame frame, ModuleEntry entry) {
         super(left, top, width, entry.getModule().calculateHeight(entry.getData(), width));

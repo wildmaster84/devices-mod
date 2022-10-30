@@ -1,7 +1,7 @@
 package com.ultreon.devices.init;
 
-import com.ultreon.devices.Devices;
 import com.ultreon.devices.ModDeviceTypes;
+import com.ultreon.devices.Devices;
 import com.ultreon.devices.item.*;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrySupplier;
@@ -112,7 +112,7 @@ public class DeviceItems {
     public static final RegistrySupplier<ComponentItem> COMPONENT_CARRIAGE = REGISTER.register(Devices.id("carriage"), () -> new ComponentItem(new Item.Properties().tab(Devices.TAB_DEVICE)));
 
     public static final RegistrySupplier<EthernetCableItem> ETHERNET_CABLE = REGISTER.register(Devices.id("ethernet_cable"), () -> new EthernetCableItem());
-
+    
 
     public static Stream<Item> getAllItems() {
         return REGISTER.getIds().stream().map(REGISTER::get);

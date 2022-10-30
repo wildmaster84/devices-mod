@@ -20,8 +20,6 @@ public class Game extends Component {
 
     private static final Map<Integer, Tile> registeredTiles = new HashMap<Integer, Tile>();
     private final Player player;
-    private final boolean renderMidgroundLow = true;
-    private final boolean renderMidgroundHigh = true;
     public int mapWidth;
     public int mapHeight;
     private Tile[][] tiles;
@@ -29,6 +27,8 @@ public class Game extends Component {
     private Tile currentTile = Tile.grass;
     private Layer currentLayer = Layer.BACKGROUND;
     private boolean renderBackground = true;
+    private final boolean renderMidgroundLow = true;
+    private final boolean renderMidgroundHigh = true;
     private boolean renderForeground = true;
     private boolean renderPlayer = true;
 

@@ -19,239 +19,242 @@ package com.jab125.version;
 import java.util.*;
 
 public final class VersionPredicateParser {
-    private static final VersionComparisonOperator[] OPERATORS = VersionComparisonOperator.values();
+	private static final VersionComparisonOperator[] OPERATORS = VersionComparisonOperator.values();
 
-    public static VersionPredicate parse(String predicate) throws VersionParsingException {
-        List<SingleVersionPredicate> predicateList = new ArrayList<>();
+	public static VersionPredicate parse(String predicate) throws VersionParsingException {
+		List<SingleVersionPredicate> predicateList = new ArrayList<>();
 
-        for (String s : predicate.split(" ")) {
-            s = s.trim();
+		for (String s : predicate.split(" ")) {
+			s = s.trim();
 
-            if (s.isEmpty() || s.equals("*")) {
-                continue;
-            }
+			if (s.isEmpty() || s.equals("*")) {
+				continue;
+			}
 
-            VersionComparisonOperator operator = VersionComparisonOperator.EQUAL;
+			VersionComparisonOperator operator = VersionComparisonOperator.EQUAL;
 
-            for (VersionComparisonOperator op : OPERATORS) {
-                if (s.startsWith(op.getSerialized())) {
-                    operator = op;
-                    s = s.substring(op.getSerialized().length());
-                    break;
-                }
-            }
+			for (VersionComparisonOperator op : OPERATORS) {
+				if (s.startsWith(op.getSerialized())) {
+					operator = op;
+					s = s.substring(op.getSerialized().length());
+					break;
+				}
+			}
 
-            Version version = VersionParser.parse(s, true);
+			Version version = VersionParser.parse(s, true);
 
-            if (version instanceof SemanticVersion semVer) {
+			if (version instanceof SemanticVersion) {
+				SemanticVersion semVer = (SemanticVersion) version;
 
-                if (semVer.hasWildcard()) { // .x version -> replace with conventional version by replacing the operator
-                    if (operator != VersionComparisonOperator.EQUAL) {
-                        throw new VersionParsingException("Invalid predicate: " + predicate + ", version ranges with wildcards (.X) require using the equality operator or no operator at all!");
-                    }
+				if (semVer.hasWildcard()) { // .x version -> replace with conventional version by replacing the operator
+					if (operator != VersionComparisonOperator.EQUAL) {
+						throw new VersionParsingException("Invalid predicate: "+predicate+", version ranges with wildcards (.X) require using the equality operator or no operator at all!");
+					}
 
-                    assert !semVer.getPrereleaseKey().isPresent();
+					assert !semVer.getPrereleaseKey().isPresent();
 
-                    int compCount = semVer.getVersionComponentCount();
-                    assert compCount == 2 || compCount == 3;
+					int compCount = semVer.getVersionComponentCount();
+					assert compCount == 2 || compCount == 3;
 
-                    operator = compCount == 2 ? VersionComparisonOperator.SAME_TO_NEXT_MAJOR : VersionComparisonOperator.SAME_TO_NEXT_MINOR;
+					operator = compCount == 2 ? VersionComparisonOperator.SAME_TO_NEXT_MAJOR : VersionComparisonOperator.SAME_TO_NEXT_MINOR;
 
-                    int[] newComponents = new int[semVer.getVersionComponentCount() - 1];
+					int[] newComponents = new int[semVer.getVersionComponentCount() - 1];
 
-                    for (int i = 0; i < semVer.getVersionComponentCount() - 1; i++) {
-                        newComponents[i] = semVer.getVersionComponent(i);
-                    }
+					for (int i = 0; i < semVer.getVersionComponentCount() - 1; i++) {
+						newComponents[i] = semVer.getVersionComponent(i);
+					}
 
-                    version = new SemanticVersionImpl(newComponents, "", semVer.getBuildKey().orElse(null));
-                }
-            } else if (!operator.isMinInclusive() && !operator.isMaxInclusive()) { // non-semver without inclusive bound
-                throw new VersionParsingException("Invalid predicate: " + predicate + ", version ranges need to be semantic version compatible to use operators that exclude the bound!");
-            } else { // non-semver with inclusive bound
-                operator = VersionComparisonOperator.EQUAL;
-            }
+					version = new SemanticVersionImpl(newComponents, "", semVer.getBuildKey().orElse(null));
+				}
+			} else if (!operator.isMinInclusive() && !operator.isMaxInclusive()) { // non-semver without inclusive bound
+				throw new VersionParsingException("Invalid predicate: "+predicate+", version ranges need to be semantic version compatible to use operators that exclude the bound!");
+			} else { // non-semver with inclusive bound
+				operator = VersionComparisonOperator.EQUAL;
+			}
 
-            predicateList.add(new SingleVersionPredicate(operator, version));
-        }
+			predicateList.add(new SingleVersionPredicate(operator, version));
+		}
 
-        if (predicateList.isEmpty()) {
-            return AnyVersionPredicate.INSTANCE;
-        } else if (predicateList.size() == 1) {
-            return predicateList.get(0);
-        } else {
-            return new MultiVersionPredicate(predicateList);
-        }
-    }
+		if (predicateList.isEmpty()) {
+			return AnyVersionPredicate.INSTANCE;
+		} else if (predicateList.size() == 1) {
+			return predicateList.get(0);
+		} else {
+			return new MultiVersionPredicate(predicateList);
+		}
+	}
 
-    public static Set<VersionPredicate> parse(Collection<String> predicates) throws VersionParsingException {
-        Set<VersionPredicate> ret = new HashSet<>(predicates.size());
+	public static Set<VersionPredicate> parse(Collection<String> predicates) throws VersionParsingException {
+		Set<VersionPredicate> ret = new HashSet<>(predicates.size());
 
-        for (String version : predicates) {
-            ret.add(parse(version));
-        }
+		for (String version : predicates) {
+			ret.add(parse(version));
+		}
 
-        return ret;
-    }
+		return ret;
+	}
 
-    public static VersionPredicate getAny() {
-        return AnyVersionPredicate.INSTANCE;
-    }
+	public static VersionPredicate getAny() {
+		return AnyVersionPredicate.INSTANCE;
+	}
 
-    static class AnyVersionPredicate implements VersionPredicate {
-        static final VersionPredicate INSTANCE = new AnyVersionPredicate();
+	static class AnyVersionPredicate implements VersionPredicate {
+		static final VersionPredicate INSTANCE = new AnyVersionPredicate();
 
-        private AnyVersionPredicate() {
-        }
+		private AnyVersionPredicate() { }
 
-        @Override
-        public boolean test(Version t) {
-            return true;
-        }
+		@Override
+		public boolean test(Version t) {
+			return true;
+		}
 
-        @Override
-        public List<? extends PredicateTerm> getTerms() {
-            return Collections.emptyList();
-        }
+		@Override
+		public List<? extends PredicateTerm> getTerms() {
+			return Collections.emptyList();
+		}
 
-        @Override
-        public VersionInterval getInterval() {
-            return VersionIntervalImpl.INFINITE;
-        }
+		@Override
+		public VersionInterval getInterval() {
+			return VersionIntervalImpl.INFINITE;
+		}
 
-        @Override
-        public String toString() {
-            return "*";
-        }
-    }
+		@Override
+		public String toString() {
+			return "*";
+		}
+	}
 
-    public static class SingleVersionPredicate implements VersionPredicate, VersionPredicate.PredicateTerm {
-        private final VersionComparisonOperator operator;
-        private final Version refVersion;
+	public static class SingleVersionPredicate implements VersionPredicate, VersionPredicate.PredicateTerm {
+		private final VersionComparisonOperator operator;
+		private final Version refVersion;
 
-        SingleVersionPredicate(VersionComparisonOperator operator, Version refVersion) {
-            this.operator = operator;
-            this.refVersion = refVersion;
-        }
+		public Version getRefVersion() {
+			return refVersion;
+		}
 
-        public Version getRefVersion() {
-            return refVersion;
-        }
+		SingleVersionPredicate(VersionComparisonOperator operator, Version refVersion) {
+			this.operator = operator;
+			this.refVersion = refVersion;
+		}
 
-        @Override
-        public boolean test(Version version) {
-            Objects.requireNonNull(version, "null version");
+		@Override
+		public boolean test(Version version) {
+			Objects.requireNonNull(version, "null version");
 
-            return operator.test(version, refVersion);
-        }
+			return operator.test(version, refVersion);
+		}
 
-        @Override
-        public List<PredicateTerm> getTerms() {
-            return Collections.singletonList(this);
-        }
+		@Override
+		public List<PredicateTerm> getTerms() {
+			return Collections.singletonList(this);
+		}
 
-        @Override
-        public VersionInterval getInterval() {
-            if (refVersion instanceof SemanticVersion version) {
+		@Override
+		public VersionInterval getInterval() {
+			if (refVersion instanceof SemanticVersion) {
+				SemanticVersion version = (SemanticVersion) refVersion;
 
-                return new VersionIntervalImpl(operator.minVersion(version), operator.isMinInclusive(),
-                        operator.maxVersion(version), operator.isMaxInclusive());
-            } else {
-                return new VersionIntervalImpl(refVersion, true, refVersion, true);
-            }
-        }
+				return new VersionIntervalImpl(operator.minVersion(version), operator.isMinInclusive(),
+						operator.maxVersion(version), operator.isMaxInclusive());
+			} else {
+				return new VersionIntervalImpl(refVersion, true, refVersion, true);
+			}
+		}
 
-        @Override
-        public VersionComparisonOperator getOperator() {
-            return operator;
-        }
+		@Override
+		public VersionComparisonOperator getOperator() {
+			return operator;
+		}
 
-        @Override
-        public Version getReferenceVersion() {
-            return refVersion;
-        }
+		@Override
+		public Version getReferenceVersion() {
+			return refVersion;
+		}
 
-        @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof SingleVersionPredicate o) {
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof SingleVersionPredicate) {
+				SingleVersionPredicate o = (SingleVersionPredicate) obj;
 
-                return operator == o.operator && refVersion.equals(o.refVersion);
-            } else {
-                return false;
-            }
-        }
+				return operator == o.operator && refVersion.equals(o.refVersion);
+			} else {
+				return false;
+			}
+		}
 
-        @Override
-        public int hashCode() {
-            return operator.ordinal() * 31 + refVersion.hashCode();
-        }
+		@Override
+		public int hashCode() {
+			return operator.ordinal() * 31 + refVersion.hashCode();
+		}
 
-        @Override
-        public String toString() {
-            return operator.getSerialized().concat(refVersion.toString());
-        }
-    }
+		@Override
+		public String toString() {
+			return operator.getSerialized().concat(refVersion.toString());
+		}
+	}
 
-    static class MultiVersionPredicate implements VersionPredicate {
-        private final List<SingleVersionPredicate> predicates;
+	static class MultiVersionPredicate implements VersionPredicate {
+		private final List<SingleVersionPredicate> predicates;
 
-        MultiVersionPredicate(List<SingleVersionPredicate> predicates) {
-            this.predicates = predicates;
-        }
+		MultiVersionPredicate(List<SingleVersionPredicate> predicates) {
+			this.predicates = predicates;
+		}
 
-        @Override
-        public boolean test(Version version) {
-            Objects.requireNonNull(version, "null version");
+		@Override
+		public boolean test(Version version) {
+			Objects.requireNonNull(version, "null version");
 
-            for (SingleVersionPredicate predicate : predicates) {
-                if (!predicate.test(version)) return false;
-            }
+			for (SingleVersionPredicate predicate : predicates) {
+				if (!predicate.test(version)) return false;
+			}
 
-            return true;
-        }
+			return true;
+		}
 
-        @Override
-        public List<? extends PredicateTerm> getTerms() {
-            return predicates;
-        }
+		@Override
+		public List<? extends PredicateTerm> getTerms() {
+			return predicates;
+		}
 
-        @Override
-        public VersionInterval getInterval() {
-            if (predicates.isEmpty()) return AnyVersionPredicate.INSTANCE.getInterval();
+		@Override
+		public VersionInterval getInterval() {
+			if (predicates.isEmpty()) return AnyVersionPredicate.INSTANCE.getInterval();
 
-            VersionInterval ret = predicates.get(0).getInterval();
+			VersionInterval ret = predicates.get(0).getInterval();
 
-            for (int i = 1; i < predicates.size(); i++) {
-                ret = VersionIntervalImpl.and(ret, predicates.get(i).getInterval());
-            }
+			for (int i = 1; i < predicates.size(); i++) {
+				ret = VersionIntervalImpl.and(ret, predicates.get(i).getInterval());
+			}
 
-            return ret;
-        }
+			return ret;
+		}
 
-        @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof MultiVersionPredicate o) {
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof MultiVersionPredicate) {
+				MultiVersionPredicate o = (MultiVersionPredicate) obj;
 
-                return predicates.equals(o.predicates);
-            } else {
-                return false;
-            }
-        }
+				return predicates.equals(o.predicates);
+			} else {
+				return false;
+			}
+		}
 
-        @Override
-        public int hashCode() {
-            return predicates.hashCode();
-        }
+		@Override
+		public int hashCode() {
+			return predicates.hashCode();
+		}
 
-        @Override
-        public String toString() {
-            StringBuilder ret = new StringBuilder();
+		@Override
+		public String toString() {
+			StringBuilder ret = new StringBuilder();
 
-            for (SingleVersionPredicate predicate : predicates) {
-                if (ret.length() > 0) ret.append(' ');
-                ret.append(predicate.toString());
-            }
+			for (SingleVersionPredicate predicate : predicates) {
+				if (ret.length() > 0) ret.append(' ');
+				ret.append(predicate.toString());
+			}
 
-            return ret.toString();
-        }
-    }
+			return ret.toString();
+		}
+	}
 }

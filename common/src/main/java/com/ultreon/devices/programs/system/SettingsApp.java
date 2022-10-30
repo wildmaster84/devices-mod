@@ -32,18 +32,22 @@ import java.util.Stack;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class SettingsApp extends SystemApp {
-    private final Stack<Layout> predecessor = new Stack<>();
     private Button backBtn;
+
     private Layout layoutMain;
     private Layout layoutGeneral;
     private CheckBox checkBoxShowApps;
+
     private Layout layoutPersonalise;
     private Layout layoutWallpaper;
     private Button prevWallpaperBtn;
     private Button nextWallpaperBtn;
     private Button urlWallpaperBtn;
+
     private Layout layoutColorScheme;
     private Button buttonColorSchemeApply;
+
+    private final Stack<Layout> predecessor = new Stack<>();
 
     private void resetColorSchemeClick(int mouseX, int mouseY, int mouseButton) {
         if (mouseButton == 0) {
@@ -87,8 +91,8 @@ public class SettingsApp extends SystemApp {
             var l = new ScrollableLayout(layoutMain.width, layoutMain.height, 124);
             l.top = 26;
             l = ScrollableLayout.create(0, 26, layoutMain.width, 124, MessageFormat.format("""
-                            Version: {0} ({1})
-                            """
+                    Version: {0} ({1})
+                    """
 //                    Model: CD1
 //                    STORAGE: 32MB
 //                    RAM: 512KB
@@ -103,14 +107,14 @@ public class SettingsApp extends SystemApp {
 //                    - alfff
 //                    - 6
 //                    - あ
-                    /*                    """*/, Reference.getVerInfo()[0], Reference.getVerInfo()[1]));
+/*                    """*/, Reference.getVerInfo()[0], Reference.getVerInfo()[1]));
             //l.height = 124;
             qq.addComponent(l);
             this.showMenu(qq);
         });
         layoutMain.addComponent(aboutButton);
         //aboutButton.setToolTip("About", "When to call emergency services because you just lost all of your NFTs to a scammer");
-        Button buttonColorScheme = new Button(5, 26 + 20 + 4, "Personalise", Icons.EDIT);
+        Button buttonColorScheme = new Button(5, 26+20+4, "Personalise", Icons.EDIT);
         buttonColorScheme.setSize(90, 20);
         buttonColorScheme.setToolTip("Personalise", "Change the wallpaper, UI colors, and more!");
         buttonColorScheme.setClickListener((mouseX, mouseY, mouseButton) ->
@@ -246,7 +250,7 @@ public class SettingsApp extends SystemApp {
         Layout wallpaperLayout = new Menu("Wallpaper");
 
         // Wallpaper image.
-        var image = new com.ultreon.devices.api.app.component.Image(6, 29, 6 + 122, 29 + 70);
+        var image = new com.ultreon.devices.api.app.component.Image(6, 29, 6+122, 29+70);
         image.setBorderThickness(1);
         image.setBorderVisible(true);
         image.setImage(Objects.requireNonNull(getLaptop()).getCurrentWallpaper());
@@ -320,7 +324,7 @@ public class SettingsApp extends SystemApp {
             openDialog(dialog);
         });
         wallpaperLayout.addComponent(urlWallpaperBtn);
-        var wallpaperText = new Text("Wallpaper", image.left + 3, image.top + 3, image.componentWidth - 6);
+        var wallpaperText = new Text("Wallpaper", image.left+3, image.top+3, image.componentWidth-6);
         wallpaperText.setShadow(true);
         wallpaperText.setTextColor(new Color(getLaptop().getSettings().getColorScheme().getTextColor()));
         wallpaperLayout.addComponent(wallpaperText);
@@ -369,29 +373,6 @@ public class SettingsApp extends SystemApp {
         laptop.getTaskBar().setupApplications(laptop.getApplications());
     }
 
-    public ComboBox.Custom<Integer> createColorPicker(int left, int top) {
-        ComboBox.Custom<Integer> colorPicker = new ComboBox.Custom<>(left, top, 50, 100, 100);
-        colorPicker.setValue(Color.RED.getRGB());
-        colorPicker.setItemRenderer(new ItemRenderer<>() {
-            @Override
-            public void render(PoseStack pose, Integer integer, GuiComponent gui, Minecraft mc, int x, int y, int width, int height) {
-                if (integer != null) {
-                    Gui.fill(pose, x, y, x + width, y + height, integer);
-                }
-            }
-        });
-        colorPicker.setChangeListener((oldValue, newValue) ->
-        {
-            if (buttonColorSchemeApply != null) buttonColorSchemeApply.setEnabled(true);
-        });
-
-        Palette palette = new Palette(5, 5, colorPicker);
-        Layout layout = colorPicker.getLayout();
-        layout.addComponent(palette);
-
-        return colorPicker;
-    }
-
     public static class Menu extends Layout {
         private final String title;
 
@@ -408,6 +389,27 @@ public class SettingsApp extends SystemApp {
             mc.font.drawShadow(pose, title, x + 22, y + 6, Color.WHITE.getRGB());
             super.render(pose, laptop, mc, x, y, mouseX, mouseY, windowActive, partialTicks);
         }
+    }
+
+    public ComboBox.Custom<Integer> createColorPicker(int left, int top) {
+        ComboBox.Custom<Integer> colorPicker = new ComboBox.Custom<>(left, top, 50, 100, 100);
+        colorPicker.setValue(Color.RED.getRGB());
+        colorPicker.setItemRenderer(new ItemRenderer<>() {
+            @Override
+            public void render(PoseStack pose, Integer integer, GuiComponent gui, Minecraft mc, int x, int y, int width, int height) {
+                if (integer != null) {
+                    Gui.fill(pose, x, y, x + width, y + height, integer);
+                }
+            }
+        });
+        colorPicker.setChangeListener((oldValue, newValue) ->
+        {if (buttonColorSchemeApply != null) buttonColorSchemeApply.setEnabled(true);});
+
+        Palette palette = new Palette(5, 5, colorPicker);
+        Layout layout = colorPicker.getLayout();
+        layout.addComponent(palette);
+
+        return colorPicker;
     }
 
     public static class SettingsTrayItem extends TrayItem {

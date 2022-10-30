@@ -7,6 +7,7 @@ import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import com.ultreon.devices.block.LaptopBlock;
 import com.ultreon.devices.block.entity.LaptopBlockEntity;
+import com.ultreon.devices.core.laptop.client.ClientLaptop;
 import com.ultreon.devices.init.DeviceItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;

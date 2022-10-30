@@ -30,16 +30,6 @@ public class Device {
         this.name = name;
     }
 
-    public static Device fromTag(CompoundTag tag) {
-        Device device = new Device();
-        device.id = UUID.fromString(tag.getString("id"));
-        device.name = tag.getString("name");
-        if (tag.contains("pos", Tag.TAG_LONG)) {
-            device.pos = BlockPos.of(tag.getLong("pos"));
-        }
-        return device;
-    }
-
     @NotNull
     public UUID getId() {
         return id;
@@ -87,5 +77,15 @@ public class Device {
             tag.putLong("pos", pos.asLong());
         }
         return tag;
+    }
+
+    public static Device fromTag(CompoundTag tag) {
+        Device device = new Device();
+        device.id = UUID.fromString(tag.getString("id"));
+        device.name = tag.getString("name");
+        if (tag.contains("pos", Tag.TAG_LONG)) {
+            device.pos = BlockPos.of(tag.getLong("pos"));
+        }
+        return device;
     }
 }

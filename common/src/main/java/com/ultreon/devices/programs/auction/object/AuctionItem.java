@@ -9,8 +9,8 @@ public class AuctionItem {
     private final UUID id;
     private final ItemStack stack;
     private final int price;
-    private final UUID sellerId;
     private long timeLeft;
+    private final UUID sellerId;
 
     public AuctionItem(ItemStack stack, int price, long timeLeft, UUID sellerId) {
         this.id = UUID.randomUUID();

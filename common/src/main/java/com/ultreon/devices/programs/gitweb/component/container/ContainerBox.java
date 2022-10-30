@@ -48,7 +48,7 @@ public abstract class ContainerBox extends Component {
         {
             pose.translate(x + contentOffset, y, 0);
             pose.scale(0.5f, 0.5f, 0.5f);
-            RenderUtil.renderItem(x + contentOffset - 5, y - 4, icon, false);
+            RenderUtil.renderItem(x+contentOffset-5, y-4, icon, false);
         }
         pose.popPose();
 

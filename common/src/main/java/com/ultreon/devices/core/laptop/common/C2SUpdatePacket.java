@@ -1,5 +1,6 @@
 package com.ultreon.devices.core.laptop.common;
 
+import com.ultreon.devices.core.laptop.client.ClientLaptop;
 import com.ultreon.devices.core.laptop.server.ServerLaptop;
 import com.ultreon.devices.network.Packet;
 import dev.architectury.networking.NetworkManager;
@@ -24,7 +25,6 @@ public class C2SUpdatePacket extends Packet<C2SUpdatePacket> {
     public C2SUpdatePacket(FriendlyByteBuf buf) {
         this.nbt = buf.readNbt();
     }
-
     @Override
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeNbt(nbt);

@@ -17,9 +17,9 @@ import java.awt.*;
  * @author MrCrayfish
  */
 public class StandardLayout extends Layout {
+    protected Application app;
     private final String title;
     private final Layout previous;
-    protected Application app;
     private IIcon icon;
 
     public StandardLayout(String title, int width, int height, Application app, @Nullable Layout previous) {

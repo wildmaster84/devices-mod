@@ -59,7 +59,7 @@ public class ClientLaptopScreen extends Screen {
         super.render(poseStack, mouseX, mouseY, partialTick);
         renderBezels(poseStack, mouseX, mouseY, partialTick);
         poseStack.translate(posX, posY, 0);
-        laptop.render(poseStack, mouseX - posX, mouseY - posY, partialTick);
+        laptop.render(poseStack, mouseX-posX, mouseY-posY, partialTick);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class ClientLaptopScreen extends Screen {
         int posX = (width - ClientLaptop.DEVICE_WIDTH) / 2 + BORDER;
         int posY = (height - ClientLaptop.DEVICE_HEIGHT) / 2 + BORDER;
         super.mouseMoved(mouseX, mouseY);
-        laptop.mouseMoved(mouseX - posX, mouseY - posY);
+        laptop.mouseMoved(mouseX-posX, mouseY-posY);
         System.out.println(Arrays.toString(laptop.square));
     }
 }

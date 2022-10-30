@@ -1,19 +1,36 @@
 package com.ultreon.devices.core.laptop.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Matrix4f;
+import com.ultreon.devices.Devices;
+import com.ultreon.devices.Reference;
 import com.ultreon.devices.core.laptop.common.C2SUpdatePacket;
 import com.ultreon.devices.core.laptop.common.TaskBar;
+import com.ultreon.devices.core.laptop.server.ServerLaptop;
 import com.ultreon.devices.network.PacketHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.Screenshot;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ChestMenu;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
 import static com.ultreon.devices.core.laptop.client.ClientLaptopScreen.LAPTOP_GUI;
+import static net.minecraft.client.gui.GuiComponent.blit;
 
 
 // NO STATICS
@@ -23,10 +40,15 @@ public class ClientLaptop {
     public static final int SCREEN_HEIGHT = DEVICE_HEIGHT - 20;
     public static final int DEVICE_WIDTH = 384;
     public static final int SCREEN_WIDTH = DEVICE_WIDTH - 20;
-    public final double[] square = new double[2];
-    private UUID uuid;
-    private final TaskBar taskbar = new TaskBar(this);
 
+    private UUID uuid;
+    public final double[] square = new double[2];
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    private TaskBar taskbar = new TaskBar(this);
     public ClientLaptop() {
         //super(Component.translatable("laptop")); //todo
     }
@@ -65,9 +87,9 @@ public class ClientLaptop {
 
         Minecraft.getInstance().font.draw(pose, "New Laptop System 0.01% complete", 0, 0, 0xffffff);
         Gui.fill(pose, 0, 0, 10, 10, 0x2e2e2e);
-        taskbar.render(pose, this, Minecraft.getInstance(), 0, SCREEN_HEIGHT - 16, mouseX, mouseY, partialTicks);
+        taskbar.render(pose, this, Minecraft.getInstance(), 0, SCREEN_HEIGHT-16, mouseX, mouseY, partialTicks);
         System.out.println("x = " + square[0]);
-        Gui.fill(pose, (int) square[0], (int) square[1], (int) square[0] + 10, (int) square[1] + 10, 0xffffff);
+        Gui.fill(pose, (int) square[0], (int) square[1], (int) square[0]+10, (int) square[1]+10, 0xffffff);
     }
 
     public void mouseMoved(double mouseX, double mouseY) {
@@ -79,9 +101,5 @@ public class ClientLaptop {
 
     public UUID getUuid() {
         return uuid;
-    }
-
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
     }
 }

@@ -66,17 +66,6 @@ public class File {
     }
 
     /**
-     * Converts a tag compound to a file instance.
-     *
-     * @param name the name of the file
-     * @param tag  the tag compound from {@link #toTag()}
-     * @return a file instance
-     */
-    public static File fromTag(String name, CompoundTag tag) {
-        return new File(name, tag.getString("openingApp"), tag.getCompound("data"));
-    }
-
-    /**
      * Gets the name of the file
      *
      * @return the file name
@@ -187,6 +176,15 @@ public class File {
     }
 
     /**
+     * Sets the data for the file. This method is asynchronous, so data will not be set immediately.
+     *
+     * @param data the data for the file
+     */
+    public void setData(CompoundTag data) {
+        setData(data, null);
+    }
+
+    /**
      * Sets the data for the file and allows a callback to be specified. This method is
      * asynchronous, so data will not be set immediately. The callback is fired when the data is
      * set, however it is not necessarily successful.
@@ -231,15 +229,6 @@ public class File {
     @Nullable
     public CompoundTag getData() {
         return data.copy();
-    }
-
-    /**
-     * Sets the data for the file. This method is asynchronous, so data will not be set immediately.
-     *
-     * @param data the data for the file
-     */
-    public void setData(CompoundTag data) {
-        setData(data, null);
     }
 
     /**
@@ -456,6 +445,17 @@ public class File {
         tag.putString("openingApp", openingApp);
         tag.put("data", data);
         return tag;
+    }
+
+    /**
+     * Converts a tag compound to a file instance.
+     *
+     * @param name the name of the file
+     * @param tag  the tag compound from {@link #toTag()}
+     * @return a file instance
+     */
+    public static File fromTag(String name, CompoundTag tag) {
+        return new File(name, tag.getString("openingApp"), tag.getCompound("data"));
     }
 
     @Override

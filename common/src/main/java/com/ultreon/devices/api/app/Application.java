@@ -11,6 +11,8 @@ import com.ultreon.devices.core.io.FileSystem;
 import com.ultreon.devices.object.AppInfo;
 import com.ultreon.devices.util.DataHandler;
 import com.ultreon.devices.util.GLHelper;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -25,16 +27,25 @@ import java.util.Objects;
  */
 @SuppressWarnings("SpellCheckingInspection")
 public abstract class Application extends Wrappable implements DataHandler {
-    private final Layout defaultLayout = new Layout();
     @SuppressWarnings("FieldMayBeFinal")
     protected AppInfo info = null;
+    public void setInfo(AppInfo info) {
+        if (StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().equals(Devices.class)) {
+            this.info = info;
+            return;
+        }
+        throw new IllegalStateException();
+    }
+    private final Layout defaultLayout = new Layout();
     private BlockPos laptopPositon;
     private int width, height;
     private Layout currentLayout;
+
     /**
      * If set to true, will update NBT data for Application
      */
     private boolean needsDataUpdate = false;
+
     /**
      * If set to true, will update layout
      */
@@ -42,14 +53,6 @@ public abstract class Application extends Wrappable implements DataHandler {
 
     public AppInfo getInfo() {
         return info;
-    }
-
-    public void setInfo(AppInfo info) {
-        if (StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().equals(Devices.class)) {
-            this.info = info;
-            return;
-        }
-        throw new IllegalStateException();
     }
 
     /**

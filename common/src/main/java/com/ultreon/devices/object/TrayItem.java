@@ -20,12 +20,12 @@ public class TrayItem {
     public void tick() {
     }
 
-    public IIcon getIcon() {
-        return icon;
-    }
-
     public void setIcon(IIcon icon) {
         this.icon = icon;
+    }
+
+    public IIcon getIcon() {
+        return icon;
     }
 
     public void setClickListener(ClickListener listener) {

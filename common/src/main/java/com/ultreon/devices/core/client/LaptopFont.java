@@ -1,9 +1,13 @@
 package com.ultreon.devices.core.client;
 
+import com.ultreon.devices.Devices;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+
 /**
  * @author MrCrayfish
  */
-public class LaptopFont {//} extends Font {
+public class LaptopFont{//} extends Font {
     private boolean debug = false;
 
 //    public LaptopFont(Minecraft mc) {
@@ -37,11 +41,11 @@ public class LaptopFont {//} extends Font {
 //        return super.renderUnicodeChar(c, italic);
 //    }
 
-    public boolean isDebug() {
-        return debug;
-    }
-
     public void setDebug(boolean debug) {
         this.debug = debug;
+    }
+
+    public boolean isDebug() {
+        return debug;
     }
 }

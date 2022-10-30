@@ -25,17 +25,6 @@ public class NetworkDevice extends Device {
         super(id, name);
     }
 
-    public static NetworkDevice fromTag(CompoundTag tag) {
-        NetworkDevice device = new NetworkDevice();
-        device.id = UUID.fromString(tag.getString("id"));
-        device.name = tag.getString("name");
-
-        if (tag.contains("pos", Tag.TAG_LONG)) {
-            device.pos = BlockPos.of(tag.getLong("pos"));
-        }
-        return device;
-    }
-
     public boolean isConnected(Level level) {
         if (pos == null) {
             return false;
@@ -69,5 +58,16 @@ public class NetworkDevice extends Device {
             tag.putLong("pos", pos.asLong());
         }
         return tag;
+    }
+
+    public static NetworkDevice fromTag(CompoundTag tag) {
+        NetworkDevice device = new NetworkDevice();
+        device.id = UUID.fromString(tag.getString("id"));
+        device.name = tag.getString("name");
+
+        if (tag.contains("pos", Tag.TAG_LONG)) {
+            device.pos = BlockPos.of(tag.getLong("pos"));
+        }
+        return device;
     }
 }

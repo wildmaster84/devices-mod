@@ -18,7 +18,6 @@ public class Canvas extends Component {
     public static final Tool BUCKET = new ToolBucket();
     public static final Tool ERASER = new ToolEraser();
     public static final Tool EYE_DROPPER = new ToolEyeDropper();
-    private final int gridColor = new Color(200, 200, 200, 150).getRGB();
     public int[] pixels;
     public Picture picture;
     private Tool currentTool;
@@ -27,6 +26,7 @@ public class Canvas extends Component {
     private boolean drawing = false;
     private boolean showGrid = false;
     private boolean existingImage = false;
+    private final int gridColor = new Color(200, 200, 200, 150).getRGB();
 
     public Canvas(int left, int top) {
         super(left, top);
@@ -165,7 +165,9 @@ public class Canvas extends Component {
 
     public int[] copyPixels() {
         int[] copiedPixels = new int[pixels.length];
-        System.arraycopy(pixels, 0, copiedPixels, 0, pixels.length);
+        for (int i = 0; i < pixels.length; i++) {
+            copiedPixels[i] = pixels[i];
+        }
         return copiedPixels;
     }
 

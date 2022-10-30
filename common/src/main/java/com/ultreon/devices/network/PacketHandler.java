@@ -40,23 +40,23 @@ public class PacketHandler {
             INSTANCE.sendToServer(message);
         } else {
             Minecraft.getInstance().doRunTask(() ->
-                    message.onMessage(() -> new NetworkManager.PacketContext() {
+            message.onMessage(() -> new NetworkManager.PacketContext() {
 
-                        @Override
-                        public Player getPlayer() {
-                            return Minecraft.getInstance().player;
-                        }
+                @Override
+                public Player getPlayer() {
+                    return Minecraft.getInstance().player;
+                }
 
-                        @Override
-                        public void queue(Runnable runnable) {
+                @Override
+                public void queue(Runnable runnable) {
 
-                        }
+                }
 
-                        @Override
-                        public Env getEnvironment() {
-                            return Env.SERVER;
-                        }
-                    }));
+                @Override
+                public Env getEnvironment() {
+                    return Env.SERVER;
+                }
+            }));
         }
     }
 

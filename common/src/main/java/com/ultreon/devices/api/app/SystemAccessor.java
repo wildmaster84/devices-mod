@@ -2,5 +2,5 @@ package com.ultreon.devices.api.app;
 
 public interface SystemAccessor {
 
-    void sendSystem(System system);
+    public void sendSystem(System system);
 }

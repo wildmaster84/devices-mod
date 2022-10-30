@@ -19,12 +19,10 @@ public class PrintingManager {
 
     @Environment(EnvType.CLIENT)
     private static Map<String, IPrint.Renderer> registeredRenders;
-
     @PlatformOnly("fabric")
     public static Map<String, IPrint.Renderer> getRegisteredRenders() {
         return registeredRenders;
     }
-
     @PlatformOnly("fabric")
     public static void setRegisteredRenders(Map<String, IPrint.Renderer> registeredRenders) {
         PrintingManager.registeredRenders = registeredRenders;

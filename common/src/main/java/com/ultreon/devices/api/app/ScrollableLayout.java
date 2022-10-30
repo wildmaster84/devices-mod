@@ -14,9 +14,10 @@ import java.awt.*;
  * @author MrCrayfish
  */
 public class ScrollableLayout extends Layout {
-    private final int visibleHeight;
     protected int placeholderColor = new Color(1f, 1f, 1f, 0.35f).getRGB();
+
     protected int scroll;
+    private final int visibleHeight;
     private int scrollSpeed = 5;
 
     public ScrollableLayout(int width, int height, int visibleHeight) {
@@ -35,20 +36,8 @@ public class ScrollableLayout extends Layout {
      * @param top  how many pixels from the top
      */
     public ScrollableLayout(int left, int top, int width, int height, int visibleHeight) {
-        super(left, top, Math.max(13, width), Math.max(1, height));
+        super(left,  top, Math.max(13, width), Math.max(1, height));
         this.visibleHeight = visibleHeight;
-    }
-
-    public static ScrollableLayout create(int left, int top, int width, int visibleHeight, String text) {
-        return create(left, top, width, visibleHeight, text, false);
-    }
-
-    public static ScrollableLayout create(int left, int top, int width, int visibleHeight, String text, boolean shadow) {
-        Text t = new Text(text, 0, 0, width);
-        t.setShadow(shadow);
-        ScrollableLayout layout = new ScrollableLayout(left, top, t.getWidth(), t.getHeight(), visibleHeight);
-        layout.addComponent(t);
-        return layout;
     }
 
     @Override
@@ -122,6 +111,18 @@ public class ScrollableLayout extends Layout {
         if (GuiHelper.isMouseWithin(mouseX, mouseY, xPosition, yPosition, width, visibleHeight)) {
             super.handleMouseDrag(mouseX, mouseY, mouseButton);
         }
+    }
+
+    public static ScrollableLayout create(int left, int top, int width, int visibleHeight, String text) {
+        return create(left, top, width, visibleHeight, text, false);
+    }
+
+    public static ScrollableLayout create(int left, int top, int width, int visibleHeight, String text, boolean shadow) {
+        Text t = new Text(text, 0, 0, width);
+        t.setShadow(shadow);
+        ScrollableLayout layout = new ScrollableLayout(left, top, t.getWidth(), t.getHeight(), visibleHeight);
+        layout.addComponent(t);
+        return layout;
     }
 
     public void setScrollSpeed(int scrollSpeed) {

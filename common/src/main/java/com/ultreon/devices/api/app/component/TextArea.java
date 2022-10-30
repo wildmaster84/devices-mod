@@ -861,10 +861,6 @@ public class TextArea extends Component {
         this.textColor = color.getRGB();
     }
 
-    public Color getBackgroundColor() {
-        return new Color(backgroundColor);
-    }
-
     /**
      * Sets the background color for this component
      *
@@ -872,6 +868,10 @@ public class TextArea extends Component {
      */
     public void setBackgroundColor(Color color) {
         this.backgroundColor = color.getRGB();
+    }
+
+    public Color getBackgroundColor() {
+        return new Color(backgroundColor);
     }
 
     public int getBackgroundColorRGB() {

@@ -17,17 +17,6 @@ import java.util.Map;
  * @author MrCrayfish
  */
 public abstract class ContainerModule extends Module {
-    protected static ItemStack getItem(Map<String, String> data, String key) {
-        if (data.containsKey(key)) {
-            try {
-                return ItemStack.of(TagParser.parseTag(data.get(key)));
-            } catch (CommandSyntaxException e) {
-                return ItemStack.EMPTY;
-            }
-        }
-        return ItemStack.EMPTY;
-    }
-
     @Override
     public String[] getRequiredData() {
         return new String[0];
@@ -79,4 +68,15 @@ public abstract class ContainerModule extends Module {
     public abstract int getHeight();
 
     public abstract ContainerBox createContainer(Map<String, String> data);
+
+    protected static ItemStack getItem(Map<String, String> data, String key) {
+        if (data.containsKey(key)) {
+            try {
+                return ItemStack.of(TagParser.parseTag(data.get(key)));
+            } catch (CommandSyntaxException e) {
+                return ItemStack.EMPTY;
+            }
+        }
+        return ItemStack.EMPTY;
+    }
 }

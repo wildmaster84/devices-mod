@@ -42,6 +42,12 @@ public class Button extends Component {
     protected int iconSourceHeight;
     protected int iconUHeight = iconHeight;
     protected int iconVWidth = iconWidth;
+
+    public void setIconU(int u, int v) {
+        this.iconVWidth = u;
+        this.iconUHeight = v;
+    }
+
     protected ClickListener clickListener = null;
 
     /**
@@ -101,6 +107,11 @@ public class Button extends Component {
         this.width = buttonWidth;
         this.height = buttonHeight;
         this.setIcon(icon);
+    }
+
+    public void setIconSource(int iconSourceWidth, int iconSourceHeight) {
+        this.iconSourceWidth = iconSourceWidth;
+        this.iconSourceHeight = iconSourceHeight;
     }
 
     /**
@@ -191,16 +202,6 @@ public class Button extends Component {
         int width = fontRenderer.width(text);
         Minecraft.getInstance().options.forceUnicodeFont().set(flag);
         return width;
-    }
-
-    public void setIconU(int u, int v) {
-        this.iconVWidth = u;
-        this.iconUHeight = v;
-    }
-
-    public void setIconSource(int iconSourceWidth, int iconSourceHeight) {
-        this.iconSourceWidth = iconSourceWidth;
-        this.iconSourceHeight = iconSourceHeight;
     }
 
     @Override
@@ -363,7 +364,7 @@ public class Button extends Component {
         this.iconSourceWidth = 256;
         this.iconSourceHeight = 256;
         this.iconUHeight = iconHeight;
-        this.iconVWidth = iconWidth;
+        this.iconVWidth= iconWidth;
         updateSize();
     }
 
@@ -376,7 +377,7 @@ public class Button extends Component {
         this.iconSourceWidth = icon.getGridWidth() * icon.getIconSize();
         this.iconSourceHeight = icon.getGridHeight() * icon.getIconSize();
         this.iconUHeight = iconHeight;
-        this.iconVWidth = iconWidth;
+        this.iconVWidth= iconWidth;
         updateSize();
     }
 

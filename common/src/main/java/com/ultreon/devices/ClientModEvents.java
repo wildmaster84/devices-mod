@@ -1,8 +1,8 @@
 package com.ultreon.devices;
 
+import com.ultreon.devices.block.entity.renderer.*;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.ultreon.devices.api.ApplicationManager;
-import com.ultreon.devices.block.entity.renderer.*;
 import com.ultreon.devices.core.Laptop;
 import com.ultreon.devices.init.DeviceBlockEntities;
 import com.ultreon.devices.init.DeviceBlocks;
@@ -33,6 +33,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -67,6 +68,21 @@ public class ClientModEvents {
         registerRenderers();
         registerLayerDefinitions();
         generateIconAtlas();
+    }
+
+    public static class ReloaderListener implements PreparableReloadListener {
+        @NotNull
+        @Override
+        public CompletableFuture<Void> reload(@NotNull PreparableReloadListener.PreparationBarrier preparationBarrier, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller preparationsProfiler, @NotNull ProfilerFiller reloadProfiler, @NotNull Executor backgroundExecutor, @NotNull Executor gameExecutor) {
+            LOGGER.debug("Reloading resources from the Device Mod.");
+
+            return CompletableFuture.runAsync(() -> {
+                if (ApplicationManager.getAllApplications().size() > 0) {
+                    ApplicationManager.getAllApplications().forEach(AppInfo::reload);
+                    generateIconAtlas();
+                }
+            }, gameExecutor);
+        }
     }
 
     private static void registerRenderLayers() {
@@ -137,6 +153,8 @@ public class ClientModEvents {
                     ImageIO.write(atlas, "png", Paths.get("it.png").toFile());
                 } catch (Exception e) {
                     throw new RuntimeException(e);
+                } finally {
+                 //   System.exit(-1);
                 }
 
                 ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -176,17 +194,17 @@ public class ClientModEvents {
         imageWriter.finish();
     }
 
-    @ExpectPlatform
-    public static void setRenderLayer(Block block, RenderType type) {
-        throw new AssertionError();
-    }
-
 //    @ExpectPlatform
 //    private static void updateIcon(AppInfo info, int iconU, int iconV) {
 //        throw new AssertionError();
 ////        ObfuscationReflectionHelper.setPrivateValue(AppInfo.class, info, iconU, "iconU");
 ////        ObfuscationReflectionHelper.setPrivateValue(AppInfo.class, info, iconV, "iconV");
 //    }
+
+    @ExpectPlatform
+    public static void setRenderLayer(Block block, RenderType type) {
+        throw new AssertionError();
+    }
 
     public static void registerRenderers() {
         LOGGER.info("Registering renderers.");
@@ -201,20 +219,5 @@ public class ClientModEvents {
     public static void registerLayerDefinitions() {
         LOGGER.info("Registering layer definitions.");
 //        EntityModelLayerRegistry.register(PrinterRenderer.PaperModel.LAYER_LOCATION, PrinterRenderer.PaperModel::createBodyLayer);
-    }
-
-    public static class ReloaderListener implements PreparableReloadListener {
-        @NotNull
-        @Override
-        public CompletableFuture<Void> reload(@NotNull PreparableReloadListener.PreparationBarrier preparationBarrier, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller preparationsProfiler, @NotNull ProfilerFiller reloadProfiler, @NotNull Executor backgroundExecutor, @NotNull Executor gameExecutor) {
-            LOGGER.debug("Reloading resources from the Device Mod.");
-
-            return CompletableFuture.runAsync(() -> {
-                if (ApplicationManager.getAllApplications().size() > 0) {
-                    ApplicationManager.getAllApplications().forEach(AppInfo::reload);
-                    generateIconAtlas();
-                }
-            }, gameExecutor);
-        }
     }
 }

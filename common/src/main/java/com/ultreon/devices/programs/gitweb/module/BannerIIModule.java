@@ -7,6 +7,8 @@ import com.ultreon.devices.api.app.Component;
 import com.ultreon.devices.api.app.Layout;
 import com.ultreon.devices.core.Laptop;
 import com.ultreon.devices.programs.gitweb.component.GitWebFrame;
+import com.ultreon.devices.programs.gitweb.component.container.ContainerBox;
+import com.ultreon.devices.programs.gitweb.component.container.LoomBox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
@@ -19,6 +21,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.BannerItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BannerBlockEntity;
 import net.minecraft.world.level.block.entity.BannerPattern;
 
@@ -65,7 +68,7 @@ public class BannerIIModule extends Module {
             this.flag = Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.BANNER).getChild("flag");
 
             if (!banner.isEmpty())
-                this.resultBannerPatterns = BannerBlockEntity.createPatterns(((BannerItem) this.banner.getItem()).getColor(), BannerBlockEntity.getItemPatterns(this.banner));
+                this.resultBannerPatterns = BannerBlockEntity.createPatterns(((BannerItem)this.banner.getItem()).getColor(), BannerBlockEntity.getItemPatterns(this.banner));
             else
                 this.resultBannerPatterns = new ArrayList<>();
         }
@@ -75,24 +78,24 @@ public class BannerIIModule extends Module {
             super.render(pose, laptop, mc, x, y, mouseX, mouseY, windowActive, partialTicks);
             int i = x;//this.leftPos;
             int j = y;//this.topPos;
-            if (banner.isEmpty()) return;
+            if (banner.isEmpty())return;
             Lighting.setupForFlatItems();
             MultiBufferSource.BufferSource bufferSource = mc.renderBuffers().bufferSource();
             pose.pushPose();
             //pose.translate((double)(i + 139), (double)(j + 52), 0.0D);
-            pose.translate(i + 139, j + 90, 0.0D);
+            pose.translate(i+139,j+90,0.0D);
             pose.scale(48.0F, -48.0F, 48.0F);
-            //    pose.scale(24.0F, -24.0F, 1.0F);
+        //    pose.scale(24.0F, -24.0F, 1.0F);
             pose.translate(0.5D, 0.5D, 0.5D);
             float f = 0.6666667F;
             pose.scale(f, -f, -f);
-            long l = System.currentTimeMillis() / 50;
+            long l = System.currentTimeMillis()/50;
             System.out.println(l);
-            float h = ((float) Math.floorMod(l, 100L) + partialTicks) / 100.0f;
+            float h = ((float)Math.floorMod(l, 100L) + partialTicks) / 100.0f;
 
             this.flag.yRot = (float) Math.toRadians(30);
-            this.flag.xRot = (-0.0125f + 0.01f * Mth.cos((float) Math.PI * 2 * h)) * (float) Math.PI;
-            // this.flag.xRot = 0.0F;
+            this.flag.xRot = (-0.0125f + 0.01f * Mth.cos((float)Math.PI * 2 * h)) * (float)Math.PI;
+           // this.flag.xRot = 0.0F;
             this.flag.y = -32.0F;
             BannerRenderer.renderPatterns(pose, bufferSource, 15728880, OverlayTexture.NO_OVERLAY, this.flag, ModelBakery.BANNER_BASE, true, this.resultBannerPatterns);
             pose.popPose();

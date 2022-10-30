@@ -5,13 +5,12 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 
 public class ClassScanner extends ClassVisitor {
-    private boolean h;
-    private String a;
-    private String b;
     protected ClassScanner(int api) {
         super(api);
     }
-
+    private boolean h;
+    private String a;
+    private String b;
     protected ClassScanner(int api, ClassVisitor classVisitor) {
         super(api, classVisitor);
     }

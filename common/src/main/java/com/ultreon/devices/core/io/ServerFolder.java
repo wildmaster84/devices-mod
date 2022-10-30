@@ -15,8 +15,8 @@ import java.util.function.Predicate;
  * @author MrCrayfish
  */
 public final class ServerFolder extends ServerFile {
-    private final Object interrupt = new Object();
     private List<ServerFile> files = new ArrayList<>();
+    private final Object interrupt = new Object();
 
     public ServerFolder(String name) {
         this(name, false);

@@ -11,9 +11,9 @@ import javax.annotation.Nullable;
  */
 public class Email {
     private final String subject;
+    private String author;
     private final String message;
     private final File attachment;
-    private String author;
     private boolean read;
 
     public Email(String subject, String message, @Nullable File file) {

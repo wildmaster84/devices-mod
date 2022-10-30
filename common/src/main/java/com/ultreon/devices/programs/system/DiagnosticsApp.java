@@ -14,9 +14,10 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 
 public final class DiagnosticsApp extends SystemApp {
+    private String messageText;
     private final AppInfo appInfo;
     private final Application application;
-    private String messageText;
+
     private ClickListener positiveListener;
 
     public DiagnosticsApp() {
