@@ -3,7 +3,6 @@ package com.ultreon.devices.util;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import org.jetbrains.annotations.ApiStatus;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -61,7 +60,6 @@ public class GLHelper {
     /**
      * Do not call! Used for core only.
      */
-    @ApiStatus.Internal
     public static void clearScissorStack() {
         scissorStack.clear();
     }

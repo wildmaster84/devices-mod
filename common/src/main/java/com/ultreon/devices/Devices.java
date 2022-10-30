@@ -67,7 +67,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import org.checkerframework.common.value.qual.BoolVal;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -90,7 +89,6 @@ public class Devices {
 
     public static final List<SiteRegistration> SITE_REGISTRATIONS = new ProtectedArrayList<>();
 
-    @ApiStatus.Internal
     public static final Logger LOGGER = LoggerFactory.getLogger("Devices Mod");
     public static final boolean DEVELOPER_MODE = false;
     public static final String VULNERABILITIES_URL = "https://jab125.com/gitweb/vulnerabilities.php";
@@ -121,7 +119,6 @@ public class Devices {
      * <p>
      * NOTE: Internal API
      */
-    @ApiStatus.Internal
     public static void init() {
         if (ArchitecturyTarget.getCurrentTarget().equals("fabric")) {
             preInit();
@@ -284,7 +281,6 @@ public class Devices {
      * <p>
      * NOTE: Internal API
      */
-    @ApiStatus.Internal
     public static void preInit() {
         if (DEVELOPER_MODE) {
             Platform.isDevelopmentEnvironment();
@@ -324,7 +320,6 @@ public class Devices {
      * <p>
      * NOTE: Internal API
      */
-    @ApiStatus.Internal
     public static void serverSetup() {
         LOGGER.info("Doing some server setup.");
     }
@@ -334,7 +329,6 @@ public class Devices {
      * <p>
      * NOTE: Internal API
      */
-    @ApiStatus.Internal
     public static void loadComplete() {
         LOGGER.info("Doing some load complete handling.");
     }
@@ -424,7 +418,6 @@ public class Devices {
     /**
      * DO NOT CALL
      */
-    @ApiStatus.Internal
     @Nullable
     public static Application registerApplication(ResourceLocation identifier, ApplicationSupplier app) {
         if ("minecraft".equals(identifier.getNamespace())) {
@@ -665,23 +658,19 @@ public class Devices {
         return new ResourceLocation(MOD_ID, id);
     }
 
-    @ApiStatus.Internal
     private static class ProtectedArrayList<T> extends ArrayList<T> {
         private final StackWalker stackWalker = StackWalker.getInstance(EnumSet.of(StackWalker.Option.RETAIN_CLASS_REFERENCE));
         private boolean frozen = false;
 
-        @ApiStatus.Internal
         private void freeze() {
             frozen = true;
         }
 
-        @ApiStatus.Internal
         private void freezeCheck() {
             if (frozen) throw new IllegalStateException("Already frozen!");
         }
 
         @Override
-        @ApiStatus.Internal
         public boolean add(T t) {
             freezeCheck();
             if (stackWalker.getCallerClass() != Devices.class) {
@@ -691,7 +680,6 @@ public class Devices {
         }
 
         @Override
-        @ApiStatus.Internal
         public boolean addAll(Collection<? extends T> c) {
             freezeCheck();
             if (stackWalker.getCallerClass() != Devices.class) {
@@ -701,7 +689,6 @@ public class Devices {
         }
 
         @Override
-        @ApiStatus.Internal
         public void add(int index, T element) {
             freezeCheck();
             if (stackWalker.getCallerClass() != Devices.class) {
@@ -711,7 +698,6 @@ public class Devices {
         }
 
         @Override
-        @ApiStatus.Internal
         protected void removeRange(int fromIndex, int toIndex) {
             freezeCheck();
             if (stackWalker.getCallerClass() != Devices.class) {
@@ -721,7 +707,6 @@ public class Devices {
         }
 
         @Override
-        @ApiStatus.Internal
         public boolean remove(Object o) {
             freezeCheck();
             if (stackWalker.getCallerClass() != Devices.class) {
@@ -731,7 +716,6 @@ public class Devices {
         }
 
         @Override
-        @ApiStatus.Internal
         public boolean removeAll(Collection<?> c) {
             freezeCheck();
             if (stackWalker.getCallerClass() != Devices.class) {
@@ -741,7 +725,6 @@ public class Devices {
         }
 
         @Override
-        @ApiStatus.Internal
         public boolean removeIf(Predicate<? super T> filter) {
             freezeCheck();
             if (stackWalker.getCallerClass() != Devices.class) {
@@ -751,7 +734,6 @@ public class Devices {
         }
 
         @Override
-        @ApiStatus.Internal
         public T remove(int index) {
             freezeCheck();
             if (stackWalker.getCallerClass() != Devices.class) {
@@ -761,16 +743,13 @@ public class Devices {
         }
     }
 
-    @ApiStatus.Internal
     @SuppressWarnings("UnusedReturnValue")
     private static class SiteRegisterStack extends Stack<Object> {
-        @ApiStatus.Internal
         public Object push() {
             return super.push(new Object());
         }
 
         @Override
-        @ApiStatus.Internal
         public synchronized Object pop() {
             Object pop = super.pop();
             if (isEmpty()) {

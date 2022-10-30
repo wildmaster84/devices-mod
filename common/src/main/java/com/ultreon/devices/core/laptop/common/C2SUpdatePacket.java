@@ -6,7 +6,6 @@ import dev.architectury.networking.NetworkManager;
 import net.fabricmc.api.EnvType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -20,8 +19,7 @@ public class C2SUpdatePacket extends Packet<C2SUpdatePacket> {
         this.nbt.putString("type", type);
         this.nbt.put("data", nbt);
     }
-
-    @ApiStatus.Internal // do not call
+ // do not call
     public C2SUpdatePacket(FriendlyByteBuf buf) {
         this.nbt = buf.readNbt();
     }
