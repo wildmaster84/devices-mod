@@ -20,6 +20,7 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -41,6 +42,7 @@ public class ClientModEvents {
     private static final Marker SETUP = MarkerFactory.getMarker("SETUP");
     private static final Logger LOGGER = Devices.LOGGER;
 
+    @ApiStatus.Internal
     public static void clientSetup() {
         LOGGER.info("Doing some client setup.");
 
@@ -69,6 +71,7 @@ public class ClientModEvents {
         generateIconAtlas();
     }
 
+    @ApiStatus.Internal
     public static class ReloaderListener implements PreparableReloadListener {
         private static final Marker MARKER = MarkerFactory.getMarker("ReloadListener");
 
@@ -86,6 +89,7 @@ public class ClientModEvents {
         }
     }
 
+    @ApiStatus.Internal
     private static void registerRenderLayers() {
         if (true) return; // FIXME: Is this even needed?
         DeviceBlocks.getAllLaptops().forEach(block -> {
@@ -107,6 +111,7 @@ public class ClientModEvents {
         RenderTypeRegistry.register(RenderType.cutout(), DeviceBlocks.PAPER.get());
     }
 
+    @ApiStatus.Internal
     private static void generateIconAtlas() {
         final int ICON_SIZE = 14;
         var imageWriter = new Object() {
@@ -200,11 +205,13 @@ public class ClientModEvents {
 ////        ObfuscationReflectionHelper.setPrivateValue(AppInfo.class, info, iconV, "iconV");
 //    }
 
+    @ApiStatus.Internal
     @ExpectPlatform
     public static void setRenderLayer(Block block, RenderType type) {
         throw new AssertionError();
     }
 
+    @ApiStatus.Internal
     public static void registerRenderers() {
         LOGGER.info("Registering renderers.");
 
@@ -215,6 +222,7 @@ public class ClientModEvents {
         BlockEntityRendererRegistry.register(DeviceBlockEntities.SEAT.get(), OfficeChairRenderer::new);
     }
 
+    @ApiStatus.Internal
     public static void registerLayerDefinitions() {
         LOGGER.info("Registering layer definitions.");
 //        EntityModelLayerRegistry.register(PrinterRenderer.PaperModel.LAYER_LOCATION, PrinterRenderer.PaperModel::createBodyLayer);

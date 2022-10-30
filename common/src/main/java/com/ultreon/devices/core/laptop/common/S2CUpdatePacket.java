@@ -6,6 +6,7 @@ import dev.architectury.networking.NetworkManager;
 import net.fabricmc.api.EnvType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -20,7 +21,8 @@ public class S2CUpdatePacket extends Packet<S2CUpdatePacket> {
         this.nbt.putString("type", type);
         this.nbt.put("data", nbt);
     }
- // do not call
+
+    @ApiStatus.Internal // do not call
     public S2CUpdatePacket(FriendlyByteBuf buf) {
         this.nbt = buf.readNbt();
     }

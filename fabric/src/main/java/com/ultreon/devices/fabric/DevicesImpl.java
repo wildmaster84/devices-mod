@@ -6,11 +6,13 @@ import com.ultreon.devices.api.print.PrintingManager;
 import com.ultreon.devices.core.Laptop;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@ApiStatus.Internal
 public class DevicesImpl {
     public static List<Application> getAPPLICATIONS() {
         return Laptop.getApplicationsForFabric();

@@ -3,6 +3,7 @@ package com.ultreon.devices;
 import com.ultreon.devices.init.DeviceItems;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -18,6 +19,7 @@ public class DeviceTab extends CreativeModeTab {
      *
      * @param label the creative tab label.
      */
+    @ApiStatus.Internal
     public DeviceTab(String label) {
         super(0, "A");
         throw new AssertionError();

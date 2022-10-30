@@ -11,18 +11,21 @@ import com.ultreon.devices.programs.snake.SnakeApp;
 import com.ultreon.devices.programs.system.*;
 import com.ultreon.devices.programs.themes.ThemesApp;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Builtin Apps initializer.
  *
  * @author Jab125
  */
+@ApiStatus.Internal
 public class BuiltinApps {
     /**
      * Register the builtin apps.
      * <p>
      * NOTE: Internal API
      */
+    @ApiStatus.Internal
     public static void registerBuiltinApps() {
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "diagnostics"), () -> DiagnosticsApp::new, true);
         ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "settings"), () -> SettingsApp::new, true);

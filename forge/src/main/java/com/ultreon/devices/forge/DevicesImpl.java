@@ -5,10 +5,12 @@ import com.ultreon.devices.api.print.IPrint;
 import com.ultreon.devices.api.print.PrintingManager;
 import com.ultreon.devices.core.Laptop;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 import java.util.Map;
 
+@ApiStatus.Internal
 public class DevicesImpl {
     public static List<Application> getAPPLICATIONS() {
         return ObfuscationReflectionHelper.getPrivateValue(Laptop.class, null, "APPLICATIONS");
