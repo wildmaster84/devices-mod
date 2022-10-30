@@ -81,45 +81,18 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
-/**
- * Devices Mod central main class for every modding platform.
- */
 public class Devices {
-    /**
-     * The Devices Mod's id.
-     * Do I literally need to explain that?
-     */
     public static final String MOD_ID = "devices";
 
-    /**
-     * The creative mode tab of the mod.
-     */
     public static final CreativeModeTab TAB_DEVICE = CreativeTabRegistry.create(id("devices_tab_device"), () -> new ItemStack(DeviceItems.RED_LAPTOP.get()));
 
-    /**
-     * Get the mod's registries.
-     */
     public static final Supplier<Registries> REGISTRIES = Suppliers.memoize(() -> Registries.get(MOD_ID));
 
-    /**
-     * Get the site registrations.
-     */
     public static final List<SiteRegistration> SITE_REGISTRATIONS = new ProtectedArrayList<>();
 
-    /**
-     * Get the mod's logger.
-     */
     @ApiStatus.Internal
     public static final Logger LOGGER = LoggerFactory.getLogger("Devices Mod");
-
-    /**
-     * Get whether the mod is in developer mode currently.
-     */
     public static final boolean DEVELOPER_MODE = false;
-
-    /**
-     * Get the url pointing to the data for the vulnerabilities.
-     */
     public static final String VULNERABILITIES_URL = "https://jab125.com/gitweb/vulnerabilities.php";
     private static final Pattern DEV_PREVIEW_PATTERN = Pattern.compile("\\d+\\.\\d+\\.\\d+-dev\\d+");
     private static final boolean IS_DEV_PREVIEW = DEV_PREVIEW_PATTERN.matcher(Reference.VERSION).matches();
