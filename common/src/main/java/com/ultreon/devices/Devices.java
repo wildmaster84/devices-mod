@@ -580,6 +580,7 @@ public class Devices {
                 }
             } else {
                 LOGGER.error("Error occurred when loading site registrations at: " + url);
+                return;
             }
             SITE_REGISTER_STACK.pop();
         });

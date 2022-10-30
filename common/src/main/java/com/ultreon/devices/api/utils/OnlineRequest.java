@@ -8,6 +8,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -43,6 +46,21 @@ public class OnlineRequest {
             instance = new OnlineRequest();
         }
         return instance;
+    }
+
+    public static void checkURLForSuspicions(URL url) throws IOException {
+        System.out.println(url.getHost());
+        if (!isSafe(url.getHost())) {
+            throw new IOException();
+        }
+    }
+
+    // ignore that
+    private static boolean isSafe(String host) {
+        return switch (host) {
+            case "ultreon.gitlab.io", "cdn.discordapp.com", "jab125.com", "raw.githubusercontent.com", "github.com", "i.imgur.com", "avatars1.githubusercontent.com" -> true;
+            default -> false;
+        };
     }
 
     private void start() {
@@ -96,6 +114,14 @@ public class OnlineRequest {
 
                 while (!requests.isEmpty()) {
                     RequestWrapper wrapper = requests.poll();
+                    try {
+                        URL url = new URL(wrapper.url);
+                        checkURLForSuspicions(url);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        wrapper.handler.handle(false, "DOMAIN NOT BLACKLISTED/ERROR PARSING DOMAIN");
+                        continue;
+                    }
                     try (CloseableHttpClient client = HttpClients.custom().setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).setSSLContext(new SSLContextBuilder().loadTrustMaterial(null, (chain, authType) -> true).build()).build()) {
                         HttpGet get = new HttpGet(wrapper.url);
                         try (CloseableHttpResponse response = client.execute(get)) {
