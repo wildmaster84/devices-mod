@@ -19,7 +19,8 @@ public class C2SUpdatePacket extends Packet<C2SUpdatePacket> {
         this.nbt.putString("type", type);
         this.nbt.put("data", nbt);
     }
- // do not call
+
+    @Deprecated // do not call
     public C2SUpdatePacket(FriendlyByteBuf buf) {
         this.nbt = buf.readNbt();
     }
