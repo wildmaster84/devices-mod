@@ -4,11 +4,9 @@ import net.minecraftforge.common.util.MavenVersionStringHelper;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.IModInfo;
-import org.jetbrains.annotations.ApiStatus;
 
 import static com.ultreon.devices.Devices.MOD_ID;
 
-@ApiStatus.Internal
 public class ReferenceImpl {
     public static String getVersion() {
         ModContainer container = ModList.get().getModContainerById(MOD_ID).orElseThrow();

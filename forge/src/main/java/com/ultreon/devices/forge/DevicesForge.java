@@ -17,30 +17,22 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 
 import java.util.regex.Pattern;
 
-/**
- * Forge part of the Devices Mod
- */
-@ApiStatus.Internal
+// The value here should match an entry in the META-INF/mods.toml file
 @Mod(Reference.MOD_ID)
 public class DevicesForge {
     private static final Pattern DEV_PREVIEW_PATTERN = Pattern.compile("\\d+\\.\\d+\\.\\d+-dev\\d+");
     private static final boolean IS_DEV_PREVIEW = DEV_PREVIEW_PATTERN.matcher(Reference.VERSION).matches();
 
-    @ApiStatus.Internal
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    @ApiStatus.Internal
     public static final boolean DEVELOPER_MODE = false;
 
-    @ApiStatus.Internal
     public static IEventBus MOD_EVENTBUS;
 
-    @ApiStatus.Internal
     public DevicesForge() throws LaunchException {
         EventBuses.registerModEventBus(Devices.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
         MOD_EVENTBUS = FMLJavaModLoadingContext.get().getModEventBus();
@@ -82,17 +74,14 @@ public class DevicesForge {
         forgeEventBus.register(this);
     }
 
-    @ApiStatus.Internal
     private void commonSetup(FMLCommonSetupEvent t) {
         Devices.init();
     }
 
-    @ApiStatus.Internal
     private void loadComplete(FMLLoadCompleteEvent t) {
         Devices.loadComplete();
     }
 
-    @ApiStatus.Internal
     private void serverSetup(FMLDedicatedServerSetupEvent t) {
         Devices.serverSetup();
     }

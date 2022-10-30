@@ -4,9 +4,7 @@ import com.ultreon.devices.object.AppInfo;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.block.Block;
-import org.jetbrains.annotations.ApiStatus;
 
-@ApiStatus.Internal
 public class ClientModEventsImpl {
     public static void setRenderLayer(Block block, RenderType renderType) {
         BlockRenderLayerMap.INSTANCE.putBlock(block, renderType);
