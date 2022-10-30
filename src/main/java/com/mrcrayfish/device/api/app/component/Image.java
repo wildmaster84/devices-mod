@@ -3,6 +3,7 @@ package com.mrcrayfish.device.api.app.component;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.IIcon;
 import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.api.utils.OnlineRequest;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import net.minecraft.client.Minecraft;
@@ -404,6 +405,7 @@ public class Image extends Component
                 try
                 {
                     URL url = new URL(this.url);
+                    OnlineRequest.checkURLForSuspicions(url);
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestProperty("User-Agent", "Mozilla/5.0");
                     BufferedImage bufferedImage = ImageIO.read(conn.getInputStream());
@@ -436,6 +438,7 @@ public class Image extends Component
             {
                 texture.loadTexture(Minecraft.getMinecraft().getResourceManager());
                 CachedImage cachedImage = new CachedImage(texture.getGlTextureId(), image.imageWidth, image.imageHeight, true);
+                if (texture != TextureUtil.MISSING_TEXTURE)
                 CACHE.put(url, cachedImage);
                 return cachedImage;
             }

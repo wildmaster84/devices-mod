@@ -13,6 +13,7 @@ import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 import java.io.IOException;
+import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -53,7 +54,30 @@ public class OnlineRequest
 		}
 		return instance;
 	}
-	
+
+	public static void checkURLForSuspicions(URL url) throws IOException {
+		System.out.println(url.getHost());
+		if (!isSafe(url.getHost())) {
+			throw new IOException();
+		}
+	}
+
+	// ignore that
+	private static boolean isSafe(String host) {
+		switch (host) {
+			case "ultreon.gitlab.io":
+			case "cdn.discordapp.com":
+			case "jab125.com":
+			case "raw.githubusercontent.com":
+			case "github.com":
+			case "i.imgur.com":
+			case "avatars1.githubusercontent.com":
+				return true;
+			default:
+				return false;
+		}
+	}
+
 	private void start() 
 	{
 		thread = new Thread(new RequestRunnable(), "Online Request Thread");
@@ -90,6 +114,14 @@ public class OnlineRequest
 
 				while (!requests.isEmpty()) {
 					RequestWrapper wrapper = requests.poll();
+					try {
+						URL url = new URL(wrapper.url);
+						checkURLForSuspicions(url);
+					} catch (Exception e) {
+						e.printStackTrace();
+						wrapper.handler.handle(false, "DOMAIN NOT BLACKLISTED/ERROR PARSING DOMAIN");
+						continue;
+					}
 					try (CloseableHttpClient client = HttpClients.custom().setHostnameVerifier(new X509HostnameVerifier() {
 						@Override
 						public void verify(String host, SSLSocket ssl) throws IOException {
