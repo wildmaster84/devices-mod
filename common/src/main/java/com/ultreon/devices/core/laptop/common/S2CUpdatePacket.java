@@ -20,8 +20,7 @@ public class S2CUpdatePacket extends Packet<S2CUpdatePacket> {
         this.nbt.putString("type", type);
         this.nbt.put("data", nbt);
     }
-
-    @Deprecated // do not call
+ // do not call
     public S2CUpdatePacket(FriendlyByteBuf buf) {
         this.nbt = buf.readNbt();
     }
