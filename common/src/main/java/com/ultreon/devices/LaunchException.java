@@ -1,8 +1,9 @@
 package com.ultreon.devices;
 
 import dev.architectury.injectables.targets.ArchitecturyTarget;
-import dev.architectury.platform.Platform;
+import org.jetbrains.annotations.ApiStatus;
 
+@ApiStatus.Internal
 public class LaunchException extends RuntimeException {
     @Override
     public String getMessage() {

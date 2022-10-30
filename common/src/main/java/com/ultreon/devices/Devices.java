@@ -26,7 +26,9 @@ import com.ultreon.devices.network.PacketHandler;
 import com.ultreon.devices.network.task.SyncApplicationPacket;
 import com.ultreon.devices.network.task.SyncConfigPacket;
 import com.ultreon.devices.object.AppInfo;
-import com.ultreon.devices.programs.*;
+import com.ultreon.devices.programs.IconsApp;
+import com.ultreon.devices.programs.PixelPainterApp;
+import com.ultreon.devices.programs.TestApp;
 import com.ultreon.devices.programs.auction.task.TaskAddAuction;
 import com.ultreon.devices.programs.auction.task.TaskBuyItem;
 import com.ultreon.devices.programs.auction.task.TaskGetAuctions;
@@ -34,7 +36,7 @@ import com.ultreon.devices.programs.debug.TextAreaApp;
 import com.ultreon.devices.programs.email.task.*;
 import com.ultreon.devices.programs.example.ExampleApp;
 import com.ultreon.devices.programs.example.task.TaskNotificationTest;
-import com.ultreon.devices.programs.system.*;
+import com.ultreon.devices.programs.system.SystemApp;
 import com.ultreon.devices.programs.system.task.*;
 import com.ultreon.devices.util.SiteRegistration;
 import com.ultreon.devices.util.Vulnerability;
@@ -64,51 +66,103 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import org.checkerframework.common.value.qual.BoolVal;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
+/**
+ * Devices Mod central main class for every modding platform.
+ */
 public class Devices {
+    /**
+     * The Devices Mod's id.
+     * Do I literally need to explain that?
+     */
     public static final String MOD_ID = "devices";
+
+    /**
+     * The creative mode tab of the mod.
+     */
     public static final CreativeModeTab TAB_DEVICE = CreativeTabRegistry.create(id("devices_tab_device"), () -> new ItemStack(DeviceItems.RED_LAPTOP.get()));
+
+    /**
+     * Get the mod's registries.
+     */
     public static final Supplier<Registries> REGISTRIES = Suppliers.memoize(() -> Registries.get(MOD_ID));
+
+    /**
+     * Get the site registrations.
+     */
     public static final List<SiteRegistration> SITE_REGISTRATIONS = new ProtectedArrayList<>();
+
+    /**
+     * Get the mod's logger.
+     */
+    @ApiStatus.Internal
     public static final Logger LOGGER = LoggerFactory.getLogger("Devices Mod");
+
+    /**
+     * Get whether the mod is in developer mode currently.
+     */
     public static final boolean DEVELOPER_MODE = false;
+
+    /**
+     * Get the url pointing to the data for the vulnerabilities.
+     */
+    public static final String VULNERABILITIES_URL = "https://jab125.com/gitweb/vulnerabilities.php";
     private static final Pattern DEV_PREVIEW_PATTERN = Pattern.compile("\\d+\\.\\d+\\.\\d+-dev\\d+");
     private static final boolean IS_DEV_PREVIEW = DEV_PREVIEW_PATTERN.matcher(Reference.VERSION).matches();
     private static final String GITWEB_REGISTER_URL = "https://ultreon.gitlab.io/gitweb/site_register.json";
-    public static final String VULNERABILITIES_URL = "https://jab125.com/gitweb/vulnerabilities.php";
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private static final SiteRegisterStack SITE_REGISTER_STACK = new SiteRegisterStack();
+    @BoolVal({true, false})
+    private static final boolean PROTECT_FROM_LAUNCH = false;
+    private static final Logger ULTRAN_LANG_LOGGER = LoggerFactory.getLogger("UltranLang");
     static List<AppInfo> allowedApps;
     private static List<Vulnerability> vulnerabilities;
+    private static MinecraftServer server;
+    private static TestManager tests;
+
+    /**
+     * Get the current vulnerabilities, that were loaded from online when initializing the mod.
+     *
+     * @return the current vulnerabilities.
+     */
     public static List<Vulnerability> getVulnerabilities() {
         return vulnerabilities;
     }
-    private static MinecraftServer server;
 
+    /**
+     * Initializes the mod.
+     * <p>
+     * NOTE: Internal API
+     */
+    @ApiStatus.Internal
     public static void init() {
         if (ArchitecturyTarget.getCurrentTarget().equals("fabric")) {
             preInit();
             serverSetup();
         }
-   //     BlockEntityUtil.sendUpdate(null, null, null);
+        //     BlockEntityUtil.sendUpdate(null, null, null);
 
-        //LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
+        final var property = System.getProperty("ultreon.devices.tests");
+        tests = new TestManager();
+        if (property != null) {
+            String[] split = property.split(",");
+            tests.load(Set.of(split));
+        }
+
         LOGGER.info("Doing some common setup.");
 
         PacketHandler.init();
@@ -132,103 +186,118 @@ public class Devices {
 
         ultranLang:
         {
-            if (true) break ultranLang;
-            var inputFile = new File("main.ulan");
+            if (!tests.isEnabled("ultran_lang")) break ultranLang;
+            SpiKt.setShouldLogInternalErrors(false);
+            SpiKt.setShouldLogScope(false);
+            SpiKt.setShouldLogStack(false);
+            SpiKt.setShouldLogTokens(false);
 
-            if (!inputFile.exists()) {
-                LOGGER.error("File not found: {}", inputFile.getAbsolutePath());
-            } else {
-                SpiKt.setShouldLogInternalErrors(false);
-                SpiKt.setShouldLogScope(false);
-                SpiKt.setShouldLogStack(false);
-                SpiKt.setShouldLogTokens(false);
+            String text = """
+                    program Main;
+                                        
+                    function Alpha(a: integer; b: integer) {
+                        function Beta(a: integer; b: integer) {
+                            var x: integer;
+                            x = a * 10 + b * 2;
+                        };
+                        var x: integer;
+                        x = (a + b ) * 2;
+                        Beta(5, 10);      [ function call ]
+                    };
+                                        
+                    Alpha(3 + 5, 7);  [ function call ]
+                    var x: integer;
+                    x = 300;
+                    var startX: integer;
+                    var startY: integer;
+                    startX = 10;
+                    startY = 20;
+                                        
+                    function PrintHelloWorld() {
+                        log("info", "Hello World from an UltranLang script.");
+                    };
+                                        
+                    PrintHelloWorld();
+                                        
+                    log("info", "Hello World! Number: " + randInt(startX, startY));
+                    """;
 
-                String text;
-                try {
-                    text = Files.readString(inputFile.toPath(), Charset.defaultCharset());
-                } catch (IOException e) {
-                    LOGGER.error("Failed to read file: {}", inputFile.getAbsolutePath(), e);
-                    break ultranLang;
+            NativeCalls calls = new NativeCalls();
+            registerNativeFunctions(calls);
+
+            var lexer = new Lexer(text);
+            Program tree;
+            try {
+                var parser = new Parser(lexer);
+                tree = parser.parse();
+            } catch (LexerException | ParserException e) {
+                if (SpiKt.getShouldLogInternalErrors()) e.printStackTrace();
+                LOGGER.error("Error parsing file: {}", e.getMessage());
+                break ultranLang;
+            } catch (RuntimeException e) {
+                var cause = e.getCause();
+                while (cause instanceof InvocationTargetException || cause instanceof RuntimeException) {
+                    cause = cause.getCause();
                 }
-
-                registerNativeFunctions();
-                NativeCalls.INSTANCE.load();
-
-                var lexer = new Lexer(text);
-                Program tree;
-                try {
-                    var parser = new Parser(lexer);
-                    tree = parser.parse();
-                } catch (LexerException | ParserException e) {
-                    if (SpiKt.getShouldLogInternalErrors()) e.printStackTrace();
-                    LOGGER.error("Error parsing file: {}", e.getMessage());
-                    break ultranLang;
-                } catch (RuntimeException e) {
-                    var cause = e.getCause();
-                    while (cause instanceof InvocationTargetException || cause instanceof RuntimeException) {
-                        cause = cause.getCause();
-                    }
-                    if (cause instanceof LexerException) {
-                        if (SpiKt.getShouldLogInternalErrors()) cause.printStackTrace();
-                        LOGGER.error("Error parsing file: {}", cause.getMessage());
-                    } else if (cause instanceof ParserException) {
-                        if (SpiKt.getShouldLogInternalErrors()) cause.printStackTrace();
-                        LOGGER.error("Error parsing file: {}", cause.getMessage());
-                    } else {
-                        throw e;
-                    }
-                    break ultranLang;
+                if (cause instanceof LexerException) {
+                    if (SpiKt.getShouldLogInternalErrors()) cause.printStackTrace();
+                    LOGGER.error("Error parsing file: {}", cause.getMessage());
+                } else if (cause instanceof ParserException) {
+                    if (SpiKt.getShouldLogInternalErrors()) cause.printStackTrace();
+                    LOGGER.error("Error parsing file: {}", cause.getMessage());
+                } else {
+                    throw e;
                 }
+                break ultranLang;
+            }
 
-                var semanticAnalyzer = new SemanticAnalyzer();
+            var semanticAnalyzer = new SemanticAnalyzer(calls);
 
-                try {
-                    semanticAnalyzer.visit(tree);
-                } catch (SemanticException e) {
-                    if (SpiKt.getShouldLogInternalErrors()) e.printStackTrace();
-                    LOGGER.error("Error analyzing file: {}", e.getMessage());
-                    break ultranLang;
-                } catch (RuntimeException e) {
-                    var cause = e.getCause();
-                    while (cause instanceof InvocationTargetException || cause instanceof RuntimeException) {
-                        cause = cause.getCause();
-                    }
-                    if (cause instanceof SemanticException) {
-                        if (SpiKt.getShouldLogInternalErrors()) cause.printStackTrace();
-                        LOGGER.error("Error analyzing file: {}", cause.getMessage());
-                    } else {
-                        throw e;
-                    }
-                    break ultranLang;
+            try {
+                semanticAnalyzer.visit(tree);
+            } catch (SemanticException e) {
+                if (SpiKt.getShouldLogInternalErrors()) e.printStackTrace();
+                LOGGER.error("Error analyzing file: {}", e.getMessage());
+                break ultranLang;
+            } catch (RuntimeException e) {
+                var cause = e.getCause();
+                while (cause instanceof InvocationTargetException || cause instanceof RuntimeException) {
+                    cause = cause.getCause();
                 }
-
-                try {
-                    var interpreter = new Interpreter(tree);
-                    interpreter.interpret();
-                } catch (Exception e) {
-                    if (SpiKt.getShouldLogInternalErrors()) e.printStackTrace();
-                    LOGGER.error("Error interpreting file: {}", e.getMessage());
+                if (cause instanceof SemanticException) {
+                    if (SpiKt.getShouldLogInternalErrors()) cause.printStackTrace();
+                    ULTRAN_LANG_LOGGER.error("Error analyzing file: {}", cause.getMessage());
+                } else {
+                    throw e;
                 }
+                break ultranLang;
+            }
+
+            try {
+                var interpreter = new Interpreter(tree);
+                interpreter.interpret();
+            } catch (Exception e) {
+                if (SpiKt.getShouldLogInternalErrors()) e.printStackTrace();
+                LOGGER.error("Error interpreting file: {}", e.getMessage());
             }
         }
     }
 
-    private static void registerNativeFunctions() {
-        HashMap<String, String> params = new HashMap<>();
-        params.put("level", BuiltinTypeSymbol.STRING);
-        params.put("message", BuiltinTypeSymbol.STRING);
-        NativeCalls.INSTANCE.register("log", params, ar -> {
+    private static void registerNativeFunctions(NativeCalls calls) {
+        calls.register("log", SpiKt.params()
+                .add("level", BuiltinTypeSymbol.STRING)
+                .add("message", BuiltinTypeSymbol.STRING), ar -> {
             Object level = ar.get("level");
             if (level instanceof String levelName) {
                 Object message = ar.get("message");
                 if (message == null) message = "null";
 
                 switch (levelName.toLowerCase(Locale.ROOT)) {
-                    case "warn" -> LOGGER.warn(message.toString());
-                    case "error" -> LOGGER.error(message.toString());
-                    case "debug" -> LOGGER.debug(message.toString());
-                    case "trace" -> LOGGER.trace(message.toString());
-                    default -> LOGGER.info(message.toString());
+                    case "warn" -> ULTRAN_LANG_LOGGER.warn(message.toString());
+                    case "error" -> ULTRAN_LANG_LOGGER.error(message.toString());
+                    case "debug" -> ULTRAN_LANG_LOGGER.debug(message.toString());
+                    case "trace" -> ULTRAN_LANG_LOGGER.trace(message.toString());
+                    default -> ULTRAN_LANG_LOGGER.info(message.toString());
                 }
             } else {
                 throw new IllegalArgumentException("Invalid level of type " + (level == null ? "null" : level.getClass().getName()));
@@ -237,8 +306,17 @@ public class Devices {
         });
     }
 
+    /**
+     * Pre-initializes stuff in the Devices Mod.
+     * <p>
+     * NOTE: Internal API
+     */
+    @ApiStatus.Internal
     public static void preInit() {
-        if (DEVELOPER_MODE && !Platform.isDevelopmentEnvironment() && false) {
+        if (DEVELOPER_MODE) {
+            Platform.isDevelopmentEnvironment();
+        }
+        if (DEVELOPER_MODE && PROTECT_FROM_LAUNCH) {
             throw new LaunchException();
         }
 
@@ -246,23 +324,47 @@ public class Devices {
     }
 
 
+    /**
+     * Check if the Devices Mod is a Development Preview version.
+     *
+     * @return whether the mod is a preview version.
+     */
     public static boolean isDevelopmentPreview() {
         return IS_DEV_PREVIEW;
     }
 
+    /**
+     * Get the current Minecraft server.
+     *
+     * @return the server instance.
+     */
     public static MinecraftServer getServer() {
         return server;
     }
 
+    public static TestManager getTests() {
+        return tests;
+    }
 
+    /**
+     * Set up the mod for server side.
+     * <p>
+     * NOTE: Internal API
+     */
+    @ApiStatus.Internal
     public static void serverSetup() {
         LOGGER.info("Doing some server setup.");
     }
 
+    /**
+     * Do stuff when the loading completed.
+     * <p>
+     * NOTE: Internal API
+     */
+    @ApiStatus.Internal
     public static void loadComplete() {
         LOGGER.info("Doing some load complete handling.");
     }
-
 
     private static void registerApplications() {
         // Applications (Both)
@@ -347,9 +449,9 @@ public class Devices {
     }
 
     /**
-     * @deprecated do not call
+     * DO NOT CALL
      */
-    @Deprecated
+    @ApiStatus.Internal
     @Nullable
     public static Application registerApplication(ResourceLocation identifier, ApplicationSupplier app) {
         if ("minecraft".equals(identifier.getNamespace())) {
@@ -590,19 +692,23 @@ public class Devices {
         return new ResourceLocation(MOD_ID, id);
     }
 
+    @ApiStatus.Internal
     private static class ProtectedArrayList<T> extends ArrayList<T> {
         private final StackWalker stackWalker = StackWalker.getInstance(EnumSet.of(StackWalker.Option.RETAIN_CLASS_REFERENCE));
         private boolean frozen = false;
 
+        @ApiStatus.Internal
         private void freeze() {
             frozen = true;
         }
 
+        @ApiStatus.Internal
         private void freezeCheck() {
             if (frozen) throw new IllegalStateException("Already frozen!");
         }
 
         @Override
+        @ApiStatus.Internal
         public boolean add(T t) {
             freezeCheck();
             if (stackWalker.getCallerClass() != Devices.class) {
@@ -612,6 +718,7 @@ public class Devices {
         }
 
         @Override
+        @ApiStatus.Internal
         public boolean addAll(Collection<? extends T> c) {
             freezeCheck();
             if (stackWalker.getCallerClass() != Devices.class) {
@@ -621,6 +728,7 @@ public class Devices {
         }
 
         @Override
+        @ApiStatus.Internal
         public void add(int index, T element) {
             freezeCheck();
             if (stackWalker.getCallerClass() != Devices.class) {
@@ -630,6 +738,7 @@ public class Devices {
         }
 
         @Override
+        @ApiStatus.Internal
         protected void removeRange(int fromIndex, int toIndex) {
             freezeCheck();
             if (stackWalker.getCallerClass() != Devices.class) {
@@ -639,6 +748,7 @@ public class Devices {
         }
 
         @Override
+        @ApiStatus.Internal
         public boolean remove(Object o) {
             freezeCheck();
             if (stackWalker.getCallerClass() != Devices.class) {
@@ -648,6 +758,7 @@ public class Devices {
         }
 
         @Override
+        @ApiStatus.Internal
         public boolean removeAll(Collection<?> c) {
             freezeCheck();
             if (stackWalker.getCallerClass() != Devices.class) {
@@ -657,6 +768,7 @@ public class Devices {
         }
 
         @Override
+        @ApiStatus.Internal
         public boolean removeIf(Predicate<? super T> filter) {
             freezeCheck();
             if (stackWalker.getCallerClass() != Devices.class) {
@@ -666,6 +778,7 @@ public class Devices {
         }
 
         @Override
+        @ApiStatus.Internal
         public T remove(int index) {
             freezeCheck();
             if (stackWalker.getCallerClass() != Devices.class) {
@@ -675,13 +788,16 @@ public class Devices {
         }
     }
 
+    @ApiStatus.Internal
     @SuppressWarnings("UnusedReturnValue")
     private static class SiteRegisterStack extends Stack<Object> {
+        @ApiStatus.Internal
         public Object push() {
             return super.push(new Object());
         }
 
         @Override
+        @ApiStatus.Internal
         public synchronized Object pop() {
             Object pop = super.pop();
             if (isEmpty()) {

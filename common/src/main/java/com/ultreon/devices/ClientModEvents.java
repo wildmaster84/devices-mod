@@ -1,8 +1,8 @@
 package com.ultreon.devices;
 
-import com.ultreon.devices.block.entity.renderer.*;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.ultreon.devices.api.ApplicationManager;
+import com.ultreon.devices.block.entity.renderer.*;
 import com.ultreon.devices.core.Laptop;
 import com.ultreon.devices.init.DeviceBlockEntities;
 import com.ultreon.devices.init.DeviceBlocks;
@@ -20,6 +20,7 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -33,7 +34,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -42,6 +42,7 @@ public class ClientModEvents {
     private static final Marker SETUP = MarkerFactory.getMarker("SETUP");
     private static final Logger LOGGER = Devices.LOGGER;
 
+    @ApiStatus.Internal
     public static void clientSetup() {
         LOGGER.info("Doing some client setup.");
 
@@ -70,11 +71,14 @@ public class ClientModEvents {
         generateIconAtlas();
     }
 
+    @ApiStatus.Internal
     public static class ReloaderListener implements PreparableReloadListener {
+        private static final Marker MARKER = MarkerFactory.getMarker("ReloadListener");
+
         @NotNull
         @Override
         public CompletableFuture<Void> reload(@NotNull PreparableReloadListener.PreparationBarrier preparationBarrier, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller preparationsProfiler, @NotNull ProfilerFiller reloadProfiler, @NotNull Executor backgroundExecutor, @NotNull Executor gameExecutor) {
-            LOGGER.debug("Reloading resources from the Device Mod.");
+            LOGGER.debug(MARKER, "Reloading resources from the Device Mod.");
 
             return CompletableFuture.runAsync(() -> {
                 if (ApplicationManager.getAllApplications().size() > 0) {
@@ -85,8 +89,9 @@ public class ClientModEvents {
         }
     }
 
+    @ApiStatus.Internal
     private static void registerRenderLayers() {
-        if (true) return;
+        if (true) return; // FIXME: Is this even needed?
         DeviceBlocks.getAllLaptops().forEach(block -> {
             LOGGER.debug(SETUP, "Setting render layer for laptop {}", Registries.getId(block, Registry.BLOCK_REGISTRY));
             RenderTypeRegistry.register(RenderType.cutout(), block);
@@ -106,6 +111,7 @@ public class ClientModEvents {
         RenderTypeRegistry.register(RenderType.cutout(), DeviceBlocks.PAPER.get());
     }
 
+    @ApiStatus.Internal
     private static void generateIconAtlas() {
         final int ICON_SIZE = 14;
         var imageWriter = new Object() {
@@ -153,8 +159,6 @@ public class ClientModEvents {
                     ImageIO.write(atlas, "png", Paths.get("it.png").toFile());
                 } catch (Exception e) {
                     throw new RuntimeException(e);
-                } finally {
-                 //   System.exit(-1);
                 }
 
                 ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -201,11 +205,13 @@ public class ClientModEvents {
 ////        ObfuscationReflectionHelper.setPrivateValue(AppInfo.class, info, iconV, "iconV");
 //    }
 
+    @ApiStatus.Internal
     @ExpectPlatform
     public static void setRenderLayer(Block block, RenderType type) {
         throw new AssertionError();
     }
 
+    @ApiStatus.Internal
     public static void registerRenderers() {
         LOGGER.info("Registering renderers.");
 
@@ -216,6 +222,7 @@ public class ClientModEvents {
         BlockEntityRendererRegistry.register(DeviceBlockEntities.SEAT.get(), OfficeChairRenderer::new);
     }
 
+    @ApiStatus.Internal
     public static void registerLayerDefinitions() {
         LOGGER.info("Registering layer definitions.");
 //        EntityModelLayerRegistry.register(PrinterRenderer.PaperModel.LAYER_LOCATION, PrinterRenderer.PaperModel::createBodyLayer);

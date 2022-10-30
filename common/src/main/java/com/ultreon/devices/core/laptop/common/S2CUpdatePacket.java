@@ -1,13 +1,12 @@
 package com.ultreon.devices.core.laptop.common;
 
 import com.ultreon.devices.core.laptop.client.ClientLaptop;
-import com.ultreon.devices.core.laptop.server.ServerLaptop;
 import com.ultreon.devices.network.Packet;
 import dev.architectury.networking.NetworkManager;
 import net.fabricmc.api.EnvType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -23,7 +22,7 @@ public class S2CUpdatePacket extends Packet<S2CUpdatePacket> {
         this.nbt.put("data", nbt);
     }
 
-    @Deprecated // do not call
+    @ApiStatus.Internal // do not call
     public S2CUpdatePacket(FriendlyByteBuf buf) {
         this.nbt = buf.readNbt();
     }
