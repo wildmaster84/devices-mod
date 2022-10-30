@@ -3,9 +3,17 @@ package com.mrcrayfish.device.api.utils;
 import com.mrcrayfish.device.util.StreamUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
+import java.io.IOException;
+import java.security.cert.X509Certificate;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -67,40 +75,48 @@ public class OnlineRequest
 			requests.notify();
 		}
 	}
-	
-	private class RequestRunnable implements Runnable 
-	{
+
+	private class RequestRunnable implements Runnable {
 		@Override
-		public void run()
-		{
-			while(running) 
-			{
-				try
-				{
-					synchronized(requests)
-					{
+		public void run() {
+			while (running) {
+				try {
+					synchronized (requests) {
 						requests.wait();
 					}
-				}
-				catch(InterruptedException e)
-				{
-					e.printStackTrace();
+				} catch (InterruptedException e) {
+					return;
 				}
 
-				while(!requests.isEmpty())
-				{
+				while (!requests.isEmpty()) {
 					RequestWrapper wrapper = requests.poll();
-					try(CloseableHttpClient client = HttpClients.createDefault())
-					{
+					try (CloseableHttpClient client = HttpClients.custom().setHostnameVerifier(new X509HostnameVerifier() {
+						@Override
+						public void verify(String host, SSLSocket ssl) throws IOException {
+
+						}
+
+						@Override
+						public void verify(String host, X509Certificate cert) throws SSLException {
+
+						}
+
+						@Override
+						public void verify(String host, String[] cns, String[] subjectAlts) throws SSLException {
+
+						}
+
+						@Override
+						public boolean verify(String hostname, SSLSession session) {
+							return true;
+						}
+					}).setSslcontext(new SSLContextBuilder().loadTrustMaterial(null, (chain, authType) -> true).build()).build()) {
 						HttpGet get = new HttpGet(wrapper.url);
-						try(CloseableHttpResponse response = client.execute(get))
-						{
+						try (CloseableHttpResponse response = client.execute(get)) {
 							String raw = StreamUtils.convertToString(response.getEntity().getContent());
 							wrapper.handler.handle(true, raw);
 						}
-					}
-					catch(Exception e)
-					{
+					} catch (Exception e) {
 						e.printStackTrace();
 						wrapper.handler.handle(false, "");
 					}

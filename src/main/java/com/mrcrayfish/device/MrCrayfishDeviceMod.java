@@ -1,8 +1,12 @@
 package com.mrcrayfish.device;
 
+import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.api.task.TaskManager;
+import com.mrcrayfish.device.api.utils.OnlineRequest;
 import com.mrcrayfish.device.core.io.task.*;
 import com.mrcrayfish.device.core.network.task.TaskConnect;
 import com.mrcrayfish.device.core.network.task.TaskGetDevices;
@@ -23,12 +27,10 @@ import com.mrcrayfish.device.programs.email.task.*;
 import com.mrcrayfish.device.programs.example.ApplicationExample;
 import com.mrcrayfish.device.programs.example.task.TaskNotificationTest;
 import com.mrcrayfish.device.programs.gitweb.ApplicationGitWeb;
-import com.mrcrayfish.device.programs.system.ApplicationAppStore;
-import com.mrcrayfish.device.programs.system.ApplicationBank;
-import com.mrcrayfish.device.programs.system.ApplicationFileBrowser;
-import com.mrcrayfish.device.programs.system.ApplicationSettings;
+import com.mrcrayfish.device.programs.system.*;
 import com.mrcrayfish.device.programs.system.task.*;
 import com.mrcrayfish.device.proxy.CommonProxy;
+import com.mrcrayfish.device.util.Vulnerability;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ResourceLocation;
@@ -44,9 +46,13 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, acceptedMinecraftVersions = Reference.WORKING_MC_VERSION)
 public class MrCrayfishDeviceMod 
 {
+	public static final String VULNERABILITIES_URL = "https://jab125.com/gitweb/vulnerabilities.php";
 	@Instance(Reference.MOD_ID)
 	public static MrCrayfishDeviceMod instance;
 	
@@ -57,7 +63,12 @@ public class MrCrayfishDeviceMod
 
 	private static Logger logger;
 
-	public static final boolean DEVELOPER_MODE = true;
+	public static final boolean DEVELOPER_MODE = false;
+
+	private static List<Vulnerability> vulnerabilities;
+	public static List<Vulnerability> getVulnerabilities() {
+		return vulnerabilities;
+	}
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) throws LaunchException
@@ -94,6 +105,8 @@ public class MrCrayfishDeviceMod
 
 		registerApplications();
 
+		checkForVulnerabilities();
+
 		proxy.init();
 	}
 	
@@ -114,6 +127,7 @@ public class MrCrayfishDeviceMod
 		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "pixel_painter"), ApplicationPixelPainter.class);
 		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "ender_mail"), ApplicationEmail.class);
 		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "app_store"), ApplicationAppStore.class);
+		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "vulnerability"), VulnerabilityApp.class);
 
 		// Core
 		TaskManager.registerTask(TaskInstallApp.class);
@@ -170,6 +184,22 @@ public class MrCrayfishDeviceMod
 		}
 
 		PrintingManager.registerPrint(new ResourceLocation(Reference.MOD_ID, "picture"), ApplicationPixelPainter.PicturePrint.class);
+	}
+
+	private static void checkForVulnerabilities() {
+		OnlineRequest.getInstance().make(VULNERABILITIES_URL, ((success, response) -> {
+			if (!success) {
+				System.out.println("Could not access vulnerabilities!");
+				vulnerabilities = ImmutableList.of();
+				return;
+			}
+
+			JsonArray array = new JsonParser().parse(response).getAsJsonArray();
+			vulnerabilities = Vulnerability.parseArray(array);
+			System.out.println(array);
+			System.out.println(Reference.VERSION);
+			System.out.println("Vulnerabilities:" + vulnerabilities);
+		}));
 	}
 
 	public static Logger getLogger()

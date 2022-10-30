@@ -151,7 +151,7 @@ public enum Icons implements IIcon
     ZOOM_OUT,
     FILE,
     FOLDER,
-    SAVE_AS;
+    SAVE_AS, FLASHED_WARNING, WARNING_GRAY;
 
     private static final ResourceLocation ICON_ASSET = new ResourceLocation("cdm:textures/gui/icons.png");
 

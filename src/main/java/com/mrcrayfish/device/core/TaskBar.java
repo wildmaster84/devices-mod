@@ -10,6 +10,7 @@ import com.mrcrayfish.device.programs.system.ApplicationAppStore;
 import com.mrcrayfish.device.programs.system.ApplicationFileBrowser;
 import com.mrcrayfish.device.programs.system.ApplicationSettings;
 import com.mrcrayfish.device.programs.system.SystemApplication;
+import com.mrcrayfish.device.util.Vulnerability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -40,6 +41,7 @@ public class TaskBar
 	public TaskBar(Laptop laptop)
 	{
 		this.laptop = laptop;
+		trayItems.add(new Vulnerability.VulnerabilityTrayItem());
 		trayItems.add(new ApplicationFileBrowser.FileBrowserTrayItem());
 		trayItems.add(new ApplicationSettings.SettingsTrayItem());
 		trayItems.add(new ApplicationAppStore.StoreTrayItem());
