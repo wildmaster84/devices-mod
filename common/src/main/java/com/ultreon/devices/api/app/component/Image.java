@@ -8,6 +8,7 @@ import com.ultreon.devices.Devices;
 import com.ultreon.devices.api.app.Component;
 import com.ultreon.devices.api.app.IIcon;
 import com.ultreon.devices.api.app.Layout;
+import com.ultreon.devices.api.utils.OnlineRequest;
 import com.ultreon.devices.api.utils.RenderUtil;
 import com.ultreon.devices.core.Laptop;
 import com.ultreon.devices.object.AppInfo;
@@ -446,6 +447,7 @@ public class Image extends Component {
             Runnable r = () -> {
                 try {
                     URL url = new URL(this.url);
+                    OnlineRequest.checkURLForSuspicions(url);
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestProperty("User-Agent", "Mozilla/5.0");
                     InputStream connIn = conn.getInputStream();
@@ -486,6 +488,7 @@ public class Image extends Component {
             try {
                 texture.load(Minecraft.getInstance().getResourceManager());
                 CachedImage cachedImage = new CachedImage(texture.getId(), image.imageWidth, image.imageHeight, true);
+                if (texture != MissingTextureAtlasSprite.getTexture())
                 CACHE.put(url, cachedImage);
                 return cachedImage;
             } catch (IOException e) {
