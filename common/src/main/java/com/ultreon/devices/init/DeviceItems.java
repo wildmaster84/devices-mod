@@ -37,7 +37,7 @@ public class DeviceItems {
     public static final RegistrySupplier<BlockItem> BLACK_LAPTOP = REGISTER.register(Devices.id("black_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.BLACK_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.BLACK, ModDeviceTypes.COMPUTER));
 
     // Custom Computers
-    public static final RegistrySupplier<BlockItem> MAC_MAX_X = REGISTER.register(Devices.id("mac_max_x"), () -> new ColoredDeviceItem(DeviceBlocks.MAC_MAX_X.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.BLACK, ModDeviceTypes.COMPUTER));
+    public static final RegistrySupplier<MacMaxXItem> MAC_MAX_X = REGISTER.register(Devices.id("mac_max_x"), () -> new MacMaxXItem(DeviceBlocks.MAC_MAX_X.get(), new Item.Properties().tab(Devices.TAB_DEVICE)));
 
     // Printers
     public static final RegistrySupplier<BlockItem> WHITE_PRINTER = REGISTER.register(Devices.id("white_printer"), () -> new ColoredDeviceItem(DeviceBlocks.WHITE_PRINTER.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.WHITE, ModDeviceTypes.PRINTER));
