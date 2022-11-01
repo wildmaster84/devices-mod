@@ -36,6 +36,7 @@ dependencies {
     modImplementation "curse.maven:forgeapiportfabric-547434:3946675"
     modImplementation 'com.electronwill.night-config:core:3.6.5'
     modImplementation 'com.electronwill.night-config:toml:3.6.5'
+    modImplementation "software.bernie.geckolib:geckolib-fabric-1.19:${geckolib_version_quilt}"
 
 //    include(implementation("org.jetbrains.kotlin:kotlin-reflect:1.7.10"))
 //    include(implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10"))

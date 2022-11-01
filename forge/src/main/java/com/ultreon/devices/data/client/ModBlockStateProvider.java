@@ -1,25 +1,20 @@
 package com.ultreon.devices.data.client;
 
 import com.ultreon.devices.Reference;
-import com.ultreon.devices.block.LaptopBlock;
-import com.ultreon.devices.block.OfficeChairBlock;
-import com.ultreon.devices.block.PrinterBlock;
-import com.ultreon.devices.block.RouterBlock;
+import com.ultreon.devices.block.*;
 import com.ultreon.devices.init.DeviceBlocks;
 import dev.architectury.registry.registries.Registries;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProviderType;
-import net.minecraftforge.client.model.generators.*;
+import net.minecraftforge.client.model.generators.BlockStateProvider;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
+import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
-import java.util.Random;
 
 public class ModBlockStateProvider extends BlockStateProvider {
     public ModBlockStateProvider(DataGenerator gen, ExistingFileHelper exFileHelper) {
@@ -63,7 +58,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
     private void laptop(LaptopBlock block) {
         getVariantBuilder(block).forAllStates(state -> {
             String name = Objects.requireNonNull(Registries.getId(block, Registry.BLOCK_REGISTRY)).getPath();
-            var type = state.getValue(LaptopBlock.TYPE);
+            var type = state.getValue(ComputerBlock.TYPE);
             var a = ConfiguredModel.builder();
             var q = a.modelFile(models().getBuilder(type == LaptopBlock.Type.BASE ? name : name + "_closed")
                     .parent(new ModelFile.UncheckedModelFile(modLoc(type == LaptopBlock.Type.BASE ? "block/laptop_base" : "block/laptop_screen")))

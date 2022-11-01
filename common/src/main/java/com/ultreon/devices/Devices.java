@@ -476,7 +476,7 @@ public class Devices {
         return new ResourceLocation(Devices.MOD_ID, path);
     }
 
-//    private void enqueueIMC(final InterModEnqueueEvent event) {
+//    private void.json enqueueIMC(final InterModEnqueueEvent event) {
 //        // Check for self availability.
 //        InterModComms.sendTo(Reference.MOD_ID, "availability", () -> {
 //            LOGGER.info("IMC is working correctly");
@@ -484,7 +484,7 @@ public class Devices {
 //        });
 //    }
 //
-//    private void processIMC(final InterModProcessEvent event) {
+//    private void.json processIMC(final InterModProcessEvent event) {
 //        event.getIMCStream().forEachOrdered(imcMessage -> {
 //            // Availability IMC handling.
 //            if (imcMessage.method().equals("availability")) {

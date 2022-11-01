@@ -33,7 +33,7 @@ public class DeviceSounds {
 //    @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 //    public static class RegistrationHandler {
 //        @SubscribeEvent
-//        public static void registerSounds(final RegistryEvent.Register<SoundEvent> event) {
+//        public static void.json registerSounds(final RegistryEvent.Register<SoundEvent> event) {
 //            event.getRegistry().register(PRINTER_PRINTING);
 //            event.getRegistry().register(PRINTER_LOADING_PAPER);
 //        }

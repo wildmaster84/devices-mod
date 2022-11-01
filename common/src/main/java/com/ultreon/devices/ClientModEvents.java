@@ -1,8 +1,8 @@
 package com.ultreon.devices;
 
-import com.ultreon.devices.block.entity.renderer.*;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.ultreon.devices.api.ApplicationManager;
+import com.ultreon.devices.block.entity.renderer.*;
 import com.ultreon.devices.core.Laptop;
 import com.ultreon.devices.init.DeviceBlockEntities;
 import com.ultreon.devices.init.DeviceBlocks;
@@ -33,7 +33,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -67,6 +66,7 @@ public class ClientModEvents {
         registerRenderLayers();
         registerRenderers();
         registerLayerDefinitions();
+        registerGeoRenderers();
         generateIconAtlas();
     }
 
@@ -195,7 +195,7 @@ public class ClientModEvents {
     }
 
 //    @ExpectPlatform
-//    private static void updateIcon(AppInfo info, int iconU, int iconV) {
+//    private static void.json updateIcon(AppInfo info, int iconU, int iconV) {
 //        throw new AssertionError();
 ////        ObfuscationReflectionHelper.setPrivateValue(AppInfo.class, info, iconU, "iconU");
 ////        ObfuscationReflectionHelper.setPrivateValue(AppInfo.class, info, iconV, "iconV");
@@ -203,6 +203,11 @@ public class ClientModEvents {
 
     @ExpectPlatform
     public static void setRenderLayer(Block block, RenderType type) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static void registerGeoRenderers() {
         throw new AssertionError();
     }
 

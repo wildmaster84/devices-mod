@@ -34,6 +34,8 @@ public class DeviceBlocks {
     public static final RegistrySupplier<LaptopBlock> RED_LAPTOP = REGISTER.register(Devices.id("red_laptop"), () -> new LaptopBlock(DyeColor.RED));
     public static final RegistrySupplier<LaptopBlock> BLACK_LAPTOP = REGISTER.register(Devices.id("black_laptop"), () -> new LaptopBlock(DyeColor.BLACK));
 
+    public static final RegistrySupplier<MacMaxXBlock> MAC_MAX_X = REGISTER.register(Devices.id("mac_max_x"), MacMaxXBlock::new);
+
     public static final RegistrySupplier<PrinterBlock> WHITE_PRINTER = REGISTER.register(Devices.id("white_printer"), () -> new PrinterBlock(DyeColor.WHITE));
     public static final RegistrySupplier<PrinterBlock> ORANGE_PRINTER = REGISTER.register(Devices.id("orange_printer"), () -> new PrinterBlock(DyeColor.ORANGE));
     public static final RegistrySupplier<PrinterBlock> MAGENTA_PRINTER = REGISTER.register(Devices.id("magenta_printer"), () -> new PrinterBlock(DyeColor.MAGENTA));

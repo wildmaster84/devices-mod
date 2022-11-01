@@ -1,7 +1,7 @@
 package com.ultreon.devices.init;
 
-import com.ultreon.devices.ModDeviceTypes;
 import com.ultreon.devices.Devices;
+import com.ultreon.devices.ModDeviceTypes;
 import com.ultreon.devices.item.*;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrySupplier;
@@ -19,22 +19,25 @@ public class DeviceItems {
     private static final Registrar<Item> REGISTER = Devices.REGISTRIES.get().get(Registry.ITEM_REGISTRY);
 
     // Laptops
-    public static final RegistrySupplier<BlockItem> WHITE_LAPTOP = REGISTER.register(Devices.id("white_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.WHITE_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.WHITE, ModDeviceTypes.LAPTOP));
-    public static final RegistrySupplier<BlockItem> ORANGE_LAPTOP = REGISTER.register(Devices.id("orange_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.ORANGE_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.ORANGE, ModDeviceTypes.LAPTOP));
-    public static final RegistrySupplier<BlockItem> MAGENTA_LAPTOP = REGISTER.register(Devices.id("magenta_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.MAGENTA_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.MAGENTA, ModDeviceTypes.LAPTOP));
-    public static final RegistrySupplier<BlockItem> LIGHT_BLUE_LAPTOP = REGISTER.register(Devices.id("light_blue_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.LIGHT_BLUE_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.LIGHT_BLUE, ModDeviceTypes.LAPTOP));
-    public static final RegistrySupplier<BlockItem> YELLOW_LAPTOP = REGISTER.register(Devices.id("yellow_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.YELLOW_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.YELLOW, ModDeviceTypes.LAPTOP));
-    public static final RegistrySupplier<BlockItem> LIME_LAPTOP = REGISTER.register(Devices.id("lime_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.LIME_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.LIME, ModDeviceTypes.LAPTOP));
-    public static final RegistrySupplier<BlockItem> PINK_LAPTOP = REGISTER.register(Devices.id("pink_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.PINK_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.PINK, ModDeviceTypes.LAPTOP));
-    public static final RegistrySupplier<BlockItem> GRAY_LAPTOP = REGISTER.register(Devices.id("gray_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.GRAY_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.GRAY, ModDeviceTypes.LAPTOP));
-    public static final RegistrySupplier<BlockItem> LIGHT_GRAY_LAPTOP = REGISTER.register(Devices.id("light_gray_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.LIGHT_GRAY_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.LIGHT_GRAY, ModDeviceTypes.LAPTOP));
-    public static final RegistrySupplier<BlockItem> CYAN_LAPTOP = REGISTER.register(Devices.id("cyan_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.CYAN_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.CYAN, ModDeviceTypes.LAPTOP));
-    public static final RegistrySupplier<BlockItem> PURPLE_LAPTOP = REGISTER.register(Devices.id("purple_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.PURPLE_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.PURPLE, ModDeviceTypes.LAPTOP));
-    public static final RegistrySupplier<BlockItem> BLUE_LAPTOP = REGISTER.register(Devices.id("blue_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.BLUE_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.BLUE, ModDeviceTypes.LAPTOP));
-    public static final RegistrySupplier<BlockItem> BROWN_LAPTOP = REGISTER.register(Devices.id("brown_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.BROWN_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.BROWN, ModDeviceTypes.LAPTOP));
-    public static final RegistrySupplier<BlockItem> GREEN_LAPTOP = REGISTER.register(Devices.id("green_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.GREEN_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.GREEN, ModDeviceTypes.LAPTOP));
-    public static final RegistrySupplier<BlockItem> RED_LAPTOP = REGISTER.register(Devices.id("red_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.RED_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.RED, ModDeviceTypes.LAPTOP));
-    public static final RegistrySupplier<BlockItem> BLACK_LAPTOP = REGISTER.register(Devices.id("black_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.BLACK_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.BLACK, ModDeviceTypes.LAPTOP));
+    public static final RegistrySupplier<BlockItem> WHITE_LAPTOP = REGISTER.register(Devices.id("white_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.WHITE_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.WHITE, ModDeviceTypes.COMPUTER));
+    public static final RegistrySupplier<BlockItem> ORANGE_LAPTOP = REGISTER.register(Devices.id("orange_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.ORANGE_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.ORANGE, ModDeviceTypes.COMPUTER));
+    public static final RegistrySupplier<BlockItem> MAGENTA_LAPTOP = REGISTER.register(Devices.id("magenta_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.MAGENTA_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.MAGENTA, ModDeviceTypes.COMPUTER));
+    public static final RegistrySupplier<BlockItem> LIGHT_BLUE_LAPTOP = REGISTER.register(Devices.id("light_blue_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.LIGHT_BLUE_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.LIGHT_BLUE, ModDeviceTypes.COMPUTER));
+    public static final RegistrySupplier<BlockItem> YELLOW_LAPTOP = REGISTER.register(Devices.id("yellow_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.YELLOW_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.YELLOW, ModDeviceTypes.COMPUTER));
+    public static final RegistrySupplier<BlockItem> LIME_LAPTOP = REGISTER.register(Devices.id("lime_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.LIME_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.LIME, ModDeviceTypes.COMPUTER));
+    public static final RegistrySupplier<BlockItem> PINK_LAPTOP = REGISTER.register(Devices.id("pink_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.PINK_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.PINK, ModDeviceTypes.COMPUTER));
+    public static final RegistrySupplier<BlockItem> GRAY_LAPTOP = REGISTER.register(Devices.id("gray_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.GRAY_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.GRAY, ModDeviceTypes.COMPUTER));
+    public static final RegistrySupplier<BlockItem> LIGHT_GRAY_LAPTOP = REGISTER.register(Devices.id("light_gray_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.LIGHT_GRAY_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.LIGHT_GRAY, ModDeviceTypes.COMPUTER));
+    public static final RegistrySupplier<BlockItem> CYAN_LAPTOP = REGISTER.register(Devices.id("cyan_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.CYAN_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.CYAN, ModDeviceTypes.COMPUTER));
+    public static final RegistrySupplier<BlockItem> PURPLE_LAPTOP = REGISTER.register(Devices.id("purple_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.PURPLE_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.PURPLE, ModDeviceTypes.COMPUTER));
+    public static final RegistrySupplier<BlockItem> BLUE_LAPTOP = REGISTER.register(Devices.id("blue_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.BLUE_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.BLUE, ModDeviceTypes.COMPUTER));
+    public static final RegistrySupplier<BlockItem> BROWN_LAPTOP = REGISTER.register(Devices.id("brown_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.BROWN_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.BROWN, ModDeviceTypes.COMPUTER));
+    public static final RegistrySupplier<BlockItem> GREEN_LAPTOP = REGISTER.register(Devices.id("green_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.GREEN_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.GREEN, ModDeviceTypes.COMPUTER));
+    public static final RegistrySupplier<BlockItem> RED_LAPTOP = REGISTER.register(Devices.id("red_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.RED_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.RED, ModDeviceTypes.COMPUTER));
+    public static final RegistrySupplier<BlockItem> BLACK_LAPTOP = REGISTER.register(Devices.id("black_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.BLACK_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.BLACK, ModDeviceTypes.COMPUTER));
+
+    // Custom Computers
+    public static final RegistrySupplier<BlockItem> MAC_MAX_X = REGISTER.register(Devices.id("mac_max_x"), () -> new ColoredDeviceItem(DeviceBlocks.MAC_MAX_X.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.BLACK, ModDeviceTypes.COMPUTER));
 
     // Printers
     public static final RegistrySupplier<BlockItem> WHITE_PRINTER = REGISTER.register(Devices.id("white_printer"), () -> new ColoredDeviceItem(DeviceBlocks.WHITE_PRINTER.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.WHITE, ModDeviceTypes.PRINTER));
@@ -137,7 +140,7 @@ public class DeviceItems {
         return getAllItems()
                 .filter(item -> item.asItem() instanceof ColoredDeviceItem)
                 .map(item -> (ColoredDeviceItem) item.asItem())
-                .filter(item -> item.getDeviceType() == ModDeviceTypes.LAPTOP)
+                .filter(item -> item.getDeviceType() == ModDeviceTypes.COMPUTER)
                 .toList();
     }
 

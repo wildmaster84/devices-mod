@@ -35,6 +35,9 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 
+    modImplementation "software.bernie.geckolib:geckolib-forge-1.19:${geckolib_version_quilt}"
+
+    modImplementation "curse.maven:emojiful-284324:4056367"
 
     forgeRuntimeLibrary "org.jetbrains.kotlin:kotlin-stdlib:1.7.10"
     forgeRuntimeLibrary "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10"

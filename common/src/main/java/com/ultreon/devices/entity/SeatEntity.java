@@ -9,9 +9,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.vehicle.Boat;
-import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
@@ -83,7 +80,7 @@ public class SeatEntity extends Entity
     }
 
 //    @Override
-//    protected void init() {}
+//    protected void.json init() {}
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {}
