@@ -66,7 +66,6 @@ public class ClientModEvents {
         registerRenderLayers();
         registerRenderers();
         registerLayerDefinitions();
-        registerGeoRenderers();
         generateIconAtlas();
     }
 
@@ -203,11 +202,6 @@ public class ClientModEvents {
 
     @ExpectPlatform
     public static void setRenderLayer(Block block, RenderType type) {
-        throw new AssertionError();
-    }
-
-    @ExpectPlatform
-    public static void registerGeoRenderers() {
         throw new AssertionError();
     }
 

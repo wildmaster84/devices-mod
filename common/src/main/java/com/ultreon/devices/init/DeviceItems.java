@@ -37,7 +37,7 @@ public class DeviceItems {
     public static final RegistrySupplier<BlockItem> BLACK_LAPTOP = REGISTER.register(Devices.id("black_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.BLACK_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.BLACK, ModDeviceTypes.COMPUTER));
 
     // Custom Computers
-    public static final RegistrySupplier<MacMaxXItem> MAC_MAX_X = REGISTER.register(Devices.id("mac_max_x"), () -> new MacMaxXItem(DeviceBlocks.MAC_MAX_X.get(), new Item.Properties().tab(Devices.TAB_DEVICE)));
+    public static final RegistrySupplier<BlockItem> MAC_MAX_X = REGISTER.register(Devices.id("mac_max_x"), () -> new DeviceItem(DeviceBlocks.MAC_MAX_X.get(), new Item.Properties().tab(Devices.TAB_DEVICE), ModDeviceTypes.COMPUTER));
 
     // Printers
     public static final RegistrySupplier<BlockItem> WHITE_PRINTER = REGISTER.register(Devices.id("white_printer"), () -> new ColoredDeviceItem(DeviceBlocks.WHITE_PRINTER.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.WHITE, ModDeviceTypes.PRINTER));
@@ -114,7 +114,7 @@ public class DeviceItems {
     public static final RegistrySupplier<ComponentItem> COMPONENT_SMALL_ELECTRIC_MOTOR = REGISTER.register(Devices.id("small_electric_motor"), () -> new ComponentItem(new Item.Properties().tab(Devices.TAB_DEVICE)));
     public static final RegistrySupplier<ComponentItem> COMPONENT_CARRIAGE = REGISTER.register(Devices.id("carriage"), () -> new ComponentItem(new Item.Properties().tab(Devices.TAB_DEVICE)));
 
-    public static final RegistrySupplier<EthernetCableItem> ETHERNET_CABLE = REGISTER.register(Devices.id("ethernet_cable"), () -> new EthernetCableItem());
+    public static final RegistrySupplier<EthernetCableItem> ETHERNET_CABLE = REGISTER.register(Devices.id("ethernet_cable"), EthernetCableItem::new);
     
 
     public static Stream<Item> getAllItems() {
