@@ -81,7 +81,7 @@ import java.util.regex.Pattern;
 
 public class Devices {
     public static final String MOD_ID = "devices";
-    public static final CreativeModeTab TAB_DEVICE = CreativeTabRegistry.create(id("devices_tab_device"), () -> new ItemStack(DeviceItems.RED_LAPTOP.get()));
+    public static final CreativeModeTab TAB_DEVICE = DeviceTab.create();
     public static final Supplier<Registries> REGISTRIES = Suppliers.memoize(() -> Registries.get(MOD_ID));
     public static final List<SiteRegistration> SITE_REGISTRATIONS = new ProtectedArrayList<>();
     public static final Logger LOGGER = LoggerFactory.getLogger("Devices Mod");
@@ -109,6 +109,7 @@ public class Devices {
         }
    //     BlockEntityUtil.sendUpdate(null, null, null);
 
+        // STOPSHIP: 3/11/2022 should be moved to dedicated testmod
         final var property = System.getProperty("ultreon.devices.tests");
         tests = new TestManager();
         if (property != null) {

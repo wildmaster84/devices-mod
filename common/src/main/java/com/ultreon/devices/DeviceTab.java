@@ -1,26 +1,36 @@
 package com.ultreon.devices;
 
+import com.ultreon.devices.init.DeviceBlocks;
 import com.ultreon.devices.init.DeviceItems;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.flag.FeatureFlagSet;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import dev.architectury.registry.CreativeTabRegistry;
+import dev.architectury.registry.registries.RegistrySupplier;
+import net.minecraft.world.item.*;
 
-public class DeviceTab extends CreativeModeTab {
-    public DeviceTab(String label) {
-        super(0, Component.literal("A"));
-        throw new AssertionError();
-    }
+import static com.ultreon.devices.Devices.id;
 
-    @NotNull
-    @Override
-    public ItemStack makeIcon() {
-        return new ItemStack(DeviceItems.RED_LAPTOP.get());
-    }
-
-    @Override
-    protected void generateDisplayItems(FeatureFlagSet featureFlagSet, Output output) {
-
+public class DeviceTab {
+    @SuppressWarnings("UnstableApiUsage")
+    public static CreativeModeTab create() {
+        System.out.println("creating creative tab");
+//        CreativeTabRegistry.modify(CreativeModeTabs.TAB_REDSTONE, output -> {
+//            output.acceptAll();
+//        });
+        return CreativeTabRegistry.create(id("devices_tab_device"), () -> new ItemStack(DeviceBlocks.LAPTOPS.of(DyeColor.RED).get()), (featureFlagSet, output) -> {
+            for (RegistrySupplier<Item> laptop : DeviceItems.LAPTOPS) {
+                output.accept(laptop.get());
+            }
+            for (RegistrySupplier<Item> printer : DeviceItems.PRINTERS) {
+                output.accept(printer.get());
+            }
+            for (RegistrySupplier<Item> router : DeviceItems.ROUTERS) {
+                output.accept(router.get());
+            }
+            for (RegistrySupplier<Item> office_chair : DeviceItems.OFFICE_CHAIRS) {
+                output.accept(office_chair.get());
+            }
+            for (RegistrySupplier<Item> flashdrive : DeviceItems.FLASH_DRIVE) {
+                output.accept(flashdrive.get());
+            }
+        });
     }
 }
