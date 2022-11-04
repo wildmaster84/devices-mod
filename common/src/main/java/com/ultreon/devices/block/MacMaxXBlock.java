@@ -1,13 +1,21 @@
 package com.ultreon.devices.block;
 
 import com.ultreon.devices.block.entity.MacMaxXBlockEntity;
+import com.ultreon.devices.init.DeviceBlocks;
 import dev.architectury.platform.Platform;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -19,6 +27,10 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * @author Qboi123
+ */
+@SuppressWarnings("deprecation")
 public class MacMaxXBlock extends ComputerBlock {
     private static final VoxelShape SHAPE_NORTH = Shapes.or(
             Block.box(-16, 31, 5, 32, 32, 7),
@@ -85,8 +97,123 @@ public class MacMaxXBlock extends ComputerBlock {
     }
 
     @Override
-    public float getShadeBrightness(BlockState state, BlockGetter level, BlockPos pos) {
+    public float getShadeBrightness(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos) {
         return 1.0f;
+    }
+
+    @Override
+    public @Nullable BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
+        return canPlace(context.getLevel(), context.getClickedPos(), context.getHorizontalDirection()) ? super.getStateForPlacement(context) : null;
+    }
+
+    public boolean canPlace(Level level, BlockPos pos, Direction face) {
+        BlockState partState = DeviceBlocks.MAC_MAX_X_PART.get().defaultBlockState();
+        hasBlock(level, pos.above());
+        switch (face) {
+            case NORTH -> {
+                if (hasBlock(level, pos.above().west())) return false;
+                if (hasBlock(level, pos.above().east())) return false;
+                if (hasBlock(level, pos.above())) return false;
+                if (hasBlock(level, pos.west())) return false;
+                if (hasBlock(level, pos.east())) return false;
+            }
+            case SOUTH -> {
+                if (hasBlock(level, pos.above().east())) return false;
+                if (hasBlock(level, pos.above().west())) return false;
+                if (hasBlock(level, pos.above())) return false;
+                if (hasBlock(level, pos.east())) return false;
+                if (hasBlock(level, pos.west())) return false;
+            }
+            case WEST -> {
+                if (hasBlock(level, pos.above().north())) return false;
+                if (hasBlock(level, pos.above().south())) return false;
+                if (hasBlock(level, pos.above())) return false;
+                if (hasBlock(level, pos.north())) return false;
+                if (hasBlock(level, pos.south())) return false;
+            }
+            case EAST -> {
+                if (hasBlock(level, pos.above().south())) return false;
+                if (hasBlock(level, pos.above().north())) return false;
+                if (hasBlock(level, pos.above())) return false;
+                if (hasBlock(level, pos.south())) return false;
+                if (hasBlock(level, pos.north())) return false;
+            }
+            default -> throw new IllegalStateException("Unexpected value: " + face);
+        }
+        return true;
+    }
+
+    private boolean hasBlock(Level level, BlockPos pos) {
+        return !level.getBlockState(pos).isAir();
+    }
+
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, @NotNull ItemStack stack) {
+        if (state.isAir()) return;
+        BlockState partState = DeviceBlocks.MAC_MAX_X_PART.get().defaultBlockState();
+        partState = partState.setValue(FACING, state.getValue(FACING));
+        level.setBlock(pos.above(), partState.setValue(MacMaxXBlockPart.PART, MacMaxXBlockPart.Part.T), 3);
+        switch (state.getValue(FACING)) {
+            case NORTH -> {
+                level.setBlock(pos.above().west(), partState.setValue(MacMaxXBlockPart.PART, MacMaxXBlockPart.Part.TL), 3);
+                level.setBlock(pos.above().east(), partState.setValue(MacMaxXBlockPart.PART, MacMaxXBlockPart.Part.TR), 3);
+                level.setBlock(pos.west(), partState.setValue(MacMaxXBlockPart.PART, MacMaxXBlockPart.Part.BL), 3);
+                level.setBlock(pos.east(), partState.setValue(MacMaxXBlockPart.PART, MacMaxXBlockPart.Part.BR), 3);
+            } 
+            case SOUTH -> {
+                level.setBlock(pos.above().east(), partState.setValue(MacMaxXBlockPart.PART, MacMaxXBlockPart.Part.TL), 3);
+                level.setBlock(pos.above().west(), partState.setValue(MacMaxXBlockPart.PART, MacMaxXBlockPart.Part.TR), 3);
+                level.setBlock(pos.east(), partState.setValue(MacMaxXBlockPart.PART, MacMaxXBlockPart.Part.BL), 3);
+                level.setBlock(pos.west(), partState.setValue(MacMaxXBlockPart.PART, MacMaxXBlockPart.Part.BR), 3);
+            }
+            case WEST -> {
+                level.setBlock(pos.above().north(), partState.setValue(MacMaxXBlockPart.PART, MacMaxXBlockPart.Part.TL), 3);
+                level.setBlock(pos.above().south(), partState.setValue(MacMaxXBlockPart.PART, MacMaxXBlockPart.Part.TR), 3);
+                level.setBlock(pos.north(), partState.setValue(MacMaxXBlockPart.PART, MacMaxXBlockPart.Part.BL), 3);
+                level.setBlock(pos.south(), partState.setValue(MacMaxXBlockPart.PART, MacMaxXBlockPart.Part.BR), 3);
+            }
+            case EAST -> {
+                level.setBlock(pos.above().south(), partState.setValue(MacMaxXBlockPart.PART, MacMaxXBlockPart.Part.TL), 3);
+                level.setBlock(pos.above().north(), partState.setValue(MacMaxXBlockPart.PART, MacMaxXBlockPart.Part.TR), 3);
+                level.setBlock(pos.south(), partState.setValue(MacMaxXBlockPart.PART, MacMaxXBlockPart.Part.BL), 3);
+                level.setBlock(pos.north(), partState.setValue(MacMaxXBlockPart.PART, MacMaxXBlockPart.Part.BR), 3);
+            }
+            default -> throw new IllegalStateException("Unexpected value: " + state.getValue(FACING));
+        }
+    }
+
+    @Override
+    public void playerWillDestroy(@NotNull Level level, @NotNull BlockPos pos, BlockState state, @NotNull Player player) {
+        switch (state.getValue(FACING)) {
+            case NORTH -> {
+                level.setBlock(pos.above().west(), Blocks.AIR.defaultBlockState(), 3);
+                level.setBlock(pos.above().east(), Blocks.AIR.defaultBlockState(), 3);
+                level.setBlock(pos.above(), Blocks.AIR.defaultBlockState(), 3);
+                level.setBlock(pos.west(), Blocks.AIR.defaultBlockState(), 3);
+                level.setBlock(pos.east(), Blocks.AIR.defaultBlockState(), 3);
+            }
+            case SOUTH -> {
+                level.setBlock(pos.above().east(), Blocks.AIR.defaultBlockState(), 3);
+                level.setBlock(pos.above().west(), Blocks.AIR.defaultBlockState(), 3);
+                level.setBlock(pos.above(), Blocks.AIR.defaultBlockState(), 3);
+                level.setBlock(pos.east(), Blocks.AIR.defaultBlockState(), 3);
+                level.setBlock(pos.west(), Blocks.AIR.defaultBlockState(), 3);
+            }
+            case WEST -> {
+                level.setBlock(pos.above().north(), Blocks.AIR.defaultBlockState(), 3);
+                level.setBlock(pos.above().south(), Blocks.AIR.defaultBlockState(), 3);
+                level.setBlock(pos.above(), Blocks.AIR.defaultBlockState(), 3);
+                level.setBlock(pos.north(), Blocks.AIR.defaultBlockState(), 3);
+                level.setBlock(pos.south(), Blocks.AIR.defaultBlockState(), 3);
+            }
+            case EAST -> {
+                level.setBlock(pos.above().south(), Blocks.AIR.defaultBlockState(), 3);
+                level.setBlock(pos.above().north(), Blocks.AIR.defaultBlockState(), 3);
+                level.setBlock(pos.above(), Blocks.AIR.defaultBlockState(), 3);
+                level.setBlock(pos.south(), Blocks.AIR.defaultBlockState(), 3);
+                level.setBlock(pos.north(), Blocks.AIR.defaultBlockState(), 3);
+            }
+            default -> throw new IllegalStateException("Unexpected value: " + state.getValue(FACING));
+        }
     }
 
     @Override

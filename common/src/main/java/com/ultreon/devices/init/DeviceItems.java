@@ -3,12 +3,16 @@ package com.ultreon.devices.init;
 import com.ultreon.devices.Devices;
 import com.ultreon.devices.ModDeviceTypes;
 import com.ultreon.devices.item.*;
+import dev.architectury.platform.Platform;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -37,7 +41,21 @@ public class DeviceItems {
     public static final RegistrySupplier<BlockItem> BLACK_LAPTOP = REGISTER.register(Devices.id("black_laptop"), () -> new ColoredDeviceItem(DeviceBlocks.BLACK_LAPTOP.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.BLACK, ModDeviceTypes.COMPUTER));
 
     // Custom Computers
-    public static final RegistrySupplier<BlockItem> MAC_MAX_X = REGISTER.register(Devices.id("mac_max_x"), () -> new DeviceItem(DeviceBlocks.MAC_MAX_X.get(), new Item.Properties().tab(Devices.TAB_DEVICE), ModDeviceTypes.COMPUTER));
+    public static final RegistrySupplier<BlockItem> MAC_MAX_X = REGISTER.register(Devices.id("mac_max_x"), () -> new DeviceItem(DeviceBlocks.MAC_MAX_X.get(), new Item.Properties().tab(Devices.TAB_DEVICE), ModDeviceTypes.COMPUTER) {
+        @Override
+        public Component getDescription() {
+            MutableComponent normalName = Component.translatable("block.devices.mac_max_x");
+            if (Platform.isModLoaded("emojiful")) {
+                return Component.translatable("block.devices.mac_max_x_emoji");
+            }
+            return normalName;
+        }
+
+        @Override
+        public Component getName(ItemStack stack) {
+            return getDescription();
+        }
+    });
 
     // Printers
     public static final RegistrySupplier<BlockItem> WHITE_PRINTER = REGISTER.register(Devices.id("white_printer"), () -> new ColoredDeviceItem(DeviceBlocks.WHITE_PRINTER.get(), new Item.Properties().tab(Devices.TAB_DEVICE), DyeColor.WHITE, ModDeviceTypes.PRINTER));

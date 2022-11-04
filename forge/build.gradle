@@ -35,7 +35,7 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 
-    modImplementation "curse.maven:emojiful-284324:4056367"
+    modApi "curse.maven:emojiful-284324:3963433"
 
     forgeRuntimeLibrary "org.jetbrains.kotlin:kotlin-stdlib:1.7.10"
     forgeRuntimeLibrary "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10"

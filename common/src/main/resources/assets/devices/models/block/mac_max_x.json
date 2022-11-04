@@ -1,6 +1,7 @@
 {
 	"credit": "Made with Blockbench",
 	"texture_size": [128, 128],
+	"ambientocclusion": false,
 	"textures": {
 		"0": "devices:block/mac_max_x"
 	},

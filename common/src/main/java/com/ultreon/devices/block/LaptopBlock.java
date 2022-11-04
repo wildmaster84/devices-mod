@@ -1,11 +1,13 @@
 package com.ultreon.devices.block;
 
 import com.ultreon.devices.ModDeviceTypes;
+import com.ultreon.devices.block.entity.LaptopBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -14,6 +16,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class LaptopBlock extends ComputerBlock.Colored {
     public static final EnumProperty<Type> TYPE = EnumProperty.create("type", Type.class);
@@ -47,6 +50,11 @@ public class LaptopBlock extends ComputerBlock.Colored {
             case WEST -> SHAPE_CLOSED_WEST;
             default -> throw new IllegalStateException("Unexpected value: " + pState.getValue(FACING));
         };
+    }
+
+    @Override
+    public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
+        return new LaptopBlockEntity(pos, state);
     }
 
     public boolean isDesktopPC() {

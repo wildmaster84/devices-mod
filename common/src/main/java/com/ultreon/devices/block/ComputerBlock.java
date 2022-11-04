@@ -2,7 +2,6 @@ package com.ultreon.devices.block;
 
 import com.ultreon.devices.ModDeviceTypes;
 import com.ultreon.devices.block.entity.ComputerBlockEntity;
-import com.ultreon.devices.block.entity.LaptopBlockEntity;
 import com.ultreon.devices.item.FlashDriveItem;
 import com.ultreon.devices.util.BlockEntityUtil;
 import com.ultreon.devices.util.Colorable;
@@ -103,11 +102,6 @@ public abstract class ComputerBlock extends DeviceBlock {
     @Override
     protected void removeTagsForDrop(CompoundTag tileEntityTag) {
         tileEntityTag.remove("open");
-    }
-
-    @Override
-    public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
-        return new LaptopBlockEntity(pos, state);
     }
 
     @Override
