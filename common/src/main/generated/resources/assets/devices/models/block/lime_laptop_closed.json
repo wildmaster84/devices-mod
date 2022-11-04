@@ -1,6 +1,222 @@
 {
-  "parent": "devices:block/laptop_screen",
+  "credit": "Made with Blockbench",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "rotation": 180,
+          "texture": "#0",
+          "uv": [
+            1,
+            1,
+            15,
+            11
+          ]
+        },
+        "east": {
+          "texture": "#0",
+          "uv": [
+            1,
+            0,
+            11,
+            1
+          ]
+        },
+        "north": {
+          "texture": "#0",
+          "uv": [
+            2,
+            0,
+            16,
+            1
+          ]
+        },
+        "south": {
+          "texture": "#0",
+          "uv": [
+            1,
+            0,
+            15,
+            1
+          ]
+        },
+        "up": {
+          "rotation": 180,
+          "texture": "#0",
+          "uv": [
+            1,
+            1,
+            15,
+            11
+          ]
+        },
+        "west": {
+          "texture": "#0",
+          "uv": [
+            1,
+            0,
+            11,
+            1
+          ]
+        }
+      },
+      "from": [
+        1,
+        0,
+        5
+      ],
+      "name": "screen",
+      "to": [
+        15,
+        1,
+        15
+      ]
+    },
+    {
+      "faces": {
+        "down": {
+          "rotation": 180,
+          "texture": "#0",
+          "uv": [
+            4,
+            0,
+            11.6,
+            1.5
+          ]
+        },
+        "east": {
+          "texture": "#0",
+          "uv": [
+            7,
+            0,
+            8.5,
+            0.9
+          ]
+        },
+        "north": {
+          "texture": "#0",
+          "uv": [
+            0,
+            0,
+            7.6,
+            0.9
+          ]
+        },
+        "south": {
+          "texture": "#0",
+          "uv": [
+            0,
+            0,
+            7.6,
+            0.9
+          ]
+        },
+        "up": {
+          "rotation": 180,
+          "texture": "#0",
+          "uv": [
+            4,
+            0,
+            11.6,
+            1.5
+          ]
+        },
+        "west": {
+          "texture": "#0",
+          "uv": [
+            7,
+            0,
+            8.5,
+            0.9
+          ]
+        }
+      },
+      "from": [
+        4.2,
+        0,
+        15
+      ],
+      "name": "screen_mount",
+      "to": [
+        11.8,
+        0.9,
+        16.5
+      ]
+    },
+    {
+      "faces": {
+        "down": {
+          "rotation": 180,
+          "texture": "#0",
+          "uv": [
+            0,
+            15,
+            1,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#0",
+          "uv": [
+            0,
+            15,
+            1.1,
+            16
+          ]
+        },
+        "north": {
+          "texture": "#0",
+          "uv": [
+            0,
+            15,
+            1,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#0",
+          "uv": [
+            0,
+            15,
+            1,
+            16
+          ]
+        },
+        "up": {
+          "rotation": 180,
+          "texture": "#0",
+          "uv": [
+            0,
+            15,
+            1,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#0",
+          "uv": [
+            0,
+            15,
+            1.1,
+            16
+          ]
+        }
+      },
+      "from": [
+        2,
+        -0.1,
+        6
+      ],
+      "name": "actual_screen",
+      "to": [
+        14,
+        0,
+        14
+      ]
+    }
+  ],
   "textures": {
+    "0": "block/cauldron_side",
     "2": "minecraft:block/lime_wool"
   }
 }
