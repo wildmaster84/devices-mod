@@ -29,9 +29,7 @@ public class ClientAppDebug {
 
                 var a = new Button(screen.width / 2 - 100, y + rowHeight * -1, 200, 20, Component.literal("DV TEST"), (button) -> {
                     Minecraft.getInstance().setScreen(new Laptop(new LaptopBlockEntity(new BlockPos(0, 0, 0), DeviceBlocks.LAPTOPS.of(DyeColor.WHITE).get().defaultBlockState()), true));
-                }, Button.NO_TOOLTIP, (sdcvb) -> {
-                    return Component.empty();
-                });
+                }, Button.NO_TOOLTIP);
                 access.addRenderableWidget(a);
             }
         }));
