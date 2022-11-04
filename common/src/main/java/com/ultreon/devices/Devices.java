@@ -63,6 +63,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -81,7 +82,7 @@ import java.util.regex.Pattern;
 
 public class Devices {
     public static final String MOD_ID = "devices";
-    public static final CreativeModeTab TAB_DEVICE = DeviceTab.create();
+    public static final CreativeModeTab TAB_DEVICE = CreativeTabRegistry.create(Devices.id("devices_mod_tab"), () -> DeviceItems.LAPTOPS.of(DyeColor.RED).get().getDefaultInstance());
     public static final Supplier<Registries> REGISTRIES = Suppliers.memoize(() -> Registries.get(MOD_ID));
     public static final List<SiteRegistration> SITE_REGISTRATIONS = new ProtectedArrayList<>();
     public static final Logger LOGGER = LoggerFactory.getLogger("Devices Mod");
