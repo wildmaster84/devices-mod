@@ -48,5 +48,20 @@
   "depends": {
     "fabricloader": ">=${loaderVersion}",
     "minecraft": ">=${minecraftVersion} <1.19.3"
+  },
+  "custom": {
+    "modupdater": {
+      "strategy": "curseforge",
+      "projectID": 659048,
+      "strict": false
+    },
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/dtdc46g6ry",
+        "modmenu.youtube": "https://youtube.com/@ultreon",
+        "modmenu.curseforge": "https://www.curseforge.com/minecraft/mc-mods/devices-mod",
+        "modmenu.modrinth": "https://modrinth.com/mod/devices-mod"
+      }
+    }
   }
 }
