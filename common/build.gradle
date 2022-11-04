@@ -53,3 +53,13 @@ publishing {
         // Add repositories to publish to here.
     }
 }
+
+sourceSets {
+    main {
+        resources {
+            srcDirs += [
+                    'src/main/generated'
+            ]
+        }
+    }
+}
