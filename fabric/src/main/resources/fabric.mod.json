@@ -20,7 +20,6 @@
     "jack jook",
     "Hunstagamez",
     "Techyy YT",
-    "MinecraftDoodler",
     "Norge100YT",
     "Cyberman2208",
     "CreepergamingsMC"
@@ -28,7 +27,8 @@
   "contact": {
     "website": "https://ultreon.github.io/web/",
     "repo": "https://github.com/Ultreon/devices-mod",
-    "issues": "https://github.com/Ultreon/devices-mod/issues"
+    "issues": "https://github.com/Ultreon/devices-mod/issues",
+    "sources": "https://github.com/Ultreon/devices-mod"
   },
   "license": "GPL-3.0",
   "icon": "devices_mod.png",
