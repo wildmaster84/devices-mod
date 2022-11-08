@@ -89,7 +89,7 @@ public class AppInfo {
      * @return a formatted id
      */
     public String getFormattedId() {
-        return APP_ID.getNamespace() + "." + APP_ID.getPath();
+        return APP_ID.getNamespace() + ":" + APP_ID.getPath();
     }
 
     /**
