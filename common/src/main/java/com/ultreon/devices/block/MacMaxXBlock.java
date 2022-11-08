@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -21,6 +22,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -103,51 +106,50 @@ public class MacMaxXBlock extends ComputerBlock {
 
     @Override
     public @Nullable BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
-        return canPlace(context.getLevel(), context.getClickedPos(), context.getHorizontalDirection()) ? super.getStateForPlacement(context) : null;
+        return canPlace(context.getLevel(), context.getClickedPos(), context.getHorizontalDirection(), context.getHand(), context.getItemInHand()) ? super.getStateForPlacement(context) : null;
     }
 
-    public boolean canPlace(Level level, BlockPos pos, Direction face) {
-        BlockState partState = DeviceBlocks.MAC_MAX_X_PART.get().defaultBlockState();
-        hasBlock(level, pos.above());
+    public boolean canPlace(Level level, BlockPos pos, Direction face, InteractionHand hand, ItemStack itemInHand) {
+        hasBlock(level, pos.above(), hand, itemInHand, face);
         switch (face) {
             case NORTH -> {
-                if (hasBlock(level, pos.above().west())) return false;
-                if (hasBlock(level, pos.above().east())) return false;
-                if (hasBlock(level, pos.above())) return false;
-                if (hasBlock(level, pos.west())) return false;
-                if (hasBlock(level, pos.east())) return false;
+                if (hasBlock(level, pos.above().west(), hand, itemInHand, face)) return false;
+                if (hasBlock(level, pos.above().east(), hand, itemInHand, face)) return false;
+                if (hasBlock(level, pos.above(), hand, itemInHand, face)) return false;
+                if (hasBlock(level, pos.west(), hand, itemInHand, face)) return false;
+                if (hasBlock(level, pos.east(), hand, itemInHand, face)) return false;
             }
             case SOUTH -> {
-                if (hasBlock(level, pos.above().east())) return false;
-                if (hasBlock(level, pos.above().west())) return false;
-                if (hasBlock(level, pos.above())) return false;
-                if (hasBlock(level, pos.east())) return false;
-                if (hasBlock(level, pos.west())) return false;
+                if (hasBlock(level, pos.above().east(), hand, itemInHand, face)) return false;
+                if (hasBlock(level, pos.above().west(), hand, itemInHand, face)) return false;
+                if (hasBlock(level, pos.above(), hand, itemInHand, face)) return false;
+                if (hasBlock(level, pos.east(), hand, itemInHand, face)) return false;
+                if (hasBlock(level, pos.west(), hand, itemInHand, face)) return false;
             }
             case WEST -> {
-                if (hasBlock(level, pos.above().north())) return false;
-                if (hasBlock(level, pos.above().south())) return false;
-                if (hasBlock(level, pos.above())) return false;
-                if (hasBlock(level, pos.north())) return false;
-                if (hasBlock(level, pos.south())) return false;
+                if (hasBlock(level, pos.above().north(), hand, itemInHand, face)) return false;
+                if (hasBlock(level, pos.above().south(), hand, itemInHand, face)) return false;
+                if (hasBlock(level, pos.above(), hand, itemInHand, face)) return false;
+                if (hasBlock(level, pos.north(), hand, itemInHand, face)) return false;
+                if (hasBlock(level, pos.south(), hand, itemInHand, face)) return false;
             }
             case EAST -> {
-                if (hasBlock(level, pos.above().south())) return false;
-                if (hasBlock(level, pos.above().north())) return false;
-                if (hasBlock(level, pos.above())) return false;
-                if (hasBlock(level, pos.south())) return false;
-                if (hasBlock(level, pos.north())) return false;
+                if (hasBlock(level, pos.above().south(), hand, itemInHand, face)) return false;
+                if (hasBlock(level, pos.above().north(), hand, itemInHand, face)) return false;
+                if (hasBlock(level, pos.above(), hand, itemInHand, face)) return false;
+                if (hasBlock(level, pos.south(), hand, itemInHand, face)) return false;
+                if (hasBlock(level, pos.north(), hand, itemInHand, face)) return false;
             }
             default -> throw new IllegalStateException("Unexpected value: " + face);
         }
         return true;
     }
 
-    private boolean hasBlock(Level level, BlockPos pos) {
-        return !level.getBlockState(pos).isAir();
+    private boolean hasBlock(Level level, BlockPos pos, InteractionHand hand, ItemStack itemInHand, Direction face) {
+        return !(level.getBlockState(pos).isAir() || level.getBlockState(pos).canBeReplaced(new FakeBlockPlaceContext(level, hand, itemInHand, new BlockHitResult(Vec3.atCenterOf(pos), face, pos, false))));
     }
 
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, @NotNull ItemStack stack) {
+    public void setPlacedBy(@NotNull Level level, @NotNull BlockPos pos, BlockState state, LivingEntity placer, @NotNull ItemStack stack) {
         if (state.isAir()) return;
         BlockState partState = DeviceBlocks.MAC_MAX_X_PART.get().defaultBlockState();
         partState = partState.setValue(FACING, state.getValue(FACING));
