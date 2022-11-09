@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.jab125.clientint.mixin.LanguageManagerAccessor;
 import net.fabricmc.api.ClientModInitializer;
@@ -88,6 +89,7 @@ public class ClientInit implements ClientModInitializer {
     }
 
     public static void loadFrom(ResourceManager resourceManager, Collection<LanguageInfo> languageInfo) {
+        var gson = new GsonBuilder().setPrettyPrinting().create();
         HashMap<String, String> map = Maps.newHashMap();
         boolean bl = false;
         for (LanguageInfo languageInfo2 : languageInfo) {
@@ -102,7 +104,7 @@ public class ClientInit implements ClientModInitializer {
                     var q = resourceManager.getResourceStack(resourceLocation);
                     for (Resource resource : q) {
                         var fgh = new BufferedReader(new InputStreamReader(resource.open()));
-                        var sf = new Gson().fromJson(fgh, JsonObject.class);
+                        var sf = gson.fromJson(fgh, JsonObject.class);
                         for (String s : sf.keySet()) {
                             gg.add(s, sf.get(s));
                         }
@@ -115,7 +117,7 @@ public class ClientInit implements ClientModInitializer {
             try {
                 Paths.get(string2).toFile().createNewFile();
                 FileWriter df;
-                (df = new FileWriter(Paths.get(string2).toFile())).write(gg.toString());
+                (df = new FileWriter(Paths.get(string2).toFile())).write(gson.toJson(gg));
                 df.close();
                 System.out.println("written to" + Paths.get(string2).toFile());
             } catch (Exception e) {
