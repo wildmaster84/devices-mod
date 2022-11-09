@@ -12,5 +12,6 @@ public class DevicesDataGenerator implements DataGeneratorEntrypoint {
         fabricDataGenerator.addProvider(new DevicesLanguageGenerator(fabricDataGenerator, "en_pt"));
         fabricDataGenerator.addProvider(new DevicesLanguageGenerator(fabricDataGenerator, "lol_us"));
         fabricDataGenerator.addProvider(new DevicesLanguageGenerator(fabricDataGenerator, "ja_jp"));
+        fabricDataGenerator.addProvider(DevicesRecipeProvider::new);
     }
 }

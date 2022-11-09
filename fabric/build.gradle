@@ -66,6 +66,8 @@ dependencies {
     modImplementation "com.terraformersmc:modmenu:4.0.6", {
         exclude module: "fabric-api"
     }
+
+    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:9.1.568"
 }
 
 processResources {
