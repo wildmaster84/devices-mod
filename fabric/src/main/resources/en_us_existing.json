@@ -1,6 +1,6 @@
 {
     "itemGroup.devices_tab_device": "Devices Mod",
-    "item.devices.printed_paper": "Defaced Paper",
+    "block.devices.printed_paper": "Defaced Paper",
     "item.devices.ethernet_cable": "Ethernet Cable",
     "item.devices.circuit_board": "Circuit Board",
     "item.devices.motherboard": "Motherboard",
