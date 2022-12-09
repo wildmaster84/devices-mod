@@ -43,7 +43,7 @@ public class EmailApp extends Application {
     private static final ResourceLocation ENDER_MAIL_ICONS = Resources.ENDER_MAIL_ICONS;
     private static final ResourceLocation ENDER_MAIL_BACKGROUND = Resources.ENDER_MAIL_BACKGROUND;
 
-    private static final Pattern EMAIL = Pattern.compile("^([a-zA-Z\\d]{1,10})@endermail\\.official$");
+    private static final Pattern EMAIL = Pattern.compile("^([a-zA-Z\\d]{1,20})@endermail\\.official$");
     private final Color COLOR_EMAIL_CONTENT_BACKGROUND = new Color(160, 160, 160);
 
     /* Loading Layout */
@@ -181,7 +181,7 @@ public class EmailApp extends Application {
         btnRegister.setSize(60, 16);
         btnRegister.setClickListener((mouseX, mouseY, mouseButton) -> {
             int length = fieldEmail.getText().length();
-            if (length > 0 && length <= 10) {
+            if (length > 0 && length <= 20) {
                 TaskRegisterEmailAccount taskRegisterAccount = new TaskRegisterEmailAccount(fieldEmail.getText());
                 taskRegisterAccount.setCallback((nbt, success) -> {
                     if (success) {
