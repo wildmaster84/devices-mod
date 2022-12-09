@@ -21,12 +21,12 @@ public record SiteRegistration(String registrant, String string, Type type, Stri
         Matcher matcher = GitWebFrame.PATTERN_LINK.matcher(website);
         if (!matcher.matches()) {
             Devices.LOGGER.error("No Match Found For " + website + "!");
-            return "https://raw.githubusercontent.com/Ultreon/gitweb-sites/main/";
+            return "https://raw.githubusercontent.com/wildmaster84/gitweb_sites/master/";
         }
         String domain = matcher.group("domain");
         String extension = matcher.group("extension");
         String directory = matcher.group("directory");
-        var url = "https://raw.githubusercontent.com/Ultreon/gitweb-sites/main/";
+        var url = "https://raw.githubusercontent.com/wildmaster84/gitweb_sites/master/";
         for (SiteRegistration siteRegistration : Devices.SITE_REGISTRATIONS) {
             if (siteRegistration.type == ALL) {
                 url = siteRegistration.site;
