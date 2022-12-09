@@ -93,10 +93,10 @@ public class Drive {
         if (path == null)
             throw new IllegalArgumentException("The path can not be null");
         /**
-		* Workaround to temporarily fix Note Stash
-		*/
+	* Workaround to temporarily fix Note Stash
+	*/
         if (path.contains(":"))
-			return root;
+	    return root;
         
         if (!FileSystem.PATTERN_DIRECTORY.matcher(path).matches())
             throw new IllegalArgumentException("The path \"" + path + "\" does not follow the correct format");
