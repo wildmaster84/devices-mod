@@ -89,7 +89,7 @@ public class Devices {
     public static final boolean DEVELOPER_MODE = false;
     private static final Pattern DEV_PREVIEW_PATTERN = Pattern.compile("\\d+\\.\\d+\\.\\d+-dev\\d+");
     private static final boolean IS_DEV_PREVIEW = DEV_PREVIEW_PATTERN.matcher(Reference.VERSION).matches();
-    private static final String GITWEB_REGISTER_URL = "https://ultreon.gitlab.io/gitweb/site_register.json";
+    private static final String GITWEB_REGISTER_URL = "https://raw.githubusercontent.com/wildmaster84/gitweb_sites/master/site_register.json";
     public static final String VULNERABILITIES_URL = "https://jab125.com/gitweb/vulnerabilities.php";
     private static final boolean PROTECT_FROM_LAUNCH = false;
     private static final Logger ULTRAN_LANG_LOGGER = LoggerFactory.getLogger("UltranLang");
